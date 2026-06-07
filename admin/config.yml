@@ -1,0 +1,28 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "images"
+
+collections:
+  - name: "data"
+    label: "Datos del Sitio"
+    files:
+      - file: "articles.json"
+        name: "articles"
+        label: "Artículos del Blog"
+        fields:
+          - name: "articles"
+            label: "Lista de Artículos"
+            widget: "list"
+            fields:
+              - { label: "ID Único (Número)", name: "id", widget: "number", value_type: "int" }
+              - { label: "Título del Artículo", name: "title", widget: "string" }
+              - { label: "Categoría", name: "category", widget: "select", options: [{label: "Salud Laboral", value: "salud-laboral"}, {label: "Medicina General", value: "medicina-general"}] }
+              - { label: "Etiqueta de Categoría", name: "categoryLabel", widget: "select", options: ["Salud Laboral", "Medicina General"] }
+              - { label: "Fecha de Publicación (ej. 07 Junio, 2026)", name: "date", widget: "string" }
+              - { label: "Tiempo de Lectura (ej. 5 min de lectura)", name: "readTime", widget: "string" }
+              - { label: "Resumen Corto", name: "summary", widget: "text" }
+              - { label: "Imagen Destacada", name: "image", widget: "image" }
+              - { label: "Cuerpo del Artículo (HTML)", name: "content", widget: "text" }

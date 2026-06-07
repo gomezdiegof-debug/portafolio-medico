@@ -1,0 +1,81 @@
+{
+  "articles": [
+    {
+      "id": 1,
+      "title": "Ergonomía en el Teletrabajo: Cómo Cuidar tu Postura y Evitar Lesiones en Casa",
+      "category": "salud-laboral",
+      "categoryLabel": "Salud Laboral",
+      "date": "31 Mayo, 2026",
+      "readTime": "5 min de lectura",
+      "summary": "El trabajo desde casa ha aumentado los trastornos musculoesqueléticos. Descubre cómo configurar tu espacio de trabajo para cuidar tu salud lumbar y cervical.",
+      "image": "images/ergonomics.png",
+      "content": "<p>Con la llegada del teletrabajo, muchos profesionales adaptaron espacios improvisados en sus hogares para cumplir con sus jornadas laborales. Sin embargo, trabajar desde el sofá, la mesa del comedor o una silla no ergonómica durante meses (o años) ha provocado un incremento notable en las consultas por dolores lumbares, cervicalgias y tendinitis.</p>\n      \n      <h3>1. La Regla de los 90 Grados</h3>\n      <p>Para mantener una postura neutra, tu cuerpo debe formar ángulos de aproximadamente 90 grados en tres puntos clave:</p>\n      <ul>\n        <li><strong>Codos:</strong> Flexionados a 90°, apoyados en los reposabrazos o la mesa, manteniendo los hombros relajados.</li>\n        <li><strong>Cadera:</strong> Sentado completamente atrás en la silla, de modo que tu espalda baja esté bien apoyada en el respaldo lumbar.</li>\n        <li><strong>Rodillas:</strong> Flexionadas a 90° con los pies completamente apoyados en el suelo o sobre un reposapiés.</li>\n      </ul>\n\n      <h3>2. La Altura de la Pantalla</h3>\n      <p>El borde superior del monitor debe quedar a la altura de tus ojos (o ligeramente por debajo) y a una distancia aproximada de un brazo estirado (entre 50 y 70 cm). Si trabajas con un ordenador portátil, es fundamental que utilices un elevador y conectes un teclado y ratón externos para evitar sobrecargar los músculos del cuello.</p>\n\n      <blockquote>\n        \"La mejor postura es la siguiente postura. Ninguna posición, por más ergonómica que sea, es saludable si se mantiene durante 8 horas seguidas.\"\n      </blockquote>\n\n      <h3>3. Micro-pausas Activas</h3>\n      <p>Cada 50 minutos de trabajo, realiza una pausa de 5 a 10 minutos. Levántate, estira las piernas, rota el cuello y realiza estiramientos suaves de muñecas y espalda. Estas pequeñas pausas reducen la fatiga muscular y mejoran la circulación sanguínea.</p>\n\n      <p>Invertir en una buena silla ergonómica y organizar tu espacio de trabajo no es un lujo, es una medida preventiva esencial para asegurar tu bienestar y rendimiento a largo plazo.</p>"
+    },
+    {
+      "id": 2,
+      "title": "Prevención Cardiovascular en la Consulta Diaria: Hábitos que Salvan Vidas",
+      "category": "medicina-general",
+      "categoryLabel": "Medicina General",
+      "date": "28 Mayo, 2026",
+      "readTime": "4 min de lectura",
+      "summary": "Las enfermedades cardiovasculares siguen siendo la principal causa de muerte en el mundo. Analizamos las pautas básicas para proteger tu corazón desde la prevención primaria.",
+      "image": "images/prevention.png",
+      "content": "<p>Como médicos, una de nuestras misiones más críticas es concienciar sobre la prevención primaria. Las enfermedades cardiovasculares (como el infarto de miocardio y los accidentes cerebrovasculares) son en gran medida prevenibles si actuamos a tiempo sobre los factores de riesgo modificables.</p>\n      \n      <h3>Los Pilares de la Salud Cardiovascular</h3>\n      <p>Existen varias estrategias fundamentales que cualquier persona puede adoptar en su día a día:</p>\n      <ul>\n        <li><strong>Alimentación Cardiosaludable:</strong> Prioriza la dieta mediterránea. Aumenta el consumo de verduras, legumbres, frutas, frutos secos y grasas saludables (como el aceite de oliva virgen extra y pescado azul), reduciendo al mínimo los alimentos ultraprocesados y el exceso de sal.</li>\n        <li><strong>Actividad Física Regular:</strong> La OMS recomienda al menos 150 minutos a la semana de actividad física aeróbica moderada (caminar a paso ligero, andar en bicicleta, nadar). Esto ayuda a controlar la presión arterial y mejorar los niveles de colesterol HDL (\"bueno\").</li>\n        <li><strong>Adiós al Tabaco:</strong> El tabaquismo es uno de los enemigos más agresivos de las arterias. Abandonar el tabaco disminuye el riesgo cardiovascular a la mitad en tan solo un año de abstinencia.</li>\n      </ul>\n\n      <h3>Conoce tus Números</h3>\n      <p>Es vital que conozcas tus niveles de presión arterial, glucemia y perfil lipídico (colesterol). Realizarse un chequeo analítico anual a partir de los 40 años (o antes si existen antecedentes familiares directos) nos permite detectar de forma precoz la hipertensión, la diabetes o la hipercolesterolemia silenciosas y actuar antes de que ocurra un evento mayor.</p>\n      \n      <p>La prevención no se hace en la sala de urgencias; se hace cada día en tu cocina, en tus paseos diarios y en tus visitas periódicas al médico de cabecera.</p>"
+    },
+    {
+      "id": 3,
+      "title": "Síndrome de Burnout: La Epidemia Silenciosa del Agotamiento Laboral",
+      "category": "salud-laboral",
+      "categoryLabel": "Salud Laboral",
+      "date": "15 Mayo, 2026",
+      "readTime": "6 min de lectura",
+      "summary": "Reconocido por la OMS como un fenómeno ocupacional, el burnout afecta la salud física y mental del trabajador. Aprende a identificar sus síntomas y fases.",
+      "image": "images/burnout.png",
+      "content": "<p>El Síndrome de Burnout, o síndrome de desgaste profesional, es una respuesta al estrés laboral crónico que no ha sido gestionado con éxito. No se trata simplemente de estar cansado después de una semana difícil; es un estado de agotamiento profundo que altera la relación del profesional con su trabajo y con su propia salud.</p>\n      \n      <h3>Las Tres Dimensiones del Burnout</h3>\n      <p>La Organización Mundial de la Salud define el burnout a través de tres pilares diagnósticos:</p>\n      <ol>\n        <li><strong>Agotamiento emocional:</strong> Sensación de no poder dar más de sí mismo a nivel afectivo y físico. Pérdida total de energía.</li>\n        <li><strong>Despersonalización o Cinismo:</strong> Desarrollo de una actitud fría, distante y negativa hacia el trabajo, los clientes o los pacientes.</li>\n        <li><strong>Baja Realización Personal:</strong> Sentimientos de ineficacia y falta de logro en el trabajo, sintiendo que los esfuerzos no sirven para nada.</li>\n      </ol>\n\n      <h3>Manifestaciones Físicas y Mentales</h3>\n      <p>El estrés crónico tiene un impacto somático directo. Quienes sufren de burnout suelen reportar dolores de cabeza frecuentes, trastornos gastrointestinales (como colon irritable), insomnio crónico, ansiedad y una disminución de las defensas inmunológicas, haciéndolos más propensos a infecciones respiratorias.</p>\n\n      <blockquote>\n        \"El burnout no es debilidad individual. Es un desajuste entre las demandas del puesto de trabajo y los recursos personales y organizacionales disponibles.\"\n      </blockquote>\n\n      <h3>¿Cómo Prevenirlo e Intervenir?</h3>\n      <p>A nivel de gerencia de salud laboral, es crucial evaluar los riesgos psicosociales en las empresas: ajustar la carga de trabajo, fomentar la autonomía, asegurar canales de comunicación claros y promover la desconexión digital fuera del horario laboral. A nivel personal, establecer límites firmes, practicar técnicas de regulación del estrés y buscar apoyo profesional de psicología o medicina laboral son pasos indispensables para iniciar la recuperación.</p>"
+    },
+    {
+      "id": 4,
+      "title": "Cómo Detectar y Prevenir el Acoso Laboral en el Trabajo",
+      "category": "salud-laboral",
+      "categoryLabel": "Salud Laboral",
+      "date": "05 Junio, 2026",
+      "readTime": "5 min de lectura",
+      "summary": "El acoso laboral o mobbing afecta gravemente la salud de los trabajadores. Conoce las estrategias clave para identificar conductas de acoso y crear ambientes seguros y respetuosos.",
+      "image": "images/harassment_prevention.png",
+      "content": "<p>El acoso laboral es un problema grave que afecta a muchas personas en todo el mundo. Puede tener un impacto negativo en la salud física y mental de las víctimas, así como en la productividad en el trabajo. Afortunadamente, hay varias maneras de detectar y prevenir el acoso laboral para proteger a los empleados y mejorar la cultura laboral en general.</p>\n      \n      <h3>1. Observación Directa y Detección Temprana</h3>\n      <p>Una de las mejores formas de detectar el acoso laboral es mediante la observación directa. Los supervisores y los gerentes deben estar alerta a cualquier comportamiento inapropiado o conducta que pueda ser considerada como acoso. Esto puede incluir comentarios ofensivos, humillación pública, o conductas intimidatorias. También es importante estar atento a cualquier cambio en el comportamiento o rendimiento de un empleado, ya que esto puede ser un signo de que está siendo acosado.</p>\n\n      <h3>2. Encuestas y Canales de Denuncia Seguros</h3>\n      <p>Otra forma eficaz de detectar el acoso laboral es mediante la realización de encuestas de clima laboral y riesgos psicosociales. Esto puede ayudar a identificar problemas que de otra manera podrían pasar desapercibidos. Además, es fundamental contar con una política de tolerancia cero y un proceso claro y confidencial para que los empleados se sientan cómodos y seguros denunciando estas conductas.</p>\n\n      <h3>3. Promoción de la Igualdad y Diversidad</h3>\n      <p>Es indispensable construir una cultura laboral que promueva activamente la igualdad, la diversidad y el respeto mutuo. Esto incluye capacitaciones regulares a líderes y colaboradores sobre resolución de conflictos y empatía. Si sospechas o estás siendo víctima de acoso laboral, recuerda que tienes derechos. No dudes en recurrir al departamento de gestión humana o buscar asesoría legal. Juntos podemos crear un lugar de trabajo seguro y saludable para todos.</p>"
+    },
+    {
+      "id": 5,
+      "title": "El Rol Clave del Médico Ocupacional en las Organizaciones",
+      "category": "salud-laboral",
+      "categoryLabel": "Salud Laboral",
+      "date": "02 Junio, 2026",
+      "readTime": "4 min de lectura",
+      "summary": "Los médicos ocupacionales protegen la salud de los trabajadores frente a riesgos laborales. Analizamos su formación y su impacto preventivo en la empresa.",
+      "image": "images/occupational_doctor.png",
+      "content": "<p>Los médicos ocupacionales son profesionales médicos que se especializan en diagnosticar, tratar y, fundamentalmente, prevenir lesiones o enfermedades que ocurren en el entorno de trabajo. Su labor combina la clínica médica con la gestión de riesgos industriales y organizacionales.</p>\n      \n      <h3>Formación de Excelencia</h3>\n      <p>Los médicos ocupacionales están capacitados tanto en medicina general como en medicina ocupacional. Tras completar la carrera de medicina y cirugía, realizan estudios de posgrado y especialización en medicina del trabajo o gerencia de la salud ocupacional, adquiriendo competencias en legislación laboral, higiene industrial, ergonomía y toxicología.</p>\n      \n      <h3>¿Cómo ayudan en la práctica?</h3>\n      <p>La principal responsabilidad de un médico ocupacional es proteger a los trabajadores de posibles peligros en el lugar de trabajo:</p>\n      <ul>\n        <li>Asesoran en la selección de equipos de protección personal (EPP) y control de sustancias químicas.</li>\n        <li>Identifican precursores de lesiones musculoesqueléticas como la fatiga muscular y sugieren mejoras ergonómicas.</li>\n        <li>Diseñan programas de vigilancia de la salud e implementan planes para la reintegración segura de trabajadores después de una incapacidad prolongada.</li>\n      </ul>\n      <p>El médico ocupacional es un puente vital entre la productividad empresarial y el bienestar humano del trabajador.</p>"
+    },
+    {
+      "id": 6,
+      "title": "Vigilancia de la Salud en el Trabajo: Promoviendo Ambientes Seguros",
+      "category": "salud-laboral",
+      "categoryLabel": "Salud Laboral",
+      "date": "30 Mayo, 2026",
+      "readTime": "6 min de lectura",
+      "summary": "La vigilancia de la salud en ocupaciones de alto riesgo ayuda a detectar precozmente enfermedades ocupacionales, equilibrando el bienestar y la privacidad del trabajador.",
+      "image": "images/health_surveillance.png",
+      "content": "<p>La salud en el lugar de trabajo es un aspecto crucial para el bienestar de los empleados y el rendimiento general de una empresa. En ocupaciones de alto riesgo (construcción, minería, sector sanitario o industria química), la vigilancia de la salud se convierte en una herramienta preventiva esencial.</p>\n      \n      <h3>Detección Precoz en Ocupaciones de Riesgo</h3>\n      <p>El monitoreo médico regular permite identificar tempranamente efectos nocivos derivados de la exposición a factores físicos (ruido, vibraciones), químicos (polvos, gases) y ergonómicos. Detectar precozmente alteraciones en la audición, la función pulmonar o signos de fatiga musculoesquelética evita daños crónicos e irreversibles en la salud de los trabajadores.</p>\n      \n      <h3>Equilibrio entre Vigilancia y Privacidad</h3>\n      <p>Un aspecto crítico es el respeto a los derechos individuales del trabajador. Todo programa de vigilancia epidemiológica debe cumplir con:</p>\n      <ul>\n        <li><strong>Consentimiento Informado:</strong> El trabajador debe conocer y aprobar las pruebas médicas.</li>\n        <li><strong>Confidencialidad Médica:</strong> Los expedientes clínicos están protegidos y solo se entregan aptitudes generales a la administración.</li>\n        <li><strong>Transparencia:</strong> Fomentar la participación activa de los trabajadores para construir confianza mutua.</li>\n      </ul>\n      <p>Invertir en vigilancia de la salud es un imperativo ético y una estrategia inteligente para promover la sostenibilidad corporativa.</p>"
+    },
+    {
+      "id": 7,
+      "title": "Confidencialidad en Evaluaciones Médicas Ocupacionales",
+      "category": "salud-laboral",
+      "categoryLabel": "Salud Laboral",
+      "date": "25 Mayo, 2026",
+      "readTime": "5 min de lectura",
+      "summary": "Analizamos el marco legal y ético que protege la historia clínica de los trabajadores y los desafíos actuales en la seguridad de los registros electrónicos.",
+      "image": "images/medical_confidentiality.png",
+      "content": "<p>La confidencialidad en las evaluaciones médicas ocupacionales es un pilar fundamental para garantizar la privacidad y el bienestar de los trabajadores. Las regulaciones modernas prohíben que los empleadores tengan acceso directo al historial clínico de los colaboradores, limitando la información al concepto de aptitud ocupacional.</p>\n      \n      <h3>El Concepto de Aptitud y Restricciones</h3>\n      <p>El médico del trabajo emite un concepto técnico respecto a si existen o no restricciones para que la persona desempeñe sus labores específicas. Las pruebas complementarias de laboratorio, visiometría u otros exámenes diagnósticos se explican únicamente en términos de sus implicaciones laborales preventivas, sin publicar resultados médicos reservados o valores numéricos en los informes corporativos.</p>\n      \n      <h3>Desafíos y Seguridad de la Información</h3>\n      <p>Con la digitalización de los servicios de salud ocupacional, surgen retos cruciales para asegurar la confidencialidad:</p>\n      <ul>\n        <li><strong>Seguridad en Registros Electrónicos:</strong> Implementar encriptación de datos y controles de acceso estrictos.</li>\n        <li><strong>Capacitación al Personal:</strong> Asegurar que los profesionales de salud ocupacional y asistentes respeten rigurosamente el secreto profesional.</li>\n        <li><strong>Evitar Compartición no Autorizada:</strong> Prevenir la fuga o divulgación de información sensible a departamentos no médicos.</li>\n      </ul>\n      <p>Respetar la confidencialidad médica promueve la confianza mutua entre trabajadores y empleadores, garantizando una gestión ética de la salud laboral.</p>"
+    }
+  ]
+}
