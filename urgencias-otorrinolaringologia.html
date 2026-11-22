@@ -1,0 +1,2699 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="vitals">
+  <title>Urgencias en Otorrinolaringología — Guía de Decisión Clínica y Triaje</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces (Vitals) */
+      --background: #ffffff;
+      --surface-container-low: #f1f7f8;
+      --surface-container: #e3f1f3;
+      --surface-container-high: #d5e9ec;
+
+      /* Text */
+      --on-surface: #1b2b33;
+      --on-surface-variant: #46585f;
+
+      /* Rules */
+      --outline: #7b9198;
+      --outline-variant: #d5e3e5;
+
+      /* Accents & Semantic Clinical Roles */
+      --primary: #0f7c8a;
+      --primary-hover: #0b616c;
+      --on-primary: #ffffff;
+      --primary-container: #e3f1f3;
+      --on-primary-container: #0a5560;
+
+      /* Diagnosis: Clinical Blue */
+      --diag-blue: #145da0;
+      --diag-blue-bg: #eaf2fb;
+      --on-diag-blue: #0e4375;
+
+      /* Treatment: Emerald Green */
+      --secondary: #175332;
+      --tertiary: #1f6f43;
+      --positive: #1f6f43;
+      --positive-bg: #e8f5ee;
+      --on-positive-bg: #144d2e;
+
+      /* Red Flags & Alerts: Red / Amber */
+      --error: #b3261e;
+      --on-error: #ffffff;
+      --error-bg: #fceceb;
+      --on-error-bg: #8c1b15;
+      --warning: #b86e00;
+      --warning-bg: #fef6e7;
+      --on-warning-bg: #7a4600;
+
+      /* Data series */
+      --data-1: #0f7c8a;
+      --data-2: #1f6f43;
+      --data-3: #b86e00;
+      --data-4: #145da0;
+      --data-context: #b8c7ca;
+
+      /* Focus */
+      --focus: #0f7c8a;
+
+      /* Fonts */
+      --font-headline: 'Figtree', sans-serif;
+      --font-body: 'Atkinson Hyperlegible', sans-serif;
+      --font-label: 'Figtree', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      /* Type Scale (Dashboard) */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Shape */
+      --rounded: 0.625rem;
+      --rounded-lg: 0.875rem;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --top-bar: 6px solid var(--primary);
+      --status-bar-width: 4px;
+      --card-border: 1px solid var(--outline-variant);
+      --card-lift: 0 1px 2px rgb(27 43 51 / 0.05), 0 6px 16px rgb(27 43 51 / 0.05);
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base Reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      scroll-behavior: smooth;
+    }
+    header { position: static !important; }
+    button, input, select { font-family: inherit; }
+
+    /* Focus rings */
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Page Shell */
+    .page-shell {
+      border-top: var(--top-bar);
+      min-height: 100vh;
+    }
+    .page-grid {
+      display: grid;
+      gap: var(--space-xl);
+      padding: var(--space-lg);
+      max-width: 1280px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Header & Quick Nav */
+    .masthead {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg) var(--space-xl);
+      box-shadow: var(--card-lift);
+      display: grid;
+      gap: var(--space-md);
+    }
+    .masthead-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+    }
+    .kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--on-primary-container);
+      margin: 0 0 var(--space-xs) 0;
+    }
+    .title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--display-size);
+      letter-spacing: -0.015em;
+      line-height: 1.08;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .lede {
+      font-size: var(--subhead-size);
+      line-height: 1.55;
+      color: var(--on-surface-variant);
+      max-width: 65ch;
+      margin: var(--space-sm) 0 0 0;
+    }
+
+    .progress-pill {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-sm) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      min-width: 210px;
+    }
+    .progress-pill-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+    .progress-pill-val {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.15rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--primary);
+    }
+    .progress-track {
+      height: 6px;
+      background: var(--outline-variant);
+      border-radius: var(--rounded-full);
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--tertiary);
+      transition: width var(--dur-short) var(--ease-out);
+    }
+
+    /* Section Jump Nav */
+    .quick-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--outline-variant);
+    }
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline-variant);
+      background: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .nav-link:hover {
+      background: var(--surface-container-low);
+      border-color: var(--primary);
+    }
+    .nav-link-alert {
+      border-color: var(--error);
+      color: var(--on-error-bg);
+      background: var(--error-bg);
+    }
+    .nav-link-alert:hover {
+      background: var(--surface-container);
+    }
+
+    /* Legend strip */
+    .semantic-legend {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-md);
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: var(--rounded-full);
+      display: inline-block;
+    }
+    .dot-alert { background: var(--error); }
+    .dot-warn { background: var(--warning); }
+    .dot-diag { background: var(--diag-blue); }
+    .dot-treat { background: var(--tertiary); }
+
+    /* Section Headers */
+    .section-block {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+    }
+    .section-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--headline-size);
+      letter-spacing: -0.015em;
+      line-height: 1.15;
+      margin: 0;
+      color: var(--on-surface);
+    }
+    .section-subtitle {
+      margin: var(--space-xs) 0 0 0;
+      color: var(--on-surface-variant);
+      max-width: 68ch;
+      font-size: 0.95rem;
+    }
+
+    /* Chips & Badges */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded-full);
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .chip-alert {
+      background: var(--error-bg);
+      color: var(--on-error-bg);
+    }
+    .chip-warn {
+      background: var(--warning-bg);
+      color: var(--on-warning-bg);
+    }
+    .chip-diag {
+      background: var(--diag-blue-bg);
+      color: var(--on-diag-blue);
+    }
+    .chip-treat {
+      background: var(--positive-bg);
+      color: var(--on-positive-bg);
+    }
+    .chip-info {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .chip-updated {
+      background: var(--primary);
+      color: var(--on-primary);
+      font-family: var(--font-mono);
+      font-size: 0.6875rem;
+      letter-spacing: 0.03em;
+    }
+
+    /* Cards & Status Accent Bars (Vitals Treatment 1) */
+    .status-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      box-shadow: var(--card-lift);
+      display: grid;
+      gap: var(--space-sm);
+      align-content: start;
+    }
+    .status-card[data-status="alert"] { border-left-color: var(--error); }
+    .status-card[data-status="warn"]  { border-left-color: var(--warning); }
+    .status-card[data-status="diag"]  { border-left-color: var(--diag-blue); }
+    .status-card[data-status="treat"] { border-left-color: var(--tertiary); }
+
+    /* Grids */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .redflag-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .kpi-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+    .kpi-val {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.5rem;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+      color: var(--on-surface);
+    }
+    .kpi-caption {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+    .kpi-caption-alert { color: var(--on-error-bg); font-weight: 700; }
+    .kpi-caption-warn { color: var(--on-warning-bg); font-weight: 700; }
+    .kpi-caption-treat { color: var(--on-positive-bg); font-weight: 700; }
+
+    /* Triage Filter Strip */
+    .triage-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border: 1px solid var(--primary);
+      background: var(--background);
+      color: var(--primary);
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+    .btn:hover {
+      background: var(--surface-container-low);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      border-color: var(--primary-hover);
+    }
+    .btn-ghost {
+      border-color: var(--outline-variant);
+      color: var(--on-surface);
+      background: var(--background);
+    }
+    .btn-ghost:hover {
+      background: var(--surface-container);
+    }
+    .btn-sm {
+      min-height: 38px;
+      padding: var(--space-xs) var(--space-sm);
+      font-size: 0.8125rem;
+    }
+    .btn[aria-pressed="true"] {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+    .btn-alert[aria-pressed="true"] {
+      background: var(--error);
+      color: var(--on-error);
+      border-color: var(--error);
+    }
+
+    /* Card Head & Content Blocks */
+    .card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+    .card-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.125rem;
+      line-height: 1.25;
+      margin: 0;
+      color: var(--on-surface);
+    }
+    .card-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      align-items: center;
+    }
+    .time-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+
+    /* Callout boxes inside cards */
+    .clinical-box {
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.9rem;
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .clinical-box-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .box-alert {
+      background: var(--error-bg);
+      color: var(--on-error-bg);
+      border-left: 3px solid var(--error);
+    }
+    .box-warn {
+      background: var(--warning-bg);
+      color: var(--on-warning-bg);
+      border-left: 3px solid var(--warning);
+    }
+    .box-diag {
+      background: var(--diag-blue-bg);
+      color: var(--on-diag-blue);
+      border-left: 3px solid var(--diag-blue);
+    }
+    .box-treat {
+      background: var(--positive-bg);
+      color: var(--on-positive-bg);
+      border-left: 3px solid var(--tertiary);
+    }
+
+    .clinical-list {
+      margin: 0;
+      padding-left: var(--space-md);
+      display: grid;
+      gap: var(--space-xs);
+    }
+    .clinical-list li {
+      padding-left: var(--space-xs);
+    }
+
+    /* Module Tabs */
+    .panel-shell {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--card-lift);
+      display: grid;
+      gap: var(--space-lg);
+    }
+    .tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-sm);
+    }
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: transparent;
+      border: 1px solid transparent;
+      border-bottom: 3px solid transparent;
+      border-radius: var(--rounded) var(--rounded) 0 0;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      transition: color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+    .tab-btn:hover {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+    .tab-btn[aria-selected="true"] {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: var(--surface-container-low);
+    }
+
+    /* Search & Inputs */
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      align-items: end;
+    }
+    .field-group {
+      display: grid;
+      gap: var(--space-xs);
+      flex: 1 1 240px;
+    }
+    .field-label {
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+    .field-input, .field-select {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      background: var(--background);
+      color: var(--on-surface);
+      font-size: 0.9375rem;
+      width: 100%;
+    }
+    .field-select {
+      padding-right: var(--space-xl);
+    }
+    .field-input:focus, .field-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-container);
+      outline: none;
+    }
+
+    /* Module Cards */
+    .module-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+    .module-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+      align-content: start;
+    }
+    .module-card[data-severity="critical"] { border-left-color: var(--error); }
+    .module-card[data-severity="urgent"]   { border-left-color: var(--warning); }
+
+    .module-card-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      padding-top: var(--space-sm);
+      border-top: 1px solid var(--outline-variant);
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+    }
+    .source-trace {
+      font-family: var(--font-label);
+      font-size: 0.78rem;
+      color: var(--on-surface-variant);
+      background: var(--surface-container-low);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border-left: 3px solid var(--outline);
+    }
+
+    /* Interactive Decision Algorithms */
+    .algo-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .algo-step-box {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+    }
+    .algo-step-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--on-primary-container);
+      background: var(--primary-container);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      width: fit-content;
+    }
+    .algo-question {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin: 0;
+      color: var(--on-surface);
+    }
+    .algo-options {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .algo-opt-btn {
+      text-align: left;
+      min-height: 48px;
+      padding: var(--space-md);
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline);
+      background: var(--background);
+      color: var(--on-surface);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .algo-opt-btn:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+    }
+    .algo-trail {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+    }
+    .trail-item {
+      border-left: 3px solid var(--primary);
+      padding-left: var(--space-md);
+      display: grid;
+      gap: 2px;
+    }
+    .trail-step-name {
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--on-surface-variant);
+    }
+    .trail-choice {
+      font-weight: 600;
+      color: var(--on-surface);
+      font-size: 0.9rem;
+    }
+
+    /* HINTS Comparison Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      background: var(--background);
+    }
+    table.clinical-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    table.clinical-table th {
+      background: var(--surface-container-low);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface-variant);
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 2px solid var(--outline-variant);
+      white-space: nowrap;
+    }
+    table.clinical-table td {
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+    }
+    table.clinical-table tbody tr:hover {
+      background: var(--surface-container-low);
+    }
+    .mono-dose {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--on-surface);
+    }
+
+    /* Case Simulator */
+    .case-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .case-sidebar {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .case-nav-btn {
+      text-align: left;
+      min-height: 48px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline-variant);
+      background: var(--background);
+      color: var(--on-surface);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-sm);
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    .case-nav-btn:hover {
+      background: var(--surface-container-low);
+      border-color: var(--primary);
+    }
+    .case-nav-btn[aria-current="true"] {
+      background: var(--primary-container);
+      border-color: var(--primary);
+      color: var(--on-primary-container);
+    }
+    .case-main {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: grid;
+      gap: var(--space-md);
+    }
+    .case-vignette {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--diag-blue);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    .quiz-options {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .quiz-opt-btn {
+      text-align: left;
+      min-height: 48px;
+      padding: var(--space-md);
+      border-radius: var(--rounded);
+      border: 1px solid var(--outline);
+      background: var(--background);
+      color: var(--on-surface);
+      font-size: 0.9375rem;
+      cursor: pointer;
+      display: grid;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .quiz-opt-btn:hover:not(:disabled) {
+      background: var(--surface-container);
+      border-color: var(--primary);
+    }
+    .quiz-opt-btn.is-correct {
+      background: var(--positive-bg);
+      border-color: var(--tertiary);
+      color: var(--on-positive-bg);
+    }
+    .quiz-opt-btn.is-wrong {
+      background: var(--error-bg);
+      border-color: var(--error);
+      color: var(--on-error-bg);
+    }
+    .quiz-feedback {
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      display: grid;
+      gap: var(--space-sm);
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+    }
+    .quiz-feedback[data-outcome="correct"] { border-left-color: var(--tertiary); }
+    .quiz-feedback[data-outcome="wrong"]   { border-left-color: var(--error); }
+
+    .empty-state {
+      background: var(--surface-container-low);
+      border: 1px dashed var(--outline);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      text-align: center;
+      display: grid;
+      gap: var(--space-sm);
+      justify-items: center;
+    }
+
+    .footer-note {
+      border-top: 1px solid var(--outline-variant);
+      padding-top: var(--space-lg);
+      color: var(--on-surface-variant);
+      font-size: 0.85rem;
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 900px) {
+      .algo-layout, .case-shell {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-sm);
+        gap: var(--space-lg);
+      }
+      .masthead, .panel-shell, .module-card {
+        padding: var(--space-md);
+      }
+      .triage-controls, .quick-nav {
+        gap: var(--space-xs);
+      }
+    }
+
+    .portfolio-back-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .portfolio-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      color: var(--on-primary-container);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .portfolio-back-link:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .portfolio-author-tag {
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <main class="page-grid">
+
+      <!-- HEADER / MASTHEAD -->
+      <header class="masthead">
+        <div class="portfolio-back-bar">
+          <a class="portfolio-back-link" href="index.html">
+            <i data-lucide="arrow-left" width="16" height="16" aria-hidden="true"></i>
+            Volver al Portafolio
+          </a>
+          <span class="portfolio-author-tag">DIEGO GOMEZ | Médico de Familia &amp; SST</span>
+        </div>
+        <div class="masthead-top">
+          <div>
+            <p class="kicker">Guía de Decisión Clínica y Triaje en Guardia</p>
+            <h1 class="title">Urgencias en Otorrinolaringología</h1>
+            <p class="lede">
+              Herramienta práctica orientada al reconocimiento inmediato de banderas rojas tiempo-dependientes, algoritmos paso a paso, posología crítica y entrenamiento con casos clínicos basados en guías actualizadas (2019–2026).
+            </p>
+          </div>
+          <div class="progress-pill" aria-live="polite">
+            <span class="progress-pill-label">Progreso de Estudio</span>
+            <span class="progress-pill-val" id="global-progress-text">0 / 6 casos · 0%</span>
+            <div class="progress-track">
+              <div class="progress-fill" id="global-progress-bar"></div>
+            </div>
+            <span class="kpi-caption" id="modules-reviewed-text">0 módulos revisados</span>
+          </div>
+        </div>
+
+        <div class="semantic-legend" aria-label="Código de colores semántico">
+          <span class="legend-item"><span class="legend-dot dot-alert"></span> Emergencia Vital / Bandera Roja</span>
+          <span class="legend-item"><span class="legend-dot dot-warn"></span> Urgencia Prioritaria / Precaución</span>
+          <span class="legend-item"><span class="legend-dot dot-diag"></span> Diagnóstico y Exploración</span>
+          <span class="legend-item"><span class="legend-dot dot-treat"></span> Tratamiento y Conducta</span>
+        </div>
+
+        <nav class="quick-nav" aria-label="Navegación principal">
+          <a href="#sec-triage" class="nav-link nav-link-alert"><i data-lucide="siren" width="16" height="16" aria-hidden="true"></i> Triaje y Banderas Rojas</a>
+          <a href="#sec-modules" class="nav-link"><i data-lucide="stethoscope" width="16" height="16" aria-hidden="true"></i> Módulos Temáticos</a>
+          <a href="#sec-algorithms" class="nav-link"><i data-lucide="git-branch" width="16" height="16" aria-hidden="true"></i> Algoritmos Interactivos</a>
+          <a href="#sec-pharma" class="nav-link"><i data-lucide="pill" width="16" height="16" aria-hidden="true"></i> Vademécum y Pautas</a>
+          <a href="#sec-cases" class="nav-link"><i data-lucide="clipboard-check" width="16" height="16" aria-hidden="true"></i> Casos Clínicos</a>
+        </nav>
+      </header>
+
+      <!-- SECTION 1: PANEL DE INICIO Y TRIAJE RÁPIDO -->
+      <section id="sec-triage" class="section-block" aria-labelledby="triage-heading">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" id="triage-heading">1. Panel de Inicio y Triaje Rápido: Banderas Rojas</h2>
+            <p class="section-subtitle">
+              Estratificación de urgencias ORL tiempo-dependientes. Diferencia de inmediato cuadros con riesgo vital inminente (Nivel I) de urgencias sensoriales o reconstructivas prioritarias (Nivel II–III).
+            </p>
+          </div>
+          <div class="triage-controls" role="group" aria-label="Filtrar por nivel de triaje">
+            <button type="button" class="btn btn-sm" id="triage-filter-all" aria-pressed="true" onclick="setTriageFilter('all')">Todos (5 críticos)</button>
+            <button type="button" class="btn btn-sm btn-alert" id="triage-filter-n1" aria-pressed="false" onclick="setTriageFilter('nivel1')">Nivel I (&lt;15 min)</button>
+            <button type="button" class="btn btn-sm" id="triage-filter-n2" aria-pressed="false" onclick="setTriageFilter('nivel2')">Nivel II (Urgencia Prioritaria)</button>
+          </div>
+        </div>
+
+        <!-- Top KPI Row -->
+        <div class="kpi-grid">
+          <div class="status-card" data-status="alert">
+            <span class="kpi-label">Nivel I · Emergencia Vital</span>
+            <span class="kpi-val">&lt; 15 min</span>
+            <p class="kpi-caption kpi-caption-alert">Vía aérea (epiglotitis, trauma laríngeo, Angina de Ludwig), epistaxis inestable e ictus fosa posterior.</p>
+          </div>
+          <div class="status-card" data-status="warn">
+            <span class="kpi-label">Nivel II · Urgencia Prioritaria</span>
+            <span class="kpi-val">&lt; 1–2 horas</span>
+            <p class="kpi-caption kpi-caption-warn">Hematoma septal / otohematoma (necrosis cartilaginosa), abscesos con trismus, pilas de botón.</p>
+          </div>
+          <div class="status-card" data-status="diag">
+            <span class="kpi-label">Ventana Sensorial Auditiva</span>
+            <span class="kpi-val">&lt; 72 h / &lt; 14 d</span>
+            <p class="kpi-caption">Hipoacusia neurosensorial súbita: audiometría &lt;24 h y corticoides sistémicos precoces (&lt;14 días).</p>
+          </div>
+          <div class="status-card" data-status="treat">
+            <span class="kpi-label">Regla de Oro Quirúrgica</span>
+            <span class="kpi-val">0 Suturas</span>
+            <p class="kpi-caption kpi-caption-treat">Jamás suturar cartílago nasal o auricular ni usar depresor lingual ante sospecha de epiglotitis.</p>
+          </div>
+        </div>
+
+        <!-- Red Flag Cards -->
+        <div class="redflag-grid" id="redflag-cards-container"></div>
+      </section>
+
+      <!-- SECTION 2: MÓDULOS TEMÁTICOS INTERACTIVOS -->
+      <section id="sec-modules" class="section-block" aria-labelledby="modules-heading">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" id="modules-heading">2. Módulos Temáticos Interactivos</h2>
+            <p class="section-subtitle">
+              Revisión clínica estructurada por regiones anatómicas con diagnóstico (azul), conducta terapéutica (verde esmeralda), alertas críticas (rojo/ámbar) y etiqueta <strong>[Actualizado]</strong> donde las guías 2019–2026 modifican pautas clásicas.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel-shell">
+          <div class="tab-bar" role="tablist" aria-label="Áreas de urgencias ORL">
+            <button type="button" class="tab-btn" role="tab" id="tab-otologia" aria-selected="true" onclick="setActiveModuleTab('otologia')">
+              <i data-lucide="ear" width="16" height="16" aria-hidden="true"></i> Urgencias Otológicas (6)
+            </button>
+            <button type="button" class="tab-btn" role="tab" id="tab-rinosinusal" aria-selected="false" onclick="setActiveModuleTab('rinosinusal')">
+              <i data-lucide="wind" width="16" height="16" aria-hidden="true"></i> Urgencias Rinosinusales (5)
+            </button>
+            <button type="button" class="tab-btn" role="tab" id="tab-faringolaringe" aria-selected="false" onclick="setActiveModuleTab('faringolaringe')">
+              <i data-lucide="activity" width="16" height="16" aria-hidden="true"></i> Faringolaríngeas y Cervicales (6)
+            </button>
+          </div>
+
+          <div class="filter-row">
+            <div class="field-group">
+              <label class="field-label" for="module-search-input">Filtrar patologías del módulo activo</label>
+              <input type="search" id="module-search-input" class="field-input" placeholder="Buscar por síntoma, signo o entidad (ej. HINTS, Kiesselbach, trismus…)" oninput="filterModules(this.value)">
+            </div>
+            <div class="field-group" style="flex: 0 1 230px;">
+              <label class="field-label" for="module-severity-select">Prioridad clínica</label>
+              <select id="module-severity-select" class="field-select" onchange="setModuleSeverityFilter(this.value)">
+                <option value="all">Todas las prioridades</option>
+                <option value="critical">Solo Emergencias / Críticas</option>
+                <option value="urgent">Urgencias Prioritarias</option>
+                <option value="updated">Solo con [Actualizado] 2019–2026</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="module-grid" id="modules-container"></div>
+          <div class="source-trace" id="module-source-trace"></div>
+        </div>
+      </section>
+
+      <!-- SECTION 3: ALGORITMOS DE DECISIÓN INTERACTIVOS -->
+      <section id="sec-algorithms" class="section-block" aria-labelledby="algos-heading">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" id="algos-heading">3. Algoritmos de Decisión Interactivos</h2>
+            <p class="section-subtitle">
+              Selecciona hallazgos clínicos paso a paso para definir la conducta óptima, evitar pruebas innecesarias y detectar criterios de derivación quirúrgica o RM urgente.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel-shell">
+          <div class="tab-bar" role="tablist" aria-label="Selector de algoritmo clínico">
+            <button type="button" class="tab-btn" role="tab" id="algo-tab-epistaxis" aria-selected="true" onclick="selectAlgorithm('epistaxis')">
+              <i data-lucide="droplet" width="16" height="16" aria-hidden="true"></i> Algoritmo Escalonado de Epistaxis
+            </button>
+            <button type="button" class="tab-btn" role="tab" id="algo-tab-vertigo" aria-selected="false" onclick="selectAlgorithm('vertigo')">
+              <i data-lucide="compass" width="16" height="16" aria-hidden="true"></i> Vértigo Agudo: Protocolo HINTS / TiTrATE
+            </button>
+          </div>
+
+          <div class="algo-layout">
+            <div class="algo-step-box" id="algo-interactive-node"></div>
+            <div class="algo-trail" id="algo-trail-panel"></div>
+          </div>
+
+          <!-- Embedded Reference Table for HINTS-plus when on Vertigo or always helpful -->
+          <div id="hints-reference-box" class="table-wrap">
+            <table class="clinical-table" aria-label="Interpretación del protocolo HINTS-plus en Síndrome Vestibular Agudo">
+              <thead>
+                <tr>
+                  <th>Componente HINTS-plus</th>
+                  <th>Patología Periférica (ej. Neuritis vestibular)</th>
+                  <th>Patología Central (Ictus fosa posterior / AICA / PICA)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Head Impulse Test (VOR)</strong></td>
+                  <td><span class="chip chip-treat">Patológico</span> Pérdida de fijación con sacada correctora de refijación.</td>
+                  <td><span class="chip chip-alert">Normal</span> Mantiene la fijación ocular intacta (¡bandera roja en SVA!).</td>
+                </tr>
+                <tr>
+                  <td><strong>Nistagmo (Nystagmus)</strong></td>
+                  <td><span class="chip chip-treat">Unidireccional</span> Horizontal-rotatorio; no cambia de dirección al mirar a los lados.</td>
+                  <td><span class="chip chip-alert">Cambiante / Vertical</span> Cambia de dirección con la mirada o es puramente vertical/torsional.</td>
+                </tr>
+                <tr>
+                  <td><strong>Test of Skew (Alineación)</strong></td>
+                  <td><span class="chip chip-treat">Normal</span> Sin desviación vertical ni oblicua al ocluir alternamente.</td>
+                  <td><span class="chip chip-alert">Patológico</span> Desviación vertical/oblicua (<em>skew deviation</em>).</td>
+                </tr>
+                <tr>
+                  <td><strong>Audición (+plus) y Marcha</strong></td>
+                  <td>Audición conservada; marcha posible con cautela.</td>
+                  <td>Hipoacusia aguda unilateral (sospecha infarto AICA) o ataxia severa grado II–III.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 4: BUSCADOR Y TABLA RÁPIDA DE FÁRMACOS Y PAUTAS -->
+      <section id="sec-pharma" class="section-block" aria-labelledby="pharma-heading">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" id="pharma-heading">4. Buscador y Tabla Rápida de Fármacos y Pautas</h2>
+            <p class="section-subtitle">
+              Dosificaciones, vías de administración, duración y precauciones críticas en corticoterapia, antibioterapia parenteral y tópica, vasoconstrictores y sedantes vestibulares.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel-shell">
+          <div class="filter-row">
+            <div class="field-group">
+              <label class="field-label" for="pharma-search-input">Buscar fármaco, principio activo o indicación</label>
+              <input type="search" id="pharma-search-input" class="field-input" placeholder="Ej. Prednisona, Ciprofloxacino, Sulpirida, Oximetazolina, Clindamicina…" oninput="filterPharmaSearch(this.value)">
+            </div>
+            <div class="field-group" style="flex: 0 1 260px;">
+              <label class="field-label" for="pharma-cat-select">Grupo terapéutico</label>
+              <select id="pharma-cat-select" class="field-select" onchange="filterPharmaCategory(this.value)">
+                <option value="all">Todos los grupos</option>
+                <option value="corticoides">Corticoterapia (Oral / IV / Intratimpánica)</option>
+                <option value="antibioticos">Antibioterapia (Parenteral / Oral / Tópica)</option>
+                <option value="vasoconstrictores">Vasoconstrictores y Hemostasia</option>
+                <option value="vestibulares">Sedantes Vestibulares</option>
+                <option value="soporte">Analgesia y Protección Ocular</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="clinical-table" aria-label="Tabla rápida de fármacos y pautas en urgencias ORL">
+              <thead>
+                <tr>
+                  <th>Fármaco y Grupo</th>
+                  <th>Indicación Principal</th>
+                  <th>Posología, Vía y Duración</th>
+                  <th>Precauciones y Contraindicaciones</th>
+                </tr>
+              </thead>
+              <tbody id="pharma-table-body"></tbody>
+            </table>
+          </div>
+          <div id="pharma-empty-state" class="empty-state" style="display: none;">
+            <p style="margin: 0; font-weight: 700;">No hay fármacos que coincidan con la búsqueda actual.</p>
+            <button type="button" class="btn btn-sm" onclick="resetPharmaFilters()">Restablecer filtros del vademécum</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 5: SIMULADOR DE CASOS CLÍNICOS Y AUTOEVALUACIÓN -->
+      <section id="sec-cases" class="section-block" aria-labelledby="cases-heading">
+        <div class="section-header">
+          <div>
+            <h2 class="section-title" id="cases-heading">5. Simulador de Casos Clínicos y Autoevaluación</h2>
+            <p class="section-subtitle">
+              6 escenarios de guardia con toma de decisiones clínicas y retroalimentación inmediata que justifica por qué cada alternativa es correcta o incorrecta.
+            </p>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" id="reset-sim-btn" onclick="handleResetSimulation(this)">
+            <i data-lucide="rotate-ccw" width="15" height="15" aria-hidden="true"></i> Reiniciar simulador
+          </button>
+        </div>
+
+        <div class="panel-shell">
+          <div class="case-shell">
+            <aside class="case-sidebar" aria-label="Lista de casos clínicos" id="case-sidebar-list"></aside>
+            <div class="case-main" id="case-stage"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER / SOURCES TRACEABILITY -->
+      <footer class="footer-note">
+        <strong>Trazabilidad de fuentes clínicas y actualizaciones integradas:</strong>
+        <span>Protocolo de Sordera Súbita (Servicio ORL HUCA, 2017) actualizado con AAO-HNS Clinical Practice Guideline: Sudden Hearing Loss (2019) y RACGP Update (2025); Manual de Medicina de Urgencias y Emergencias (Jiménez Murillo &amp; Montero Pérez, 7.ª ed., Elsevier 2023); Guías de Manejo del Trauma Facial y Urgencias ORL (Paz &amp; González, Rev. Col. Cirugía 1996) contrastadas y actualizadas con Modern Management of Maxillofacial Trauma in the ED (World J Emerg Med, 2026); Epistaxis (AAO-HNS, 2020); Vértigo Agudo GRACE-3 (SAEM, 2023) y Guidance Paper HNO (2025); Otitis Externa Necrotizante (HNO, 2026); Parálisis Facial Periférica (Rev. Neurol. y Frontiers in Neuroscience, 2026).</span>
+      </footer>
+
+    </main>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    // =========================================================================
+    // DATA DEFINITIONS (All strings in backtick literals, no trailing commas)
+    // =========================================================================
+
+    const RED_FLAGS = [
+      {
+        id: `rf-airway`,
+        level: `nivel1`,
+        levelLabel: `Nivel I · Emergencia Vital`,
+        timeWindow: `< 15 min`,
+        title: `Compromiso Agudo de Vía Aérea Superior`,
+        entities: `Epiglotitis aguda · Trauma laríngeo · Edema glótico`,
+        alarms: [
+          `Tríada de disnea laríngea: tiraje supraesternal/intercostal, estridor inspiratorio y descenso inspiratorio de la laringe`,
+          `Postura "en trípode", sialorrea (babeo), voz "en patata caliente" o disfonía progresiva`,
+          `Enfisema subcutáneo cervical y dolor a la palpación de cartílagos tiroides/cricoides (trauma laríngeo)`
+        ],
+        action: `Asegurar vía aérea de inmediato (intubación en quirófano con videolaringoscopio/fibrobroncoscopio o cricotiroidotomía urgente si oclusión). Metilprednisolona IV + Ceftriaxona + Clindamicina en epiglotitis.`,
+        danger: `CONTRAINDICADO usar depresor lingual o laringoscopia indirecta en sospecha de epiglotitis: riesgo de espasmo laríngeo súbito y paro respiratorio.`
+      },
+      {
+        id: `rf-epistaxis`,
+        level: `nivel1`,
+        levelLabel: `Nivel I / II · Hemorragia`,
+        timeWindow: `< 15–30 min`,
+        title: `Epistaxis Incoercible o Posterior`,
+        entities: `Área de Woodruff (A. esfenopalatina) · HTA · Anticoagulados`,
+        alarms: [
+          `Sangrado profuso hacia orofaringe (escurrimiento posterior) o hematemesis por deglución hemática`,
+          `Compromiso hemodinámico: hipotensión, taquicardia, palidez o síncope`,
+          `Fracaso de compresión digital nasal con vasoconstrictor tópico tras 10 minutos`
+        ],
+        action: `Protocolo ABC, vía venosa, hemograma y coagulación. Neumotaponamiento posterior bibalonado o taponamiento clásico + ingreso ORL + antibiótico profiláctico. Si refractario: ligadura endoscópica (AEP/AEA) o embolización.`,
+        danger: `En pacientes anticoagulados o con trastornos de coagulación, priorizar taponamiento reabsorbible para evitar retraumatismo al retirar (AAO-HNS 2020).`
+      },
+      {
+        id: `rf-neck`,
+        level: `nivel1`,
+        levelLabel: `Nivel I / II · Infección Profunda`,
+        timeWindow: `< 15 min – 2 h`,
+        title: `Infecciones Cervicales Profundas y Angina de Ludwig`,
+        entities: `Angina de Ludwig · Absceso retrofaríngeo · Absceso periamigdalino`,
+        alarms: [
+          `Induración leñosa del suelo de la boca, elevación/protrusión lingual y edema cervical bilateral (Ludwig)`,
+          `Trismus intenso, disfagia absoluta, voz gangosa y desviación contralateral de la úvula`,
+          `Tortícolis, abombamiento faríngeo posterior o dolor torácico (sospecha de mediastinitis necrosante descendente)`
+        ],
+        action: `Asegurar vía aérea precoz (fibroscopio/videolaringoscopio). TAC cervical con contraste urgente. Drenaje quirúrgico + antibioterapia IV amplia (Penicilina G o Ceftriaxona + Metronidazol, o Amoxicilina-Clavulánico).`,
+        danger: `Los AINE están contraindicados en celulitis cervicales profundas: enmascaran la progresión séptica y favorecen la extensión necrotizante al mediastino.`
+      },
+      {
+        id: `rf-vertigo`,
+        level: `nivel1`,
+        levelLabel: `Nivel I si Central · Neuro-otología`,
+        timeWindow: `Inmediato (< 30 min)`,
+        title: `Síndrome Vestibular Agudo (HINTS Central)`,
+        entities: `Ictus de fosa posterior (AICA / PICA / Troncoencéfalo)`,
+        alarms: [
+          `Head Impulse Test (VOR) NORMAL en paciente con vértigo continuo y nistagmo`,
+          `Nistagmo que cambia de dirección con la mirada (bidireccional) o puramente vertical`,
+          `Test of Skew patológico, hipoacusia aguda unilateral (AICA) o ataxia de marcha grado II–III`
+        ],
+        action: `Activar código ictus / valoración neurológica urgente y RM cerebral urgente (GRACE-3 2023 y HNO 2025). NO descartar ictus con TC craneal simple (baja sensibilidad en fosa posterior).`,
+        danger: `Un solo hallazgo central en HINTS-plus obliga a descartar infarto o hemorragia cerebelosa/troncoencefálica antes de dar el alta.`
+      },
+      {
+        id: `rf-ssnhl`,
+        level: `nivel2`,
+        levelLabel: `Nivel II · Urgencia Sensorial`,
+        timeWindow: `Audiometría < 24 h`,
+        title: `Hipoacusia Neurosensorial Súbita (Sordera Brusca)`,
+        entities: `Pérdida ≥ 30 dB en ≥ 3 frecuencias consecutivas en < 72 h`,
+        alarms: [
+          `Pérdida auditiva unilateral brusca o sensación súbita de taponamiento ótico con otoscopia normal`,
+          `Weber lateralizado al oído sano y Rinne positivo patológico en ambos oídos`,
+          `Presencia de vértigo concomitante, afectación bilateral u oído único (criterio de ingreso)`
+        ],
+        action: `Corticoterapia sistémica precoz (Prednisona/Metilprednisolona 1 mg/kg/día VO o IV) dentro de los primeros 14 días (idealmente <72 h) + IBP. RM de CAI y ángulo pontocerebeloso.`,
+        danger: `El retraso terapéutico >14–28 días compromete la recuperación coclear. Evitar TC craneal y analíticas rutinarias no dirigidas (AAO-HNS 2019 / RACGP 2025).`
+      }
+    ];
+
+    const MODULES_DATA = {
+      otologia: {
+        sources: `Fuentes del módulo: Protocolo Sordera Súbita HUCA (2017) · AAO-HNS Sudden Hearing Loss (2019) · RACGP (2025) · GRACE-3 (2023) & HNO Vertigo (2025) · HNO Necrotizing Otitis Externa (2026) · Urgencias y Emergencias (Jiménez Murillo, 2023) · Guías Trauma Facial y ORL (Paz & González, 1996 / World J Emerg Med 2026).`,
+        items: [
+          {
+            id: `oto-oem`,
+            title: `Otitis Externa Maligna (Necrotizante)`,
+            severity: `critical`,
+            severityLabel: `Emergencia / Osteomielitis`,
+            updated: true,
+            updatedText: `[Actualizado 2026]`,
+            diagnosis: `Anciano, diabético o inmunodeprimido con otalgia profunda nocturna refractaria, otorrea crónica verdosa y tejido de granulación en el suelo del conducto auditivo externo. Vigilar parálisis de pares craneales (especialmente VII par). Agente clásico: Pseudomonas aeruginosa.`,
+            treatment: `Ciprofloxacino a dosis altas (500–750 mg/12 h VO o 400 mg/12 h IV) durante varias semanas + gotas óticas antipseudomónicas y analgesia potente. Ingreso hospitalario y TC de peñascos/mastoides.`,
+            alert: `Actualización HNO 2026: considerar etiologías fúngicas emergentes ante mala respuesta y utilizar 18F-FDG-PET junto a TC/RM para el seguimiento de la osteomielitis de base de cráneo.`
+          },
+          {
+            id: `oto-ssnhl`,
+            title: `Hipoacusia Neurosensorial Súbita`,
+            severity: `urgent`,
+            severityLabel: `Urgencia Sensorial`,
+            updated: true,
+            updatedText: `[Actualizado 2019–2025]`,
+            diagnosis: `Caída ≥30 dB en ≥3 frecuencias consecutivas en <72 h. Otoscopia estrictamente normal. Acumetría: Rinne positivo patológico bilateral y Weber lateralizado al oído sano. Audiometría tonal urgente (<24 h) y RM de oído interno/CAI obligatoria.`,
+            treatment: `Corticoterapia precoz (<14 días, óptimo <72 h): Prednisona o Metilprednisolona 1 mg/kg/día (máx. 60–100 mg) VO 7–14 días con pauta descendente + IBP. Ingreso con Metilprednisolona IV si oído único, bilateral o vértigo severo. Rescate intratimpánico (Dexametasona/Metilprednisolona) si no hay mejoría a los 10–14 días (ventana 2–6 semanas).`,
+            alert: `Actualización AAO-HNS 2019 y RACGP 2025: NO solicitar TC craneal ni analíticas rutinarias; priorizar RM de CAI y audiometría temprana.`
+          },
+          {
+            id: `oto-vertigo`,
+            title: `Síndrome Vestibular Agudo (Periférico vs. Central)`,
+            severity: `critical`,
+            severityLabel: `Descartar Ictus Fosa Posterior`,
+            updated: true,
+            updatedText: `[Actualizado 2023–2025]`,
+            diagnosis: `Enfoque TiTrATE (tiempo y desencadenantes). En síndrome vestibular agudo continuo, aplicar HINTS-plus (Head Impulse, Nystagmus, Test of Skew + Audición) y evaluar marcha/ataxia. Un Head Impulse normal, nistagmo cambiante/vertical, Skew positivo, hipoacusia aguda o ataxia grado II–III sugieren ictus (AICA/PICA).`,
+            treatment: `Si sospecha central: RM cerebral urgente e interconsulta a Neurología. Si origen periférico (neuritis vestibular): reposo y sedantes vestibulares (Sulpirida 100 mg/8–12 h máx. 48 h). Si VPPB (episódico desencadenado): maniobras de Dix-Hallpike y reposición (Epley, Semont-plus, Gufoni).`,
+            alert: `Actualización GRACE-3 (2023) y HNO (2025): rechazar la TC craneal rutinaria en mareo/vértigo sin trauma por su bajísima sensibilidad en fosa posterior; limitar sedantes vestibulares a ≤48 h para no frenar la compensación.`
+          },
+          {
+            id: `oto-mastoiditis`,
+            title: `Otitis Media Aguda Complicada y Mastoiditis`,
+            severity: `urgent`,
+            severityLabel: `Urgencia Infecciosa`,
+            updated: false,
+            updatedText: ``,
+            diagnosis: `Otalgia intensa, hipoacusia, fiebre y otoscopia con membrana timpánica abombada, eritematosa o a tensión (o perforación con otorrea). En mastoiditis: dolor retroauricular, borramiento del surco y desplazamiento del pabellón hacia delante y abajo.`,
+            treatment: `Amoxicilina oral 10 días (o Amoxicilina-Clavulánico / Ceftriaxona IV si mastoiditis) + analgésicos + oximetazolina gotas nasales 4 gotas/6 h por 4 días. Si membrana a tensión + otalgia intensa o complicación mastoidea/facial: valoración urgente ORL para miringotomía/paracentesis o drenaje.`,
+            alert: `Si aparece parálisis facial secundaria a otitis aguda, requiere antibiótico IV y paracentesis; en colesteatoma u otitis crónica la descompresión quirúrgica es urgente.`
+          },
+          {
+            id: `oto-ce`,
+            title: `Cuerpos Extraños en Conducto Auditivo Externo`,
+            severity: `urgent`,
+            severityLabel: `Urgencia Local / Pila = Crítico`,
+            updated: false,
+            updatedText: ``,
+            diagnosis: `Sensación de oído lleno, otalgia que aumenta al masticar, hipoacusia u otorrea si sobreinfección. Confirmación mediante otoscopia directa.`,
+            treatment: `Inanimados: lavado suave con agua/suero a 37 °C hacia pared posterosuperior o extracción mecánica con cureta/gancho romo por ORL. Animados (insectos): matar e inmovilizar primero instilando aceite, alcohol o gotas anestésicas antes de extraer. Si laceración por intentos previos: gotas antibióticas 4 días + amoxicilina 10 días y diferir hasta ceder el edema.`,
+            alert: `Contraindicado lavar si hay perforación timpánica, semillas/legumbres (se hidratan y expanden) o PILA DE BOTÓN (urgencia de extracción inmediata por necrosis cáustica). Máximo 2 intentos en Urgencias.`
+          },
+          {
+            id: `oto-trauma`,
+            title: `Otohematoma, Heridas Auriculares y Otorragia en TCE`,
+            severity: `urgent`,
+            severityLabel: `Riesgo Necrosis / Base Cráneo`,
+            updated: false,
+            updatedText: ``,
+            diagnosis: `Otohematoma: colección hemática subpericóndrica violácea y fluctuante con pérdida de relieves cartilaginosos. Otorragia / hemotímpano (tímpano violáceo abombado) tras TCE: sospechar fractura de peñasco o base de cráneo.`,
+            treatment: `Otohematoma: drenaje quirúrgico inmediato + vendaje compresivo + Amoxicilina/Clavulánico 7–10 días. Exposición de cartílago: cubrir con compresa húmeda en suero salino + quinolona (ciprofloxacino >18 a) o sulbactam-ampicilina y reconstrucción ORL. Hemotímpano: reposo relativo, Amoxicilina 500 mg/8 h x 10 d + oximetazolina.`,
+            alert: `NUNCA suturar cartílago directamente (riesgo de condritis y "oreja en coliflor"). En otorragia por TCE: NO hacer otoscopia forzada, NO lavar y NO aplicar gotas óticas.`
+          }
+        ]
+      },
+      rinosinusal: {
+        sources: `Fuentes del módulo: AAO-HNS Clinical Practice Guideline: Nosebleed/Epistaxis (2020) · Modern Management of Maxillofacial Trauma in the ED (World J Emerg Med, 2026) · Urgencias ORL (Jiménez Murillo, 2023) · Guías de Manejo del Trauma Facial (Paz & González, 1996).`,
+        items: [
+          {
+            id: `rino-epistaxis`,
+            title: `Epistaxis Anterior y Posterior`,
+            severity: `critical`,
+            severityLabel: `Escalonada · Riesgo Hemodinámico`,
+            updated: true,
+            updatedText: `[Actualizado 2020]`,
+            diagnosis: `90% anteriores (plexo de Kiesselbach, sangrado por narinas). Posteriores (área de Woodruff / arteria esfenopalatina): sangrado copioso hacia orofaringe, asociadas a HTA en >60 años o anticoagulación. Valorar protocolo ABC, limpiar coágulos, rinoscopia anterior con luz frontal y faringoscopia.`,
+            treatment: `1) Compresión digital alar 5–10 min con algodón + oximetazolina y lidocaína 2% con adrenalina. 2) Cauterización unilateral con nitrato de plata si punto visible. 3) Taponamiento anterior (Merocel, Rapid Rhino o gasa orillada). 4) Si posterior/refractaria: neumotaponamiento bibalonado (10 mL distal / 30 mL proximal) o taponamiento posterior clásico + ingreso + Amoxicilina-Clavulánico. 5) Refractario: ligadura endoscópica (AEP/AEA) o embolización.`,
+            alert: `Actualización AAO-HNS 2020: utilizar materiales de taponamiento reabsorbibles en pacientes anticoagulados o con diátesis hemorrágica y valorar endoscopia nasal precoz.`
+          },
+          {
+            id: `rino-septal`,
+            title: `Traumatismo Nasal y Hematoma Septal`,
+            severity: `urgent`,
+            severityLabel: `Drenaje Inmediato`,
+            updated: false,
+            updatedText: ``,
+            diagnosis: `Deformidad (laterorrinia), crepitación, epistaxis y obstrucción nasal bilateral tras trauma. El diagnóstico es clínico: no solicitar Rx de huesos propios de rutina salvo en niños o implicaciones médico-legales. La rinoscopia anterior obligada busca abombamiento septal bilateral rojo-violáceo (hematoma septal).`,
+            treatment: `Sin hematoma: hielo local, analgesia (evitar AINEs por riesgo hemorrágico) y control ORL a los 5 días. Con hematoma septal: incisión y drenaje quirúrgico inmediato + colocación de dren/placas septales + taponamiento anterior + Amoxicilina 500 mg/8 h (8–10 días) y descongestionante.`,
+            alert: `Un hematoma septal no drenado produce necrosis avascular del cartílago en horas, absceso septal y deformidad permanente en "nariz en silla de montar". En heridas nasales, jamás suturar el cartílago.`
+          },
+          {
+            id: `rino-sinusitis`,
+            title: `Sinusitis Aguda Complicada (Orbitaria / Intracraneal)`,
+            severity: `critical`,
+            severityLabel: `Riesgo Visual / SNC`,
+            updated: false,
+            updatedText: ``,
+            diagnosis: `Rinorrea, obstrucción nasal, cefalea y fiebre con signos de alarma orbitarios o neurológicos: edema/equimosis palpebral progresivo, asimetría interpupilar, proptosis, limitación de movimientos extraoculares, diplopía o alteración de la agudeza visual.`,
+            treatment: `TAC de senos paranasales y órbitas con contraste urgente. Ingreso hospitalario con antibioterapia parenteral de amplio espectro (ej. Cefalosporina de 3.ª gen o Oxacilina/Cloranfenicol o Amoxicilina-Clavulánico IV según foco) + vasoconstrictor nasal tópico y valoración conjunta por ORL, Oftalmología y Neurocirugía.`,
+            alert: `Cualquier restricción de motilidad ocular, diplopía o déficit visual en una rinosinusitis aguda es una emergencia oftalmológica-ORL que exige imagen y descompresión si hay absceso.`
+          },
+          {
+            id: `rino-maxilofacial`,
+            title: `Traumatismo Facial Grave (Le Fort y Órbita)`,
+            severity: `critical`,
+            severityLabel: `Vía Aérea / Órbita < 2 h`,
+            updated: true,
+            updatedText: `[Actualizado 2026]`,
+            diagnosis: `Movilidad del tercio medio (Le Fort I, II, III; el III se asocia a TCE grave), mala oclusión dental, escalones óseos infraorbitarios/malares, hipoestesia del nervio infraorbitario, trismus, enoftalmos o diplopía. TAC facial con ventana ósea.`,
+            treatment: `Posición semisentada, estabilización de vía aérea (CONTRAINDICADA intubación nasotraqueal por riesgo de falsa vía intracraneal). En síndrome compartimental orbitario: cantotomía/descompresión urgente (<2 h). Valoración por ORL/Maxilofacial y Neurocirugía.`,
+            alert: `Actualización World J Emerg Med 2026: sustituye pautas de 1996 integrando videolaringoscopia / intubación despierto con fibroscopio en vía aérea difícil y restringiendo la profilaxis antibiótica en fracturas faciales a ≤24 horas.`
+          },
+          {
+            id: `rino-ce`,
+            title: `Cuerpos Extraños en Fosas Nasales`,
+            severity: `urgent`,
+            severityLabel: `Pila de Botón = Emergencia`,
+            updated: false,
+            updatedText: ``,
+            diagnosis: `Típico en edad pediátrica. Produce obstrucción nasal unilateral y, tras varios días, rinorrea purulenta unilateral fétida (signo patognomónico) o epistaxis unilateral recurrente. Rinoscopia anterior previa aplicación de vasoconstrictor (oximetazolina).`,
+            treatment: `Extracción bajo visión directa con luz frontal utilizando cureta nasal, sonda roma acodada o pinza tipo pico-pato (evitar pinzas que puedan empujar el objeto hacia la nasofaringe/vía aérea). Suero fisiológico nasal posterior y amoxicilina oral si sobreinfección.`,
+            alert: `La sospecha de PILA DE BOTÓN intranasal constituye una emergencia quirúrgica absoluta: genera necrosis por licuefacción cáustica y perforación septal en pocas horas.`
+          }
+        ]
+      },
+      faringolaringe: {
+        sources: `Fuentes del módulo: Urgencias y Emergencias ORL (Jiménez Murillo, 2023) · Modern Management of Maxillofacial Trauma (2026) · Korean Bronchoesophagological Society Subglottic/Tracheal Stenosis (2025/2026) · Frontiers in Neuroscience Acute Facial Palsy (2026) · Rev. Neurología.`,
+        items: [
+          {
+            id: `far-epiglotitis`,
+            title: `Epiglotitis Aguda (Supraglotitis)`,
+            severity: `critical`,
+            severityLabel: `Emergencia Vital < 15 min`,
+            updated: false,
+            updatedText: ``,
+            diagnosis: `Comienzo fulminante con fiebre alta, odinofagia extrema, disfagia con sialorrea/babeo, voz apagada ("en patata caliente"), estridor inspiratorio y postura "en trípode". Etiología clásica Haemophilus influenzae tipo b y actualmente predominio de Streptococcus pyogenes. Rx lateral ("huella del pulgar") solo si estabilidad.`,
+            treatment: `Oxigenoterapia humidificada sin agitar al paciente. Asegurar vía aérea en quirófano (intubación endotraqueal con fibroscopio/anestesia inhalatoria) o cricotiroidotomía urgente si colapso. Metilprednisolona IV (1 mg/kg inicial, luego 20 mg/8 h) + Ceftriaxona (2 g/24 h IV) + Clindamicina (600 mg/8 h IV) x 7–10 días. Ingreso en UCI.`,
+            alert: `PROHIBIDO usar depresor lingual o realizar laringoscopia indirecta en Urgencias ante sospecha de epiglotitis: precipita laringoespasmo fatal y parada respiratoria.`
+          },
+          {
+            id: `far-crup`,
+            title: `Disnea Laríngea y Laringitis Subglótica (Crup)`,
+            severity: `critical`,
+            severityLabel: `Compromiso Ventilatorio`,
+            updated: true,
+            updatedText: `[Actualizado 2025–2026]`,
+            diagnosis: `Tríada fisiopatológica de disnea laríngea: tiraje (intercostal, supraclavicular, supraesternal), estridor inspiratorio y descenso inspiratorio de la laringe. En niños: tos perruna viral (parainfluenza 1–3). En adultos o estenosis crónica: descartar origen tumoral o estenosis subglótica/traqueal.`,
+            treatment: `Crup: oxígeno si SpO2 <92%, Dexametasona dosis única (0,15–0,6 mg/kg VO/IM/IV) y si estridor en reposo, Adrenalina nebulizada 1:1.000 (0,5 mL/kg, máx 5 mL). Disnea tumoral: sedestación, O2 50%, Metilprednisolona 250 mg IV en bolo y valorar traqueostomía/cricotiroidotomía.`,
+            alert: `Actualización KBES 2025–2026: en estenosis subglótica/traqueal benigna del adulto, la evaluación debe integrar endoscopia, TAC y espirometría antes de definir láser CO2, dilatación con balón o resección.`
+          },
+          {
+            id: `far-abscesos`,
+            title: `Absceso Periamigdalino y Retrofaríngeo`,
+            severity: `critical`,
+            severityLabel: `Riesgo Vía Aérea / Mediastinitis`,
+            updated: false,
+            updatedText: ``,
+            diagnosis: `Periamigdalino: odinofagia unilateral, trismus, voz gangosa, abombamiento eritematoso del pilar amigdalino y desviación de la úvula al lado sano. Retrofaríngeo: disfagia, tortícolis, estridor, abombamiento de pared faríngea posterior; TAC cervical con contraste muestra ensanchamiento prevertebral.`,
+            treatment: `Ingreso hospitalario. Punción-aspiración diagnóstica y drenaje quirúrgico (intraoral o cervical). Antibioterapia parenteral: Penicilina G sódica + Metronidazol IV, o Ceftriaxona + Metronidazol, o Amoxicilina-Clavulánico IV.`,
+            alert: `NO pautar AINEs en celulitis o abscesos cervicales profundos: enmascaran la sepsis y favorecen la fascitis necrotizante y mediastinitis descendente.`
+          },
+          {
+            id: `far-ludwig`,
+            title: `Angina de Ludwig`,
+            severity: `critical`,
+            severityLabel: `Emergencia Vía Aérea`,
+            updated: false,
+            updatedText: ``,
+            diagnosis: `Celulitis/absceso bilateral rápidamente progresivo de los espacios sublingual y submandibular (88% origen odontogénico). Induración leñosa del suelo de la boca, elevación e inmovilidad de la lengua, trismus, babeo, edema submandibular bilateral y disnea aguda.`,
+            treatment: `Aseguramiento inmediato de la vía aérea (alta tasa de fracaso de laringoscopia convencional: requiere intubación despierto guiada por fibroscopio, videolaringoscopio o traqueostomía reglada). Drenaje quirúrgico amplio + Penicilina G + Metronidazol (o Ceftriaxona + Metronidazol) IV.`,
+            alert: `La progresión caudal a través de las fascias cervicales puede causar cierre mecánico súbito de la vía aérea o mediastinitis necrosante descendente mortal.`
+          },
+          {
+            id: `far-trauma-ce`,
+            title: `Trauma Laríngeo y Cuerpos Extraños Faringoesofágicos`,
+            severity: `critical`,
+            severityLabel: `Vía Aérea / Perforación`,
+            updated: true,
+            updatedText: `[Actualizado 2026]`,
+            diagnosis: `Trauma laríngeo: dolor cervical, disfonía, disnea y enfisema subcutáneo (signos cardinales -> TAC de cuello y nasofibrolaringoscopia si estable). Cuerpo extraño: sensación de cuerpo extraño al tragar, sialorrea, disfagia y odinofagia; Rx de partes blandas de cuello o TAC si objeto punzante.`,
+            treatment: `Trauma laríngeo grave con obstrucción: cricotiroidotomía de emergencia (bisturí, pinza Kelly, tubo 5–6) o traqueostomía reglada en quirófano; si vía aérea difícil (2026), videolaringoscopia/fibrobroncoscopio. Cuerpo extraño faríngeo: extracción con pinza de Magill/acodada; si esofágico o sospecha de perforación: endoscopia digestiva alta urgente + triple antibioterapia IV si desgarro.`,
+            alert: `Llamar al ORL de turno en todo paciente con signos de trauma laríngeo aunque inicialmente no presente disnea manifiesta; la obstrucción puede ser diferida por hematoma/edema progresivo.`
+          },
+          {
+            id: `far-paralisis`,
+            title: `Parálisis Facial Periférica Aguda`,
+            severity: `urgent`,
+            severityLabel: `Ventana < 72 h · Protección Ocular`,
+            updated: true,
+            updatedText: `[Actualizado 2026]`,
+            diagnosis: `Afecta toda la hemicara (incapacidad de arrugar la frente y lagoftalmos, a diferencia de la central que respeta la frente). Otoscopia obligatoria para descartar vesículas en concha/CAE (Síndrome de Ramsay Hunt por herpes zóster) u otitis. Única analítica rutinaria en Urgencias: glucemia capilar.`,
+            treatment: `Corticoterapia oral precoz dentro de las primeras 72 horas (Prednisona 1 mg/kg/día en pauta descendente). Protección ocular obligatoria: lágrimas artificiales cada hora de día, pomada epitelizante o tetraciclina oftálmica + oclusión nocturna con micropore. Antivirales combinados si sospecha herpética o parálisis grave.`,
+            alert: `Actualización Frontiers in Neuroscience 2026: confirma la ventana de 72 h para corticoides y estratifica antivirales combinados para grados graves (House-Brackmann V–VI). Si la parálisis es bilateral (1%), descartar de inmediato Guillain-Barré, Lyme o sarcoidosis.`
+          }
+        ]
+      }
+    };
+
+    const ALGORITHMS_DATA = {
+      epistaxis: {
+        title: `Algoritmo Escalonado de Epistaxis`,
+        source: `Basado en AAO-HNS Nosebleed Guideline (2020) y Manual de Urgencias ORL (Jiménez Murillo, 2023).`,
+        startNode: `ep-step1`,
+        nodes: {
+          'ep-step1': {
+            badge: `Paso 1 · Valoración Inicial y Protocolo ABC`,
+            question: `¿Cuál es el estado hemodinámico y el patrón de sangrado inicial del paciente?`,
+            context: `Medir PA y FC (frecuente pico hipertensivo), canalizar vía si sangrado profuso y descartar anticoagulación o diátesis hemorrágica.`,
+            options: [
+              { label: `Estable hemodinámicamente, sangrado activo moderado/leve`, next: `ep-step2`, tag: `Compresión y vasoconstrictor` },
+              { label: `Inestable (hipotensión, taquicardia, palidez) o sangrado posterior masivo`, next: `ep-res-abc`, tag: `Emergencia hemodinámica` }
+            ]
+          },
+          'ep-res-abc': {
+            isTerminal: true,
+            status: `alert`,
+            badge: `Conducta Crítica · Nivel I`,
+            title: `Estabilización Inmediata + Hemostasia Posterior`,
+            diagnosis: `Sospecha de epistaxis posterior masiva (área de Woodruff / A. esfenopalatina) con compromiso hemodinámico o broncoaspiración.`,
+            treatment: [
+              `Vía venosa periférica, reposición con cristaloides, hemograma, TP/TTP y pruebas cruzadas (transfundir si Hb < 9 g/dL).`,
+              `Control de crisis hipertensiva si concurre, sin descensos bruscos excesivos.`,
+              `Pasar directamente a neumotaponamiento posterior bibalonado (balón distal 10 mL, proximal 30 mL) o taponamiento posterior clásico + taponamiento anterior homolateral.`,
+              `Ingreso obligatorio en ORL (u observación/críticos) con Amoxicilina-Clavulánico IV/VO mientras dure el taponamiento.`
+            ],
+            nextHint: `Si persiste el sangrado pese a taponamiento bien colocado -> Ligadura endoscópica (AEP/AEA) o embolización arterial selectiva.`
+          },
+          'ep-step2': {
+            badge: `Paso 2 · Primera Línea Hemostática`,
+            question: `Tras limpiar/sonar coágulos, colocar algodón con oximetazolina + anestésico local con adrenalina y comprimir alas nasales 10 minutos:`,
+            context: `La mayoría de epistaxis anteriores del plexo de Kiesselbach ceden con vasoconstricción y compresión digital mantenida.`,
+            options: [
+              { label: `Cede el sangrado o se localiza un punto sangrante anterior bien definido`, next: `ep-res-cautery`, tag: `Control local / Cauterización` },
+              { label: `Persiste el sangrado y/o no se visualiza punto anterior claro`, next: `ep-step3`, tag: `Escalado a taponamiento` }
+            ]
+          },
+          'ep-res-cautery': {
+            isTerminal: true,
+            status: `treat`,
+            badge: `Conducta Resolutiva · Epistaxis Anterior`,
+            title: `Cauterización Química Unilateral con Nitrato de Plata`,
+            diagnosis: `Epistaxis anterior localizada en plexo de Kiesselbach controlada tras vasoconstricción.`,
+            treatment: [
+              `Aplicar nitrato de plata de forma unilateral y circunscrita sobre el vaso sangrante.`,
+              `Evitar cauterizar ambos lados del tabique en el mismo acto por riesgo de perforación septal.`,
+              `Alta con vaselina/pomada hidratante nasal, evitar sonar o manipular la nariz y control de PA.`
+            ],
+            nextHint: `Si recurre en días posteriores, reevaluar mediante endoscopia nasal.`
+          },
+          'ep-step3': {
+            badge: `Paso 3 · Taponamiento Nasal Anterior`,
+            question: `¿El paciente toma anticoagulantes/antiagregantes o presenta coagulopatía?`,
+            context: `La guía AAO-HNS 2020 prioriza minimizar el trauma mucoso durante la inserción y retirada del taponamiento en pacientes anticoagulados.`,
+            options: [
+              { label: `Sí: anticoagulado o trastorno de coagulación`, next: `ep-step4-reabs`, tag: `Material reabsorbible` },
+              { label: `No: coagulación normal`, next: `ep-step4-std`, tag: `Taponamiento estándar` }
+            ]
+          },
+          'ep-step4-reabs': {
+            badge: `Paso 4 · Evaluación Post-Taponamiento Reabsorbible`,
+            question: `Se coloca taponamiento anterior con material reabsorbible/hemostático (AAO-HNS 2020). ¿Se controla la hemorragia al revisar la orofaringe?`,
+            context: `Inspeccionar siempre la pared posterior de la orofaringe con depresor lingual para descartar escurrimiento hemático posterior.`,
+            options: [
+              { label: `Sí: sin sangrado nasal ni escurrimiento posterior`, next: `ep-res-ant-ok`, tag: `Controlado` },
+              { label: `No: persiste sangrado por narina o desciende sangre por orofaringe`, next: `ep-step5`, tag: `Epistaxis posterior / refractaria` }
+            ]
+          },
+          'ep-step4-std': {
+            badge: `Paso 4 · Evaluación Post-Taponamiento Estándar`,
+            question: `Se coloca taponamiento anterior lubricado (Merocel, Rapid Rhino o gasa orillada; controla ~95% de epistaxis anteriores). ¿Se detiene el sangrado?`,
+            context: `Comprobar ausencia de sangrado activo en orofaringe tras 10–15 minutos de observación.`,
+            options: [
+              { label: `Sí: hemostasia efectiva sin sangrado posterior`, next: `ep-res-ant-ok`, tag: `Controlado` },
+              { label: `No: persiste sangrado o escurrimiento en orofaringe`, next: `ep-step5`, tag: `Escalar a posterior` }
+            ]
+          },
+          'ep-res-ant-ok': {
+            isTerminal: true,
+            status: `treat`,
+            badge: `Conducta Ambulatoria / Revisión ORL`,
+            title: `Taponamiento Anterior Efectivo`,
+            diagnosis: `Epistaxis anterior controlada tras taponamiento unilateral (estándar o reabsorbible según anticoagulación).`,
+            treatment: [
+              `Mantener taponamiento no reabsorbible 48–72 h (revisar en consulta ORL); los reabsorbibles no precisan retirada traumática.`,
+              `Considerar cobertura antibiótica oral si taponamiento no reabsorbible bilateral o prolongado y analgesia con paracetamol (evitar AINEs).`,
+              `Instruir signos de alarma (re-sangrado por boca, fiebre, disnea).`
+            ],
+            nextHint: `Si re-sangra por orofaringe, acudir inmediatamente para taponamiento posterior.`
+          },
+          'ep-step5': {
+            badge: `Paso 5 · Taponamiento Posterior e Intervencionismo`,
+            question: `Tras colocar neumotaponamiento posterior (sonda bibalonada) o taponamiento posterior con gasas + ingreso e inicio de antibiótico IV, ¿cede la hemorragia?`,
+            context: `Todo taponamiento posterior requiere ingreso en ORL y cobertura antibiótica (Amoxicilina-Clavulánico) para prevenir sinusitis y shock tóxico.`,
+            options: [
+              { label: `Sí: hemorragia controlada bajo vigilancia hospitalaria`, next: `ep-res-post-ok`, tag: `Ingreso controlado` },
+              { label: `No: hemorragia refractaria pese a taponamiento posterior correcto`, next: `ep-res-surg`, tag: `Cirugía / Embolización` }
+            ]
+          },
+          'ep-res-post-ok': {
+            isTerminal: true,
+            status: `warn`,
+            badge: `Conducta Hospitalaria · Vigilancia ORL`,
+            title: `Ingreso en ORL con Taponamiento Posterior`,
+            diagnosis: `Epistaxis posterior controlada mecánicamente mediante neumotaponamiento o gasas ancladas.`,
+            treatment: [
+              `Ingreso hospitalario obligatorio en ORL con monitorización hemodinámica y saturación de O2.`,
+              `Antibioterapia obligatoria (Amoxicilina-Clavulánico 1000/200 mg cada 8 h) mientras permanezca taponado.`,
+              `Analgesia reglada (Paracetamol o Metamizol) y retirada progresiva en 48–72 h.`
+            ],
+            nextHint: `Si reaparece sangrado activo tras desinflar o durante el ingreso -> cirugía endoscópica.`
+          },
+          'ep-res-surg': {
+            isTerminal: true,
+            status: `alert`,
+            badge: `Conducta Invasiva · Epistaxis Refractaria`,
+            title: `Ligadura Arterial Endoscópica o Embolización Selectiva`,
+            diagnosis: `Epistaxis posterior grave refractaria a taponamiento anterior y posterior.`,
+            treatment: [
+              `Elección moderna: ligadura/cauterización endoscópica de la arteria esfenopalatina (AEP) o etmoidal anterior (AEA) en quirófano.`,
+              `Alternativa intervencionista (~85% de eficacia sin anestesia general): embolización arterial selectiva por arteriografía.`,
+              `Recurso histórico/extremo si imposible endoscopia o embolización: ligadura de arteria carótida externa.`
+            ],
+            nextHint: `Mantener soporte transfusional y control estricto de coagulopatía/HTA.`
+          }
+        }
+      },
+      vertigo: {
+        title: `Abordaje del Vértigo Agudo: Protocolo HINTS / TiTrATE`,
+        source: `Basado en SAEM GRACE-3 (2023) y Guía Interdisciplinaria HNO (2025).`,
+        startNode: `vt-step1`,
+        nodes: {
+          'vt-step1': {
+            badge: `Paso 1 · Enfoque TiTrATE (Tiempo y Desencadenantes)`,
+            question: `¿Cómo se presenta el síndrome vestibular en Urgencias?`,
+            context: `GRACE-3 prioriza clasificar por tiempo/desencadenantes (síndrome agudo continuo vs. episódico desencadenado) antes de solicitar neuroimagen.`,
+            options: [
+              { label: `Episódico desencadenado por cambios posturales (segundos-minutos): sospecha VPPB`, next: `vt-res-vppb`, tag: `Maniobras de provocación/reposición` },
+              { label: `Síndrome Vestibular Agudo (SVA): vértigo continuo ≥24 h, náuseas, nistagmo e inestabilidad`, next: `vt-step2`, tag: `Evaluar banderas rojas y HINTS` }
+            ]
+          },
+          'vt-res-vppb': {
+            isTerminal: true,
+            status: `treat`,
+            badge: `Conducta Diagnóstica y Terapéutica · VPPB`,
+            title: `Prueba de Dix-Hallpike y Maniobras de Reposición Canalicular`,
+            diagnosis: `Vértigo Posicional Paroxístico Benigno (episodios breves desencadenados por giro cefálico en cama, sin focalidad neurológica).`,
+            treatment: [
+              `Realizar prueba de Dix-Hallpike (canal posterior) o giro supino (canal horizontal).`,
+              `Si nistagmo típico geotrópico/torsional con latencia y agotamiento: ejecutar maniobra de reposición de Epley o Semont-plus (canal posterior) o Gufoni (canal horizontal).`,
+              `NO solicitar TC craneal ni pautar sedantes vestibulares crónicos.`
+            ],
+            nextHint: `Si el nistagmo posicional es atípico o no responde tras maniobras correctas, descartar origen central.`
+          },
+          'vt-step2': {
+            badge: `Paso 2 · Banderas Rojas Neurológicas y Marcha`,
+            question: `¿Presenta el paciente focalidad neurológica (disartria, diplopía, dismetría, déficit motor/sensitivo), cefalea occipitocervical intensa o ataxia severa grado II–III (incapaz de mantenerse en pie)?`,
+            context: `La evaluación de la marcha y el examen neurológico dirigido son obligatorios en todo SVA (GRACE-3 2023).`,
+            options: [
+              { label: `Sí: presenta focalidad neurológica, cefalea/dolor cervical o ataxia severa grado II–III`, next: `vt-res-central`, tag: `Alta sospecha de Ictus` },
+              { label: `No: examen neurológico estándar normal y puede mantenerse en pie; pasar a HINTS-plus`, next: `vt-step3`, tag: `Aplicar HINTS-plus` }
+            ]
+          },
+          'vt-step3': {
+            badge: `Paso 3 · Exploración HINTS-plus (Head Impulse, Nystagmus, Skew + Audición)`,
+            question: `En la exploración HINTS-plus realizada por clínico entrenado, ¿cuáles son los hallazgos?`,
+            context: `Recuerda la regla mnemotécnica INFARCT: Impulse Normal, Fast-phase Alternating (nistagmo cambiante) o Refixation on Cover Test (Skew positivo) = sospecha de infarto.`,
+            options: [
+              { label: `Todos periféricos: Head Impulse PATOLÓGICO (sacada correctora) + Nistagmo unidireccional + Skew normal + Audición conservada`, next: `vt-res-perif`, tag: `Perfil Periférico (Neuritis)` },
+              { label: `Al menos UN signo central: Head Impulse NORMAL, o nistagmo cambiante/vertical, o Skew patológico, o hipoacusia aguda unilateral (+plus)`, next: `vt-res-central`, tag: `Perfil Central (Ictus AICA/PICA)` }
+            ]
+          },
+          'vt-res-perif': {
+            isTerminal: true,
+            status: `treat`,
+            badge: `Conducta Periférica · Neuritis Vestibular`,
+            title: `Manejo de Síndrome Vestibular Periférico sin TC Rutinaria`,
+            diagnosis: `Neuritis vestibular aguda (patrón HINTS periférico completo, marcha posible con cautela y sin focalidad neurológica).`,
+            treatment: [
+              `NO realizar TC craneal rutinaria (GRACE-3: recomendación fuerte en contra en vértigo periférico típico).`,
+              `Reposo relativo inicial y sedante vestibular solo en fase aguda (Sulpirida 100 mg/8–12 h IM/VO, Tietilperazina o Diazepam) durante un MÁXIMO de 48 horas.`,
+              `Estimular movilización precoz y rehabilitación vestibular para favorecer la compensación central.`
+            ],
+            nextHint: `Si el paciente empeora o desarrolla nuevos signos neurológicos o hipoacusia, reevaluar de inmediato.`
+          },
+          'vt-res-central': {
+            isTerminal: true,
+            status: `alert`,
+            badge: `Conducta Crítica · Sospecha de Ictus de Fosa Posterior`,
+            title: `Código Ictus / Valoración Neurológica y RM Cerebral Urgente`,
+            diagnosis: `Alta sospecha de ictus isquémico o hemorrágico cerebeloso/troncoencefálico (territorio AICA, PICA o basilar).`,
+            treatment: [
+              `Interconsulta urgente a Neurología y activación de protocolo de ictus agudo.`,
+              `Solicitar RM cerebral con difusión (DWI) urgente (es el estudio de elección en fosa posterior).`,
+              `NO descartar ictus con una TC craneal simple normal (tiene sensibilidad muy baja para infartos agudos de tronco y cerebelo).`,
+              `Ingreso y monitorización neurológica estrecha (vigilar edema cerebeloso y compresión de tronco).`
+            ],
+            nextHint: `La presencia de hipoacusia súbita + vértigo agudo apunta especialmente a isquemia de la arteria cerebelosa anteroinferior (AICA).`
+          }
+        }
+      }
+    };
+
+    const PHARMA_DATA = [
+      {
+        name: `Prednisona`,
+        group: `corticoides`,
+        groupLabel: `Corticoterapia Oral`,
+        indication: `Hipoacusia neurosensorial súbita y Parálisis facial periférica (Bell)`,
+        dose: `1 mg/kg/día VO (máx. 60–100 mg) x 14 días en sordera súbita (descenso cada 5 d); o pauta corta en parálisis facial <72 h`,
+        precautions: `Asociar IBP (Omeprazol 20 mg/día VO). Iniciar <14 días en sordera súbita y <72 h en parálisis facial. Precaución en diabetes e HTA.`
+      },
+      {
+        name: `Metilprednisolona (Sistémica)`,
+        group: `corticoides`,
+        groupLabel: `Corticoterapia IV / Oral`,
+        indication: `Epiglotitis aguda, disnea laríngea tumoral, sordera súbita ingresada`,
+        dose: `Epiglotitis: 1 mg/kg IV inicial, luego 20 mg/8 h IV. Disnea tumoral: bolo 250 mg IV. Sordera súbita (oído único/vértigo): 1 mg/kg/día IV (máx 100 mg) x 5 d`,
+        precautions: `Asociar Omeprazol 40 mg/24 h IV mientras dure el ingreso. Pasar a pauta oral descendente al alta en sordera súbita.`
+      },
+      {
+        name: `Dexametasona / Metilprednisolona (Intratimpánica)`,
+        group: `corticoides`,
+        groupLabel: `Corticoterapia Intratimpánica`,
+        indication: `Rescate en hipoacusia neurosensorial súbita o contraindicación sistémica`,
+        dose: `Dexametasona (24 mg/0,9 mL) o Metilprednisolona (40 mg/0,9 mL): 3 dosis totales (1/semana)`,
+        precautions: `Indicar si no hay mejoría audiométrica a los 10–14 días (ventana 2–6 semanas según AAO-HNS 2019). Evitar en infección activa de oído medio.`
+      },
+      {
+        name: `Dexametasona (Crup)`,
+        group: `corticoides`,
+        groupLabel: `Corticoterapia Pediátrica`,
+        indication: `Laringitis subglótica aguda (Crup)`,
+        dose: `0,15–0,6 mg/kg VO, IM o IV en dosis única`,
+        precautions: `Vía oral de elección si el niño tolera y está estable para evitar agitación y empeoramiento del estridor.`
+      },
+      {
+        name: `Ceftriaxona + Clindamicina`,
+        group: `antibioticos`,
+        groupLabel: `Antibioterapia Parenteral`,
+        indication: `Epiglotitis aguda (supraglotitis)`,
+        dose: `Ceftriaxona 2 g/24 h IV + Clindamicina 600 mg/8 h IV durante 7–10 días`,
+        precautions: `Cobertura frente a Streptococcus pyogenes, Haemophilus influenzae y anaerobios. Canalizar vía tras estabilizar al paciente sin agitarlo.`
+      },
+      {
+        name: `Penicilina G / Ceftriaxona + Metronidazol`,
+        group: `antibioticos`,
+        groupLabel: `Antibioterapia Parenteral`,
+        indication: `Absceso periamigdalino, retrofaríngeo y Angina de Ludwig`,
+        dose: `Esquema hospitalario IV combinado (o Amoxicilina-Clavulánico 1000/200 mg/8 h IV)`,
+        precautions: `Siempre asociar al drenaje quirúrgico. Evitar AINEs concomitantes en celulitis cervicales profundas por riesgo de enmascarar fascitis/mediastinitis.`
+      },
+      {
+        name: `Ciprofloxacino (VO / IV)`,
+        group: `antibioticos`,
+        groupLabel: `Antibioterapia Antipseudomónica`,
+        indication: `Otitis externa maligna (necrotizante) y heridas de CAE/pabellón en >18 años`,
+        dose: `Otitis maligna: 500–750 mg/12 h VO o 400 mg/12 h IV varias semanas. Heridas CAE >18 a: 400–500 mg/12 h x 14 d`,
+        precautions: `Asociar gotas antipseudomónicas en otitis maligna. En menores de 18 años con heridas de pabellón/CAE, sustituir por Sulbactam-Ampicilina.`
+      },
+      {
+        name: `Amoxicilina / Amoxicilina-Clavulánico`,
+        group: `antibioticos`,
+        groupLabel: `Antibioterapia Oral / IV`,
+        indication: `Taponamiento nasal posterior, hematoma septal, otohematoma, hemotímpano, OMA`,
+        dose: `Taponamiento posterior: 1000/200 mg/8 h IV/VO. Hematoma septal/hemotímpano: Amoxicilina 500 mg/8 h x 8–10 días`,
+        precautions: `Obligatoria mientras permanezca el taponamiento posterior para prevenir sinusitis secundaria y síndrome de shock tóxico.`
+      },
+      {
+        name: `Gotas Óticas (Betametasona+Polimixina B+Neomicina+Lidocaína / Isoconazol)`,
+        group: `antibioticos`,
+        groupLabel: `Antibioterapia / Antifúngico Tópico`,
+        indication: `Otitis externa aguda bacteriana o fúngica (otomicosis)`,
+        dose: `Bacteriana: 5 gotas/6 h x 10 días. Fúngica (Isoconazol): 4 gotas/6 h`,
+        precautions: `Contraindicado si existe perforación timpánica (riesgo de ototoxicidad por aminoglucósidos) u otorragia traumática post-TCE.`
+      },
+      {
+        name: `Oximetazolina + Lidocaína 2% con Adrenalina 1:1.000`,
+        group: `vasoconstrictores`,
+        groupLabel: `Vasoconstrictor / Anestésico Tópico`,
+        indication: `Epistaxis aguda, rinoscopia en cuerpo extraño nasal, hemotímpano`,
+        dose: `Mecha nasal impregnada + compresión alar 10 min en epistaxis; gotas nasales cada 8 h (máx. 4–5 días)`,
+        precautions: `Precaución en hipertensión arterial severa o cardiopatía isquémica. No prolongar >5 días para evitar rinitis medicamentosa.`
+      },
+      {
+        name: `Adrenalina Nebulizada 1:1.000`,
+        group: `vasoconstrictores`,
+        groupLabel: `Vasoconstrictor Inhalado`,
+        indication: `Laringitis subglótica (Crup) moderada-grave con estridor en reposo`,
+        dose: `0,5 mL/kg (máximo 5 mL) nebulizada con O2 a 4–6 L/min`,
+        precautions: `Observar al paciente al menos 3–4 horas tras nebulización por posible efecto rebote del edema subglótico.`
+      },
+      {
+        name: `Nitrato de Plata`,
+        group: `vasoconstrictores`,
+        groupLabel: `Hemostasia Química`,
+        indication: `Epistaxis anterior localizada (plexo de Kiesselbach)`,
+        dose: `Aplicación puntual unilateral sobre el vaso sangrante tras anestesia tópica`,
+        precautions: `Nunca cauterizar bilateralmente el tabique septal en la misma sesión por riesgo de necrosis y perforación septal.`
+      },
+      {
+        name: `Sulpirida (Dogmatil) / Tietilperazina / Diazepam`,
+        group: `vestibulares`,
+        groupLabel: `Sedante Vestibular`,
+        indication: `Vértigo periférico agudo intenso (neuritis vestibular, sordera súbita con vértigo)`,
+        dose: `Sulpirida: 100 mg/8–12 h IM o VO por un MÁXIMO de 48 horas`,
+        precautions: `Limitar estrictamente a ≤48 h: el uso prolongado retrasa la compensación vestibular central. Contraindicados como sustituto de maniobras en VPPB.`
+      },
+      {
+        name: `Lágrimas Artificiales + Pomada Epitelizante + Oclusión`,
+        group: `soporte`,
+        groupLabel: `Protección Ocular`,
+        indication: `Parálisis facial periférica con lagoftalmos`,
+        dose: `Lágrimas naturales 1 gota cada hora durante el día + pomada oftálmica (tetraciclina/epitelizante) y cierre con micropore por la noche`,
+        precautions: `Medida indispensable desde la primera consulta en Urgencias para prevenir queratitis por exposición y úlcera corneal.`
+      },
+      {
+        name: `Paracetamol / Metamizol Magnésico`,
+        group: `soporte`,
+        groupLabel: `Analgesia / Antitérmicos`,
+        indication: `Dolor en epistaxis taponada, fracturas nasales/faciales, epiglotitis y otitis`,
+        dose: `Paracetamol 650 mg–1 g/6 h VO o IV; Metamizol 575 mg/6 h VO o 2 g/6–12 h IV/IM diluido`,
+        precautions: `Preferibles frente a los AINEs en epistaxis, fracturas nasales (evitan antiagregación) y celulitis cervicales profundas (donde los AINEs están contraindicados).`
+      }
+    ];
+
+    const CASES_DATA = [
+      {
+        id: `case-1`,
+        shortTitle: `Caso 1 · Niño con disnea y sialorrea`,
+        tag: `Emergencia Vía Aérea`,
+        vignette: `Acude a Urgencias un paciente con fiebre alta de instauración rápida en las últimas 6 horas, odinofagia intensa, incapacidad para deglutir saliva (babeo continuo), voz apagada "en patata caliente" y estridor inspiratorio leve. Permanece sentado inclinado hacia delante con el cuello en hiperextensión (postura en trípode). ¿Cuál es la conducta inmediata más adecuada?`,
+        question: `Selecciona la primera decisión clínica segura y prioritaria:`,
+        options: [
+          {
+            text: `Explorar inmediatamente la orofaringe con depresor lingual y luz frontal para visualizar la epiglotis y tomar cultivo.`,
+            correct: false,
+            why: `Incorrecto y potencialmente letal: ante sospecha de epiglotitis aguda, el uso de depresor lingual o laringoscopia indirecta en Urgencias puede desencadenar laringoespasmo súbito y parada respiratoria obstructiva.`
+          },
+          {
+            text: `Evitar maniobras orofaríngeas irritativas, mantener postura en trípode con O2 humidificado y activar vía aérea segura (intubación en quirófano / preparación de cricotiroidotomía) + Metilprednisolona, Ceftriaxona y Clindamicina IV.`,
+            correct: true,
+            why: `Correcto: el cuadro clásico corresponde a epiglotitis aguda (supraglotitis). La prioridad absoluta es no agitar ni estimular la faringe, asegurar la vía aérea en entorno controlado (con equipo de cricotiroidotomía listo) e iniciar corticoterapia y antibioterapia IV (ceftriaxona + clindamicina) con ingreso en UCI.`
+          },
+          {
+            text: `Enviar de inmediato al paciente en decúbito supino a Radiología para realizar una TAC cervical urgente antes de tomar decisiones.`,
+            correct: false,
+            why: `Incorrecto: forzar el decúbito supino o trasladar sin vigilancia y vía aérea asegurada a un paciente con epiglotitis puede provocar obstrucción completa de la vía aérea superior.`
+          },
+          {
+            text: `Administrar Dexametasona VO en dosis única, alta domiciliaria con ibuprofeno y reevaluar en 24 horas.`,
+            correct: false,
+            why: `Incorrecto: esa pauta corresponde al crup leve (laringitis subglótica viral), no a una epiglotitis con trípode y sialorrea, que es una emergencia vital con ingreso obligado en UCI.`
+          }
+        ]
+      },
+      {
+        id: `case-2`,
+        shortTitle: `Caso 2 · Epistaxis en anticoagulado`,
+        tag: `Urgencia Hemorrágica`,
+        vignette: `Varón de 68 años hipertenso en tratamiento con anticoagulación oral que acude por epistaxis profusa derecha de 1 hora de evolución. A la inspección de orofaringe presenta escurrimiento hemático continuo posterior y presión arterial de 185/100 mmHg. La compresión digital previa con algodón impregnado en oximetazolina durante 10 minutos no ha cohibido el sangrado.`,
+        question: `¿Qué secuencia terapéutica está indicada a continuación?`,
+        options: [
+          {
+            text: `Cauterización bilateral extensa del tabique nasal con nitrato de plata y alta a domicilio.`,
+            correct: false,
+            why: `Incorrecto: la cauterización con nitrato de plata solo sirve para sangrados anteriores localizados y nunca debe hacerse bilateralmente por riesgo de perforación septal; aquí hay sangrado posterior activo.`
+          },
+          {
+            text: `Colocar taponamiento posterior (neumotaponamiento bibalonado o taponamiento posterior + anterior), estabilización hemodinámica/analítica, ingreso en ORL y cobertura con Amoxicilina-Clavulánico (valorando material reabsorbible).`,
+            correct: true,
+            why: `Correcto: ante epistaxis posterior refractaria a compresión y vasoconstricción, está indicado el neumotaponamiento/taponamiento posterior, pruebas de hemograma/coagulación, ingreso hospitalario obligatorio en ORL y antibioterapia profiláctica para evitar sinusitis/shock tóxico. En anticoagulados, AAO-HNS 2020 recomienda priorizar materiales reabsorbibles en el componente anterior/local.`
+          },
+          {
+            text: `Pautar ácido tranexámico oral y citar en consulta externa de ORL en 5 días sin taponamiento.`,
+            correct: false,
+            why: `Incorrecto: una epistaxis posterior activa en paciente hipertenso y anticoagulado conlleva riesgo de shock hipovolémico y broncoaspiración; requiere hemostasia mecánica inmediata e ingreso.`
+          },
+          {
+            text: `Realizar ligadura quirúrgica directa de la arteria carótida externa en el box de Urgencias.`,
+            correct: false,
+            why: `Incorrecto: la ligadura arterial (habitualmente endoscópica de la arteria esfenopalatina o embolización) se reserva en quirófano/sala de angiografía cuando fracasa un taponamiento posterior correctamente colocado.`
+          }
+        ]
+      },
+      {
+        id: `case-3`,
+        shortTitle: `Caso 3 · Vértigo agudo e HINTS`,
+        tag: `Código Ictus / HINTS`,
+        vignette: `Mujer de 62 años con hipertensión y diabetes que consulta por vértigo rotatorio continuo de inicio súbito hace 5 horas, acompañado de náuseas e imposibilidad para mantenerse de pie sin apoyo (ataxia grado II–III). En la exploración HINTS-plus presenta: Head Impulse Test (VOR) normal (mantiene fijación ocular), nistagmo que cambia de dirección al mirar a derecha e izquierda y desviación vertical en el Test of Skew.`,
+        question: `¿Cuál es la interpretación clínica y la conducta correcta según GRACE-3 y HNO 2025?`,
+        options: [
+          {
+            text: `Diagnóstico de neuritis vestibular periférica; administrar Sulpirida IV, solicitar TC craneal simple y, si es normal, dar el alta.`,
+            correct: false,
+            why: `Incorrecto y peligroso: un Head Impulse normal, nistagmo cambiante con la mirada y Skew positivo son los tres signos clásicos de alarma central (INFARCT), agravados por ataxia severa. Además, la TC craneal tiene muy baja sensibilidad para detectar ictus agudo de fosa posterior.`
+          },
+          {
+            text: `Sospecha alta de ictus de fosa posterior (origen central); activar valoración neurológica urgente y solicitar RM cerebral urgente, sin descartar el cuadro con una TC craneal simple.`,
+            correct: true,
+            why: `Correcto: la presencia de cualquier signo central en el HINTS-plus (VOR normal, nistagmo direccionalmente cambiante o Skew patológico) o ataxia severa en un síndrome vestibular agudo obliga a descartar infarto/hemorragia cerebelosa o troncoencefálica mediante RM cerebral urgente e interconsulta a Neurología.`
+          },
+          {
+            text: `Realizar maniobra de Epley inmediatamente en la camilla y pautar Diazepam durante 15 días.`,
+            correct: false,
+            why: `Incorrecto: la maniobra de Epley es para el VPPB (episódico desencadenado), no para un síndrome vestibular agudo continuo con signos centrales; además, los sedantes vestibulares no deben superar las 48 h.`
+          },
+          {
+            text: `Solicitar radiografía de columna cervical por probable vértigo cervicogénico y pautar antiinflamatorios.`,
+            correct: false,
+            why: `Incorrecto: la clínica corresponde a un síndrome vestibular agudo con signos centrales inequívocos de tronco/cerebelo.`
+          }
+        ]
+      },
+      {
+        id: `case-4`,
+        shortTitle: `Caso 4 · Pérdida auditiva brusca`,
+        tag: `Urgencia Sensorial`,
+        vignette: `Varón de 44 años que nota pérdida auditiva brusca unilateral en el oído izquierdo al despertar hace 18 horas, acompañada de acúfeno agudo, sin vértigo ni dolor. La otoscopia bilateral es estrictamente normal (tímpanos íntegros, sin cerumen). Con diapasón de 500 Hz, la prueba de Weber se lateraliza al oído derecho (sano) y el Rinne es positivo en ambos oídos.`,
+        question: `¿Cuál es la actitud diagnóstica y terapéutica adecuada?`,
+        options: [
+          {
+            text: `Tranquilizar al paciente como probable disfunción tubárica viral, pautar descongestivo nasal y revisar en 1 mes.`,
+            correct: false,
+            why: `Incorrecto: una pérdida auditiva súbita (<72 h) con otoscopia normal y Weber lateralizado al oído sano orienta a hipoacusia neurosensorial súbita. Retrasar el tratamiento >14–28 días compromete la recuperación coclear.`
+          },
+          {
+            text: `Solicitar TC craneal urgente y analítica amplia de autoinmunidad antes de iniciar cualquier fármaco.`,
+            correct: false,
+            why: `Incorrecto: la guía AAO-HNS (2019) y RACGP (2025) recomiendan fuertemente NO realizar TC craneal ni analíticas rutinarias; la prueba de imagen de elección es la RM de CAI/ángulo pontocerebeloso.`
+          },
+          {
+            text: `Confirmar con audiometría tonal urgente (<24 h), iniciar corticoterapia oral precoz (Prednisona 1 mg/kg/día en pauta descendente + Omeprazol) y programar RM de oído interno/CAI, valorando rescate intratimpánico si no mejora en 10–14 días.`,
+            correct: true,
+            why: `Correcto: cumple criterios clínicos de sordera brusca sin factores de ingreso obligado (no es oído único, ni bilateral, ni asocia vértigo severo). Precisa audiometría urgente, corticoides sistémicos dentro de los primeros 14 días + IBP, RM de CAI para descartar schwannoma/patología vascular y rescate intratimpánico si no hay respuesta a los 10–14 días.`
+          },
+          {
+            text: `Realizar lavado ótico bilateral con agua a 37 °C y prescribir gotas óticas de ciprofloxacino.`,
+            correct: false,
+            why: `Incorrecto: la otoscopia ya confirmó que no hay tapón de cerumen ni infección del conducto; la hipoacusia es neurosensorial.`
+          }
+        ]
+      },
+      {
+        id: `case-5`,
+        shortTitle: `Caso 5 · Trauma nasal reciente`,
+        tag: `Urgencia Reconstructiva`,
+        vignette: `Joven de 23 años que sufre traumatismo facial directo jugando fútbol hace 4 horas. Consulta por dolor nasal y obstrucción nasal bilateral completa y progresiva. En la rinoscopia anterior se observa un abombamiento bilateral, rojo-violáceo y fluctuante en la parte anterior del tabique nasal. No hay signos de fractura orbitaria ni mala oclusión.`,
+        question: `¿Cuál es la conducta urgente correcta?`,
+        options: [
+          {
+            text: `Solicitar radiografía de huesos propios nasales de rutina, pautar ibuprofeno y hielo local, y citar por consulta externa en 5 días.`,
+            correct: false,
+            why: `Incorrecto y grave: el abombamiento bilateral fluctuante corresponde a un hematoma septal. Diferir 5 días provoca necrosis del cartílago septal y deformidad en "nariz en silla de montar". Además, las Rx de huesos propios no están indicadas de rutina (salvo niños o problema legal) y deben evitarse AINEs.`
+          },
+          {
+            text: `Diagnóstico clínico de hematoma septal: drenaje quirúrgico inmediato por ORL, colocación de dren/placas o taponamiento anterior compresivo y antibioterapia oral (Amoxicilina / Amoxicilina-Clavulánico).`,
+            correct: true,
+            why: `Correcto: el hematoma septal es un diagnóstico clínico urgente que exige incisión y drenaje inmediato, compresión septal para evitar reacumulación y cobertura antibiótica para prevenir condritis y necrosis avascular del cartílago.`
+          },
+          {
+            text: `Suturar directamente el cartílago septal a través de la mucosa con seda 5/0 para estabilizar la pirámide nasal.`,
+            correct: false,
+            why: `Incorrecto: nunca se debe suturar directamente el cartílago nasal ni auricular, ya que favorece necrosis y condritis.`
+          },
+          {
+            text: `Realizar intubación nasotraqueal preventiva por la obstrucción nasal bilateral.`,
+            correct: false,
+            why: `Incorrecto: la obstrucción es mecánica intranasal sin compromiso glótico ni indicación de intubación, y la vía nasotraqueal está contraindicada en trauma facial.`
+          }
+        ]
+      },
+      {
+        id: `case-6`,
+        shortTitle: `Caso 6 · Otalgia en diabético`,
+        tag: `Infección Base Cráneo`,
+        vignette: `Varón de 74 años con diabetes mellitus mal controlada que consulta por otalgia izquierda muy intensa de predominio nocturno de 3 semanas de evolución, refractaria a analgésicos habituales, con otorrea verdosa y aparición reciente de asimetría facial izquierda (incapacidad para cerrar el ojo y arrugar la frente). La otoscopia muestra tejido de granulación en el suelo del conducto auditivo externo.`,
+        question: `¿Qué diagnóstico debes sospechar y qué manejo requiere?`,
+        options: [
+          {
+            text: `Otitis externa banal + parálisis de Bell coincidente; pautar gotas óticas y alta con prednisona oral.`,
+            correct: false,
+            why: `Incorrecto: un paciente anciano diabético con otalgia profunda refractaria, tejido de granulación en el suelo del CAE y parálisis facial tiene una otitis externa maligna hasta demostrar lo contrario.`
+          },
+          {
+            text: `Otitis externa maligna (necrotizante) por Pseudomonas aeruginosa con extensión a base de cráneo; ingreso hospitalario, TAC de peñascos/mastoides (y RM/PET según evolución), Ciprofloxacino IV a dosis altas + gotas antipseudomónicas y protección ocular.`,
+            correct: true,
+            why: `Correcto: la tríada de anciano diabético, otalgia intensa y tejido de granulación en suelo del CAE obliga a descartar osteomielitis de base de cráneo (otitis externa maligna), máxime si hay afectación del VII par. Requiere ingreso, imagen ósea/metabólica (TC peñascos y seguimiento 18F-FDG-PET/RM según HNO 2026), ciprofloxacino sistémico prolongado, gotas tópicas antipseudomónicas y cuidado ocular por la parálisis facial.`
+          },
+          {
+            text: `Lavado ótico enérgico con agua tibia y prescripción de isoconazol tópico durante 4 días.`,
+            correct: false,
+            why: `Incorrecto: el lavado está contraindicado y el tratamiento antifúngico aislado sin cobertura antipseudomónica IV ni ingreso pondría en riesgo vital al paciente.`
+          },
+          {
+            text: `Administrar metamizol intramuscular cada 12 horas y revisar en atención primaria en 10 días.`,
+            correct: false,
+            why: `Incorrecto: requiere ingreso y tratamiento antimicrobiano sistémico urgente.`
+          }
+        ]
+      }
+    ];
+
+    // =========================================================================
+    // APPLICATION STATE (Persisted via window.notebookAppApi)
+    // =========================================================================
+
+    let appState = {
+      triageFilter: `all`,
+      activeModuleTab: `otologia`,
+      moduleSearch: ``,
+      moduleSeverity: `all`,
+      reviewedModules: [],
+      activeAlgo: `epistaxis`,
+      algoHistory: {
+        epistaxis: [`ep-step1`],
+        vertigo: [`vt-step1`]
+      },
+      algoChoices: {
+        epistaxis: [],
+        vertigo: []
+      },
+      pharmaSearch: ``,
+      pharmaCategory: `all`,
+      activeCaseIndex: 0,
+      caseAnswers: {} // { 'case-1': selectedOptionIndex }
+    };
+
+    async function persistState() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+          await window.notebookAppApi.setAppState(appState);
+        }
+      } catch (e) {
+        // Safe fallback inside sandbox
+      }
+    }
+
+    function refreshIcons() {
+      if (window.lucide && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function updateProgressBar() {
+      const answeredCount = Object.keys(appState.caseAnswers).length;
+      const totalCases = CASES_DATA.length;
+      const correctCount = CASES_DATA.reduce((acc, c) => {
+        const idx = appState.caseAnswers[c.id];
+        if (idx !== undefined && c.options[idx] && c.options[idx].correct) return acc + 1;
+        return acc;
+      }, 0);
+      const pct = Math.round((answeredCount / totalCases) * 100);
+
+      const textEl = document.getElementById(`global-progress-text`);
+      const barEl = document.getElementById(`global-progress-bar`);
+      const modEl = document.getElementById(`modules-reviewed-text`);
+
+      if (textEl) textEl.textContent = `${answeredCount} / ${totalCases} casos · ${correctCount} aciertos (${pct}%)`;
+      if (barEl) barEl.style.width = `${pct}%`;
+      if (modEl) modEl.textContent = `${appState.reviewedModules.length} patologías marcadas como revisadas`;
+    }
+
+    // =========================================================================
+    // SECTION 1: TRIAGE & RED FLAGS
+    // =========================================================================
+
+    function setTriageFilter(level) {
+      appState.triageFilter = level;
+      renderRedFlags();
+      persistState();
+    }
+
+    function renderRedFlags() {
+      const btnAll = document.getElementById(`triage-filter-all`);
+      const btnN1 = document.getElementById(`triage-filter-n1`);
+      const btnN2 = document.getElementById(`triage-filter-n2`);
+
+      if (btnAll) btnAll.setAttribute(`aria-pressed`, appState.triageFilter === `all` ? `true` : `false`);
+      if (btnN1) btnN1.setAttribute(`aria-pressed`, appState.triageFilter === `nivel1` ? `true` : `false`);
+      if (btnN2) btnN2.setAttribute(`aria-pressed`, appState.triageFilter === `nivel2` ? `true` : `false`);
+
+      const container = document.getElementById(`redflag-cards-container`);
+      if (!container) return;
+
+      const filtered = RED_FLAGS.filter((rf) => {
+        if (appState.triageFilter === `all`) return true;
+        return rf.level === appState.triageFilter;
+      });
+
+      container.innerHTML = filtered.map((rf) => {
+        const statusAttr = rf.level === `nivel1` ? `alert` : `warn`;
+        const chipClass = rf.level === `nivel1` ? `chip-alert` : `chip-warn`;
+        const alarmsHtml = rf.alarms.map((a) => `<li>${a}</li>`).join(``);
+
+        return `
+          <article class="status-card" data-status="${statusAttr}">
+            <div class="card-head">
+              <div class="card-meta-row">
+                <span class="chip ${chipClass}">${rf.levelLabel}</span>
+                <span class="time-badge">${rf.timeWindow}</span>
+              </div>
+            </div>
+            <h3 class="card-title">${rf.title}</h3>
+            <p class="kpi-caption" style="font-weight: 600;">${rf.entities}</p>
+
+            <div class="clinical-box box-diag">
+              <span class="clinical-box-label"><i data-lucide="search" width="14" height="14" aria-hidden="true"></i> Signos de Alarma</span>
+              <ul class="clinical-list">${alarmsHtml}</ul>
+            </div>
+
+            <div class="clinical-box box-treat">
+              <span class="clinical-box-label"><i data-lucide="shield-check" width="14" height="14" aria-hidden="true"></i> Conducta Inmediata</span>
+              <span>${rf.action}</span>
+            </div>
+
+            <div class="clinical-box box-alert">
+              <span class="clinical-box-label"><i data-lucide="alert-triangle" width="14" height="14" aria-hidden="true"></i> Precaución Crítica</span>
+              <span>${rf.danger}</span>
+            </div>
+          </article>
+        `;
+      }).join(``);
+
+      refreshIcons();
+    }
+
+    // =========================================================================
+    // SECTION 2: THEMATIC MODULES
+    // =========================================================================
+
+    function setActiveModuleTab(tabKey) {
+      appState.activeModuleTab = tabKey;
+      renderModules();
+      persistState();
+    }
+
+    function filterModules(val) {
+      appState.moduleSearch = val;
+      renderModules();
+    }
+
+    function setModuleSeverityFilter(val) {
+      appState.moduleSeverity = val;
+      renderModules();
+      persistState();
+    }
+
+    function toggleReviewedModule(modId) {
+      const idx = appState.reviewedModules.indexOf(modId);
+      if (idx === -1) {
+        appState.reviewedModules.push(modId);
+      } else {
+        appState.reviewedModules.splice(idx, 1);
+      }
+      renderModules();
+      updateProgressBar();
+      persistState();
+    }
+
+    function renderModules() {
+      const tabs = [`otologia`, `rinosinusal`, `faringolaringe`];
+      tabs.forEach((t) => {
+        const el = document.getElementById(`tab-${t}`);
+        if (el) el.setAttribute(`aria-selected`, appState.activeModuleTab === t ? `true` : `false`);
+      });
+
+      const sevSelect = document.getElementById(`module-severity-select`);
+      if (sevSelect) sevSelect.value = appState.moduleSeverity;
+
+      const searchInput = document.getElementById(`module-search-input`);
+      if (searchInput && searchInput.value !== appState.moduleSearch) {
+        searchInput.value = appState.moduleSearch;
+      }
+
+      const modObj = MODULES_DATA[appState.activeModuleTab];
+      const container = document.getElementById(`modules-container`);
+      const sourceEl = document.getElementById(`module-source-trace`);
+      if (!container || !modObj) return;
+
+      if (sourceEl) sourceEl.textContent = modObj.sources;
+
+      const q = appState.moduleSearch.trim().toLowerCase();
+      const filtered = modObj.items.filter((item) => {
+        const matchQuery = !q ||
+          item.title.toLowerCase().includes(q) ||
+          item.diagnosis.toLowerCase().includes(q) ||
+          item.treatment.toLowerCase().includes(q) ||
+          item.alert.toLowerCase().includes(q);
+        const matchSev =
+          appState.moduleSeverity === `all` ||
+          (appState.moduleSeverity === `updated` && item.updated) ||
+          item.severity === appState.moduleSeverity;
+        return matchQuery && matchSev;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <p style="margin: 0; font-weight: 700;">No se encontraron patologías con los filtros aplicados en este módulo.</p>
+            <button type="button" class="btn btn-sm" onclick="clearModuleFilters()">Limpiar filtros del módulo</button>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map((item) => {
+        const isReviewed = appState.reviewedModules.includes(item.id);
+        const sevChipClass = item.severity === `critical` ? `chip-alert` : `chip-warn`;
+        const updatedChip = item.updated ? `<span class="chip chip-updated">${item.updatedText}</span>` : ``;
+
+        return `
+          <article class="module-card" data-severity="${item.severity}">
+            <div class="card-head">
+              <h3 class="card-title">${item.title}</h3>
+              <div class="card-meta-row">
+                <span class="chip ${sevChipClass}">${item.severityLabel}</span>
+                ${updatedChip}
+              </div>
+            </div>
+
+            <div class="clinical-box box-diag">
+              <span class="clinical-box-label"><i data-lucide="stethoscope" width="14" height="14" aria-hidden="true"></i> Diagnóstico y Exploración</span>
+              <span>${item.diagnosis}</span>
+            </div>
+
+            <div class="clinical-box box-treat">
+              <span class="clinical-box-label"><i data-lucide="check-circle-2" width="14" height="14" aria-hidden="true"></i> Tratamiento y Conducta</span>
+              <span>${item.treatment}</span>
+            </div>
+
+            <div class="clinical-box box-warn">
+              <span class="clinical-box-label"><i data-lucide="alert-circle" width="14" height="14" aria-hidden="true"></i> Perla Clínica / Precaución</span>
+              <span>${item.alert}</span>
+            </div>
+
+            <div class="module-card-footer">
+              <span>${isReviewed ? `Revisado en esta sesión` : `Pendiente de revisión`}</span>
+              <button type="button" class="btn btn-sm ${isReviewed ? `btn-primary` : ``}" onclick="toggleReviewedModule('${item.id}')">
+                <i data-lucide="${isReviewed ? `check` : `bookmark`}" width="14" height="14" aria-hidden="true"></i>
+                ${isReviewed ? `Revisado` : `Marcar revisado`}
+              </button>
+            </div>
+          </article>
+        `;
+      }).join(``);
+
+      refreshIcons();
+    }
+
+    function clearModuleFilters() {
+      appState.moduleSearch = ``;
+      appState.moduleSeverity = `all`;
+      renderModules();
+      persistState();
+    }
+
+    // =========================================================================
+    // SECTION 3: INTERACTIVE ALGORITHMS
+    // =========================================================================
+
+    function selectAlgorithm(algoKey) {
+      appState.activeAlgo = algoKey;
+      renderAlgorithm();
+      persistState();
+    }
+
+    function advanceAlgorithm(nextNodeId, choiceLabel) {
+      const key = appState.activeAlgo;
+      const history = appState.algoHistory[key] || [ALGORITHMS_DATA[key].startNode];
+      const choices = appState.algoChoices[key] || [];
+
+      const currentNodeId = history[history.length - 1];
+      const currentNode = ALGORITHMS_DATA[key].nodes[currentNodeId];
+
+      choices.push({
+        stepName: currentNode ? currentNode.badge : `Paso`,
+        choice: choiceLabel
+      });
+      history.push(nextNodeId);
+
+      appState.algoHistory[key] = history;
+      appState.algoChoices[key] = choices;
+      renderAlgorithm();
+      persistState();
+    }
+
+    function stepBackAlgorithm() {
+      const key = appState.activeAlgo;
+      const history = appState.algoHistory[key];
+      const choices = appState.algoChoices[key];
+      if (history && history.length > 1) {
+        history.pop();
+        if (choices && choices.length > 0) choices.pop();
+      }
+      renderAlgorithm();
+      persistState();
+    }
+
+    function resetAlgorithm() {
+      const key = appState.activeAlgo;
+      appState.algoHistory[key] = [ALGORITHMS_DATA[key].startNode];
+      appState.algoChoices[key] = [];
+      renderAlgorithm();
+      persistState();
+    }
+
+    function renderAlgorithm() {
+      const tabEp = document.getElementById(`algo-tab-epistaxis`);
+      const tabVt = document.getElementById(`algo-tab-vertigo`);
+      if (tabEp) tabEp.setAttribute(`aria-selected`, appState.activeAlgo === `epistaxis` ? `true` : `false`);
+      if (tabVt) tabVt.setAttribute(`aria-selected`, appState.activeAlgo === `vertigo` ? `true` : `false`);
+
+      const hintsBox = document.getElementById(`hints-reference-box`);
+      if (hintsBox) hintsBox.style.display = appState.activeAlgo === `vertigo` ? `block` : `none`;
+
+      const algo = ALGORITHMS_DATA[appState.activeAlgo];
+      const history = appState.algoHistory[appState.activeAlgo] || [algo.startNode];
+      const choices = appState.algoChoices[appState.activeAlgo] || [];
+      const currentNodeId = history[history.length - 1];
+      const node = algo.nodes[currentNodeId];
+
+      const nodeContainer = document.getElementById(`algo-interactive-node`);
+      const trailContainer = document.getElementById(`algo-trail-panel`);
+      if (!nodeContainer || !trailContainer || !node) return;
+
+      if (node.isTerminal) {
+        const boxClass = node.status === `alert` ? `box-alert` : (node.status === `warn` ? `box-warn` : `box-treat`);
+        const treatList = node.treatment.map((t) => `<li>${t}</li>`).join(``);
+
+        nodeContainer.innerHTML = `
+          <div class="card-head">
+            <span class="algo-step-badge">${node.badge}</span>
+            <div class="card-meta-row">
+              <button type="button" class="btn btn-sm btn-ghost" onclick="stepBackAlgorithm()">
+                <i data-lucide="arrow-left" width="14" height="14" aria-hidden="true"></i> Atrás
+              </button>
+              <button type="button" class="btn btn-sm" onclick="resetAlgorithm()">
+                <i data-lucide="rotate-ccw" width="14" height="14" aria-hidden="true"></i> Reiniciar
+              </button>
+            </div>
+          </div>
+          <h3 class="algo-question">${node.title}</h3>
+          <div class="clinical-box box-diag">
+            <span class="clinical-box-label">Impresión Clínica</span>
+            <span>${node.diagnosis}</span>
+          </div>
+          <div class="clinical-box ${boxClass}">
+            <span class="clinical-box-label">Plan Terapéutico y Actuación</span>
+            <ul class="clinical-list">${treatList}</ul>
+          </div>
+          <p class="kpi-caption" style="margin: 0;"><strong>Vigilancia / Siguiente paso:</strong> ${node.nextHint}</p>
+        `;
+      } else {
+        const optsHtml = node.options.map((opt) => {
+          const safeLabel = opt.label.replace(/'/g, `\\&#39;`);
+          return `
+            <button type="button" class="algo-opt-btn" onclick="advanceAlgorithm('${opt.next}', '${safeLabel}')">
+              <span>${opt.label}</span>
+              <span class="chip chip-info">${opt.tag}</span>
+            </button>
+          `;
+        }).join(``);
+
+        const backBtn = history.length > 1
+          ? `<button type="button" class="btn btn-sm btn-ghost" onclick="stepBackAlgorithm()"><i data-lucide="arrow-left" width="14" height="14" aria-hidden="true"></i> Paso anterior</button>`
+          : ``;
+
+        nodeContainer.innerHTML = `
+          <div class="card-head">
+            <span class="algo-step-badge">${node.badge}</span>
+            <div class="card-meta-row">
+              ${backBtn}
+              <button type="button" class="btn btn-sm btn-ghost" onclick="resetAlgorithm()">Reiniciar</button>
+            </div>
+          </div>
+          <h3 class="algo-question">${node.question}</h3>
+          <p class="kpi-caption" style="margin: 0;">${node.context}</p>
+          <div class="algo-options">${optsHtml}</div>
+        `;
+      }
+
+      const trailHtml = choices.length === 0
+        ? `<p class="kpi-caption" style="margin: 0;">Aún no has tomado decisiones en este algoritmo. Selecciona una opción en el panel izquierdo para construir la ruta clínica.</p>`
+        : choices.map((c) => `
+            <div class="trail-item">
+              <span class="trail-step-name">${c.stepName}</span>
+              <span class="trail-choice">${c.choice}</span>
+            </div>
+          `).join(``);
+
+      trailContainer.innerHTML = `
+        <div class="card-head">
+          <h4 class="card-title" style="font-size: 1rem;">Ruta de Decisión Activa</h4>
+          <span class="chip chip-info">${choices.length} paso(s)</span>
+        </div>
+        ${trailHtml}
+        <div class="source-trace">${algo.source}</div>
+      `;
+
+      refreshIcons();
+    }
+
+    // =========================================================================
+    // SECTION 4: PHARMACOLOGY SEARCH & TABLE
+    // =========================================================================
+
+    function filterPharmaSearch(val) {
+      appState.pharmaSearch = val;
+      renderPharmaTable();
+    }
+
+    function filterPharmaCategory(val) {
+      appState.pharmaCategory = val;
+      renderPharmaTable();
+      persistState();
+    }
+
+    function resetPharmaFilters() {
+      appState.pharmaSearch = ``;
+      appState.pharmaCategory = `all`;
+      const s = document.getElementById(`pharma-search-input`);
+      const c = document.getElementById(`pharma-cat-select`);
+      if (s) s.value = ``;
+      if (c) c.value = `all`;
+      renderPharmaTable();
+      persistState();
+    }
+
+    function renderPharmaTable() {
+      const tbody = document.getElementById(`pharma-table-body`);
+      const emptyEl = document.getElementById(`pharma-empty-state`);
+      if (!tbody) return;
+
+      const sInput = document.getElementById(`pharma-search-input`);
+      if (sInput && sInput.value !== appState.pharmaSearch) sInput.value = appState.pharmaSearch;
+      const cSelect = document.getElementById(`pharma-cat-select`);
+      if (cSelect) cSelect.value = appState.pharmaCategory;
+
+      const q = appState.pharmaSearch.trim().toLowerCase();
+      const filtered = PHARMA_DATA.filter((row) => {
+        const matchCat = appState.pharmaCategory === `all` || row.group === appState.pharmaCategory;
+        const matchQ = !q ||
+          row.name.toLowerCase().includes(q) ||
+          row.indication.toLowerCase().includes(q) ||
+          row.dose.toLowerCase().includes(q) ||
+          row.precautions.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = ``;
+        if (emptyEl) emptyEl.style.display = `grid`;
+        return;
+      }
+
+      if (emptyEl) emptyEl.style.display = `none`;
+      tbody.innerHTML = filtered.map((row) => {
+        const chipCls = row.group === `corticoides`
+          ? `chip-diag`
+          : (row.group === `antibioticos`
+              ? `chip-treat`
+              : (row.group === `vestibulares` ? `chip-warn` : `chip-info`));
+
+        return `
+          <tr>
+            <td>
+              <strong>${row.name}</strong><br>
+              <span class="chip ${chipCls}" style="margin-top: 4px;">${row.groupLabel}</span>
+            </td>
+            <td>${row.indication}</td>
+            <td><span class="mono-dose">${row.dose}</span></td>
+            <td>${row.precautions}</td>
+          </tr>
+        `;
+      }).join(``);
+    }
+
+    // =========================================================================
+    // SECTION 5: CASE SIMULATOR
+    // =========================================================================
+
+    function selectCase(index) {
+      appState.activeCaseIndex = index;
+      renderCaseSimulator();
+      persistState();
+    }
+
+    function answerCase(caseId, optIndex) {
+      appState.caseAnswers[caseId] = optIndex;
+      renderCaseSimulator();
+      updateProgressBar();
+      persistState();
+    }
+
+    function handleResetSimulation(btn) {
+      if (!btn) return;
+      if (btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.textContent = `Confirmar reinicio del simulador`;
+        return;
+      }
+      btn.dataset.armed = `false`;
+      btn.innerHTML = `<i data-lucide="rotate-ccw" width="15" height="15" aria-hidden="true"></i> Reiniciar simulador`;
+      appState.caseAnswers = {};
+      appState.activeCaseIndex = 0;
+      renderCaseSimulator();
+      updateProgressBar();
+      persistState();
+    }
+
+    function renderCaseSimulator() {
+      const sidebar = document.getElementById(`case-sidebar-list`);
+      const stage = document.getElementById(`case-stage`);
+      if (!sidebar || !stage) return;
+
+      sidebar.innerHTML = CASES_DATA.map((c, idx) => {
+        const ansIdx = appState.caseAnswers[c.id];
+        let badge = `<span class="chip chip-info">Pendiente</span>`;
+        if (ansIdx !== undefined) {
+          const isOk = c.options[ansIdx] && c.options[ansIdx].correct;
+          badge = isOk
+            ? `<span class="chip chip-treat">Correcto</span>`
+            : `<span class="chip chip-alert">Revisar</span>`;
+        }
+        const isCurrent = appState.activeCaseIndex === idx ? `true` : `false`;
+
+        return `
+          <button type="button" class="case-nav-btn" aria-current="${isCurrent}" onclick="selectCase(${idx})">
+            <span>${c.shortTitle}</span>
+            ${badge}
+          </button>
+        `;
+      }).join(``);
+
+      const currentCase = CASES_DATA[appState.activeCaseIndex] || CASES_DATA[0];
+      const chosenIdx = appState.caseAnswers[currentCase.id];
+      const hasAnswered = chosenIdx !== undefined;
+
+      const optionsHtml = currentCase.options.map((opt, oIdx) => {
+        let stateClass = ``;
+        if (hasAnswered) {
+          if (opt.correct) stateClass = `is-correct`;
+          else if (oIdx === chosenIdx) stateClass = `is-wrong`;
+        }
+
+        const optFeedback = hasAnswered
+          ? `<span style="font-size: 0.85rem; opacity: 0.95;">${opt.why}</span>`
+          : ``;
+
+        return `
+          <button type="button" class="quiz-opt-btn ${stateClass}" ${hasAnswered ? `disabled` : ``} onclick="answerCase('${currentCase.id}', ${oIdx})">
+            <span style="font-weight: 700;">${String.fromCharCode(65 + oIdx)}. ${opt.text}</span>
+            ${optFeedback}
+          </button>
+        `;
+      }).join(``);
+
+      let feedbackBanner = ``;
+      if (hasAnswered) {
+        const chosenOpt = currentCase.options[chosenIdx];
+        const isOk = chosenOpt && chosenOpt.correct;
+        const nextBtn = appState.activeCaseIndex < CASES_DATA.length - 1
+          ? `<button type="button" class="btn btn-primary btn-sm" onclick="selectCase(${appState.activeCaseIndex + 1})">Siguiente caso <i data-lucide="arrow-right" width="14" height="14" aria-hidden="true"></i></button>`
+          : ``;
+
+        feedbackBanner = `
+          <div class="quiz-feedback" data-outcome="${isOk ? `correct` : `wrong`}">
+            <div class="card-head">
+              <strong style="color: ${isOk ? `var(--on-positive-bg)` : `var(--on-error-bg)`};">
+                ${isOk ? `Decisión clínica correcta` : `Decisión incorrecta — revisa el razonamiento de cada opción`}
+              </strong>
+              ${nextBtn}
+            </div>
+            <p style="margin: 0; font-size: 0.9rem;">
+              Cada opción arriba muestra ahora la justificación clínica basada en las guías vigentes.
+            </p>
+          </div>
+        `;
+      }
+
+      stage.innerHTML = `
+        <div class="card-head">
+          <div class="card-meta-row">
+            <span class="chip chip-diag">Caso ${appState.activeCaseIndex + 1} de ${CASES_DATA.length}</span>
+            <span class="chip chip-warn">${currentCase.tag}</span>
+          </div>
+        </div>
+        <div class="case-vignette">${currentCase.vignette}</div>
+        <p style="margin: 0; font-weight: 700;">${currentCase.question}</p>
+        <div class="quiz-options">${optionsHtml}</div>
+        ${feedbackBanner}
+      `;
+
+      refreshIcons();
+    }
+
+    // =========================================================================
+    // INITIALIZATION
+    // =========================================================================
+
+    async function initApp() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === `object`) {
+            if (saved.triageFilter) appState.triageFilter = saved.triageFilter;
+            if (saved.activeModuleTab && MODULES_DATA[saved.activeModuleTab]) appState.activeModuleTab = saved.activeModuleTab;
+            if (typeof saved.moduleSearch === `string`) appState.moduleSearch = saved.moduleSearch;
+            if (saved.moduleSeverity) appState.moduleSeverity = saved.moduleSeverity;
+            if (Array.isArray(saved.reviewedModules)) appState.reviewedModules = saved.reviewedModules;
+            if (saved.activeAlgo && ALGORITHMS_DATA[saved.activeAlgo]) appState.activeAlgo = saved.activeAlgo;
+            if (saved.algoHistory) appState.algoHistory = saved.algoHistory;
+            if (saved.algoChoices) appState.algoChoices = saved.algoChoices;
+            if (typeof saved.pharmaSearch === `string`) appState.pharmaSearch = saved.pharmaSearch;
+            if (saved.pharmaCategory) appState.pharmaCategory = saved.pharmaCategory;
+            if (typeof saved.activeCaseIndex === `number`) appState.activeCaseIndex = saved.activeCaseIndex;
+            if (saved.caseAnswers && typeof saved.caseAnswers === `object`) appState.caseAnswers = saved.caseAnswers;
+          }
+        }
+      } catch (e) {
+        // Proceed with defaults if getAppState is unavailable
+      }
+
+      renderRedFlags();
+      renderModules();
+      renderAlgorithm();
+      renderPharmaTable();
+      renderCaseSimulator();
+      updateProgressBar();
+      refreshIcons();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener(`DOMContentLoaded`, initApp);
+  </script>
+</body>
+</html>
