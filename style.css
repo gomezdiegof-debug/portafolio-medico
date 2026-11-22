@@ -156,6 +156,24 @@ button {
   transform: translateY(-2px);
 }
 
+.btn-ecg {
+  background-color: var(--secondary);
+  color: var(--text-light);
+  border: 1px solid var(--secondary);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.18);
+}
+
+.btn-ecg:hover {
+  background-color: var(--primary);
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px hsla(172, 80%, 35%, 0.35);
+}
+
+.btn-ecg:active {
+  transform: translateY(0);
+}
+
 /* ==========================================================================
    HEADER & NAVIGATION
    ========================================================================== */
@@ -298,6 +316,7 @@ button {
 
 .hero-actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
 }
 
@@ -775,6 +794,46 @@ section {
 .video-topics li i {
   color: var(--primary);
   font-size: 1.1rem;
+}
+
+.interactive-resource-card {
+  margin-top: 40px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-left: 5px solid var(--primary);
+  border-radius: var(--radius-lg);
+  padding: 36px 40px;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  transition: var(--transition-normal);
+}
+
+.interactive-resource-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-glow);
+  border-left-color: var(--primary);
+}
+
+.resource-info {
+  max-width: 680px;
+}
+
+.resource-info h3 {
+  font-size: 1.75rem;
+  margin-bottom: 12px;
+  color: var(--secondary);
+}
+
+.resource-info .video-desc {
+  margin-bottom: 0;
+}
+
+.resource-action {
+  flex-shrink: 0;
 }
 
 /* ==========================================================================
@@ -1390,6 +1449,10 @@ section {
   .hero-content {
     align-items: center;
   }
+
+  .hero-actions {
+    justify-content: center;
+  }
   
   .hero-content h1 {
     font-size: 2.5rem;
@@ -1415,6 +1478,13 @@ section {
   .video-grid {
     grid-template-columns: 1fr;
     gap: 32px;
+  }
+
+  .interactive-resource-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 28px 24px;
+    gap: 24px;
   }
 }
 
