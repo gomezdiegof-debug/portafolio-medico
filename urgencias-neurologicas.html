@@ -1,0 +1,2561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="vitals">
+  <title>Urgencias Neurológicas — Guía Clínica Interactiva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Paleta clínica azul marino / pizarra adaptada sobre base Vitals */
+      --background: #ffffff;
+      --surface-container-low: #f1f5f9;
+      --surface-container: #e2e8f0;
+      --surface-container-high: #cbd5e1;
+
+      --on-surface: #0f172a;
+      --on-surface-variant: #334155;
+
+      --outline: #64748b;
+      --outline-variant: #cbd5e1;
+
+      --primary: #1e3a5f;
+      --on-primary: #ffffff;
+      --primary-container: #e0e8f2;
+      --on-primary-container: #132945;
+      --secondary: #14532d;
+      --tertiary: #15803d;
+      --positive: #15803d;
+      --warning: #b45309;
+      --warning-container: #fef3c7;
+      --on-warning-container: #78350f;
+      --error: #b91c1c;
+      --error-container: #fee2e2;
+      --on-error: #ffffff;
+      --on-error-container: #7f1d1d;
+      --focus: #1e3a5f;
+
+      /* Series de datos */
+      --data-1: #1e3a5f;
+      --data-2: #15803d;
+      --data-3: #b45309;
+      --data-4: #475569;
+      --data-context: #94a3b8;
+
+      /* Tipografía */
+      --font-headline: 'Figtree', sans-serif;
+      --font-body: 'Atkinson Hyperlegible', sans-serif;
+      --font-label: 'Figtree', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.35rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.55rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.95rem, 0.92rem + 0.15vw, 1.02rem);
+      --label-size: 0.75rem;
+
+      /* Forma y efectos */
+      --rounded: 0.5rem;
+      --rounded-lg: 0.75rem;
+      --rounded-full: 9999px;
+      --top-bar: 6px solid var(--primary);
+      --status-bar-width: 4px;
+      --card-border: 1px solid var(--outline-variant);
+      --card-lift: 0 1px 3px rgb(15 23 42 / 0.06), 0 4px 12px rgb(15 23 42 / 0.04);
+
+      /* Escala de espaciado */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.25rem;
+      --space-2xl: 3.5rem;
+
+      /* Transiciones */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .page-shell {
+      border-top: var(--top-bar);
+      min-height: 100vh;
+    }
+
+    .page-grid {
+      display: grid;
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1320px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Cabecera clínica */
+    .clinical-header {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg) var(--space-xl);
+      box-shadow: var(--card-lift);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .header-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    .title {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 800;
+      letter-spacing: -0.015em;
+      line-height: 1.08;
+      color: var(--on-surface);
+      margin: 0;
+    }
+
+    .lede {
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: var(--on-surface-variant);
+      max-width: 72ch;
+      margin: var(--space-xs) 0 0;
+    }
+
+    .audience-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded-full);
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      white-space: nowrap;
+    }
+
+    .chip[data-status="ok"] {
+      background: color-mix(in srgb, var(--tertiary) 14%, var(--background));
+      color: var(--secondary);
+    }
+
+    .chip[data-status="warn"] {
+      background: var(--warning-container);
+      color: var(--on-warning-container);
+    }
+
+    .chip[data-status="alert"] {
+      background: var(--error-container);
+      color: var(--on-error-container);
+    }
+
+    /* Fila KPI superior */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .status-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .status-card[data-status="ok"] { border-left-color: var(--tertiary); }
+    .status-card[data-status="warn"] { border-left-color: var(--warning); }
+    .status-card[data-status="alert"] { border-left-color: var(--error); }
+
+    .kpi-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+
+    .kpi-value {
+      font-family: var(--font-headline);
+      font-size: 1.6rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+      color: var(--on-surface);
+    }
+
+    .kpi-caption {
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+    }
+
+    /* Barra de búsqueda en tiempo real */
+    .search-toolbar {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      box-shadow: var(--card-lift);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .search-controls-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: var(--space-md);
+    }
+
+    .search-field-group {
+      flex: 1 1 320px;
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface);
+    }
+
+    .search-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.85rem;
+      color: var(--on-surface-variant);
+      pointer-events: none;
+      width: 18px;
+      height: 18px;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md) var(--space-sm) 2.6rem;
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      background: var(--background);
+      color: var(--on-surface);
+      font-size: 0.975rem;
+      transition: border-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent);
+      outline: none;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      background: var(--on-primary-container);
+    }
+
+    .btn-outline {
+      background: var(--background);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .btn-outline:hover {
+      background: var(--primary-container);
+    }
+
+    .btn-ghost {
+      background: var(--surface-container-low);
+      border-color: var(--outline-variant);
+      color: var(--on-surface);
+    }
+    .btn-ghost:hover {
+      background: var(--surface-container);
+    }
+
+    .quick-tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .quick-tags-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      margin-right: var(--space-xs);
+    }
+
+    .filter-pill {
+      min-height: 36px;
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded-full);
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .filter-pill:hover {
+      background: var(--primary-container);
+      border-color: var(--primary);
+    }
+
+    .filter-pill.is-active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .search-status-line {
+      font-family: var(--font-label);
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      border-top: 1px solid var(--outline-variant);
+      padding-top: var(--space-sm);
+    }
+
+    /* Pestañas móviles de patología */
+    .mobile-nav-strip {
+      display: none;
+      gap: var(--space-sm);
+      overflow-x: auto;
+      padding-bottom: var(--space-xs);
+    }
+
+    /* Layout principal de 2 columnas (Sidebar + Contenido) */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .sidebar-nav {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      box-shadow: var(--card-lift);
+      position: sticky;
+      top: var(--space-md);
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .sidebar-heading {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--on-surface-variant);
+      padding: var(--space-xs) var(--space-sm) var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+      margin-bottom: var(--space-xs);
+    }
+
+    .nav-item-btn {
+      width: 100%;
+      min-height: 44px;
+      text-align: left;
+      background: transparent;
+      border: none;
+      border-left: 3px solid transparent;
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      cursor: pointer;
+      display: grid;
+      gap: 2px;
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .nav-item-btn:hover {
+      background: var(--surface-container-low);
+    }
+
+    .nav-item-btn.is-active {
+      background: var(--primary-container);
+      border-left-color: var(--primary);
+      color: var(--on-primary-container);
+    }
+
+    .nav-item-title {
+      font-family: var(--font-label);
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .nav-item-sub {
+      font-size: 0.77rem;
+      color: var(--on-surface-variant);
+    }
+    .nav-item-btn.is-active .nav-item-sub {
+      color: var(--on-primary-container);
+    }
+
+    .nav-divider {
+      height: 1px;
+      background: var(--outline-variant);
+      margin: var(--space-xs) 0;
+    }
+
+    .main-stack {
+      display: grid;
+      gap: var(--space-lg);
+    }
+
+    /* Tarjeta de Patología */
+    .pathology-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg) var(--space-xl);
+      box-shadow: var(--card-lift);
+      display: grid;
+      gap: var(--space-lg);
+    }
+
+    .pathology-card[data-priority="critical"] {
+      border-left-color: var(--error);
+    }
+
+    .pathology-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-md);
+    }
+
+    .pathology-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      line-height: 1.18;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .pathology-subtitle {
+      margin: var(--space-xs) 0 0;
+      color: var(--on-surface-variant);
+      font-size: 0.95rem;
+    }
+
+    .source-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    /* Alertas visuales destacadas para dosis críticas y tiempos ventana */
+    .alerts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .alert-box {
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      border: 1px solid var(--outline-variant);
+      border-left: var(--status-bar-width) solid var(--error);
+      background: var(--error-container);
+      color: var(--on-error-container);
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .alert-box[data-kind="window"] {
+      border-left-color: var(--primary);
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .alert-box[data-kind="warning"] {
+      border-left-color: var(--warning);
+      background: var(--warning-container);
+      color: var(--on-warning-container);
+    }
+
+    .alert-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .alert-body {
+      font-size: 0.93rem;
+      line-height: 1.48;
+      font-weight: 700;
+    }
+
+    /* Pilares internos */
+    .pillar-section {
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .pillar-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+    }
+
+    .pillar-title {
+      font-family: var(--font-headline);
+      font-size: var(--subhead-size);
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .diag-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .diag-panel {
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      display: grid;
+      gap: var(--space-xs);
+      align-content: start;
+    }
+
+    .diag-panel-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+    }
+
+    .clinical-list {
+      margin: 0;
+      padding-left: 1.15rem;
+      display: grid;
+      gap: var(--space-xs);
+      font-size: 0.94rem;
+    }
+
+    .mono {
+      font-family: var(--font-mono);
+      font-size: 0.88em;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Acordeones desplegables para algoritmos */
+    .accordion-group {
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .accordion-item {
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      background: var(--background);
+      overflow: hidden;
+    }
+
+    .accordion-trigger {
+      width: 100%;
+      min-height: 46px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      text-align: left;
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: 0.95rem;
+      font-weight: 700;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .accordion-trigger:hover {
+      background: var(--primary-container);
+    }
+
+    .accordion-trigger[aria-expanded="true"] {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .accordion-step-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-wrap: wrap;
+    }
+
+    .step-badge {
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 2px var(--space-sm);
+      border-radius: var(--rounded);
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .accordion-chevron {
+      flex-shrink: 0;
+      transition: transform var(--dur-short) var(--ease-out);
+    }
+    .accordion-trigger[aria-expanded="true"] .accordion-chevron {
+      transform: rotate(180deg);
+    }
+
+    .accordion-panel {
+      padding: var(--space-md);
+      background: var(--background);
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .accordion-panel[hidden] {
+      display: none;
+    }
+
+    /* Tablas farmacológicas y GRADE */
+    .table-scroll {
+      overflow-x: auto;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+    }
+
+    .clinical-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    .clinical-table th {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .clinical-table td {
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+    }
+
+    .clinical-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .not-specified {
+      color: var(--on-surface-variant);
+      font-style: italic;
+    }
+
+    /* Sección GRADE y Errores Frecuentes */
+    .summary-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg) var(--space-xl);
+      box-shadow: var(--card-lift);
+      display: grid;
+      gap: var(--space-lg);
+    }
+
+    .pitfalls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .pitfall-item {
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-left: var(--status-bar-width) solid var(--error);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .pitfall-title {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--error);
+    }
+
+    /* Sección Autoevaluación MIR (5 Casos) */
+    .quiz-section {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--tertiary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg) var(--space-xl);
+      box-shadow: var(--card-lift);
+      display: grid;
+      gap: var(--space-lg);
+    }
+
+    .quiz-header-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-md);
+    }
+
+    .quiz-cases-list {
+      display: grid;
+      gap: var(--space-lg);
+    }
+
+    .quiz-case-card {
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      background: var(--surface-container-low);
+      display: grid;
+      gap: var(--space-md);
+    }
+
+    .quiz-stem {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin: 0;
+    }
+
+    .quiz-options {
+      display: grid;
+      gap: var(--space-sm);
+    }
+
+    .quiz-opt-btn {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      background: var(--background);
+      color: var(--on-surface);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      font-size: 0.94rem;
+      line-height: 1.45;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .quiz-opt-btn:hover:not(:disabled) {
+      background: var(--primary-container);
+      border-color: var(--primary);
+    }
+
+    .quiz-opt-btn:disabled {
+      cursor: default;
+    }
+
+    .quiz-opt-btn.is-correct {
+      background: color-mix(in srgb, var(--tertiary) 14%, var(--background));
+      border-color: var(--tertiary);
+      color: var(--secondary);
+      font-weight: 700;
+    }
+
+    .quiz-opt-btn.is-wrong {
+      background: var(--error-container);
+      border-color: var(--error);
+      color: var(--on-error-container);
+    }
+
+    .opt-letter {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .quiz-feedback {
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      border-left: var(--status-bar-width) solid var(--tertiary);
+      background: var(--background);
+      font-size: 0.92rem;
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    .quiz-feedback[data-state="wrong"] {
+      border-left-color: var(--error);
+    }
+
+    .empty-state {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      text-align: center;
+      display: grid;
+      gap: var(--space-md);
+      justify-items: center;
+    }
+
+    .sources-footer {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      display: grid;
+      gap: var(--space-xs);
+    }
+
+    mark.search-hl {
+      background: var(--warning-container);
+      color: var(--on-warning-container);
+      padding: 0 2px;
+      border-radius: 2px;
+    }
+
+    @media (max-width: 960px) {
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+      .sidebar-nav {
+        display: none;
+      }
+      .mobile-nav-strip {
+        display: flex;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-sm);
+        gap: var(--space-md);
+      }
+      .clinical-header,
+      .pathology-card,
+      .summary-card,
+      .quiz-section {
+        padding: var(--space-md);
+      }
+    }
+
+    .portfolio-back-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .portfolio-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      color: var(--on-primary-container);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .portfolio-back-link:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .portfolio-author-tag {
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <div class="page-grid">
+
+      <!-- Cabecera Principal -->
+      <header class="clinical-header">
+        <div class="portfolio-back-bar">
+          <a class="portfolio-back-link" href="index.html">
+            <i data-lucide="arrow-left" width="16" height="16" aria-hidden="true"></i>
+            Volver al Portafolio
+          </a>
+          <span class="portfolio-author-tag">DIEGO GOMEZ | Médico de Familia &amp; SST</span>
+        </div>
+        <div class="header-top-row">
+          <div>
+            <div class="kicker">Guía Clínica de Actuación Neurocrítica</div>
+            <h1 class="title">Urgencias Neurológicas</h1>
+            <p class="lede">
+              Síntesis operativa basada exclusivamente en guías ESO, EAN, ECTRIMS, EPNS, ILAE, SEN y Harrison.
+              Estructurada para toma de decisiones rápidas en diagnóstico, tiempos ventana y farmacología.
+            </p>
+          </div>
+          <div class="audience-row" aria-label="Público objetivo">
+            <span class="chip">Estudiantes MIR</span>
+            <span class="chip">Medicina de Familia</span>
+            <span class="chip" data-status="ok">Neurología / UCI</span>
+          </div>
+        </div>
+
+        <div class="kpi-grid" aria-label="Indicadores clave de la guía">
+          <div class="status-card" data-status="alert">
+            <span class="kpi-label">Ventanas Hiperagudas</span>
+            <span class="kpi-value mono">&lt; 4.5 h / t₁ = 5 min</span>
+            <span class="kpi-caption">IVT en ictus (hora dorada &lt; 60 min); benzodiacepinas en status</span>
+          </div>
+          <div class="status-card">
+            <span class="kpi-label">Bloques Nosológicos</span>
+            <span class="kpi-value mono">7 módulos</span>
+            <span class="kpi-caption">Cobertura completa de las emergencias recogidas en las fuentes</span>
+          </div>
+          <div class="status-card" data-status="warn">
+            <span class="kpi-label">Seguridad Farmacológica</span>
+            <span class="kpi-value mono">Alertas críticas</span>
+            <span class="kpi-caption">Dosis de carga, antídotos de reversión y contraindicaciones absolutas</span>
+          </div>
+          <div class="status-card" data-status="ok">
+            <span class="kpi-label">Autoevaluación MIR</span>
+            <span class="kpi-value mono" id="kpi-quiz-score">0 / 5</span>
+            <span class="kpi-caption" id="kpi-quiz-caption">5 casos clínicos pendientes de resolver</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Buscador en Tiempo Real -->
+      <section class="search-toolbar" aria-label="Buscador y filtros clínicos">
+        <div class="search-controls-row">
+          <div class="search-field-group">
+            <label class="field-label" for="search-input">
+              Buscador en tiempo real por enfermedad, fármaco, escala o signo de alarma
+            </label>
+            <div class="search-input-wrap">
+              <i data-lucide="search" class="search-icon" aria-hidden="true"></i>
+              <input
+                type="search"
+                id="search-input"
+                class="search-input"
+                placeholder="Ej.: Alteplase, Nimodipino, Status, Xantocromía, Piridoxina, MGFA..."
+                oninput="handleSearchInput(this.value)"
+              >
+            </div>
+          </div>
+          <button type="button" class="btn btn-outline" id="btn-clear-search" onclick="clearSearch()">
+            Limpiar búsqueda
+          </button>
+          <button type="button" class="btn btn-ghost" id="btn-toggle-all-acc" onclick="toggleAllAccordions()">
+            Expandir todos los algoritmos
+          </button>
+        </div>
+
+        <div class="quick-tags-row" aria-label="Accesos rápidos de búsqueda">
+          <span class="quick-tags-label">Fármacos y términos clave:</span>
+          <button type="button" class="filter-pill" onclick="applyQuickTerm('Alteplase')">Alteplase / TNK</button>
+          <button type="button" class="filter-pill" onclick="applyQuickTerm('Idarucizumab')">Idarucizumab / PCC</button>
+          <button type="button" class="filter-pill" onclick="applyQuickTerm('Nimodipino')">Nimodipino</button>
+          <button type="button" class="filter-pill" onclick="applyQuickTerm('Levetiracetam')">Levetiracetam / Valproato</button>
+          <button type="button" class="filter-pill" onclick="applyQuickTerm('Fenobarbital')">Fenobarbital / Piridoxina</button>
+          <button type="button" class="filter-pill" onclick="applyQuickTerm('Metilprednisolona')">Metilprednisolona</button>
+          <button type="button" class="filter-pill" onclick="applyQuickTerm('IVIG')">IVIG / Plasmaféresis</button>
+        </div>
+
+        <div class="search-status-line">
+          <span id="search-results-count">Mostrando los 7 bloques de urgencias neurológicas</span>
+          <span class="mono" id="active-filter-label">Vista: Todas las patologías</span>
+        </div>
+      </section>
+
+      <!-- Navegación rápida móvil/tablet -->
+      <nav class="mobile-nav-strip" id="mobile-nav-strip" aria-label="Navegación rápida por patología"></nav>
+
+      <!-- Área Principal: Sidebar + Contenidos -->
+      <div class="workspace-grid">
+        <aside class="sidebar-nav" id="sidebar-nav" aria-label="Menú lateral de patologías">
+          <div class="sidebar-heading">Patologías y Secciones</div>
+          <!-- Poblado dinámicamente -->
+        </aside>
+
+        <main class="main-stack" id="main-content">
+          <div id="pathologies-container" class="main-stack"></div>
+
+          <!-- Estado vacío si el buscador no encuentra coincidencias -->
+          <div id="empty-search-state" class="empty-state" hidden>
+            <i data-lucide="file-search" width="32" height="32" aria-hidden="true"></i>
+            <div>
+              <h2 class="pathology-title">Sin coincidencias en las fuentes</h2>
+              <p class="lede">
+                No se encontraron patologías, escalas ni fármacos que coincidan con el término introducido.
+              </p>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="clearSearch()">
+              Mostrar todas las patologías
+            </button>
+          </div>
+
+          <!-- Tabla Maestra GRADE y Errores Frecuentes -->
+          <section id="section-grade" class="summary-card" aria-labelledby="grade-heading">
+            <div class="pathology-head">
+              <div>
+                <div class="kicker">Síntesis Metodológica GRADE &amp; AGREE II</div>
+                <h2 class="pathology-title" id="grade-heading">Recomendaciones Estructuradas y Errores a Evitar</h2>
+                <p class="pathology-subtitle">
+                  Nivel de evidencia y errores frecuentes en la práctica asistencial según las guías de referencia.
+                </p>
+              </div>
+              <span class="chip" data-status="ok">Auditoría GRADE / AGREE II</span>
+            </div>
+
+            <div class="pillar-section">
+              <h3 class="pillar-title">
+                <i data-lucide="alert-octagon" width="18" height="18" aria-hidden="true"></i>
+                5 Errores Frecuentes a Evitar en Urgencias Neurológicas
+              </h3>
+              <div class="pitfalls-grid">
+                <div class="pitfall-item">
+                  <div class="pitfall-title">1. Descender precipitadamente la PA en el Ictus Isquémico Agudo</div>
+                  <div>Salvo cifras extremas (<span class="mono">&gt; 220/120 mmHg</span>) o previo a trombólisis (<span class="mono">&gt; 185/110 mmHg</span>), bajar la PA compromete la perfusión en la penumbra isquémica. Tras TM exitosa, evitar TAS <span class="mono">&lt; 140 mmHg</span>.</div>
+                </div>
+                <div class="pitfall-item">
+                  <div class="pitfall-title">2. Omitir la Punción Lumbar tras TC normal en sospecha de HSA</div>
+                  <div>Confiar solo en la TC hiperaguda cuando persiste la cefalea en trueno puede dejar inadvertida una HSA; la PL a las <span class="mono">&gt; 6–12 h</span> para xantocromía es obligatoria.</div>
+                </div>
+                <div class="pitfall-item">
+                  <div class="pitfall-title">3. Retrasar corticoides en Arteritis de la Temporal</div>
+                  <div>Esperar al resultado de la biopsia de arteria temporal ante alta sospecha clínica expone a neuropatía óptica isquémica y pérdida irreversible de visión.</div>
+                </div>
+                <div class="pitfall-item">
+                  <div class="pitfall-title">4. Administrar corticoides en el Síndrome de Guillain-Barré</div>
+                  <div>La evidencia científica demuestra que los corticoides sistémicos carecen de eficacia en el SGB, están contraindicados y pueden retrasar la recuperación neurológica.</div>
+                </div>
+                <div class="pitfall-item">
+                  <div class="pitfall-title">5. Prescribir fármacos contraindicados en Miastenia Gravis</div>
+                  <div>Indicar fluoroquinolonas o aminoglucósidos (entre otros) sin verificar el antecedente de miastenia gravis puede precipitar una crisis miasténica letal.</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="pillar-section">
+              <h3 class="pillar-title">
+                <i data-lucide="clipboard-check" width="18" height="18" aria-hidden="true"></i>
+                Tabla Maestra de Recomendaciones Clínicas (GRADE)
+              </h3>
+              <div class="table-scroll">
+                <table class="clinical-table">
+                  <thead>
+                    <tr>
+                      <th>Entidad Nosológica</th>
+                      <th>Intervención Diagnóstica / Terapéutica</th>
+                      <th>Clase / Grado</th>
+                      <th>Nivel de Evidencia</th>
+                    </tr>
+                  </thead>
+                  <tbody id="grade-table-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- Sección Final: Autoevaluación con 5 Casos Clínicos -->
+          <section id="section-quiz" class="quiz-section" aria-labelledby="quiz-heading">
+            <div class="quiz-header-row">
+              <div>
+                <div class="kicker">Autoevaluación Interactiva MIR</div>
+                <h2 class="pathology-title" id="quiz-heading">5 Casos Clínicos Tipo Test</h2>
+                <p class="pathology-subtitle">
+                  Casos basados exclusivamente en las fuentes con retroalimentación inmediata y justificación clínica.
+                </p>
+              </div>
+              <div class="audience-row">
+                <span class="chip" data-status="ok" id="quiz-progress-chip">Progreso: 0 / 5 respondidos</span>
+                <button type="button" class="btn btn-outline" id="btn-reset-quiz" onclick="resetQuiz(this)">
+                  Reiniciar autoevaluación
+                </button>
+              </div>
+            </div>
+
+            <div id="quiz-cases-container" class="quiz-cases-list"></div>
+          </section>
+
+          <!-- Nota de Fuentes -->
+          <footer class="sources-footer">
+            <strong>Fuentes del cuaderno utilizadas en esta guía:</strong>
+            <span>
+              Urgencias Neurológicas: Manejo Clínico y Medicina Basada en la Evidencia; Guías ESO (SOP, Unidades Móviles de Ictus 2022, Manejo de PA en Ictus Isquémico y HIP 2025/2026, Guía ESO/EANS/ESMINT); Guías EAN / ERN EURO-NMD en ELA (2024); Consenso ECTRIMS/EAN en Esclerosis Múltiple; Guías ILAE / EPNS en Status Epilepticus y Crisis Neonatales (2024–2025) y Libro de Resúmenes EPNS 2025; Guía Oficial de la SEN en Epilepsia; y Harrison's Principles of Internal Medicine (22.ª ed., sección de Neurología). Los datos no recogidos en los extractos se señalan explícitamente sin incorporar información externa.
+            </span>
+          </footer>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <api-shim></api-shim>
+
+  <script>
+    const PATHOLOGIES = [
+      {
+        id: 'ictus-isquemico',
+        navTitle: `Ictus Isquémico Agudo y AIT`,
+        navSub: `IVT <4.5 h · TM 0–24 h · MSU`,
+        priority: `critical`,
+        title: `Ictus Isquémico Agudo (IIA), AIT y Oclusión Basilar`,
+        subtitle: `Emergencia neurovascular hiperaguda: salvación de la penumbra isquémica y control tensional estricto.`,
+        badges: [
+          { text: `ESO 2022–2026`, status: `info` },
+          { text: `ESO / EANS / ESMINT`, status: `info` },
+          { text: `Harrison Cap. 437–438`, status: `ok` }
+        ],
+        alerts: [
+          {
+            kind: `window`,
+            title: `Tiempos Ventana Críticos`,
+            text: `TC craneal simple < 15 min de llegada · Trombólisis IV < 4.5 h (Hora dorada < 60 min) · Trombectomía mecánica 0–6 h (hasta 24 h con TC perfusión/RM).`
+          },
+          {
+            kind: `critical`,
+            title: `Alerta Tensional y Reperfusión`,
+            text: `Previo a IVT: PA obligatoria < 185/110 mmHg (y < 180/105 mmHg en primeras 24 h). Post-trombectomía exitosa (ESO 2025/2026): EVITAR descenso intensivo de TAS < 140 mmHg (mantener 140–180 mmHg).`
+          }
+        ],
+        diagnosis: {
+          clinica: [
+            `Déficit neurológico focal de inicio súbito (hemiparesia en ~85% de casos, alteración del habla, visión o marcha). Regla FAST (Facial, Arm, Speech, Time).`,
+            `AIT (definición tisular): disfunción neurológica focal transitoria cerebral, espinal o retiniana sin infarto agudo en neuroimagen estructural.`,
+            `Oclusión basilar completa: signos bilaterales de tractos largos + pares craneales/cerebelo; movimientos mioclónicos que simulan estatus epiléptico; síndrome locked-in en infarto pontino/mesencefálico inferior. TIAs de repetición o ictus fluctuante anuncian oclusión basilar inminente.`,
+            `Diagnóstico diferencial (Stroke Mimics): migraña con aura prolongada, parálisis postictal de Todd, hipoglucemia severa, encefalopatía metabólica, neoplasias/abscesos y trastornos conversivos.`
+          ],
+          escalas: [
+            `Escala NIHSS: cuantifica gravedad clínica (déficits incapacitantes, especialmente NIHSS > 5, orientan elegibilidad trombolítica/endovascular).`,
+            `Escala ASPECTS: valoración de signos isquémicos precoces en TC simple.`,
+            `Escala de Rankin modificada (mRS): objetivo de independencia funcional mRS 0–2 a los 90 días.`,
+            `Escalas prehospitalarias de triaje para oclusión de gran vaso (mencionadas en fuentes ESO): RACE, LAMS, FAST-ED.`
+          ],
+          pruebas: [
+            `Valoración ABCD, glucemia capilar inmediata, ECG 12 derivaciones y analítica (hemograma, TP/TTPA/INR, función renal, troponinas I/T).`,
+            `TC Craneal Simple (< 15 min): descarta hemorragia e identifica borramiento de surcos, pérdida diferenciación gris-blanca y arteria hiperdensa.`,
+            `Angio-TC arterial (cuello y cráneo / desde aurícula izquierda a vértex): detecta oclusión de gran vaso (ACI, M1/M2 de ACM, arteria basilar).`,
+            `TC Perfusión o RM (DWI-FLAIR / perfusión-difusión): evalúa mismatch en ictus del despertar o ventana 4.5–24 h (núcleo FSC < 10–12 mL/100g/min; penumbra FSC 12–20 mL/100g/min; MTT y tMAX prolongados).`
+          ]
+        },
+        algorithms: [
+          {
+            step: `Paso 1 · < 15 min`,
+            title: `Estabilización inicial, Código Ictus y Unidades Móviles (MSU)`,
+            items: [
+              `Preaviso hospitalario ("código ictus") para TC urgente al ingreso.`,
+              `Soporte general: mantener SpO2 > 92%, normoglucemia (evitar > 180 mg/dL con insulina rápida) y normotermia (< 37.5 °C).`,
+              `Unidades Móviles de Ictus (MSU, ESO 2022): reducen tiempo síntomas-tratamiento en 28.99 min de media, elevan trombólisis en hora dorada (< 60 min) y mejoran mRS 0–2 sin riesgo en mimics (Clase IIa).`,
+              `Realizar TC simple + Angio-TC urgente para descartar hemorragia e identificar OGV.`
+            ]
+          },
+          {
+            step: `Paso 2 · < 4.5 h`,
+            title: `Trombólisis Intravenosa (IVT)`,
+            items: [
+              `Confirmar ausencia de hemorragia y ventana < 4.5 horas desde última vez visto bien.`,
+              `Verificar PA < 185/110 mmHg antes del bolo y mantener < 180/105 mmHg durante las primeras 24 horas.`,
+              `Administrar Alteplase (0.9 mg/kg IV, máx. 90 mg) o Tenecteplase (0.25 mg/kg IV en bolo único) en la propia sala de TC.`,
+              `Ante deterioro neurológico o HTA no controlada durante la infusión: suspender infusión, administrar crioprecipitado y repetir neuroimagen urgente; evitar sondaje vesical ≥ 2 horas.`
+            ]
+          },
+          {
+            step: `Paso 3 · 0–24 h`,
+            title: `Trombectomía Mecánica (TM) y Control Tensional Post-Recanalización`,
+            items: [
+              `Indicada en OGV de circulación anterior (ACI o M1 ACM) dentro de 0–6 h, o entre 6–24 h con selección por TC perfusión/RM, con o sin IVT previa.`,
+              `En oclusión aguda de arteria basilar: trombectomía endovascular de rutina independientemente del NIHSS basal (guías ESO/EANS/ESMINT).`,
+              `Tras recanalización exitosa (ESO 2025/2026): mantener TAS 140–180 mmHg y EVITAR reducción intensiva de TAS < 140 mmHg en primeras 24 h (Clase III Perjudicial).`,
+              `Si no recibe IVT ni TM: hipertensión permisiva salvo cifras extremas > 220/120 mmHg.`
+            ]
+          },
+          {
+            step: `Paso 4 · Post-agudo`,
+            title: `Prevención Secundaria y Estudio Etiológico (TOAST / Harrison)`,
+            items: [
+              `Si fibrilación auricular (FA): apixabán 5 mg/12 h de por vida (o 2.5 mg/12 h si TFG reducida). Si no detectada, monitorización ECG ambulatoria.`,
+              `Si estenosis significativa de carótida interna: derivar para endarterectomía carotídea en el mismo ingreso.`,
+              `Resto (no cardioembólico): doble antiagregación con aspirina 81 mg + clopidogrel (carga 600 mg, luego 75 mg/día) o ticagrelor (carga 180 mg, luego 90 mg/12 h) 21–30 días (≥ 3 meses si estenosis intracraneal > 50%), continuando con aspirina 81 mg/día.`,
+              `Estatina de alta intensidad (atorvastatina 80 mg o rosuvastatina 40 mg) con objetivo LDL < 70 mg/dL.`
+            ]
+          }
+        ],
+        pharmacology: [
+          {
+            drug: `Alteplase (rtPA)`,
+            dose: `0.9 mg/kg IV (máx. 90 mg): 10% bolo inicial + 90% perfusión continua en 60 min. (En Asia se usa 0.6 mg/kg según Harrison).`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Hemorragia en TC; PA ≥ 185/110 mmHg no controlada; > 4.5 h. Monitorizar PA (< 180/105 mmHg 24 h) y estado neurológico; evitar sondaje vesical ≥ 2 h.`
+          },
+          {
+            drug: `Tenecteplase (TNK)`,
+            dose: `0.25 mg/kg IV en bolo único.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Mismos criterios de seguridad y ventana (< 4.5 h) que Alteplase. Si deterioro agudo: detener/reimagen urgente y crioprecipitado.`
+          },
+          {
+            drug: `Apixabán / Antiagregantes / Estatinas (post-agudo)`,
+            dose: `Apixabán 5 mg/12 h VO (2.5 mg/12 h si disfunción renal). AAS 81 mg + Clopidogrel (600 mg carga → 75 mg/d) o Ticagrelor (180 mg carga → 90 mg/12 h). Atorvastatina 80 mg o Rosuvastatina 40 mg.`,
+            dilution: `Vía oral (no requiere dilución).`,
+            contraindications: `Warfarina (INR 2–3) preferida en síndrome antifosfolípido; apixabán en ictus asociado a cáncer; vigilar polimorfismos CYP2C19 con clopidogrel.`
+          }
+        ]
+      },
+      {
+        id: 'hemorragias-hip-hsa',
+        navTitle: `Hemorragia Cerebral (HIP) y HSA`,
+        navSub: `TAS 130–140 · Reversión <1 h · PL >6–12 h`,
+        priority: `critical`,
+        title: `Hemorragia Intracerebral Espontánea (HIP) y Subaracnoidea (HSA)`,
+        subtitle: `Control precoz de expansión del hematoma, reversión urgente de anticoagulantes y exclusión aneurismática en 24 h.`,
+        badges: [
+          { text: `ESO / INTERACT-2 / ATACH-2`, status: `info` },
+          { text: `ESO / EANS / ESMINT`, status: `info` },
+          { text: `Harrison Cap. 439–440`, status: `ok` }
+        ],
+        alerts: [
+          {
+            kind: `window`,
+            title: `Tiempos Ventana Diagnósticos y Terapéuticos`,
+            text: `HIP: Reversión de anticoagulación idealmente < 1 h de llegada · HSA: TC simple > 95% sensibilidad < 6 h; si normal, PL obligatoria > 6–12 h (xantocromía); exclusión aneurisma (coiling/clipping) < 24 h.`
+          },
+          {
+            kind: `critical`,
+            title: `Dosis Críticas de Reversión y Vasoespasmo`,
+            text: `AVK: PCC 4F 25–50 UI/kg IV + Vitamina K1 10 mg IV · Dabigatrán: Idarucizumab 5 g IV (2 × 2.5 g) · Anti-Xa: Andexanet alfa o PCC 4F 50 UI/kg IV · HSA: Nimodipino 60 mg/4 h VO × 21 días.`
+          }
+        ],
+        diagnosis: {
+          clinica: [
+            `HIP: déficit focal agudo con cefalea, vómitos, deterioro del nivel de conciencia o signos de herniación.`,
+            `HSA (85% rotura de aneurisma sacular en polígono de Willis: ACoA, ACoP, bifurcación ACM): cefalea en trueno ("el peor dolor de cabeza de la vida", intensidad máxima en segundos), pérdida transitoria de conciencia, vómitos, rigidez nucal, fotofobia y paresia del III par craneal (aneurisma de ACoP).`,
+            `Complicaciones diferidas en HSA: resangrado (~30% en 1.er mes, pico primeros 7 días, mortalidad 50%), hidrocefalia aguda/subaguda/crónica, isquemia cerebral tardía/vasoespasmo (~30%, días 4–14, pico día 7) e hiponatremia por síndrome pierde-sal cerebral.`
+          ],
+          escalas: [
+            `ICH Score (mortalidad a 30 días en HIP): GCS 3–4 (2 pts), GCS 5–12 (1 pt), Volumen ≥ 30 cm³ (1 pt), Irrupción ventricular (1 pt), Infratentorial (1 pt), Edad ≥ 80 años (1 pt). Puntuación ≥ 5 implica mortalidad > 80–90%.`,
+            `Escala Hunt-Hess (HSA): Grado 1 (asintomático/cefalea mínima) a Grado 5 (coma, postura refleja o flacidez).`,
+            `Escala WFNS (HSA): Grado 1 (GCS 15 sin déficit motor) hasta Grado 5 (GCS 3–6 con/sin déficit motor).`
+          ],
+          pruebas: [
+            `TC craneal simple en HIP: sensibilidad ~100% hiperaguda. Cálculo de volumen: V = (A × B × C) / 2.`,
+            `TC craneal simple en HSA: sensibilidad > 95% en primeras 6 h (hiperdensidad en cisternas basales, cisura de Silvio o interhemisférica).`,
+            `Punción Lumbar (PL) en HSA: obligatoria si TC normal y alta sospecha; realizar tras > 6–12 h para detectar xantocromía confirmada por espectrofotometría.`,
+            `Angio-TC / Arteriografía (DSA) para filiar aneurisma; Doppler transcraneal diario o cada 2 días y TC perfusión para monitorizar vasoespasmo.`
+          ]
+        },
+        algorithms: [
+          {
+            step: `HIP · Paso 1`,
+            title: `Control Hemodinámico y Reversión Inmediata de Coagulopatía (< 1 h)`,
+            items: [
+              `En HIP hiperaguda con hematomas pequeños-moderados: reducir precozmente la TAS a objetivo 130–140 mmHg mediante fármacos IV de vida media corta (Labetalol, Nicardipino, Urapidilo; Harrison añade Clevidipino y Esmolol), evitando vasodilatadores cerebrales.`,
+              `Antagonistas Vitamina K (Sintrom/Warfarina): PCC de 4 factores 25–50 UI/kg IV + Vitamina K1 10 mg IV lenta (Plasma Fresco Congelado como 2.ª línea si no hay PCC).`,
+              `Inhibidores Factor Xa (Rivaroxabán, Apixabán, Edoxabán): Andexanet alfa IV o PCC de 4 factores 50 UI/kg IV.`,
+              `Dabigatrán: Idarucizumab 5 g IV (dos dosis consecutivas de 2.5 g).`
+            ]
+          },
+          {
+            step: `HIP · Paso 2`,
+            title: `Manejo de HIC e Indicaciones Neuroquirúrgicas`,
+            items: [
+              `En pacientes estuporosos o comatosos con signos de herniación: intubación traqueal, sedación, diuréticos osmóticos (manitol o suero salino hipertónico) y elevación de cabecera de la cama con consulta neuroquirúrgica urgente.`,
+              `Indicación quirúrgica de emergencia: hemorragias cerebelosas > 3 cm con deterioro del nivel de conciencia, compresión de tronco o hidrocefalia.`,
+              `En hematomas supratentoriales: abordaje conservador intensivo de primera elección salvo empeoramiento secundario a herniación.`
+            ]
+          },
+          {
+            step: `HSA · Paso 1`,
+            title: `Algoritmo Diagnóstico y Exclusión Aneurismática (< 24 h)`,
+            items: [
+              `TC simple urgente (< 6 h). Si es normal con clínica compatible, esperar > 6–12 h desde inicio y realizar PL para xantocromía por espectrofotometría.`,
+              `Angio-TC cerebral / Arteriografía por Sustracción Digital (DSA) para localizar el aneurisma.`,
+              `Asegurar el aneurisma roto mediante coiling endovascular (de elección) o clipping quirúrgico en las primeras 24 horas (Clase I Fuerte).`
+            ]
+          },
+          {
+            step: `HSA · Paso 2`,
+            title: `Prevención de Isquemia Tardía, Hidrocefalia e Hiponatremia`,
+            items: [
+              `Iniciar Nimodipino oral 60 mg cada 4 horas durante 21 días (Clase I Fuerte, Evidencia Alta).`,
+              `Colocar Drenaje Ventricular Externo (DVE) en hidrocefalia aguda sintomática.`,
+              `Tratar hiponatremia por síndrome pierde-sal cerebral con suero salino hipertónico, evitando la restricción hídrica.`,
+              `Ante vasoespasmo/edema grave refractario: vasodilatadores intraarteriales (verapamilo, nicardipino — efecto < 24 h), drenaje de LCR, manitol/salino hipertónico y considerar hemicraniectomía o hipotermia moderada.`
+            ]
+          }
+        ],
+        pharmacology: [
+          {
+            drug: `PCC de 4 Factores + Vitamina K1`,
+            dose: `PCC 4F: 25–50 UI/kg IV (AVK) o 50 UI/kg IV (anti-Xa). Vitamina K1: 10 mg IV lenta.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Administrar idealmente < 1 h del ingreso. PFC solo si no hay PCC disponible.`
+          },
+          {
+            drug: `Idarucizumab`,
+            dose: `5 g IV administrados en dos dosis consecutivas de 2.5 g.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Antídoto específico de dabigatrán en hemorragia intracraneal.`
+          },
+          {
+            drug: `Andexanet alfa`,
+            dose: `Dosis exacta no especificada en las fuentes proporcionadas (alternativa: PCC 4F 50 UI/kg IV).`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Indicado para reversión de inhibidores directos del Factor Xa (rivaroxabán, apixabán, edoxabán).`
+          },
+          {
+            drug: `Labetalol / Nicardipino / Urapidilo / Clevidipino / Esmolol`,
+            dose: `Dosis exactas y pautas de perfusión no especificadas en las fuentes proporcionadas.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Fármacos IV de vida media corta y menor acción vasodilatadora cerebral; objetivo TAS 130–140 mmHg en HIP pequeña-moderada.`
+          },
+          {
+            drug: `Nimodipino`,
+            dose: `60 mg cada 4 horas vía oral durante 21 días.`,
+            dilution: `Vía oral (no requiere dilución).`,
+            contraindications: `Recomendación Clase I en HSA aneurismática para prevenir vasoespasmo e isquemia cerebral tardía.`
+          }
+        ]
+      },
+      {
+        id: 'status-epilepticus',
+        navTitle: `Status Epilepticus y Neonatal`,
+        navSub: `t₁ = 5 min · FAEs carga · Piridoxina`,
+        priority: `critical`,
+        title: `Status Epilepticus (SE) en Adulto, Pediátrico y Neonatal`,
+        subtitle: `Protocolo farmacológico escalonado en 3 estadios, detección del NCSE pediátrico y pauta neonatal obligatoria.`,
+        badges: [
+          { text: `ILAE 2015 / EPNS 2024–2025`, status: `info` },
+          { text: `SEN / Neurocritical Care`, status: `info` },
+          { text: `Harrison Cap. 436`, status: `ok` }
+        ],
+        alerts: [
+          {
+            kind: `window`,
+            title: `Tiempos Operativos ILAE (t₁ Inicio Tratamiento · t₂ Daño Irreversible)`,
+            text: `Tónico-clónico: t₁ = 5 min, t₂ = 30 min · Focal con alteración conciencia: t₁ = 10 min, t₂ = 60 min · Status de ausencia: t₁ = 10–15 min, t₂ = no determinado.`
+          },
+          {
+            kind: `critical`,
+            title: `Dosis Críticas de Carga y Alerta Neonatal`,
+            text: `Estadio 2: Valproato 40 mg/kg (máx. 3000 mg) · Levetiracetam 60 mg/kg (máx. 4500 mg) · Fosfenitoína 20 mg/kg FE (ECG continuo). NEONATO: Fenobarbital 20 mg/kg IV (1.ª línea) + Piridoxina 100 mg IV en refractario.`
+          }
+        ],
+        diagnosis: {
+          clinica: [
+            `Fracaso de los mecanismos de terminación de crisis. Banderas rojas: debut convulsivo en edad adulta/anciana, ausencia de recuperación de conciencia entre crisis, duración > 5 min y focalidad motora postictal prolongada.`,
+            `Status Epiléptico No Convulsivo (NCSE) en pediatría (EPNS 2025): gran simulador; sospechar ante cambios conductuales, alteración del habla, signos motores sutiles y antecedente reciente de crisis agudas.`,
+            `Status Epiléptico Super-Refractario (SRSE) pediátrico (EPNS 2025): frecuente etiología genética subyacente sobre politerapia de base.`,
+            `Diagnóstico diferencial (Harrison Tabla 436-6): síncope, AIT basilar, crisis psicógenas, alteraciones metabólicas (hipoglucemia, hipoxia), trastornos del movimiento y del sueño.`
+          ],
+          escalas: [
+            `Clasificación temporal operativa ILAE 2015 (t₁ y t₂ según semiología).`,
+            `Herramienta clínica de riesgo interactiva en pediatría para priorizar vídeo-EEG ante sospecha de NCSE (EPNS 2025).`
+          ],
+          pruebas: [
+            `EEG / Vídeo-EEG: diagnóstico de confirmación en NCSE y crisis neonatales (obligatorio en neonatos según ILAE/EPNS).`,
+            `Monitorización electroencefalográfica continua (cEEG) en UCI durante el Estadio 3 para titular patrón burst-suppression.`,
+            `ECG continuo obligatorio durante infusión de Fosfenitoína (riesgo de hipotensión y arritmias).`,
+            `Neuroimagen urgente (TC si sospecha infección/masa y RM no disponible; RM en crisis refractarias) y estudio genético/metabólico en formas neonatales o refractarias.`
+          ]
+        },
+        algorithms: [
+          {
+            step: `Estadio 1 · 5–15 min`,
+            title: `SE Precoz: Benzodiacepinas de Acción Rápida (Clase I Fuerte)`,
+            items: [
+              `Lorazepam IV: 4 mg IV (0.1 mg/kg) lento en 2 minutos; puede repetirse una vez a los 5–10 minutos.`,
+              `Diazepam IV/Rectal: 10 mg IV (0.2 mg/kg), o 10–20 mg vía rectal si no se dispone de acceso venoso.`,
+              `Midazolam IM/Bucal/Intranasal: 10 mg IM (pacientes > 40 kg) o 0.2 mg/kg vía intranasal/bucal en entorno extrahospitalario.`
+            ]
+          },
+          {
+            step: `Estadio 2 · 15–45 min`,
+            title: `SE Establecido: FAEs No Sedantes IV a Dosis de Carga Completa (Clase I Fuerte)`,
+            items: [
+              `Valproato Sódico IV: 40 mg/kg IV (dosis máxima 3000 mg) a velocidad de 200 mg/min.`,
+              `Levetiracetam IV: 60 mg/kg IV (dosis máxima 4500 mg) infundidos en 10–15 minutos.`,
+              `Fosfenitoína IV: 20 mg/kg equivalentes de fenitoína (FE) IV a 50–100 mg/min bajo monitorización ECG continua.`
+            ]
+          },
+          {
+            step: `Estadio 3 · > 30–60 min`,
+            title: `SE Refractario y Super-Refractario: UCI, Intubación y cEEG`,
+            items: [
+              `Ingreso inmediato en UCI, intubación orotraqueal y perfusión continua de anestésicos generales con monitorización cEEG hasta patrón de supresión de brotes (burst-suppression).`,
+              `Agentes citados en las fuentes: Propofol, Midazolam, Barbitúricos (Tiopental, Pentobarbital) y Dexmedetomidina (empleada junto a propofol en SRSE pediátrico según EPNS 2025).`,
+              `Nota de fuentes: las dosis exactas de inducción/mantenimiento y diluciones de los anestésicos de Estadio 3 no figuran especificadas en los extractos.`
+            ]
+          },
+          {
+            step: `Neonatal y Pediátrico`,
+            title: `Protocolo ILAE / EPNS en Recién Nacidos`,
+            items: [
+              `Confirmación diagnóstica mediante EEG; asociar hipotermia terapéutica si encefalopatía hipóxico-isquémica (HIE).`,
+              `Primera línea obligatoria: Fenobarbital IV 20 mg/kg en dosis de carga (Clase I Fuerte, Evidencia Moderada).`,
+              `Segunda línea neonatal: Levetiracetam IV 50 mg/kg o Fosfenitoína.`,
+              `Ensayo terapéutico con Piridoxina (Vitamina B6): en todo neonato con SE refractario de etiología no aclarada, administrar 100 mg de Piridoxina IV bajo registro EEG para descartar encefalopatía dependiente de piridoxina.`
+            ]
+          }
+        ],
+        pharmacology: [
+          {
+            drug: `Lorazepam / Diazepam / Midazolam`,
+            dose: `Lorazepam: 4 mg IV (0.1 mg/kg) en 2 min (repetir 1× a los 5–10 min). Diazepam: 10 mg IV (0.2 mg/kg) o 10–20 mg rectal. Midazolam: 10 mg IM (> 40 kg) o 0.2 mg/kg IN/bucal.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Vigilar depresión respiratoria e hipotensión.`
+          },
+          {
+            drug: `Valproato Sódico IV`,
+            dose: `40 mg/kg IV (máx. 3000 mg) a velocidad de 200 mg/min.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Precaución en hepatopatía/mitocondriopatías; evitar en edad fértil si alternativa disponible (riesgo teratogénico en SEN).`
+          },
+          {
+            drug: `Levetiracetam IV`,
+            dose: `Adulto/Pediátrico: 60 mg/kg IV (máx. 4500 mg) en 10–15 min. Neonato (2.ª línea): 50 mg/kg IV.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Excelente perfil hemodinámico no sedante.`
+          },
+          {
+            drug: `Fosfenitoína IV`,
+            dose: `20 mg/kg equivalentes de fenitoína (FE) IV a 50–100 mg/min.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Riesgo de hipotensión y arritmias: requiere monitorización ECG continua.`
+          },
+          {
+            drug: `Fenobarbital IV y Piridoxina IV (Neonato)`,
+            dose: `Fenobarbital: 20 mg/kg IV (1.ª línea neonatal). Piridoxina (Vitamina B6): 100 mg IV en SE refractario neonatal no aclarado.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Administrar Piridoxina bajo registro EEG simultáneo.`
+          },
+          {
+            drug: `Propofol / Midazolam / Barbitúricos / Dexmedetomidina (Estadio 3)`,
+            dose: `Dosis exactas no especificadas en las fuentes proporcionadas.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Requiere intubación, soporte hemodinámico en UCI y monitorización cEEG continua.`
+          }
+        ]
+      },
+      {
+        id: 'cefaleas-hic-pres',
+        navTitle: `Cefaleas Graves, HIC y PRES`,
+        navSub: `Arteritis Temporal · Tríada Cushing`,
+        priority: `critical`,
+        title: `Arteritis de Células Gigantes, Hipertensión Intracraneal (HIC) y PRES`,
+        subtitle: `Prevención de ceguera irreversible, rescate frente a herniación cerebral y manejo de encefalopatía hipertensiva.`,
+        badges: [
+          { text: `Urgencias Cefalea / Neurointensivismo`, status: `info` },
+          { text: `Harrison Cap. 441 / 451`, status: `ok` }
+        ],
+        alerts: [
+          {
+            kind: `critical`,
+            title: `Arteritis Temporal: NUNCA Esperar a la Biopsia`,
+            text: `Iniciar de inmediato Metilprednisolona IV 500–1000 mg/día (3 días) o Prednisona oral 1 mg/kg/día. Esperar la biopsia arriesga neuropatía óptica isquémica (NOIAA) y ceguera irreversible.`
+          },
+          {
+            kind: `warning`,
+            title: `HIC Aguda: Umbral Crítico y Medidas Osmóticas`,
+            text: `PIC > 20 mmHg reduce PPC (PAM − PIC). Rescate: Cabecero 30° + Salino hipertónico 3% o 7.5% (150–250 mL) o Manitol 20% (0.5–1 g/kg IV). Hiperventilación (PaCO2 30–35 mmHg) solo transitoria en herniación.`
+          }
+        ],
+        diagnosis: {
+          clinica: [
+            `Banderas rojas de cefalea: inicio explosivo en trueno, inicio en > 50 años, papiledema en fondo de ojo, focalidad neurológica, síntomas constitucionales o neoplasia previa.`,
+            `Arteritis de Células Gigantes (> 50 años): cefalea temporal/holocraneal reciente, claudicación mandibular, hiperestesia en cuero cabelludo, amaurosis fugax, polimialgia reumática; riesgo de NOIAA.`,
+            `HIC Aguda y Herniación: alteración de la compensación de volúmenes (Doctrina Monro-Kellie). Tríada de Cushing (fase terminal/herniación): HTA con presión de pulso elevada, bradicardia sinusal y respiración irregular/atáxica. Lesiones de fosa posterior/cerebelo causan herniación rostral transtentorial o caudal amigdalar.`,
+            `Síndrome PRES: fallo de autorregulación hemodinámica con cefalea, confusión, crisis convulsivas y alteraciones visuales.`
+          ],
+          escalas: [
+            `Escala de coma de Glasgow (GCS) y evaluación seriada de respuesta pupilar ante sospecha de herniación.`,
+            `En fuentes proporcionadas no constan escalas específicas adicionales para arteritis temporal o PRES.`
+          ],
+          pruebas: [
+            `Arteritis Temporal: VSG > 50 mm/h y PCR elevada; biopsia de arteria temporal (sin retrasar corticoterapia).`,
+            `HIC / Lesión ocupante de espacio: TC craneal urgente si trauma agudo o riesgo de herniación / RM no disponible de inmediato; RM ± contraste para masas/infección.`,
+            `PRES: RM cerebral que muestra edema vasogénico simétrico en regiones parieto-occipitales.`
+          ]
+        },
+        algorithms: [
+          {
+            step: `Arteritis Temporal`,
+            title: `Actuación Inmediata Preservadora de la Visión (Clase I Fuerte)`,
+            items: [
+              `Ante sospecha clínica en paciente > 50 años con VSG/PCR elevadas o síntomas visuales/mandibulares, iniciar corticoterapia inmediata sin esperar biopsia.`,
+              `Administrar Metilprednisolona IV 500–1000 mg/día durante 3 días (especialmente ante síntomas visuales/amaurosis) o Prednisona oral 1 mg/kg/día.`
+            ]
+          },
+          {
+            step: `HIC Aguda · Rescate`,
+            title: `Manejo Médico de Emergencia y Descompresión`,
+            items: [
+              `Elevar el cabecero de la cama a 30° y asegurar vía aérea/sedación si deterioro del nivel de conciencia.`,
+              `Terapia hiperosmolar: bolos de Suero Salino Hipertónico al 3% o 7.5% (150–250 mL) o Manitol al 20% (0.5–1 g/kg IV).`,
+              `Reserva exclusiva de rescate transitorio ante herniación inminente: hiperventilación controlada (objetivo PaCO2 30–35 mmHg).`,
+              `En lesiones expansivas de fosa posterior o cerebelosas con riesgo de herniación: descompresión neuroquirúrgica aguda.`
+            ]
+          },
+          {
+            step: `Síndrome PRES`,
+            title: `Control Progresivo de Presión Arterial y Crisis`,
+            items: [
+              `Confirmar edema vasogénico simétrico parieto-occipital en RM cerebral.`,
+              `Pilar terapéutico: descenso progresivo y controlado de las cifras de presión arterial (los fármacos antihipertensivos específicos y diluciones para PRES no constan detallados en los extractos).`
+            ]
+          }
+        ],
+        pharmacology: [
+          {
+            drug: `Metilprednisolona / Prednisona (Arteritis Temporal)`,
+            dose: `Metilprednisolona IV: 500–1000 mg/día durante 3 días. Prednisona oral: 1 mg/kg/día.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `No retrasar por biopsia. Monitorizar glucemia y tensión arterial.`
+          },
+          {
+            drug: `Suero Salino Hipertónico (3% o 7.5%)`,
+            dose: `Bolos de 150–250 mL IV.`,
+            dilution: `Solución al 3% o 7.5% lista según preparado (protocolo de dilución no detallado en fuentes).`,
+            contraindications: `Monitorizar natremia y osmolaridad sérica.`
+          },
+          {
+            drug: `Manitol al 20%`,
+            dose: `0.5–1 g/kg IV.`,
+            dilution: `Solución al 20% (no se especifica velocidad exacta en los extractos).`,
+            contraindications: `Vigilar estado de volemia, función renal y osmolaridad.`
+          }
+        ]
+      },
+      {
+        id: 'emergencias-neuromusculares',
+        navTitle: `Neuromusculares (MG, SGB, ELA)`,
+        navSub: `CVF <20 mL/kg · IVIG / Plasmaféresis`,
+        priority: `critical`,
+        title: `Emergencias Neuromusculares e Insuficiencia Respiratoria Aguda`,
+        subtitle: `Crisis Miasténica (MGFA Clase V), Síndrome de Guillain-Barré (SGB) y descompensación respiratoria/nutricional en ELA.`,
+        badges: [
+          { text: `EAN / ERN EURO-NMD 2024`, status: `info` },
+          { text: `EAN / PNS`, status: `info` },
+          { text: `EPNS 2025 · Harrison`, status: `ok` }
+        ],
+        alerts: [
+          {
+            kind: `critical`,
+            title: `Fármacos Prohibidos en Miastenia Gravis & Corticoides Prohibidos en SGB`,
+            text: `En MG: CONTRAINDICADOS aminoglucósidos, fluoroquinolonas, macrólidos, bloqueantes neuromusculares, magnesio IV, betabloqueantes y anestésicos tipo procaína. En SGB: Corticoides sistémicos CONTRAINDICADOS.`
+          },
+          {
+            kind: `window`,
+            title: `Criterios de Fallo Ventilatorio Inminente`,
+            text: `CVF < 20 mL/kg · PIM < 30 cmH2O · Test de conteo < 20 en una espiración · Respiración paradójica abdominal. En ELA: indicar PEG/RIG antes de que CVF < 50%.`
+          }
+        ],
+        diagnosis: {
+          clinica: [
+            `Banderas rojas neuromusculares: progresión rápida ascendente de la paresia, disfagia/disartria de inicio agudo, ortopnea y caída de la capacidad vital.`,
+            `Crisis Miasténica (MGFA Clase V): debilidad de musculatura respiratoria (diafragma, intercostales) y/o bulbar con fallo respiratorio o incapacidad de proteger vía aérea (desencadenada por infecciones, fármacos o ajustes inmunosupresores).`,
+            `Síndrome de Guillain-Barré (SGB) y variantes (Miller Fisher; polineuritis craneal descrita en EPNS 2025): paresia ascendente arrefléxica o afectación de pares craneales/ataxia/oftalmoplejía.`,
+            `ELA (EAN/ERN EURO-NMD 2024): despistaje activo de ortopnea y cefalea matutina como marcadores de hipoventilación.`
+          ],
+          escalas: [
+            `Clasificación MGFA Clase V (crisis miasténica con necesidad de intubación/soporte ventilatorio).`,
+            `Parámetros funcionales respiratorios seriados: Capacidad Vital Forzada (CVF < 20 mL/kg), Presión Inspiratoria Máxima (PIM < 30 cmH2O) y test de conteo espiratorio (< 20).`
+          ],
+          pruebas: [
+            `LCR en SGB: disociación albúmino-citológica (hiperproteinorraquia marcada con < 10 céls/µL). Atención: el LCR puede ser normal durante los primeros 7 días.`,
+            `EMG / ENG en SGB: enlentecimiento de velocidad de conducción, alargamiento de latencias distales, bloqueo de conducción (desmielinización) o lesión axonal pura.`,
+            `Gasometría arterial y espirometría a pie de cama (CVF, PIM) para decidir intubación precoz antes de parada respiratoria.`
+          ]
+        },
+        algorithms: [
+          {
+            step: `Crisis Miasténica`,
+            title: `Soporte Ventilatorio e Inmunomodulación de Rescate (Clase I Fuerte)`,
+            items: [
+              `Evaluar CVF (< 20 mL/kg), PIM (< 30 cmH2O), test de conteo (< 20) y respiración paradójica.`,
+              `VNI (BiPAP) en fases precoces sin hipercapnia severa; intubación orotraqueal inmediata si fatiga bulbar o acidosis respiratoria progresiva.`,
+              `Suspender temporalmente la Piridostigmina oral durante la intubación para reducir secreciones traqueobronquiales masivas.`,
+              `Iniciar rescate inmunomodulador: IVIG 2 g/kg en 2–5 días O Plasmaféresis (5–6 sesiones en días alternos). Tratar infección desencadenante evitando fármacos prohibidos.`
+            ]
+          },
+          {
+            step: `Guillain-Barré (SGB)`,
+            title: `Tratamiento Inmunomodulador Precoz y Vigilancia Autonómica/Respiratoria`,
+            items: [
+              `Monitorización estrecha de CVF, test de conteo y función bulbar/autonómica.`,
+              `Administrar IVIG (2 g/kg repartidos en 5 días) o Plasmaféresis (5 sesiones en días alternos) (Clase I Fuerte).`,
+              `Evitar estrictamente corticoides sistémicos (sin beneficio y retrasan recuperación).`
+            ]
+          },
+          {
+            step: `ELA (EAN 2024)`,
+            title: `Soporte Ventilatorio Domiciliario y Nutricional Multidisciplinar`,
+            items: [
+              `Derivación precoz a unidad multidisciplinar (neurólogo, enfermera especialista, neumólogo, rehabilitador, dietista, fisioterapeuta, psicólogo/neuropsicólogo).`,
+              `Indicación precoz de Ventilación No Invasiva (VNI) domiciliaria ante ortopnea o cefalea matutina (prolonga la supervivencia).`,
+              `Gastrostomía endoscópica percutánea (PEG) o radiológica (RIG) recomendada antes de que la CVF descienda del 50%.`
+            ]
+          }
+        ],
+        pharmacology: [
+          {
+            drug: `Inmunoglobulinas IV (IVIG)`,
+            dose: `2 g/kg de dosis total repartida en 2 a 5 días (MG) o en 5 días (SGB).`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Eficacia equivalente a plasmaféresis; vigilar función renal y tolerancia a infusión.`
+          },
+          {
+            drug: `Recambio Plasmático (Plasmaféresis)`,
+            dose: `5 a 6 sesiones en días alternos (MG) o 5 sesiones en días alternos (SGB).`,
+            dilution: `Procedimiento extracorpóreo (no aplica dilución farmacológica en fuentes).`,
+            contraindications: `Requiere acceso venoso adecuado y monitorización hemodinámica.`
+          },
+          {
+            drug: `Piridostigmina (en Crisis Miasténica)`,
+            dose: `No se detalla dosis en las fuentes; indicación de SUSPENSIÓN temporal durante intubación.`,
+            dilution: `Vía oral.`,
+            contraindications: `Mantenerla durante VM favorece secreciones traqueobronquiales masivas.`
+          },
+          {
+            drug: `Fármacos Contraindicados en MG / SGB`,
+            dose: `Contraindicación absoluta (no administrar).`,
+            dilution: `No aplica.`,
+            contraindications: `MG: aminoglucósidos (gentamicina, amikacina), fluoroquinolonas (ciprofloxacino, levofloxacino), macrólidos, bloqueantes neuromusculares, magnesio IV, betabloqueantes, anestésicos tipo procaína. SGB: corticoides sistémicos.`
+          }
+        ]
+      },
+      {
+        id: 'brote-em-mielopatia',
+        navTitle: `Brote EM y Mielitis Aguda`,
+        navSub: `Metilprednisolona 1 g/d · NMOSD`,
+        priority: `standard`,
+        title: `Exacerbación Aguda de Esclerosis Múltiple y Mielopatías Inflamatorias`,
+        subtitle: `Diferenciación de pseudobrote, megadosis corticoidea IV, rescate con plasmaféresis y sospecha de NMOSD.`,
+        badges: [
+          { text: `ECTRIMS / EAN 2018–2024`, status: `info` },
+          { text: `Harrison Cap. 455–456`, status: `ok` }
+        ],
+        alerts: [
+          {
+            kind: `window`,
+            title: `Criterio Temporal de Brote Verdadero`,
+            text: `Nuevo síntoma neurológico focal o empeoramiento significativo con duración ≥ 24 horas en ausencia de fiebre o infección activa (descartar pseudobrote).`
+          },
+          {
+            kind: `critical`,
+            title: `Dosis de Primera Línea y Rescate`,
+            text: `Metilprednisolona IV 1000 mg/día durante 3 a 5 días consecutivos · Rescate en déficit severo refractario: Plasmaféresis (5–7 sesiones en días alternos).`
+          }
+        ],
+        diagnosis: {
+          clinica: [
+            `Brote de EM: déficit focal nuevo o empeoramiento significativo ≥ 24 h sin fiebre ni infección intercurrente.`,
+            `Mielopatía aguda no compresiva (Harrison): distinguir isquemia medular (inicio hiperagudo con dolor cervical/dorsal y patrón anterior) de inflamación (inicio subagudo, síntomas sistémicos).`,
+            `Sospecha de NMOSD (espectro neuromielitis óptica): neuritis óptica, mielitis aguda, síndrome del área postrema (hipo o náuseas/vómitos inexplicados), síndrome troncoencefálico agudo o diencefálico/narcolepsia sintomática.`
+          ],
+          escalas: [
+            `Escala EDSS (sistemas funcionales como función cerebelosa y troncoencefálica recogidos en Harrison) para cuantificar discapacidad en EM.`
+          ],
+          pruebas: [
+            `RM cerebral y/o medular ± contraste gadolinio (Tabla 434-1 Harrison). En NMOSD sin AQP4-IgG: lesión intramedular longitudinalmente extensa ≥ 3 segmentos contiguos (LETM), lesión dorsal bulbar/área postrema o neuritis óptica extensa (> 1/2 longitud del nervio o quiasma).`,
+            `LCR: bandas oligoclonales (apoyan origen inflamatorio/EM); descartar infección antes de inmunosupresión.`
+          ]
+        },
+        algorithms: [
+          {
+            step: `Paso 1 · Descartar Pseudobrote`,
+            title: `Confirmación Clínica de Brote Activo`,
+            items: [
+              `Comprobar duración ≥ 24 horas y descartar fiebre, infección urinaria/respiratoria u otros desencadenantes de pseudobrote.`,
+              `En mielopatía aguda, excluir primero causa compresiva mediante RM medular urgente.`
+            ]
+          },
+          {
+            step: `Paso 2 · Primera Línea`,
+            title: `Corticoterapia en Megadosis IV`,
+            items: [
+              `Administrar Metilprednisolona IV 1000 mg/día durante 3 a 5 días consecutivos.`
+            ]
+          },
+          {
+            step: `Paso 3 · Rescate`,
+            title: `Recambio Plasmático en Déficit Funcional Severo`,
+            items: [
+              `Ante respuesta clínica insuficiente a corticoides y presencia de déficit motor grave o neuritis óptica severa: iniciar Plasmaféresis (5–7 sesiones en días alternos).`
+            ]
+          }
+        ],
+        pharmacology: [
+          {
+            drug: `Metilprednisolona IV`,
+            dose: `1000 mg/día IV durante 3 a 5 días consecutivos.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Descartar infección activa previa; vigilar glucemia, PA y efectos neuropsiquiátricos.`
+          },
+          {
+            drug: `Plasmaféresis (Rescate)`,
+            dose: `5 a 7 sesiones en días alternos.`,
+            dilution: `Procedimiento extracorpóreo.`,
+            contraindications: `Reservada para brotes graves (motor o neuritis óptica severa) sin respuesta a megadosis de esteroides.`
+          }
+        ]
+      },
+      {
+        id: 'medular-infecciones-tce',
+        navTitle: `Medular, Infecciones SNC y TCE`,
+        navSub: `Harrison · EPNS 2025 (SLE / TBI)`,
+        priority: `standard`,
+        title: `Compresión Medular Aguda, Infecciones del SNC, TCE y Episodios Stroke-Like`,
+        subtitle: `Patologías de derivación urgente identificadas en Harrison y EPNS 2025, con indicación explícita de datos no detallados en las fuentes.`,
+        badges: [
+          { text: `Harrison Cap. 433–434`, status: `info` },
+          { text: `EPNS 2025`, status: `ok` }
+        ],
+        alerts: [
+          {
+            kind: `window`,
+            title: `Prioridad de Derivación Inmediata (Harrison)`,
+            text: `Todo médico de atención primaria o urgencias debe identificar de inmediato infecciones del SNC, compresión medular aguda y masas tratables para derivación urgente.`
+          },
+          {
+            kind: `warning`,
+            title: `Transparencia de Fuentes`,
+            text: `Las fuentes describen diagnóstico clínico, neuroimagen y criterios de riesgo; las pautas antibióticas empíricas de meningitis y dosis quirúrgicas específicas no constan en los extractos.`
+          }
+        ],
+        diagnosis: {
+          clinica: [
+            `Compresión medular aguda: dolor focal de espalda, nivel sensitivo medular, disfunción esfinteriana/incontinencia y signos mixtos de motoneurona superior e inferior. Extramedular: dolor radicular prominente y pérdida sensitiva sacra precoz. Intramedular: dolor urente mal localizado y "preservación sacra" (sacral sparing).`,
+            `Infecciones del SNC (meningitis / absceso): evolución progresiva con fiebre, rigidez de nuca y alteración del nivel de conciencia (la meningitis supone el 7.9% de las muertes neurológicas globales según Fig. 433-1 de Harrison).`,
+            `Traumatismo Craneoencefálico (TCE): criterios de TC urgente -> edad > 65 años, ≥ 2 episodios de vómitos, amnesia retrógrada > 30 min o anterógrada persistente, crisis epiléptica, fractura craneal palpable, coagulopatía o intoxicación por alcohol/drogas.`,
+            `Episodios Stroke-Like (SLE) en PMM2-CDG (EPNS 2025): déficits motores, alteración del habla, cefalea e hipertermia desencadenados por infecciones o TCE leve (recurrencia 43%).`
+          ],
+          escalas: [
+            `Escala de Coma de Glasgow (GCS) para TCE y nivel de conciencia.`,
+            `Criterios clínicos de indicación de TC craneal en TCE (Harrison).`
+          ],
+          pruebas: [
+            `Compresión medular / mielopatía: RM medular ± contraste urgente (Tabla 434-1 Harrison).`,
+            `Infección SNC / masa: TC craneal urgente si RM no disponible de inmediato; RM ± contraste para absceso cerebral, enfermedad meníngea o paciente inmunodeprimido con focalidad.`,
+            `TCE agudo: TC craneal sin contraste; RM + SWI para lesión axonal difusa (shear injury) o hemorragia crónica.`,
+            `SLE en PMM2-CDG: vídeo-EEG (asimetrías y trazados lentos); neuroimagen sin cambios agudos respecto al basal.`
+          ]
+        },
+        algorithms: [
+          {
+            step: `Compresión Medular`,
+            title: `Localización y Neuroimagen Urgente`,
+            items: [
+              `Diferenciar semiología extramedular (extradural suele ser maligna; intradural suele ser benigna como neurofibroma) frente a intramedular.`,
+              `Solicitar RM de columna ± contraste urgente y valoración neuroquirúrgica inmediata.`,
+              `Nota de fuentes: las pautas farmacológicas concretas (como dosis de corticoides en compresión medular tumoral) no constan en los extractos proporcionados.`
+            ]
+          },
+          {
+            step: `Infecciones SNC y TCE`,
+            title: `Neuroimagen Rápida y Derivación`,
+            items: [
+              `En sospecha de infección del SNC con focalidad o si RM no está disponible de inmediato: TC craneal urgente seguida de manejo especializado.`,
+              `En TCE con factores de riesgo (> 65 años, coagulopatía, ≥ 2 vómitos, amnesia > 30 min, crisis, fractura palpable): TC craneal urgente y observación prolongada.`,
+              `Nota de fuentes: los esquemas antibióticos empíricos específicos para meningitis/absceso no figuran en los extractos proporcionados.`
+            ]
+          },
+          {
+            step: `SLE en PMM2-CDG (EPNS)`,
+            title: `Soporte Agudo en Episodios Stroke-Like Pediátricos`,
+            items: [
+              `Descartar lesión isquémica aguda y confirmar mediante vídeo-EEG.`,
+              `Tratamiento de fase aguda: Benzodiacepinas (los fármacos más eficaces en la serie EPNS 2025), acompañadas de hidratación, antitérmicos y antiepilépticos si crisis asociadas (recuperación completa en el 100% de la cohorte).`
+            ]
+          }
+        ],
+        pharmacology: [
+          {
+            drug: `Benzodiacepinas (en SLE de PMM2-CDG)`,
+            dose: `Fármaco específico y dosis exacta no detallados en el resumen EPNS 2025.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Combinar con hidratación, antitérmicos y antiepilépticos según protocolo del centro.`
+          },
+          {
+            drug: `Antibioterapia empírica SNC / Corticoterapia medular`,
+            dose: `No especificada en las fuentes proporcionadas.`,
+            dilution: `No especificada en las fuentes proporcionadas.`,
+            contraindications: `Consultar protocolo institucional; no inventar pautas ausentes en el cuaderno.`
+          }
+        ]
+      }
+    ];
+
+    const GRADE_TABLE_ROWS = [
+      { entity: `Ictus Isquémico Agudo`, intervention: `Trombólisis IV con Alteplase/Tenecteplase dentro de las 4.5 h del inicio`, grade: `Clase I (Fuerte)`, evidence: `Alta (Grado A)`, status: `ok` },
+      { entity: `Ictus Isquémico Agudo`, intervention: `Trombectomía Mecánica en oclusión de gran vaso anterior dentro de las 6–24 h`, grade: `Clase I (Fuerte)`, evidence: `Alta (Grado A)`, status: `ok` },
+      { entity: `Ictus Isquémico Agudo`, intervention: `Evitar reducción intensiva de TAS < 140 mmHg en las 24 h tras TM exitosa`, grade: `Clase III (Perjudicial)`, evidence: `Alta (Grado A)`, status: `alert` },
+      { entity: `Ictus / MSU`, intervention: `Uso de Unidades Móviles de Ictus (MSU) para diagnóstico/tratamiento prehospitalario`, grade: `Clase IIa (Moderada)`, evidence: `Moderada (Grado B)`, status: `info` },
+      { entity: `HIP Espontánea`, intervention: `Reducción precoz de la TAS a 130–140 mmHg en hematomas pequeños-moderados`, grade: `Clase IIa (Moderada)`, evidence: `Moderada (Grado B)`, status: `info` },
+      { entity: `HIP por Anticoagulantes`, intervention: `Reversión inmediata con PCC 4F para AVK, Idarucizumab para Dabigatrán, Andexanet/PCC para anti-Xa`, grade: `Clase I (Fuerte)`, evidence: `Alta / Moderada (Grado A/B)`, status: `ok` },
+      { entity: `HSA Aneurismática`, intervention: `Exclusión del aneurisma (coiling/clipping) dentro de las primeras 24 h del ictus`, grade: `Clase I (Fuerte)`, evidence: `Alta (Grado A)`, status: `ok` },
+      { entity: `HSA Aneurismática`, intervention: `Nimodipino oral 60 mg/4 h durante 21 días para prevención de isquemia cerebral tardía`, grade: `Clase I (Fuerte)`, evidence: `Alta (Grado A)`, status: `ok` },
+      { entity: `Status Epilepticus`, intervention: `Benzodiacepinas IV/IM/Bucal inmediatas en Estadio 1 (t₁ = 5 min)`, grade: `Clase I (Fuerte)`, evidence: `Alta (Grado A)`, status: `ok` },
+      { entity: `Status Epilepticus`, intervention: `FAEs IV (Levetiracetam, Valproato o Fosfenitoína) en Estadio 2`, grade: `Clase I (Fuerte)`, evidence: `Alta (Grado A)`, status: `ok` },
+      { entity: `Status Neonatal`, intervention: `Fenobarbital IV (20 mg/kg) como tratamiento de primera línea de crisis neonatales`, grade: `Clase I (Fuerte)`, evidence: `Moderada (Grado B)`, status: `info` },
+      { entity: `Arteritis Temporal`, intervention: `Iniciar Metilprednisolona IV/oral inmediata ante sospecha alta sin esperar a la biopsia`, grade: `Clase I (Fuerte)`, evidence: `Alta (Grado A)`, status: `ok` },
+      { entity: `Crisis Miasténica`, intervention: `Inmunoglobulinas IV (2 g/kg) o Plasmaféresis en insuficiencia respiratoria / severidad bulbar`, grade: `Clase I (Fuerte)`, evidence: `Alta (Grado A)`, status: `ok` },
+      { entity: `Síndrome Guillain-Barré`, intervention: `IVIG (2 g/kg en 5 días) o Plasmaféresis precoz; desaconsejados los corticoides`, grade: `Clase I (Fuerte)`, evidence: `Alta (Grado A)`, status: `ok` }
+    ];
+
+    const QUIZ_CASES = [
+      {
+        id: `q1`,
+        topic: `Ictus Isquémico · Control Post-TM`,
+        stem: `Caso 1: Varón de 68 años con hemiparesia derecha y afasia de 2 horas de evolución (NIHSS 14). La TC simple descarta hemorragia y la Angio-TC muestra oclusión de M1 izquierda. Tras recibir trombólisis IV y trombectomía mecánica con recanalización exitosa, llega a UCI con TAS 162 mmHg. Según la actualización ESO 2025/2026, ¿qué actitud tensional es la correcta?`,
+        options: [
+          `Reducir intensivamente la TAS por debajo de 120 mmHg de forma inmediata para prevenir hemorragia.`,
+          `Mantener TAS en el rango de 140–180 mmHg y evitar el descenso intensivo por debajo de 140 mmHg durante las primeras 24 horas.`,
+          `Bajar la TAS a 130–140 mmHg con nicardipino IV en bolo igual que en la hemorragia intracerebral.`,
+          `Administrar manitol al 20% (1 g/kg) de rutina para disminuir la presión arterial sistólica.`
+        ],
+        correctIndex: 1,
+        rationale: `Correcto según la guía ESO 2025/2026 (Clase III Perjudicial, Evidencia Alta): tras recanalización exitosa mediante trombectomía mecánica se desaconseja la reducción intensiva de la TAS < 140 mmHg en las primeras 24 horas (mantener 140–180 mmHg), ya que la hipotensión compromete el flujo colateral del tejido en riesgo. El objetivo de 130–140 mmHg aplica a la HIP pequeña-moderada.`
+      },
+      {
+        id: `q2`,
+        topic: `Hemorragia Subaracnoidea (HSA)`,
+        stem: `Caso 2: Mujer de 52 años que acude por cefalea explosiva en trueno instaurada hace 14 horas, acompañada de fotofobia, vómitos y rigidez de nuca leve (GCS 15, WFNS 1). La TC craneal simple al ingreso no muestra sangrado. ¿Cuál es el siguiente paso obligatorio?`,
+        options: [
+          `Descartar hemorragia subaracnoidea de forma definitiva y dar de alta con analgesia oral.`,
+          `Realizar una punción lumbar para investigar xantocromía en el sobrenadante mediante espectrofotometría.`,
+          `Iniciar inmediatamente metilprednisolona 1000 mg/día IV durante 3 días por sospecha de brote desmielinizante.`,
+          `Esperar 48 horas para repetir la TC simple sin realizar pruebas invasivas.`
+        ],
+        correctIndex: 1,
+        rationale: `La TC simple tiene > 95% de sensibilidad en las primeras 6 horas, pero puede resultar normal conforme pasan las horas. Ante alta sospecha clínica de HSA con TC normal, la punción lumbar tras > 6–12 horas del inicio es obligatoria para detectar xantocromía por espectrofotometría. Confirmada la HSA aneurismática, se requiere exclusión del aneurisma < 24 h y nimodipino 60 mg/4 h × 21 días.`
+      },
+      {
+        id: `q3`,
+        topic: `Status Epilepticus · Estadio 2 y Neonatal`,
+        stem: `Caso 3: Un paciente adulto presenta crisis tónico-clónica generalizada continua desde hace 20 minutos, sin ceder tras dos dosis de Lorazepam IV (4 mg cada una). ¿Cuál de las siguientes pautas farmacológicas corresponde correctamente al Estadio 2 en este paciente?`,
+        options: [
+          `Fenobarbital 20 mg/kg IV como fármaco obligatorio de primera elección en adultos, seguido de piridoxina 100 mg IV.`,
+          `Valproato sódico 40 mg/kg IV (máx. 3000 mg) a 200 mg/min, o Levetiracetam 60 mg/kg IV (máx. 4500 mg) en 10–15 min, o Fosfenitoína 20 mg/kg FE con ECG continuo.`,
+          `Diazepam rectal 10 mg como único fármaco de segunda línea antes de valorar UCI.`,
+          `Suspender antiepilépticos no sedantes y esperar a cumplir 60 minutos antes de escalar tratamiento.`
+        ],
+        correctIndex: 1,
+        rationale: `En el Status Epilepticus establecido (Estadio 2, 15 a 30–45 min) las guías recomiendan FAE no sedantes IV a dosis de carga completa (Clase I Fuerte): Valproato 40 mg/kg (máx. 3000 mg) a 200 mg/min, Levetiracetam 60 mg/kg (máx. 4500 mg) en 10–15 min o Fosfenitoína 20 mg/kg FE a 50–100 mg/min con ECG continuo. Fenobarbital 20 mg/kg y Piridoxina 100 mg IV corresponden al protocolo neonatal.`
+      },
+      {
+        id: `q4`,
+        topic: `Emergencias Neuromusculares · MG vs. SGB`,
+        stem: `Caso 4: Paciente diagnosticada de Miastenia Gravis que ingresa en urgencias por disfagia aguda, incapacidad para contar más de 12 en una sola espiración, CVF de 17 mL/kg y respiración paradójica abdominal tras una infección respiratoria. Señale la afirmación INCORRECTA sobre su manejo:`,
+        options: [
+          `Presenta criterios de deterioro respiratorio inminente (CVF < 20 mL/kg, conteo < 20) y requiere intubación si aparece fatiga bulbar o acidosis progresiva.`,
+          `Debe suspenderse temporalmente la piridostigmina oral durante la intubación para evitar secreciones traqueobronquiales masivas.`,
+          `El rescate inmunomodulador indicado es IVIG (2 g/kg en 2–5 días) o plasmaféresis (5–6 sesiones en días alternos).`,
+          `Para tratar su infección intercurrente, ciprofloxacino IV o gentamicina son antibióticos seguros de primera elección en la crisis miasténica.`
+        ],
+        correctIndex: 3,
+        rationale: `La opción D es INCORRECTA y representa un error clínico grave: tanto las fluoroquinolonas (ciprofloxacino, levofloxacino) como los aminoglucósidos (gentamicina, amikacina) están formalmente CONTRAINDICADOS en la Miastenia Gravis porque empeoran el bloqueo neuromuscular y precipitan o agravan la crisis miasténica.`
+      },
+      {
+        id: `q5`,
+        topic: `Arteritis Temporal vs. SGB`,
+        stem: `Caso 5: Varón de 71 años que consulta por cefalea bitemporal de 5 días, dolor mandibular al masticar, hiperestesia en cuero cabelludo y un episodio transitorio de pérdida visual monocular (amaurosis fugax) hace 2 horas. La analítica muestra VSG de 78 mm/h. ¿Cuál es la conducta prioritaria?`,
+        options: [
+          `Diferir el inicio de corticoides hasta obtener el resultado de la biopsia de la arteria temporal para evitar falsos negativos.`,
+          `Iniciar de inmediato Metilprednisolona IV (500–1000 mg/día durante 3 días) o Prednisona oral 1 mg/kg/día sin esperar a la biopsia.`,
+          `Contraindicar los corticoides sistémicos porque retrasan la recuperación neurológica en este cuadro.`,
+          `Solicitar punción lumbar urgente antes de instaurar cualquier tratamiento antiinflamatorio.`
+        ],
+        correctIndex: 1,
+        rationale: `Ante sospecha alta de Arteritis de Células Gigantes (paciente > 50 años, claudicación mandibular, amaurosis fugax, VSG > 50 mm/h) debe iniciarse corticoterapia de forma INMEDIATA (Metilprednisolona IV 500–1000 mg/día × 3 días o Prednisona 1 mg/kg/día) sin esperar nunca a la biopsia, para prevenir neuropatía óptica isquémica anterior arterítica (NOIAA) y ceguera irreversible. Los corticoides están contraindicados en el SGB, no en la arteritis temporal.`
+      }
+    ];
+
+    /* Estado de la aplicación */
+    let appState = {
+      activeFilter: 'all',
+      searchQuery: '',
+      allAccordionsOpen: false,
+      openAccordions: {},
+      quizAnswers: {}
+    };
+
+    function escapeHtml(text) {
+      return String(text)
+        .replace(/&/g, `&amp;`)
+        .replace(/</g, `&lt;`)
+        .replace(/>/g, `&gt;`)
+        .replace(/"/g, `&quot;`)
+        .replace(/'/g, `&#39;`);
+    }
+
+    function highlightMatch(text, query) {
+      const safe = escapeHtml(text);
+      if (!query || query.trim().length < 2) return safe;
+      const escapedQ = query.trim().replace(/[.*+?^${}()|[\]\\]/g, `\\$&`);
+      const regex = new RegExp(`(${escapedQ})`, `gi`);
+      return safe.replace(regex, `<mark class="search-hl">$1</mark>`);
+    }
+
+    function pathologyMatchesSearch(item, query) {
+      if (!query || !query.trim()) return true;
+      const q = query.trim().toLowerCase();
+      const haystack = [
+        item.title,
+        item.subtitle,
+        item.navTitle,
+        item.navSub,
+        item.badges.map(function (b) { return b.text; }).join(` `),
+        item.alerts.map(function (a) { return a.title + ` ` + a.text; }).join(` `),
+        item.diagnosis.clinica.join(` `),
+        item.diagnosis.escalas.join(` `),
+        item.diagnosis.pruebas.join(` `),
+        item.algorithms.map(function (al) { return al.step + ` ` + al.title + ` ` + al.items.join(` `); }).join(` `),
+        item.pharmacology.map(function (ph) { return ph.drug + ` ` + ph.dose + ` ` + ph.dilution + ` ` + ph.contraindications; }).join(` `)
+      ].join(` `).toLowerCase();
+      return haystack.indexOf(q) !== -1;
+    }
+
+    function renderNavigation() {
+      const sidebar = document.getElementById(`sidebar-nav`);
+      const mobileStrip = document.getElementById(`mobile-nav-strip`);
+      if (!sidebar || !mobileStrip) return;
+
+      let sidebarHtml = `<div class="sidebar-heading">Patologías y Secciones</div>`;
+      sidebarHtml += `
+        <button type="button" class="nav-item-btn ${appState.activeFilter === 'all' ? 'is-active' : ''}" onclick="selectFilter('all')">
+          <span class="nav-item-title">Todas las patologías (7)</span>
+          <span class="nav-item-sub">Vista clínica completa</span>
+        </button>
+      `;
+
+      let mobileHtml = `
+        <button type="button" class="filter-pill ${appState.activeFilter === 'all' ? 'is-active' : ''}" onclick="selectFilter('all')">
+          Todas (7)
+        </button>
+      `;
+
+      PATHOLOGIES.forEach(function (p) {
+        const activeCls = appState.activeFilter === p.id ? `is-active` : ``;
+        sidebarHtml += `
+          <button type="button" class="nav-item-btn ${activeCls}" onclick="selectFilter('${p.id}')">
+            <span class="nav-item-title">${escapeHtml(p.navTitle)}</span>
+            <span class="nav-item-sub">${escapeHtml(p.navSub)}</span>
+          </button>
+        `;
+        mobileHtml += `
+          <button type="button" class="filter-pill ${activeCls}" onclick="selectFilter('${p.id}')">
+            ${escapeHtml(p.navTitle)}
+          </button>
+        `;
+      });
+
+      sidebarHtml += `
+        <div class="nav-divider"></div>
+        <button type="button" class="nav-item-btn" onclick="jumpToSection('section-grade')">
+          <span class="nav-item-title">Tabla GRADE y Errores</span>
+          <span class="nav-item-sub">14 recomendaciones · 5 errores</span>
+        </button>
+        <button type="button" class="nav-item-btn" onclick="jumpToSection('section-quiz')">
+          <span class="nav-item-title">Autoevaluación MIR</span>
+          <span class="nav-item-sub">5 casos clínicos tipo test</span>
+        </button>
+      `;
+
+      mobileHtml += `
+        <button type="button" class="filter-pill" onclick="jumpToSection('section-grade')">GRADE y Errores</button>
+        <button type="button" class="filter-pill" onclick="jumpToSection('section-quiz')">Autoevaluación (5)</button>
+      `;
+
+      sidebar.innerHTML = sidebarHtml;
+      mobileStrip.innerHTML = mobileHtml;
+    }
+
+    function renderPathologies() {
+      const container = document.getElementById(`pathologies-container`);
+      const emptyState = document.getElementById(`empty-search-state`);
+      const countEl = document.getElementById(`search-results-count`);
+      const filterLabelEl = document.getElementById(`active-filter-label`);
+      if (!container || !emptyState) return;
+
+      const q = appState.searchQuery;
+      const filtered = PATHOLOGIES.filter(function (p) {
+        const matchesTab = appState.activeFilter === `all` || appState.activeFilter === p.id;
+        return matchesTab && pathologyMatchesSearch(p, q);
+      });
+
+      if (countEl) {
+        if (q.trim()) {
+          countEl.textContent = `${filtered.length} módulo(s) coinciden con "${q.trim()}"`;
+        } else {
+          countEl.textContent = `Mostrando ${filtered.length} de ${PATHOLOGIES.length} bloques de urgencias neurológicas`;
+        }
+      }
+
+      if (filterLabelEl) {
+        const activeObj = PATHOLOGIES.find(function (item) { return item.id === appState.activeFilter; });
+        filterLabelEl.textContent = activeObj ? `Vista: ${activeObj.navTitle}` : `Vista: Todas las patologías`;
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = ``;
+        emptyState.hidden = false;
+        return;
+      }
+
+      emptyState.hidden = true;
+
+      let html = ``;
+      filtered.forEach(function (p) {
+        const badgesHtml = p.badges.map(function (b) {
+          return `<span class="chip" data-status="${b.status}">${highlightMatch(b.text, q)}</span>`;
+        }).join(``);
+
+        const alertsHtml = p.alerts.map(function (al) {
+          const iconName = al.kind === `window` ? `clock` : (al.kind === `warning` ? `alert-triangle` : `shield-alert`);
+          return `
+            <div class="alert-box" data-kind="${al.kind}">
+              <div class="alert-header">
+                <i data-lucide="${iconName}" width="16" height="16" aria-hidden="true"></i>
+                <span>${highlightMatch(al.title, q)}</span>
+              </div>
+              <div class="alert-body">${highlightMatch(al.text, q)}</div>
+            </div>
+          `;
+        }).join(``);
+
+        const clinicaHtml = p.diagnosis.clinica.map(function (c) { return `<li>${highlightMatch(c, q)}</li>`; }).join(``);
+        const escalasHtml = p.diagnosis.escalas.map(function (e) { return `<li>${highlightMatch(e, q)}</li>`; }).join(``);
+        const pruebasHtml = p.diagnosis.pruebas.map(function (pr) { return `<li>${highlightMatch(pr, q)}</li>`; }).join(``);
+
+        const accordionsHtml = p.algorithms.map(function (alg, idx) {
+          const accKey = `${p.id}__${idx}`;
+          const isOpen = appState.openAccordions[accKey] !== undefined ? Boolean(appState.openAccordions[accKey]) : (idx === 0 || Boolean(q.trim()));
+          const itemsHtml = alg.items.map(function (it) { return `<li>${highlightMatch(it, q)}</li>`; }).join(``);
+          return `
+            <div class="accordion-item">
+              <button
+                type="button"
+                class="accordion-trigger"
+                aria-expanded="${isOpen ? 'true' : 'false'}"
+                aria-controls="panel-${accKey}"
+                onclick="toggleAccordion('${accKey}')"
+              >
+                <span class="accordion-step-meta">
+                  <span class="step-badge">${highlightMatch(alg.step, q)}</span>
+                  <span>${highlightMatch(alg.title, q)}</span>
+                </span>
+                <i data-lucide="chevron-down" width="18" height="18" class="accordion-chevron" aria-hidden="true"></i>
+              </button>
+              <div id="panel-${accKey}" class="accordion-panel" ${isOpen ? '' : 'hidden'}>
+                <ul class="clinical-list">${itemsHtml}</ul>
+              </div>
+            </div>
+          `;
+        }).join(``);
+
+        const pharmRowsHtml = p.pharmacology.map(function (ph) {
+          const dilClass = ph.dilution.indexOf(`No especificada`) !== -1 ? `not-specified` : ``;
+          const doseClass = ph.dose.indexOf(`no especificada`) !== -1 || ph.dose.indexOf(`No especificada`) !== -1 ? `not-specified` : `mono`;
+          return `
+            <tr>
+              <td><strong>${highlightMatch(ph.drug, q)}</strong></td>
+              <td class="${doseClass}">${highlightMatch(ph.dose, q)}</td>
+              <td class="${dilClass}">${highlightMatch(ph.dilution, q)}</td>
+              <td>${highlightMatch(ph.contraindications, q)}</td>
+            </tr>
+          `;
+        }).join(``);
+
+        html += `
+          <article class="pathology-card" id="card-${p.id}" data-priority="${p.priority}">
+            <div class="pathology-head">
+              <div>
+                <h2 class="pathology-title">${highlightMatch(p.title, q)}</h2>
+                <p class="pathology-subtitle">${highlightMatch(p.subtitle, q)}</p>
+              </div>
+              <div class="source-badges">${badgesHtml}</div>
+            </div>
+
+            <div class="alerts-grid">${alertsHtml}</div>
+
+            <div class="pillar-section">
+              <div class="pillar-header">
+                <h3 class="pillar-title">
+                  <i data-lucide="stethoscope" width="18" height="18" aria-hidden="true"></i>
+                  1. Diagnóstico y Signos de Alarma
+                </h3>
+              </div>
+              <div class="diag-grid">
+                <div class="diag-panel">
+                  <div class="diag-panel-label">Clínica y Banderas Rojas</div>
+                  <ul class="clinical-list">${clinicaHtml}</ul>
+                </div>
+                <div class="diag-panel">
+                  <div class="diag-panel-label">Escalas Neurológicas</div>
+                  <ul class="clinical-list">${escalasHtml}</ul>
+                </div>
+                <div class="diag-panel">
+                  <div class="diag-panel-label">Neuroimagen y Pruebas</div>
+                  <ul class="clinical-list">${pruebasHtml}</ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="pillar-section">
+              <div class="pillar-header">
+                <h3 class="pillar-title">
+                  <i data-lucide="git-branch" width="18" height="18" aria-hidden="true"></i>
+                  2. Manejo Agudo y Algoritmo Paso a Paso
+                </h3>
+                <button type="button" class="btn btn-ghost" onclick="togglePathologyAccordions('${p.id}')">
+                  Desplegar / Contraer pasos
+                </button>
+              </div>
+              <div class="accordion-group">${accordionsHtml}</div>
+            </div>
+
+            <div class="pillar-section">
+              <div class="pillar-header">
+                <h3 class="pillar-title">
+                  <i data-lucide="pill" width="18" height="18" aria-hidden="true"></i>
+                  3. Farmacología Detallada
+                </h3>
+              </div>
+              <div class="table-scroll">
+                <table class="clinical-table">
+                  <thead>
+                    <tr>
+                      <th>Principio Activo</th>
+                      <th>Dosis Exacta y Vía</th>
+                      <th>Dilución / Velocidad</th>
+                      <th>Contraindicaciones y Monitorización</th>
+                    </tr>
+                  </thead>
+                  <tbody>${pharmRowsHtml}</tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+        `;
+      });
+
+      container.innerHTML = html;
+      refreshIcons();
+    }
+
+    function renderGradeTable() {
+      const tbody = document.getElementById(`grade-table-body`);
+      if (!tbody) return;
+      tbody.innerHTML = GRADE_TABLE_ROWS.map(function (row) {
+        return `
+          <tr>
+            <td><strong>${escapeHtml(row.entity)}</strong></td>
+            <td>${escapeHtml(row.intervention)}</td>
+            <td><span class="chip" data-status="${row.status}">${escapeHtml(row.grade)}</span></td>
+            <td class="mono">${escapeHtml(row.evidence)}</td>
+          </tr>
+        `;
+      }).join(``);
+    }
+
+    function renderQuiz() {
+      const container = document.getElementById(`quiz-cases-container`);
+      if (!container) return;
+
+      const letters = [`A`, `B`, `C`, `D`];
+      let html = ``;
+      let answeredCount = 0;
+      let correctCount = 0;
+
+      QUIZ_CASES.forEach(function (qc) {
+        const chosenIdx = appState.quizAnswers[qc.id];
+        const hasAnswered = chosenIdx !== undefined;
+        if (hasAnswered) {
+          answeredCount++;
+          if (chosenIdx === qc.correctIndex) correctCount++;
+        }
+
+        const optionsHtml = qc.options.map(function (opt, idx) {
+          let cls = `quiz-opt-btn`;
+          if (hasAnswered) {
+            if (idx === qc.correctIndex) {
+              cls += ` is-correct`;
+            } else if (idx === chosenIdx) {
+              cls += ` is-wrong`;
+            }
+          }
+          return `
+            <button
+              type="button"
+              class="${cls}"
+              ${hasAnswered ? 'disabled' : ''}
+              onclick="answerQuiz('${qc.id}', ${idx})"
+            >
+              <span class="opt-letter">${letters[idx]}.</span>
+              <span>${escapeHtml(opt)}</span>
+            </button>
+          `;
+        }).join(``);
+
+        let feedbackHtml = ``;
+        if (hasAnswered) {
+          const isRight = chosenIdx === qc.correctIndex;
+          feedbackHtml = `
+            <div class="quiz-feedback" data-state="${isRight ? 'ok' : 'wrong'}">
+              <strong>${isRight ? 'Respuesta correcta' : 'Respuesta incorrecta'} (Opción correcta: ${letters[qc.correctIndex]})</strong>
+              <span>${escapeHtml(qc.rationale)}</span>
+            </div>
+          `;
+        }
+
+        html += `
+          <div class="quiz-case-card" id="quiz-card-${qc.id}">
+            <div class="pillar-header">
+              <span class="chip" data-status="info">${escapeHtml(qc.topic)}</span>
+              ${hasAnswered ? `<span class="chip" data-status="${chosenIdx === qc.correctIndex ? 'ok' : 'alert'}">${chosenIdx === qc.correctIndex ? 'Acierto' : 'Revisar'}</span>` : ``}
+            </div>
+            <p class="quiz-stem">${escapeHtml(qc.stem)}</p>
+            <div class="quiz-options">${optionsHtml}</div>
+            ${feedbackHtml}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+
+      const kpiScore = document.getElementById(`kpi-quiz-score`);
+      const kpiCap = document.getElementById(`kpi-quiz-caption`);
+      const progChip = document.getElementById(`quiz-progress-chip`);
+
+      if (kpiScore) kpiScore.textContent = `${correctCount} / ${QUIZ_CASES.length}`;
+      if (kpiCap) {
+        if (answeredCount === 0) {
+          kpiCap.textContent = `5 casos clínicos pendientes de resolver`;
+        } else if (answeredCount < QUIZ_CASES.length) {
+          kpiCap.textContent = `${answeredCount} de 5 casos respondidos`;
+        } else {
+          kpiCap.textContent = `Autoevaluación completada (${Math.round((correctCount / QUIZ_CASES.length) * 100)}%)`;
+        }
+      }
+      if (progChip) progChip.textContent = `Progreso: ${answeredCount} / ${QUIZ_CASES.length} respondidos · ${correctCount} aciertos`;
+    }
+
+    function refreshIcons() {
+      if (window.lucide && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+    }
+
+    async function persistState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+        try {
+          await window.notebookAppApi.setAppState({
+            activeFilter: appState.activeFilter,
+            searchQuery: appState.searchQuery,
+            openAccordions: appState.openAccordions,
+            quizAnswers: appState.quizAnswers
+          });
+        } catch (err) {
+          /* Silencioso en entorno de vista previa sin host */
+        }
+      }
+    }
+
+    function selectFilter(filterId) {
+      appState.activeFilter = filterId;
+      renderNavigation();
+      renderPathologies();
+      persistState();
+      const target = filterId === `all` ? document.getElementById(`pathologies-container`) : document.getElementById(`card-${filterId}`);
+      if (target) target.scrollIntoView({ behavior: `smooth`, block: `start` });
+    }
+
+    function jumpToSection(sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) el.scrollIntoView({ behavior: `smooth`, block: `start` });
+    }
+
+    function handleSearchInput(val) {
+      appState.searchQuery = val;
+      if (val.trim() && appState.activeFilter !== `all`) {
+        appState.activeFilter = `all`;
+        renderNavigation();
+      }
+      renderPathologies();
+      persistState();
+    }
+
+    function applyQuickTerm(term) {
+      const input = document.getElementById(`search-input`);
+      if (input) input.value = term;
+      appState.searchQuery = term;
+      appState.activeFilter = `all`;
+      renderNavigation();
+      renderPathologies();
+      persistState();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById(`search-input`);
+      if (input) input.value = ``;
+      appState.searchQuery = ``;
+      renderPathologies();
+      persistState();
+    }
+
+    function toggleAccordion(accKey) {
+      const panel = document.getElementById(`panel-${accKey}`);
+      const currentlyOpen = panel ? !panel.hidden : Boolean(appState.openAccordions[accKey]);
+      appState.openAccordions[accKey] = !currentlyOpen;
+      renderPathologies();
+      persistState();
+    }
+
+    function togglePathologyAccordions(pathologyId) {
+      const p = PATHOLOGIES.find(function (item) { return item.id === pathologyId; });
+      if (!p) return;
+      const anyClosed = p.algorithms.some(function (alg, idx) {
+        const panel = document.getElementById(`panel-${pathologyId}__${idx}`);
+        return panel ? panel.hidden : !appState.openAccordions[`${pathologyId}__${idx}`];
+      });
+      p.algorithms.forEach(function (alg, idx) {
+        appState.openAccordions[`${pathologyId}__${idx}`] = anyClosed;
+      });
+      renderPathologies();
+      persistState();
+    }
+
+    function toggleAllAccordions() {
+      appState.allAccordionsOpen = !appState.allAccordionsOpen;
+      PATHOLOGIES.forEach(function (p) {
+        p.algorithms.forEach(function (alg, idx) {
+          appState.openAccordions[`${p.id}__${idx}`] = appState.allAccordionsOpen;
+        });
+      });
+      const btn = document.getElementById(`btn-toggle-all-acc`);
+      if (btn) {
+        btn.textContent = appState.allAccordionsOpen ? `Contraer todos los algoritmos` : `Expandir todos los algoritmos`;
+      }
+      renderPathologies();
+      persistState();
+    }
+
+    function answerQuiz(caseId, optionIndex) {
+      if (appState.quizAnswers[caseId] !== undefined) return;
+      appState.quizAnswers[caseId] = optionIndex;
+      renderQuiz();
+      persistState();
+    }
+
+    function resetQuiz(btn) {
+      if (Object.keys(appState.quizAnswers).length === 0) return;
+      if (btn && btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.textContent = `Confirmar reinicio`;
+        return;
+      }
+      if (btn) {
+        btn.dataset.armed = `false`;
+        btn.textContent = `Reiniciar autoevaluación`;
+      }
+      appState.quizAnswers = {};
+      renderQuiz();
+      persistState();
+    }
+
+    async function initApp() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === `object`) {
+            if (saved.activeFilter) appState.activeFilter = saved.activeFilter;
+            if (typeof saved.searchQuery === `string`) {
+              appState.searchQuery = saved.searchQuery;
+              const input = document.getElementById(`search-input`);
+              if (input) input.value = saved.searchQuery;
+            }
+            if (saved.openAccordions && typeof saved.openAccordions === `object`) {
+              appState.openAccordions = saved.openAccordions;
+            }
+            if (saved.quizAnswers && typeof saved.quizAnswers === `object`) {
+              appState.quizAnswers = saved.quizAnswers;
+            }
+          }
+        } catch (err) {
+          /* Inicia con valores por defecto */
+        }
+      }
+
+      renderNavigation();
+      renderPathologies();
+      renderGradeTable();
+      renderQuiz();
+      refreshIcons();
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener(`DOMContentLoaded`, initApp);
+  </script>
+</body>
+</html>
