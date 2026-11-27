@@ -1,0 +1,3245 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="vitals">
+  <title>Guía Clínica Digital · Servicio de Urgencias en Psiquiatría</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces (Vitals + user #F8FAFC / white cards) */
+      --background: #ffffff;
+      --surface-container-low: #f8fafc;
+      --surface-container: #f1f5f9;
+      --surface-container-high: #e2e8f0;
+
+      /* Text */
+      --on-surface: #0f172a;
+      --on-surface-variant: #475569;
+
+      /* Rules */
+      --outline: #94a3b8;
+      --outline-variant: #e2e8f0;
+
+      /* Accents (User #0F4C81 clinical blue, #DC2626 red, #D97706 amber) */
+      --primary: #0f4c81;
+      --on-primary: #ffffff;
+      --primary-container: #e8f1fa;
+      --on-primary-container: #0b3a63;
+      --secondary: #166534;
+      --tertiary: #15803d;
+      --tertiary-container: #dcfce7;
+      --error: #dc2626;
+      --on-error: #ffffff;
+      --error-container: #fef2f2;
+      --on-error-container: #991b1b;
+      --warning: #d97706;
+      --warning-container: #fffbeb;
+      --on-warning-text: #92400e;
+
+      /* Data series */
+      --data-1: #0f4c81;
+      --data-2: #15803d;
+      --data-3: #d97706;
+      --data-4: #dc2626;
+      --data-context: #cbd5e1;
+
+      /* Fonts */
+      --font-headline: 'Figtree', sans-serif;
+      --font-body: 'Atkinson Hyperlegible', sans-serif;
+      --font-label: 'Figtree', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      /* Shape */
+      --rounded: 0.5rem;
+      --rounded-lg: 0.75rem;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --top-bar: 6px solid var(--primary);
+      --status-bar-width: 4px;
+      --card-border: 1px solid var(--outline-variant);
+      --card-lift: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 12px rgb(15 23 42 / 0.04);
+
+      /* Shared semantic & focus */
+      --positive: var(--tertiary);
+      --focus: var(--primary);
+
+      /* Dashboard type scale */
+      --display-size: clamp(1.5rem, 1.25rem + 0.9vw, 2rem);
+      --headline-size: clamp(1.1875rem, 1.05rem + 0.45vw, 1.4375rem);
+      --subhead-size: clamp(1rem, 0.95rem + 0.2vw, 1.125rem);
+      --body-size: clamp(0.9375rem, 0.91rem + 0.12vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.25rem;
+      --space-2xl: 3.5rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+    }
+
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --background: #111827;
+      --surface-container-low: #0b1120;
+      --surface-container: #1e293b;
+      --surface-container-high: #334155;
+
+      --on-surface: #f1f5f9;
+      --on-surface-variant: #94a3b8;
+
+      --outline: #64748b;
+      --outline-variant: #1f2937;
+
+      --primary: #60a5fa;
+      --on-primary: #0b1120;
+      --primary-container: #1e3a5f;
+      --on-primary-container: #dbeafe;
+      --secondary: #86efac;
+      --tertiary: #4ade80;
+      --tertiary-container: #143322;
+      --error: #f87171;
+      --on-error: #1f0707;
+      --error-container: #3b1219;
+      --on-error-container: #fecaca;
+      --warning: #fbbf24;
+      --warning-container: #33220b;
+      --on-warning-text: #fde68a;
+
+      --data-1: #60a5fa;
+      --data-2: #4ade80;
+      --data-3: #fbbf24;
+      --data-4: #f87171;
+      --data-context: #334155;
+
+      --card-lift: none;
+      --focus: var(--primary);
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.58;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Top clinical band & Header */
+    .app-shell {
+      border-top: var(--top-bar);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-header {
+      background-color: var(--background);
+      border-bottom: var(--card-border);
+      padding: var(--space-md) var(--space-lg);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .app-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--display-size);
+      line-height: 1.1;
+      letter-spacing: -0.015em;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .app-subtitle {
+      margin: 0;
+      color: var(--on-surface-variant);
+      font-size: 0.9375rem;
+      max-width: 68ch;
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border: 1px solid var(--outline-variant);
+      background-color: var(--background);
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+
+    .btn:hover {
+      background-color: var(--surface-container);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--on-primary-container);
+      color: var(--on-primary);
+    }
+
+    html[data-theme="dark"] .btn-primary:hover {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .btn-night[aria-pressed="true"] {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--primary);
+    }
+
+    /* Main Grid Layout */
+    .page-grid {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      flex: 1;
+      align-items: start;
+    }
+
+    .page-grid * { min-width: 0; }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      background-color: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--card-lift);
+      padding: var(--space-md);
+      position: sticky;
+      top: var(--space-md);
+      max-height: calc(100vh - 2rem);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .search-box {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+
+    .search-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      color: var(--on-surface-variant);
+      pointer-events: none;
+      width: 16px;
+      height: 16px;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-sm) 2.5rem var(--space-sm) 2.25rem;
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      background-color: var(--surface-container-low);
+      color: var(--on-surface);
+      font-size: 0.9rem;
+      transition: border-color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .search-input:focus {
+      background-color: var(--background);
+      border-color: var(--primary);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 0.35rem;
+      min-width: 34px;
+      min-height: 34px;
+      border: none;
+      background: transparent;
+      color: var(--on-surface-variant);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search-clear.visible { display: inline-flex; }
+    .search-clear:hover { background-color: var(--surface-container); }
+
+    .nav-scroll {
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      padding-right: 2px;
+    }
+
+    .nav-group-title {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--on-surface-variant);
+      margin: 0 0 var(--space-xs) 0;
+      padding-left: var(--space-sm);
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-sm);
+      border: 1px solid transparent;
+      border-left: 3px solid transparent;
+      border-radius: var(--rounded);
+      background: transparent;
+      color: var(--on-surface);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      font-family: var(--font-label);
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.25;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .nav-btn:hover {
+      background-color: var(--surface-container);
+    }
+
+    .nav-btn.active {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border-left-color: var(--primary);
+      font-weight: 700;
+    }
+
+    .nav-btn-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-width: 0;
+    }
+
+    .nav-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: var(--rounded-full);
+      flex-shrink: 0;
+      background-color: var(--primary);
+    }
+
+    .nav-dot[data-severity="critical"] { background-color: var(--error); }
+    .nav-dot[data-severity="urgent"] { background-color: var(--warning); }
+
+    .nav-match-count {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      padding: 2px 6px;
+      border-radius: var(--rounded-full);
+      background-color: var(--surface-container-high);
+      color: var(--on-surface-variant);
+      flex-shrink: 0;
+    }
+
+    .mobile-select-bar {
+      display: none;
+    }
+
+    /* Main Content Canvas */
+    .main-canvas {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    /* KPI / Quick Overview Strip */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .status-card {
+      background-color: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      box-shadow: var(--card-lift);
+    }
+
+    .status-card[data-status="ok"] { border-left-color: var(--tertiary); }
+    .status-card[data-status="warning"] { border-left-color: var(--warning); }
+    .status-card[data-status="alert"] { border-left-color: var(--error); }
+
+    .kpi-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-xs);
+    }
+
+    .kpi-value {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.5rem;
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+    }
+
+    .kpi-caption {
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      margin-top: var(--space-xs);
+    }
+
+    /* Syndrome Detail Header */
+    .syndrome-hero {
+      background-color: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--card-lift);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .syndrome-hero[data-severity="critical"] { border-left-color: var(--error); }
+    .syndrome-hero[data-severity="urgent"] { border-left-color: var(--warning); }
+
+    .hero-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      padding: 4px 10px;
+      border-radius: var(--rounded-full);
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .chip[data-status="alert"] {
+      background-color: var(--error-container);
+      color: var(--on-error-container);
+    }
+
+    .chip[data-status="warning"] {
+      background-color: var(--warning-container);
+      color: var(--on-warning-text);
+    }
+
+    .chip[data-status="ok"] {
+      background-color: var(--tertiary-container);
+      color: var(--secondary);
+    }
+
+    .syndrome-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: clamp(1.375rem, 1.15rem + 0.8vw, 1.875rem);
+      line-height: 1.15;
+      letter-spacing: -0.015em;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .syndrome-lede {
+      margin: 0;
+      color: var(--on-surface-variant);
+      max-width: 72ch;
+      font-size: 1rem;
+    }
+
+    /* Red Flags Box (Always visible above tabs) */
+    .red-flags-panel {
+      background-color: var(--error-container);
+      border: 1px solid var(--error);
+      border-left: 5px solid var(--error);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+
+    .red-flags-header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--on-error-container);
+      margin-bottom: var(--space-sm);
+    }
+
+    .red-flags-list {
+      margin: 0;
+      padding-left: 1.25rem;
+      color: var(--on-error-container);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-xs) var(--space-lg);
+    }
+
+    .red-flags-list li {
+      font-size: 0.9375rem;
+      line-height: 1.45;
+    }
+
+    /* Warning Callout */
+    .warning-callout {
+      background-color: var(--warning-container);
+      border: 1px solid var(--warning);
+      border-left: 4px solid var(--warning);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      color: var(--on-warning-text);
+      font-size: 0.9375rem;
+    }
+
+    .info-callout {
+      background-color: var(--primary-container);
+      border: 1px solid var(--outline-variant);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+      color: var(--on-primary-container);
+      font-size: 0.9375rem;
+    }
+
+    /* 4-Tab Bar */
+    .tabs-container {
+      background-color: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      box-shadow: var(--card-lift);
+      overflow: hidden;
+    }
+
+    .tab-list {
+      display: flex;
+      flex-wrap: wrap;
+      border-bottom: 1px solid var(--outline-variant);
+      background-color: var(--surface-container-low);
+      padding: 0 var(--space-md);
+      gap: var(--space-xs);
+    }
+
+    .tab-btn {
+      min-height: 48px;
+      padding: var(--space-sm) var(--space-md);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      transition: color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .tab-btn:hover {
+      color: var(--on-surface);
+      background-color: var(--surface-container);
+    }
+
+    .tab-btn[aria-selected="true"] {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      font-weight: 700;
+      background-color: var(--background);
+    }
+
+    .tab-panel {
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+      animation: panelFade var(--dur-short) var(--ease-out);
+    }
+
+    @keyframes panelFade {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Content Grids & Cards */
+    .two-col-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+
+    .section-card {
+      background-color: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      padding: var(--space-md) var(--space-lg);
+    }
+
+    .section-card.white-card {
+      background-color: var(--background);
+    }
+
+    .section-heading {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--subhead-size);
+      color: var(--on-surface);
+      margin: 0 0 var(--space-sm) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .clinical-list {
+      margin: 0;
+      padding-left: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .clinical-list li {
+      line-height: 1.5;
+    }
+
+    .mono-dose {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      font-weight: 600;
+      background-color: var(--surface-container);
+      color: var(--on-surface);
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--outline-variant);
+    }
+
+    /* Accordions (Algorithms & Dosing Tables) */
+    .accordion-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    details.clinical-accordion {
+      background-color: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      overflow: hidden;
+    }
+
+    details.clinical-accordion > summary {
+      list-style: none;
+      cursor: pointer;
+      min-height: 48px;
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container-low);
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: 0.9375rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      user-select: none;
+    }
+
+    details.clinical-accordion > summary::-webkit-details-marker { display: none; }
+
+    details.clinical-accordion > summary:hover {
+      background-color: var(--primary-container);
+    }
+
+    .accordion-chevron {
+      transition: transform var(--dur-micro) var(--ease-out);
+      flex-shrink: 0;
+    }
+
+    details.clinical-accordion[open] > summary .accordion-chevron {
+      transform: rotate(180deg);
+    }
+
+    .accordion-body {
+      padding: var(--space-md);
+      border-top: var(--card-border);
+    }
+
+    /* Tables */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      background-color: var(--background);
+    }
+
+    table.clinical-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      text-align: left;
+    }
+
+    .clinical-table thead th {
+      background-color: var(--surface-container);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .clinical-table tbody td {
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+      line-height: 1.45;
+    }
+
+    .clinical-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Algorithm Steps */
+    .algo-steps {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .algo-step {
+      display: grid;
+      grid-template-columns: 32px minmax(0, 1fr);
+      gap: var(--space-md);
+      align-items: start;
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container-low);
+      border-radius: var(--rounded);
+      border: var(--card-border);
+    }
+
+    .algo-num {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--rounded-full);
+      background-color: var(--primary);
+      color: var(--on-primary);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    /* Admission vs Discharge Split */
+    .disposition-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-lg);
+    }
+
+    .disposition-card {
+      background-color: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      border-top: 4px solid var(--primary);
+    }
+
+    .disposition-card.admit { border-top-color: var(--error); }
+    .disposition-card.discharge { border-top-color: var(--tertiary); }
+
+    /* Interactive Tools (Overview Hub) */
+    .interactive-tool-card {
+      background-color: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--card-lift);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      background-color: var(--surface-container-low);
+      cursor: pointer;
+      min-height: 44px;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .check-item:hover {
+      background-color: var(--primary-container);
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .result-banner {
+      padding: var(--space-md);
+      border-radius: var(--rounded);
+      border-left: 4px solid var(--primary);
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .result-banner[data-level="high"] {
+      background-color: var(--error-container);
+      border-left-color: var(--error);
+      color: var(--on-error-container);
+    }
+
+    .result-banner[data-level="medium"] {
+      background-color: var(--warning-container);
+      border-left-color: var(--warning);
+      color: var(--on-warning-text);
+    }
+
+    .result-banner[data-level="low"] {
+      background-color: var(--tertiary-container);
+      border-left-color: var(--tertiary);
+      color: var(--secondary);
+    }
+
+    /* Search Results Panel */
+    .search-results-banner {
+      background-color: var(--background);
+      border: var(--card-border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      box-shadow: var(--card-lift);
+    }
+
+    .search-hit-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+    }
+
+    .search-hit-btn {
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      background-color: var(--surface-container-low);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-height: 44px;
+    }
+
+    .search-hit-btn:hover {
+      background-color: var(--primary-container);
+    }
+
+    /* Toxidrome Filter Pills */
+    .filter-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+    }
+
+    .filter-pill {
+      min-height: 40px;
+      padding: 6px 14px;
+      border-radius: var(--rounded-full);
+      border: 1px solid var(--outline);
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .filter-pill.active {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    /* Footer */
+    .app-footer {
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+      padding: var(--space-md) var(--space-lg) var(--space-xl);
+      border-top: var(--card-border);
+      color: var(--on-surface-variant);
+      font-size: 0.85rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .page-grid {
+        grid-template-columns: 1fr;
+        padding: var(--space-md);
+      }
+
+      .sidebar {
+        position: static;
+        max-height: none;
+      }
+
+      .nav-scroll {
+        display: none;
+      }
+
+      .mobile-select-bar {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+      }
+
+      .mobile-select {
+        width: 100%;
+        min-height: 44px;
+        padding: var(--space-sm) 2.25rem var(--space-sm) var(--space-md);
+        border: 1px solid var(--outline);
+        border-radius: var(--rounded);
+        background-color: var(--surface-container-low);
+        color: var(--on-surface);
+        font-weight: 600;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app-header { padding: var(--space-md); }
+      .page-grid { padding: var(--space-sm); gap: var(--space-md); }
+      .syndrome-hero, .tab-panel, .interactive-tool-card { padding: var(--space-md); }
+      .tab-list { padding: 0 var(--space-xs); }
+      .tab-btn { padding: var(--space-sm); font-size: 0.84rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  
+    .portfolio-back-bar {
+      width: 100%;
+      flex: 0 0 100%;
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .portfolio-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      color: var(--on-primary-container);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .portfolio-back-link:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .portfolio-author-tag {
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="portfolio-back-bar">
+          <a class="portfolio-back-link" href="index.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Volver al Portafolio
+          </a>
+          <span class="portfolio-author-tag">DIEGO GOMEZ | Médico de Familia &amp; SST</span>
+        </div>
+        <div class="brand-block">
+          <span class="kicker">
+            <i data-lucide="activity" aria-hidden="true"></i>
+            Servicio de Urgencias en Psiquiatría · Guía Clínica de Bolsillo
+          </span>
+          <h1 class="app-title">Dashboard de Urgencias Psiquiátricas</h1>
+          <p class="app-subtitle">
+            Triaje rápido, detección de organicidad, diagnóstico diferencial, pautas farmacológicas y criterios de ingreso basados en la bibliografía clínica del servicio.
+          </p>
+        </div>
+        <div class="header-actions">
+          <button type="button" class="btn" id="btn-overview" onclick="selectView('overview')">
+            <i data-lucide="layout-dashboard" aria-hidden="true"></i>
+            <span>Triaje y Toxíndromes</span>
+          </button>
+          <button type="button" class="btn btn-night" id="btn-night-mode" aria-pressed="false" onclick="toggleNightMode()">
+            <i data-lucide="moon" aria-hidden="true"></i>
+            <span id="night-mode-label">Modo Guardia Nocturna</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="page-grid">
+      <aside class="sidebar" aria-label="Navegación de síndromes y buscador clínico">
+        <div class="search-box">
+          <label for="clinical-search" class="field-label">Buscador en tiempo real</label>
+          <div class="search-input-wrap">
+            <i data-lucide="search" class="search-icon" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="clinical-search"
+              class="search-input"
+              placeholder="Síntoma, diagnóstico o fármaco…"
+              oninput="handleSearch(this.value)"
+              autocomplete="off"
+            >
+            <button type="button" id="search-clear-btn" class="search-clear" aria-label="Limpiar búsqueda" onclick="clearSearch()">
+              <i data-lucide="x" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="mobile-select-bar">
+          <label for="mobile-syndrome-select" class="field-label">Ir a protocolo de urgencia</label>
+          <select id="mobile-syndrome-select" class="mobile-select" onchange="selectView(this.value)">
+          </select>
+        </div>
+
+        <nav class="nav-scroll" id="sidebar-nav" aria-label="Listado de urgencias psiquiátricas">
+        </nav>
+      </aside>
+
+      <main class="main-canvas" id="main-content" tabindex="-1">
+      </main>
+    </div>
+
+    <footer class="app-footer">
+      <div>
+        <strong>Fuentes clínicas de referencia:</strong> Manual de Psiquiatría (F. García-Escribano Martín, E. J. Pérez Sánchez, B. Pinilla Santos); Urgencias Psiquiátricas (Elsevier España); Psiquiatría Clínica; Harrison's Principles of Internal Medicine (22.ª ed., Caps. 462–465); La Entrevista Psiquiátrica y Examen Mental (D. Carlat, 4.ª ed.).
+      </div>
+      <div id="reviewed-counter">Protocolos revisados en guardia: 0 / 15</div>
+    </footer>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    // =========================================================================
+    // CLINICAL DATA (Strictly grounded in provided sources; backtick literals)
+    // =========================================================================
+    const CLINICAL_SYNDROMES = [
+      {
+        id: `agitacion`,
+        group: `Urgencias Conductuales y Afectivas`,
+        shortTitle: `Agitación psicomotriz`,
+        title: `Síndrome de Agitación Psicomotriz y Conducta Violenta`,
+        severity: `critical`,
+        severityLabel: `Prioridad Alta · Descarte Orgánico Inmediato`,
+        categoryTag: `Urgencia conductual`,
+        lede: `Aumento inadecuado de la actividad motora (desde inquietud psicomotriz hasta tempestad de movimientos) con riesgo de auto o heteroagresividad. La prioridad absoluta es garantizar la seguridad y descartar organicidad.`,
+        redFlags: [
+          `Compromiso o estrechamiento creciente del nivel de conciencia (dificulta control verbal y exige descarte orgánico urgente).`,
+          `Inicio agudo o subagudo en un paciente sin antecedentes psiquiátricos conocidos.`,
+          `Alteración de las constantes vitales (fiebre, taquicardia, hipertensión, hipoxemia) o signos de traumatismo craneoencefálico.`,
+          `Riesgo inminente de violencia o destrucción hacia sí mismo, el personal o terceros (la demora o duda aumenta la violencia).`,
+          `Descartar hipoglucemia e hipoxemia antes de administrar sedación farmacológica.`
+        ],
+        clinica: {
+          criterios: [
+            `Diferenciar <strong>síndrome de agitación psicomotriz</strong> (actividad motora excesiva e inadecuada, desde inquietud hasta tempestad de movimientos) de <strong>paciente violento o agresivo</strong> (hostilidad, brusquedad y tendencia manifiesta a la destrucción o auto/heteroagresividad).`,
+            `Valorar las tres esferas mínimas en urgencias: nivel de conciencia y atención, presencia de desorientación temporoespacial y curso fluctuante vs. estable.`,
+            `Exploración psicopatológica mínima: discurso (elevado, vociferante, verborreico, disgregado o con fuga de ideas en manía), afectividad (disforia o euforia) e ideación delirante de perjuicio o megalomaníaca.`,
+            `Recabar de acompañantes/historia clínica: antecedentes somáticos, tóxicos, tratamiento actual, ruptura terapéutica y episodios previos.`
+          ],
+          exploracion: [
+            `Cinco constantes físicas completas (FC, TA, T.ª, FR, SatO₂) y glucemia capilar inmediata.`,
+            `Signos de intoxicación/abstinencia (aliento enólico, midriasis/miosis, diaforesis, temblor, hiperreflexia).`,
+            `Exploración neurológica focal básica si es posible tras contención.`
+          ],
+          algoritmoTitle: `Algoritmo de actuación rápida ante agitación en urgencias`,
+          algoritmoSteps: [
+            `Asegurar el entorno: atender en área de urgencias generales con fácil acceso y evacuación; retirar objetos contundentes o peligrosos.`,
+            `Contención verbal inicial: clima empático, baja estimulación sensorial, tono sereno, límites claros y comprensibles sin atosigar al paciente.`,
+            `Descarte orgánico simultáneo: evaluar conciencia, constantes vitales, hipoglucemia, hipoxemia y consumo/abstinencia de tóxicos.`,
+            `Si peligro inminente o fracaso verbal: activar personal entrenado e inmovilización física protocolizada de forma rápida y decidida para evitar lesiones.`,
+            `Contención farmacológica ajustada a la sospecha etiológica (benzodiacepinas y/o antipsicóticos según causa orgánico-tóxica vs. psiquiátrica).`
+          ]
+        },
+        diferencial: {
+          intro: `Ante toda agitación psicomotriz debe priorizarse la identificación de una <strong>agitación orgánica</strong> frente a una psiquiátrica o mixta.`,
+          tablaHeaders: [`Característica`, `Agitación Orgánica (Prioritaria)`, `Agitación Psiquiátrica`, `Agitación Mixta`],
+          tablaRows: [
+            [`Nivel de conciencia`, `Alterado o estrechamiento creciente`, `Clara y limpia`, `Variable (intoxicación añadida)`],
+            [`Inicio y curso`, `Agudo/subagudo, fluctuante`, `Escasa fluctuación`, `Agudo sobre cuadro crónico`],
+            [`Antecedentes psiquiátricos`, `Ausentes habitualmente`, `Presentes (ingresos previos)`, `Psiquiátricos + tóxicos`],
+            [`Orientación y memoria`, `Desorientación y posible amnesia del episodio`, `Sin desorientación temporoespacial`, `Deterioro atencional/orientación`],
+            [`Alucinaciones / Delirios`, `Visuales, táctiles, olfativas; poco estructurados`, `Auditivas (raro visuales); perjuicio o megalomanía`, `Mezcla clínico-tóxica`],
+            [`Causas principales`, `Alcohol, drogas, epilepsia, TCE, delirium, infección SNC`, `Esquizofrenia, manía, trastorno delirante, histeria`, `Paciente psiquiátrico con alcohol u otros tóxicos`]
+          ],
+          otrosDiferenciales: [
+            `Descartar intoxicación por estimulantes (cocaína, anfetaminas) o alucinógenos/disociativos.`,
+            `Descartar abstinencia alcohólica o delirium tremens, y crisis epilépticas (confusión postictal).`,
+            `Valorar efectos adversos de psicofármacos: acatisia aguda (inquietud motora intensa subjetiva tras neurolépticos).`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Proporcionar un espacio tranquilo con baja estimulación sensorial y salida despejada para el personal.`,
+            `Mantener actitud inicial de escucha y comprensión; fijar límites de comportamiento de forma clara y respetuosa.`,
+            `En caso de inmovilización física, mantener vigilancia estrecha, monitorizar constantes y revisar la indicación de forma continua.`
+          ],
+          farmacoIntro: `El tratamiento farmacológico depende de descartar primero hipoglucemia, hipoxemia y organicidad. Evitar dosis masivas de antipsicóticos (>1 g equivalentes de clorpromazina) o neuroleptización rápida, ya que aumentan efectos secundarios sin mejorar la eficacia.`,
+          dosisTabla: [
+            { farmaco: `Lorazepam`, dosis: `1–2 mg`, via: `v.o. / i.m. (c/6–8 h o PRN)`, precauciones: `De elección en agitación psicótica mientras actúa el antipsicótico, o en hepatopatía.` },
+            { farmaco: `Diazepam`, dosis: `10 mg inicial; luego 5–10 mg c/3–5 h`, via: `i.v. / v.o.`, precauciones: `Primera línea en agitación por estimulantes, alucinógenos o abstinencia alcohólica. Vigilar depresión respiratoria.` },
+            { farmaco: `Haloperidol`, dosis: `2–5 mg (o 6–20 mg/día reparto)`, via: `v.o. / i.m.`, precauciones: `Si psicosis/manía sin causa orgánica contraindicada. Vigilar QTc y síntomas extrapiramidales/SNM. Evitar en cuerpos de Lewy.` },
+            { farmaco: `Risperidona / Olanzapina`, dosis: `Risperidona 4–6 mg/día · Olanzapina 10–20 mg/día`, via: `v.o. (o i.m. según preparado)`, precauciones: `Antipsicóticos de 2.ª generación a dosis moderada fija; primer episodio requiere dosis más bajas.` },
+            { farmaco: `Difenhidramina / Benzatropina`, dosis: `Según pauta de urgencias`, via: `v.o. / i.v. / i.m.`, precauciones: `Si el cuadro corresponde a acatisia inducida por antipsicóticos.` }
+          ],
+          evitar: [
+            `No sedar sin descartar antes hipoglucemia, hipoxemia o lesión aguda del SNC.`,
+            `No utilizar neuroleptización rápida ni megadosis de antipsicóticos.`,
+            `No demorar la contención física cuando existe violencia manifiesta o riesgo inmediato para el personal o terceros.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Alteración conductual no contenible en el medio social (autoagresividad o heteroagresividad persistente).`,
+            `Agitación orgánica o mixta que requiere estudio médico, monitorización o desintoxicación hospitalaria.`,
+            `Episodio maníaco o psicótico agudo sin soporte familiar o con ruptura terapéutica grave.`,
+            `Escalada descontrolada de autolesiones o consumo de tóxicos.`
+          ],
+          alta: [
+            `Resolución completa de la crisis tras descartar causa orgánica y comprobar contención conductual estable.`,
+            `Presencia de apoyo sociofamiliar fiable que garantice supervisión y adherencia.`,
+            `Plan de seguimiento ambulatorio confirmado o derivación expresa a su programa de salud mental / CAD.`
+          ],
+          seguimiento: `Registrar en el informe de urgencias las cinco constantes físicas, examen mental completo, medicación administrada, destino al alta y contacto con el psiquiatra habitual si procede.`
+        }
+      },
+      {
+        id: `suicidio`,
+        group: `Urgencias Conductuales y Afectivas`,
+        shortTitle: `Conducta suicida y depresión`,
+        title: `Conducta Suicida, Autolesiones y Episodio Depresivo Grave`,
+        severity: `critical`,
+        severityLabel: `Riesgo Vital Inmediato · Explorar en Toda Entrevista`,
+        categoryTag: `Urgencia psiquiátrica mayor`,
+        lede: `La valoración del riesgo suicida es obligatoria en toda entrevista diagnóstica urgente. El 50% de las personas que consuman suicidio padecen depresión y la mayoría ha consultado a un médico en el mes previo.`,
+        redFlags: [
+          `Plan suicida estructurado, deseo inequívoco de morir, acopio de pastillas o acceso a armas/medios letales.`,
+          `Intentos previos de suicidio o antecedentes familiares de suicidio (especialmente pérdida reciente de un ser querido).`,
+          `Coexistencia de depresión con crisis de angustia/pánico, ansiedad intensa o agitación (eleva drásticamente el riesgo inminente).`,
+          `Alucinaciones auditivas imperativas que ordenan autolesionarse (en esquizofrenia o psicosis).`,
+          `Enfermedad médica terminal o dolorosa crónica, aislamiento social profundo o sensación de desesperanza / estar atrapado.`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Abordaje directo (Carlat):</strong> Preguntar sobre suicidio no induce ideas autolíticas; reconforta al paciente deprimido y permite dimensionar la gravedad real.`,
+            `<strong>Criterios de Episodio Depresivo Mayor (DSM-5 · Mnemotecnia SIC-E-CAPS):</strong> ≥5 síntomas durante ≥2 semanas (incluyendo al menos ánimo deprimido o pérdida de interés/placer): <strong>S</strong>ueño (insomnio/hipersomnia), <strong>I</strong>nterés disminuido (anhedonia), <strong>C</strong>ulpa excesiva o inutilidad, <strong>E</strong>nergía (fatiga), <strong>C</strong>oncentración disminuida/indecisión, <strong>A</strong>petito/peso (>5% en 1 mes), <strong>P</strong>sicomotricidad (agitación o retraso), <strong>S</strong>uicidio/pensamientos de muerte.`,
+            `<strong>Factores de riesgo mayores (Mnemotecnia SAD PERSONS):</strong> Sexo, Edad, Depresión, Intentos previos (<em>Previous attempts</em>), Etanol/sustancias, Pérdida de pensamiento racional (psicosis), Apoyo social ausente, Plan organizado, Sin pareja (<em>No spouse</em>), Enfermedad somática (<em>Sickness</em>).`,
+            `<strong>Otros grupos de alto riesgo:</strong> Trastorno límite de la personalidad (impulsividad, gestos suicidas), dependencia de heroína/opiáceos (tasa ×20), reclusos, profesiones con acceso a medios (médicos, dentistas, enfermeros, policías).`
+          ],
+          exploracion: [
+            `Entrevista escalonada (Tabla 24-4): 1) Sentimientos sobre la vida (*"¿Alguna vez sintió que no vale la pena vivir?"*, *"¿deseó dormir y no despertar?"*); 2) Pensamientos de muerte/autolesión; 3) Plan específico, letalidad, medios disponibles y posibilidades de rescate.`,
+            `Evaluar si el episodio depresivo es unipolar, bipolar (preguntar por antecedentes de manía/hipomanía) o secundario (10–15% por enfermedad médica o sustancias).`,
+            `Exploración física si tentativa previa: toxicidad farmacológica, heridas, constantes y nivel de conciencia.`
+          ],
+          algoritmoTitle: `Algoritmo de manejo de depresión y riesgo vital en urgencias`,
+          algoritmoSteps: [
+            `Si tentativa reciente: estabilización médico-quirúrgica prioritaria y vigilancia estrecha continua (evitar nuevos intentos en el box).`,
+            `Realizar entrevista empática y esperanzada sin minimizar el malestar; explorar ideación, plan, medios y red de apoyo.`,
+            `Valorar ingreso psiquiátrico inmediato ante plan estructurado, desesperanza profunda, falta de respuesta a la entrevista clínica o ausencia de contención familiar. Si existen dudas, hospitalizar.`,
+            `En depresión ambulatoria sin riesgo vital (Manual de Psiquiatría): Leve → ejercicio físico, terapia psicológica breve o ISRS si prefiere el paciente; Moderada → ISRS o terapia psicológica (TCC o interpersonal), revaluar en 3–4 semanas.`,
+            `No iniciar antidepresivos desde urgencias si no existe garantía de asistencia continuada y seguimiento en el mismo sistema.`
+          ]
+        },
+        diferencial: {
+          intro: `Antes de atribuir el cuadro a un trastorno depresivo primario, descartar causas orgánicas, farmacológicas y bipolaridad oculta.`,
+          tablaHeaders: [`Entidad`, `Claves diferenciales`, `Riesgo y conducta`],
+          tablaRows: [
+            [`Depresión secundaria a enfermedad médica / fármacos`, `10–15% de casos: hipotiroidismo, anemia, enfermedad de Parkinson (40–50% síntomas depresivos), demencia vascular, hipoglucemia, dolor crónico`, `Tratar patología médica de base; evitar fármacos depresógenos`],
+            [`Depresión bipolar (Trastorno Bipolar I/II)`, `Antecedentes de manía o hipomanía (≥4 días), ciclos rápidos (≥4 episodios/año), historia familiar bipolar`, `Riesgo de viraje maníaco o ciclos rápidos si se pauta antidepresivo en monoterapia`],
+            [`Trastorno límite de la personalidad (TLP)`, `Inestabilidad afectiva, autoimagen variable, impulsividad, gestos parasuicidas y autoagresiones tras crisis interpersonales`, `Evaluar intención suicida aguda; fijar límites claros; valorar ingreso solo si peligro grave`],
+            [`Delirium hipoactivo`, `Confusión, somnolencia, inhibición motriz, curso fluctuante e inatención; EEG con desaceleración generalizada`, `Emergencia médica subyacente, no depresión primaria`],
+            [`Duelo normal vs. Episodio depresivo mayor`, `Tristeza e insomnio ligados a la pérdida vs. culpa delirante, inutilidad, anhedonia global o ideación suicida`, `Apoyo empático y seguimiento; vigilar si pérdida reciente fue por suicidio`]
+          ],
+          otrosDiferenciales: [
+            `Distimia / Trastorno depresivo persistente: ánimo deprimido crónico ≥2 años con ≥2 síntomas.`,
+            `Episodio depresivo postpsicótico en esquizofrenia: diferenciar de acinesia o aplanamiento por neurolépticos.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Vigilancia estrecha (uno a uno si riesgo agudo), retirar objetos cortantes, cinturones, cordones o medicación acumulada.`,
+            `Retener al paciente intoxicado por alcohol en urgencias hasta que descienda la alcoholemia lo suficiente para evaluar con fiabilidad el juicio y el riesgo suicida.`,
+            `Implicar a la familia/entorno tras valorar red de apoyo, informando sobre medidas de seguridad en domicilio (retirar fármacos y medios letales).`
+          ],
+          farmacoIntro: `El inicio de antidepresivos no debe efectuarse de forma aislada en urgencias salvo asistencia continuada garantizada. Si existe agitación/ansiedad grave concomitante, controlar el riesgo agudo mientras se decide ingreso o seguimiento.`,
+          dosisTabla: [
+            { farmaco: `ISRS (p. ej. Sertralina, Fluoxetina, Paroxetina)`, dosis: `Inicio según ficha (sertralina 50–150 mg/d; fluoxetina 40–60 mg/d en TOC)`, precauciones: `v.o. · Primera línea ambulatoria si seguimiento asegurado; respuesta en 3–4 semanas. Nunca combinar con IMAO (lavado 2–5 semanas).` },
+            { farmaco: `Venlafaxina / Duloxetina (IRSN)`, dosis: `Venlafaxina 75–375 mg/día · Duloxetina 20–60 mg/día`, precauciones: `v.o. · Útil en depresión grave/refractaria; monitorizar TA con dosis altas de venlafaxina.` },
+            { farmaco: `Mirtazapina`, dosis: `15–30 mg/día`, precauciones: `v.o. · Bloqueo 5-HT2/5-HT3 (sin efectos sexuales/GI); sedante y aumento de peso a dosis bajas.` },
+            { farmaco: `Antidepresivos tricíclicos (Nortriptilina, Amitriptilina)`, dosis: `Ajuste según respuesta y niveles`, precauciones: `v.o. · Alta letalidad en sobredosis (evitar en riesgo suicida); efectos anticolinérgicos, ortostasis y bloqueo AV.` },
+            { farmaco: `Terapia Electroconvulsiva (TEC)`, dosis: `Indicación hospitalaria`, precauciones: `Indicada en depresiones delirantes, resistentes al tratamiento, riesgo vital extremo o durante el embarazo.` }
+          ],
+          evitar: [
+            `No dar el alta tras una tentativa sin evaluación psiquiátrica completa ni sin garantizar un entorno seguro.`,
+            `No prescribir grandes cantidades de tricíclicos ni fármacos letales en sobredosis a pacientes con ideación suicida.`,
+            `No subestimar el riesgo por tratarse de "gestos manipulativos" en el TLP o por aparente mejoría superficial.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Ideación suicida estructurada, deseo firme de morir o tentativa previa de alta letalidad.`,
+            `Paciente que no responde a la entrevista en urgencias o persiste desesperado/indefenso.`,
+            `Antecedentes familiares de suicidio o pérdida reciente de un ser querido por suicidio.`,
+            `Episodio depresivo grave con inhibición psicomotora intensa, pérdida severa de peso, síntomas psicóticos o indicación de TEC.`,
+            `TLP en crisis grave con peligro para sí mismo o para su entorno. Ante la duda, hospitalizar.`
+          ],
+          alta: [
+            `Ausencia de plan suicida estructurado, crítica adecuada y compromiso de seguridad fiable.`,
+            `Supervisión familiar estrecha confirmada y ausencia de acceso a medios letales.`,
+            `Cita preferente / derivación formal asegurada en salud mental (y en depresión leve-moderada, seguimiento en 3–4 semanas).`
+          ],
+          seguimiento: `Informar claramente al paciente y familiares del diagnóstico o sospecha, plan de crisis si reaparece ideación autolítica y pauta psicofarmacológica únicamente si existe continuidad asistencial.`
+        }
+      },
+      {
+        id: `psicosis`,
+        group: `Urgencias Psicóticas y Neurológicas`,
+        shortTitle: `Psicosis aguda y manía`,
+        title: `Psicosis Aguda (Esquizofrenia, Psicosis Breve y Manía Psicótica)`,
+        severity: `urgent`,
+        severityLabel: `Urgencia Psiquiátrica · Descartar Organicidad`,
+        categoryTag: `Trastorno psicótico / afectivo`,
+        lede: `Alteración aguda del juicio de realidad con delirios, alucinaciones o desorganización grave del pensamiento/conducta. Exige descartar etiología orgánica/tóxica en todo primer episodio o presentación atípica.`,
+        redFlags: [
+          `Alucinaciones visuales, táctiles u olfativas (orientan fuertemente a causa orgánica o tóxica frente a psicosis funcional).`,
+          `Inicio abrupto sin período prodrómico en paciente sin historia previa de psicosis o a edad inhabitual.`,
+          `Alteración del nivel de conciencia o de las constantes vitales.`,
+          `Voces imperativas de contenido suicida u homicida (10% de pacientes con esquizofrenia consuman suicidio).`,
+          `Fiebre alta en paciente tratado con antipsicóticos (descartar agranulocitosis por clozapina o síndrome neuroléptico maligno).`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Esquizofrenia (DSM-5):</strong> ≥2 síntomas durante ≥1 mes (al menos 1 debe ser delirios, alucinaciones o discurso desorganizado) + signos continuos ≥6 meses. Inicio habitual al final de la adolescencia/juventud. 1/3 con predominio de síntomas negativos (anhedonia, aplanamiento, retraimiento).`,
+            `<strong>Trastorno psicótico breve:</strong> inicio súbito tras estrés psicosocial evidente, duración ≥1 día y <1 mes, con labilidad emocional intensa y recuperación completa hasta 80% de casos.`,
+            `<strong>Trastorno esquizofreniforme:</strong> mismos síntomas que esquizofrenia pero duración <6 meses; mejor pronóstico.`,
+            `<strong>Trastorno esquizoafectivo:</strong> episodios afectivos mayores concomitantes, con ≥2 semanas de delirios/alucinaciones en ausencia de síntomas afectivos destacados.`,
+            `<strong>Manía aguda (Bipolar I):</strong> ánimo elevado, expansivo o irritable ≥1 semana (o cualquier duración si ingreso), grandiosidad, menor necesidad de sueño, verborrea, taquipsiquia/fuga de ideas, distraibilidad e hiperactividad/imprudencias; puede cursar con delirios paranoides indistinguibles de esquizofrenia.`
+          ],
+          exploracion: [
+            `Evaluar contenido delirante (persecución, perjuicio, referencia, influencia, difusión o inserción de pensamiento) y grado de sistematización.`,
+            `Evaluar lenguaje (laxitud de asociaciones, tangencialidad, neologismos, jergafasia, bloqueo, criptoescritura en esquizofrenia paranoide; verborrea e hipergrafía aguda en manía).`,
+            `Explorar ideación suicida u homicida asociada y verificar adherencia terapéutica contactando con su centro/psiquiatra habitual.`
+          ],
+          algoritmoTitle: `Protocolo de intervención con el paciente psicótico en urgencias`,
+          algoritmoSteps: [
+            `Recabar información previa (motivo de consulta, derivación, acompañantes, abandono de tratamiento prolongado).`,
+            `Abordaje en entorno tranquilo con baja estimulación sensorial, clima empático, escucha inicial y límites claros sin atosigar.`,
+            `Caracterizar perfil cronológico (inicio agudo vs. insidioso, desencadenantes, episodios previos).`,
+            `Aplicar checklist de 7 indicadores de organicidad (inicio abrupto, alteración de conciencia, tóxicos, constantes alteradas, antecedentes médicos, ausencia historia psicótica, atipicidad).`,
+            `Si psicosis funcional confirmada sin riesgo médico: iniciar dosis moderada de antipsicótico + benzodiacepina si agitación, o contactar con programa asignado antes de modificar pauta crónica.`
+          ]
+        },
+        diferencial: {
+          intro: `El diagnóstico de esquizofrenia es fundamentalmente de exclusión. Todo episodio psicótico de nueva aparición requiere descartar causas médicas y farmacológicas.`,
+          tablaHeaders: [`Categoría`, `Entidades a descartar`, `Claves diagnósticas`],
+          tablaRows: [
+            [`Orgánica / Neurológica`, `Delirium, TCE, epilepsia (lóbulo temporal: estados de ensoñación), demencia con cuerpos de Lewy, neurosífilis`, `Conciencia alterada/fluctuante, alucinaciones visuales; en cuerpos de Lewy empeora gravemente con neurolépticos`],
+            [`Metabólica / Sistémica`, `Déficit vitamina B12 o folato, hipoglucemia, ataque agudo de porfiria (precipitado por barbitúricos/imipramina), anemia`, `Solicitar analítica básica, glucemia, B12/folato y bioquímica según sospecha`],
+            [`Inducida por fármacos/tóxicos`, `Cocaína, anfetaminas, cannabis, PCP, LSD; prescripción: antiparkinsonianos, clonidina, quinacrina, derivados procaína, lidocaína`, `Tóxicos en orina, temporalidad con fármaco, orientación conservada en cocaína`],
+            [`Afectiva`, `Manía psicótica (Bipolar I), depresión mayor con síntomas psicóticos`, `Síntomas psicóticos aparecen dentro del episodio afectivo y remiten con este`],
+            [`Personalidad y otros`, `TLP (psicosis breve/disociación), trastorno esquizotípico, paranoide, trastorno delirante (≥1–6 meses sin deterioro), simulación/facticio`, `Síntomas pasajeros o delirios sistematizados no extravagantes con personalidad intacta`]
+          ],
+          otrosDiferenciales: [
+            `Diferenciar jergafasia esquizofrénica de afasia de Wernicke (inicio agudo, errores de nominación y alteración de comprensión sin delirio estructurado).`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Entorno de baja estimulación sensorial, evitar confrontar directamente los delirios y no ridiculizar ni juzgar creencias bizarras.`,
+            `Contactar con el programa de salud mental habitual del paciente antes de decidir cambios mayores de medicación si ya está vinculado.`
+          ],
+          farmacoIntro: `Se recomiendan dosis fijas moderadas durante 4–6 semanas. Los primeros episodios responden a dosis más bajas. Vigilar intervalo QTc y efectos extrapiramidales.`,
+          dosisTabla: [
+            { farmaco: `Risperidona`, dosis: `4–6 mg/día (dosis ≤6 mg/d mejor toleradas)`, via: `v.o. (larga acción: 25–50 mg i.m. c/2 sem)`, precauciones: `A dosis altas: extrapiramidalismo, hiperprolactinemia, hipotensión ortostática, priapismo.` },
+            { farmaco: `Olanzapina`, dosis: `10–20 mg/día`, via: `v.o.`, precauciones: `Somnolencia y aumento de peso (5–10 kg a largo plazo); buena tolerabilidad aguda.` },
+            { farmaco: `Haloperidol`, dosis: `6–20 mg/día (o 2–5 mg c/4–6 h PRN)`, via: `v.o. / i.m. (decanoato 100–200 mg i.m. c/4 sem)`, precauciones: `Antipsicótico de alta potencia; mayor riesgo de distonía aguda, acatisia y SNM; vigilar QTc.` },
+            { farmaco: `Lorazepam (coadyuvante)`, dosis: `1–2 mg (3–4 veces/día o PRN)`, via: `v.o. / i.m.`, precauciones: `Control de agitación y ansiedad aguda mientras se instaura el efecto antipsicótico.` },
+            { farmaco: `Litio / Valproato (en manía)`, dosis: `Litemia manía aguda: 0.8–1.2 / mant. 0.4–0.8 mEq/L`, via: `v.o.`, precauciones: `En manía bipolar; valproato previene episodios maníacos; monitorizar toxicidad y función renal/tiroidea con litio.` }
+          ],
+          evitar: [
+            `Evitar neurolépticos si sospecha de demencia con cuerpos de Lewy (empeoramiento severo extrapiramidal).`,
+            `No usar dosis superiores a 1 g de equivalentes de clorpromazina ni neuroleptización rápida.`,
+            `No olvidar descartar agranulocitosis en pacientes con clozapina que consulten por fiebre alta.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Primer episodio psicótico agudo que precise estudio orgánico, contención y estabilización.`,
+            `Riesgo suicida (voces imperativas) o riesgo de heteroagresividad por ideación delirante.`,
+            `Episodio maníaco grave con deterioro marcado del juicio, gastos/conductas peligrosas o imposibilidad de manejo ambulatorio.`,
+            `Ruptura prolongada de tratamiento con descompensación severa y ausencia de soporte familiar.`
+          ],
+          alta: [
+            `Paciente crónico con reactivación leve contenible, adherencia retomada y familia colaboradora.`,
+            `Descartada organicidad y ausencia total de ideación auto/heterolesiva.`,
+            `Coordinación directa con su psiquiatra habitual o centro de salud mental.`
+          ],
+          seguimiento: `Educar a paciente y familia en signos prodrómicos de recaída (insomnio, ansiedad, retraimiento, conducta extraña) y asegurar derivación rápida.`
+        }
+      },
+      {
+        id: `delirium`,
+        group: `Urgencias Psicóticas y Neurológicas`,
+        shortTitle: `Delirium (Síndrome confusional)`,
+        title: `Delirium (Síndrome Confusional Agudo)`,
+        severity: `critical`,
+        severityLabel: `Urgencia Médica · Alta Morbimortalidad`,
+        categoryTag: `Trastorno mental orgánico`,
+        lede: `Síndrome clínico agudo y fluctuante caracterizado por deterioro de la atención, alteración del nivel de conciencia y cambio cognitivo secundarios a una causa médica subyacente. Su diagnóstico es fundamentalmente clínico a la cabecera del paciente.`,
+        redFlags: [
+          `Aparición brusca (horas a días) en ancianos (5–10% en urgencias; >50% en fractura de cadera; >90% poscardiotomía) o pacientes médicos.`,
+          `Signos vitales anómalos: fiebre (sepsis, tormenta tiroidea), taquicardia/bradicardia (PIC elevada, bloqueo), hipotensión/shock o taquipnea (acidosis, hipoxemia).`,
+          `Rigidez de nuca (meningitis, hemorragia subaracnoidea), papiledema (masa intracraneal, encefalopatía hipertensiva) o laceración lingual (crisis comiciales).`,
+          `Alucinaciones visuales predominantes, inversión del ciclo sueño-vigilia y empeoramiento nocturno.`,
+          `Forma hipoactiva (somnolencia e inhibición motriz): pasa fácilmente desapercibida o se confunde con depresión grave.`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Mnemotecnia PRÁCtica Médica (Carlat — los 5 criterios obligatorios):</strong><br>1. Alteración del <strong>P</strong>ensamiento (incoherente, enlentecido, delirios no sistematizados) o percepción (ilusiones, alucinaciones visuales).<br>2. Inicio <strong>R</strong>eciente (brusco, horas a días).<br>3. Incapacidad de <strong>A</strong>tención (dificultad clave para enfocar, mantener o redirigir la atención en conversación rutinaria).<br>4. <strong>C</strong>urso fluctuante a lo largo del día (empeoramiento vespertino/nocturno).<br>5. Causa <strong>Médica</strong> subyacente de la incapacidad cognitiva.`,
+            `<strong>Formas clínicas:</strong> Hiperactiva (más frecuente, agitación psicomotriz, "delirio ocupacional", respuestas exageradas a estímulos bruscos) vs. Hipoactiva (confusión, somnolencia, inhibición motriz).`,
+            `<strong>Otros signos (Manual de Psiquiatría):</strong> desorientación intensa y precoz, déficit de memoria con paramnesias y amnesia lacunar del episodio, afectividad oscilante (temor, ansiedad, irritabilidad).`
+          ],
+          exploracion: [
+            `<strong>Exploración física dirigida (Tabla 5-6):</strong> FC (bradicardia: hipotiroidismo, Stokes-Adams, ↑PIC; taquicardia: infección, hipertiroidismo, IC); T.ª (sepsis, tormenta tiroidea, vasculitis); TA (shock vs. encefalopatía/masa); respiración (diabetes/cetoacidosis, neumonía, acidosis, tóxicos); carótidas (soplos/AIT); cuero cabelludo (TCE); cuello (rigidez nucal); ojos (papiledema, midriasis); boca (mordedura lingual); aliento (alcohol, cetonas); hígado (cirrosis).`,
+            `<strong>Pruebas complementarias según sospecha:</strong> hemograma, bioquímica, glucemia en ayuno, iones (Na, K, Ca, Mg), función renal/hepática, B12/folato, hormonas tiroideas, tóxicos en orina, ECG, Rx tórax.`,
+            `<strong>Electroencefalograma (EEG):</strong> muestra de forma característica <strong>desaceleración generalizada</strong> de la actividad (útil para diferenciar de depresión o psicosis).`
+          ],
+          algoritmoTitle: `Algoritmo diagnóstico-terapéutico rápido en delirium`,
+          algoritmoSteps: [
+            `Confirmar los 5 criterios de PRÁCtica Médica (el deterioro de la atención es la clave clínica principal).`,
+            `Estabilizar constantes vitales (ABC), realizar glucemia capilar inmediata y descartar hipoxemia.`,
+            `Buscar activamente la causa orgánica mediante exploración física completa (Tabla 5-6) y analítica/imagen dirigida.`,
+            `Aplicar medidas ambientales de reorientación y ajuste de estímulos.`,
+            `Tratar la etiología médica subyacente de inmediato; reservar psicofármacos solo para agitación peligrosa (salvo abstinencia alcohólica, donde las BZD son curativas).`
+          ]
+        },
+        diferencial: {
+          intro: `Es fundamental distinguir el delirium de la demencia y de las psicosis o depresiones primarias (MIR). En pacientes con demencia previa puede superponerse un delirium ("demencia oscurecida" o <em>beclouded dementia</em>).`,
+          tablaHeaders: [`Parámetro`, `Delirium`, `Demencia`, `Esquizofrenia / Psicosis`],
+          tablaRows: [
+            [`Inicio`, `Brusco (horas–días)`, `Insidioso (salvo vascular)`, `Insidioso (o agudo en breve)`],
+            [`Duración`, `Días – semanas`, `Crónica`, `Meses / crónica`],
+            [`Curso diario`, `Fluctuante (peor noche)`, `Estable`, `Estable`],
+            [`Nivel de conciencia`, `Descendido y fluctuante`, `Normal (alerta)`, `Normal (clara)`],
+            [`Desorientación`, `Intensa y precoz`, `En estadios tardíos`, `Rara / conservada`],
+            [`Atención`, `Muy alterada (clave)`, `Poco alterada`, `Conservada salvo interferencia`],
+            [`Alucinaciones`, `Frecuentes (sobre todo visuales)`, `Raras (salvo cuerpos de Lewy)`, `Frecuentes auditivas`],
+            [`Ciclo sueño-vigilia`, `Alterado (inversión)`, `Normal`, `Variable`],
+            [`Psicomotricidad`, `Hiperactivo o hipoactivo`, `Normal`, `Variable / estereotipias`],
+            [`EEG`, `Desaceleración generalizada`, `Normal o enlentecimiento leve`, `Normal`]
+          ],
+          otrosDiferenciales: [
+            `Depresión intensa vs. Delirium hipoactivo: distinguibles por fluctuación, desorientación precoz y EEG enlentecido.`,
+            `Trastornos disociativos: amnesia irregular sin deterioro cognitivo global ni patrón sueño/psicomotor anómalo.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `El tratamiento definitivo es identificar y corregir la causa médica/tóxica subyacente.`,
+            `Optimizar el entorno: iluminación suave constante (evitar penumbra que agrava ilusiones), reducir ruidos bruscos, favorecer reorientación y presencia de familiar conocido.`
+          ],
+          farmacoIntro: `Evitar polifarmacia innecesaria y fármacos anticolinérgicos que empeoran la confusión. Si el delirium es secundario a abstinencia alcohólica (delirium tremens), el tratamiento de elección son las benzodiacepinas.`,
+          dosisTabla: [
+            { farmaco: `Tratamiento etiológico médico`, dosis: `Según causa`, via: `Médica / i.v.`, precauciones: `Antibioterapia en sepsis, corrección hidroelectrolítica/glucemia, tiamina si déficit/alcohol, oxigenoterapia si hipoxia.` },
+            { farmaco: `Haloperidol (solo agitación severa)`, dosis: `Dosis bajas (p. ej. 2–5 mg según edad/cuadro)`, via: `v.o. / i.m.`, precauciones: `Evitar en demencia con cuerpos de Lewy (empeoramiento extrapiramidal grave) y vigilar intervalo QTc.` },
+            { farmaco: `Benzodiacepinas`, dosis: `Evitar salvo abstinencia`, via: `v.o. / i.v.`, precauciones: `Indicadas en delirium por abstinencia de alcohol/sedantes; en otras etiologías pueden empeorar la confusión y sedación.` }
+          ],
+          evitar: [
+            `No diagnosticar "demencia" ni "depresión" durante un episodio de delirium activo sin haber resuelto primero el cuadro confusional.`,
+            `No pautar benzodiacepinas de rutina en delirium no alcohólico ni anticolinérgicos (agravan el cuadro).`,
+            `No administrar neurolépticos sin descartar demencia con cuerpos de Lewy.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Prácticamente todo delirium agudo requiere ingreso hospitalario en planta médica (o UCI/observación) para estudio y tratamiento de la causa orgánica desencadenante.`,
+            `Monitorización estrecha si agitación hiperactiva, riesgo de caídas o inestabilidad hemodinámica.`
+          ],
+          alta: [
+            `Exclusivamente tras resolución completa del cuadro confusional, identificación y corrección segura de la causa médica (p. ej. infección urinaria leve en paciente estable con soporte familiar estricto), verificando normalización atencional.`
+          ],
+          seguimiento: `Revisión médica precoz de medicación crónica (retirar fármacos deliriógenos como anticolinérgicos o antiarrítmicos clase I si procede) y valoración cognitiva basal diferida.`
+        }
+      },
+      {
+        id: `snm`,
+        group: `Urgencias Psicóticas y Neurológicas`,
+        shortTitle: `Síndrome neuroléptico maligno`,
+        title: `Síndrome Neuroléptico Maligno (SNM)`,
+        severity: `critical`,
+        severityLabel: `Emergencia Vital · Mortalidad 5–20%`,
+        categoryTag: `Toxicidad farmacológica grave`,
+        lede: `Reacción idiosincrásica grave inducida por fármacos antipsicóticos (típicos o atípicos, más frecuente durante el primer mes de tratamiento). Presenta mortalidad del 10–20% (5% en series recientes), principalmente por fallo renal agudo secundario a rabdomiólisis.`,
+        redFlags: [
+          `Hipertermia elevada (fiebre alta hasta 41 ºC) en paciente que toma neurolépticos (típicos, risperidona o clozapina, sobre todo asociada a litio).`,
+          `Hipertonía y rigidez muscular intensa generalizada ("en tubo de plomo") acompañada de disfagia o mutismo.`,
+          `Delirium: fluctuación del nivel de conciencia desde confusión/obnubilación u oscilación con agitación hasta coma.`,
+          `Inestabilidad autonómica grave: taquicardia, diaforesis profusa, tensión arterial elevada o muy fluctuante e incontinencia de esfínteres.`,
+          `Analítica urgente: elevación muy alta de CPK y leucocitosis (riesgo inminente de fallo renal agudo).`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Tétrada clínica clásica (MIR):</strong><br>1. <strong>Hipertermia</strong> (hasta 41 ºC).<br>2. <strong>Rigidez muscular intensa / hipertonía</strong>, distonía, acinesia, mutismo, temblor.<br>3. <strong>Alteración del nivel de conciencia (delirium)</strong>: oscilación entre obnubilación y agitación hasta coma.<br>4. <strong>Disfunción autonómica</strong>: taquicardia, diaforesis, presión arterial lábil o elevada, disfagia e incontinencia de esfínteres.`,
+            `<strong>Temporalidad:</strong> más frecuente al inicio del tratamiento con neurolépticos durante el primer mes (aunque puede aparecer en cualquier momento).`,
+            `<strong>Hallazgos analíticos característicos:</strong> elevación muy marcada de creatina fosfocinasa (<strong>CPK</strong>) por destrucción muscular y <strong>leucocitosis</strong>.`
+          ],
+          exploracion: [
+            `Revisión inmediata de historia farmacológica: inicio reciente, subida de dosis o combinación de antipsicóticos (haloperidol, fenotiazinas, risperidona, clozapina + litio).`,
+            `Control estricto de temperatura central, TA seriada, FC, tono muscular y diuresis.`,
+            `Analítica urgente: CPK, hemograma (leucocitosis), función renal (creatinina, urea), electrolitos (potasio), perfil hepático y orina (mioglobinuria).`
+          ],
+          algoritmoTitle: `Actuación inmediata ante sospecha de SNM`,
+          algoritmoSteps: [
+            `Suspensión INMEDIATA y definitiva del antipsicótico/neuroléptico implicado y de cualquier fármaco potenciante (p. ej. litio).`,
+            `Medidas urgentes de enfriamiento físico y tratamiento intensivo de la fiebre alta.`,
+            `Hidratación intravenosa agresiva y monitorización de diuresis para prevenir el fracaso renal agudo por elevación de CPK.`,
+            `Soporte cardiorrespiratorio y traslado a unidad médica monitorizada / UCI.`
+          ]
+        },
+        diferencial: {
+          intro: `Cualquier fiebre alta con rigidez o alteración de conciencia en paciente psiquiátrico exige descartar infecciones graves y otros síndromes tóxicos.`,
+          tablaHeaders: [`Diagnóstico diferencial`, `Similitudes`, `Diferencias clave`],
+          tablaRows: [
+            [`Síndrome / toxicidad serotoninérgica`, `Hipertermia, disautonomía, alteración conciencia`, `Antecedente de ISRS + IMAO/serotoninérgicos; hiperreflexia/clonus frente a rigidez intensa + CPK muy elevada del SNM`],
+            [`Agranulocitosis por clozapina / infección`, `Fiebre alta en paciente con antipsicóticos`, `Leucopenia/neutropenia grave en agranulocitosis vs. leucocitosis + rigidez + CPK elevada en SNM`],
+            [`Intoxicación por litio o anticolinérgicos`, `Fiebre, confusión/delirium, temblor`, `Anticolinérgico: piel seca, midriasis, retención; Litio: litemia elevada, ataxia/mioclonías sin rigidez en tubo`],
+            [`Golpe de calor / sepsis SNC`, `Hipertermia, delirium, taquicardia`, `Contexto térmico ambiental o foco infeccioso/LCR; rigidez y exposición neuroléptica menos prominentes`],
+            [`Catatonía maligna`, `Rigidez, mutismo, fiebre, disautonomía`, `Puede ser indistinguible clínicamente; antecedente de neurolépticos orienta a SNM`]
+          ],
+          otrosDiferenciales: [
+            `Toxicidad por estimulantes (MDMA, cocaína) con hipertermia y rabdomiólisis: evaluar tóxicos en orina y midriasis.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Traslado inmediato a área médica de críticos / UCI con monitorización continua de constantes y diuresis.`,
+            `Medidas físicas de refrigeración para controlar la hipertermia y protección de vía aérea si disfagia o deterioro de conciencia.`
+          ],
+          farmacoIntro: `La medida terapéutica fundamental en urgencias (Tabla 24-8) es la retirada inmediata de la medicación nociva y el tratamiento urgente de soporte de la fiebre alta y la rabdomiólisis.`,
+          dosisTabla: [
+            { farmaco: `Retirada del neuroléptico`, dosis: `Suspensión inmediata`, via: `Todas`, precauciones: `Primera y más urgente medida ante cualquier sospecha de SNM.` },
+            { farmaco: `Fluidoterapia i.v. intensa`, dosis: `Según estado hemodinámico y diuresis`, via: `i.v.`, precauciones: `Esencial para prevenir la principal causa de muerte: fallo renal agudo por aumento de CPK.` },
+            { farmaco: `Antitérmicos / medidas físicas`, dosis: `Control urgente de T.ª`, via: `Física / médica`, precauciones: `Evitar progresión térmica (>41 ºC).` },
+            { farmaco: `Benzodiacepinas (si agitación)`, dosis: `Lorazepam 1–2 mg o diazepam según soporte`, via: `v.o. / i.v.`, precauciones: `Pueden ayudar al control de la agitación sin añadir bloqueo dopaminérgico.` }
+          ],
+          evitar: [
+            `NUNCA reintroducir ni mantener el antipsicótico ni administrar otro neuroléptico para la agitación del delirium del SNM.`,
+            `No retrasar el ingreso médico por tratarse de un paciente psiquiátrico.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Ingreso médico hospitalario / UCI OBLIGATORIO en el 100% de los casos sospechosos por mortalidad del 5–20% y riesgo de fallo renal agudo.`
+          ],
+          alta: [
+            `Contraindicado el alta desde el servicio de urgencias ante sospecha de SNM.`
+          ],
+          seguimiento: `Tras la recuperación hospitalaria completa, reevaluación psiquiátrica estrecha antes de considerar cualquier alternativa terapéutica futura.`
+        }
+      },
+      {
+        id: `serotoninergico`,
+        group: `Urgencias Psicóticas y Neurológicas`,
+        shortTitle: `Toxicidad serotoninérgica e IMAO`,
+        title: `Toxicidad Serotoninérgica e Interacciones Peligrosas (ISRS / IMAO)`,
+        severity: `critical`,
+        severityLabel: `Alerta Farmacológica · Riesgo de Crisis Autonómica`,
+        categoryTag: `Urgencia farmacológica`,
+        lede: `Cuadro de toxicidad aguda derivado de la combinación inadecuada de fármacos serotoninérgicos (ISRS, clomipramina, IRSN) con inhibidores de la monoaminooxidasa (IMAO) sin respetar los periodos de lavado, o interacciones de IMAO con tiramina y simpaticomiméticos.`,
+        redFlags: [
+          `Administración simultánea o sin periodo de lavado (2–5 semanas) entre un ISRS/clomipramina y un IMAO.`,
+          `Fiebre alta, taquicardia, labilidad o elevación brusca de tensión arterial (crisis hipertensiva) y delirium.`,
+          `Ingesta de alimentos ricos en tiramina o fármacos simpaticomiméticos en paciente en tratamiento con IMAO.`,
+          `Combinación de múltiples agentes serotoninérgicos o síntomas autonómicos y neurológicos agudos.`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Regla crítica de periodos de lavado (Psiquiatría Clínica):</strong><br>• No administrar un <strong>IMAO</strong> durante las <strong>2 a 5 semanas</strong> posteriores a suspender un ISRS u otro serotoninérgico (ej.: esperar <strong>5 semanas tras fluoxetina</strong> por su vida media larga; <strong>2 semanas tras paroxetina</strong>).<br>• No administrar <strong>ISRS ni otros serotoninérgicos (p. ej. clomipramina)</strong> durante las <strong>2 semanas siguientes</strong> a la suspensión de un IMAO.`,
+            `<strong>Interacción IMAO + tiramina/simpaticomiméticos:</strong> desencadena crisis adrenérgica hipertensiva peligrosa (monitorización estrecha de TA).`,
+            `<strong>Presentación clínica de alerta en urgencias:</strong> delirium, fiebre alta, alteraciones autonómicas (taquicardia, diaforesis, HTA), ansiedad extrema, temblor e inquietud.`
+          ],
+          exploracion: [
+            `Conciliación farmacológica minuciosa de últimas 5 semanas (antidepresivos previos, cambios recientes, fármacos de venta libre simpaticomiméticos, opioides/estimulantes).`,
+            `Monitorización continua de presión arterial, frecuencia cardíaca, temperatura y estado mental.`
+          ],
+          algoritmoTitle: `Protocolo de seguridad ante sospecha de toxicidad por ISRS / IMAO`,
+          algoritmoSteps: [
+            `Suspender de forma inmediata todos los fármacos serotoninérgicos, IMAO o simpaticomiméticos implicados.`,
+            `Monitorizar constantes vitales (TA, FC, T.ª) y nivel de conciencia para detectar delirium o crisis hipertensiva.`,
+            `Aplicar tratamiento de soporte urgente: control de fiebre alta, hidratación y benzodiacepinas si agitación/ansiedad severa.`,
+            `Diferenciar de síndrome neuroléptico maligno y de intoxicación por estimulantes (MDMA/cocaína).`
+          ]
+        },
+        diferencial: {
+          intro: `Debe distinguirse principalmente del síndrome neuroléptico maligno y de las crisis hipertensivas o intoxicaciones por drogas estimulantes.`,
+          tablaHeaders: [`Cuadro`, `Fármaco / Desencadenante`, `Rasgo distintivo en fuentes`],
+          tablaRows: [
+            [`Interacción ISRS + IMAO`, `Combinación directa o lavado <2–5 semanas (5 sem fluoxetina)`, `Exceso serotoninérgico agudo, hiperactividad autonómica, fiebre y delirium`],
+            [`Crisis por IMAO + tiramina / simpaticomiméticos`, `Alimentos con tiramina o fármacos simpaticomiméticos`, `Elevación peligrosa de presión arterial que exige monitorización urgente`],
+            [`Síndrome neuroléptico maligno`, `Antipsicóticos (haloperidol, risperidona, clozapina+litio)`, `Rigidez muscular intensa en tubo, elevación marcada de CPK y leucocitosis`],
+            [`Intoxicación por MDMA / Cocaína`, `Drogas simpaticomiméticas`, `Midriasis, agitación simpática, orientación conservada en cocaína, hipertermia en MDMA`]
+          ],
+          otrosDiferenciales: [
+            `Venlafaxina a dosis altas en hipertensos mal controlados: elevación de tensión arterial.`,
+            `Efectos adversos gastrointestinales/ansiogénicos iniciales de los ISRS sin toxicidad sistémica.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Monitorización en área de urgencias médicas con control continuo de constantes vitales y nivel de conciencia.`,
+            `Medidas físicas de control térmico si hipertermia y ambiente calmado.`
+          ],
+          farmacoIntro: `La medida principal es la retirada inmediata de los agentes causales y el tratamiento sintomático y de soporte de constantes vitales.`,
+          dosisTabla: [
+            { farmaco: `Suspensión farmacológica`, dosis: `Retirada inmediata`, via: `Todas`, precauciones: `Interrumpir ISRS, clomipramina, IRSN, IMAO o simpaticomiméticos responsables.` },
+            { farmaco: `Benzodiacepinas (agitación/ansiedad)`, dosis: `Diazepam 5–10 mg o lorazepam 1–2 mg`, via: `v.o. / i.v.`, precauciones: `Control de agitación psicomotriz y descarga simpática en urgencias.` },
+            { farmaco: `Control de fiebre alta y TA`, dosis: `Soporte médico urgente`, via: `i.v. / física`, precauciones: `Monitorizar TA en crisis asociadas a IMAO o venlafaxina a dosis altas.` }
+          ],
+          evitar: [
+            `No administrar nunca un ISRS o clomipramina hasta transcurridas ≥2 semanas de suspender un IMAO.`,
+            `No administrar un IMAO hasta pasadas 5 semanas de suspender fluoxetina (o 2 semanas tras paroxetina).`,
+            `No asociar fármacos simpaticomiméticos en pacientes tratados con IMAO.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Presencia de fiebre alta, delirium, inestabilidad hemodinámica, crisis hipertensiva o necesidad de monitorización continua.`,
+            `Cualquier sospecha de toxicidad sistémica tras combinación de IMAO e ISRS.`
+          ],
+          alta: [
+            `Únicamente en exposiciones leves sin alteración de constantes, sin delirium y tras periodo de observación con normalización clínica completa y ajuste seguro de pauta.`
+          ],
+          seguimiento: `Proporcionar por escrito la lista de fármacos y alimentos ricos en tiramina prohibidos si mantiene IMAO, y reevaluación psiquiátrica urgente para planificar transición terapéutica segura.`
+        }
+      },
+      {
+        id: `catatonia`,
+        group: `Urgencias Psicóticas y Neurológicas`,
+        shortTitle: `Catatonía`,
+        title: `Síndrome Catatónico en Urgencias`,
+        severity: `urgent`,
+        severityLabel: `Descartar Causa Orgánica Antes de Intervenir`,
+        categoryTag: `Síndrome psicomotor`,
+        lede: `Síndrome motor y conductual inespecífico que aparece como consecuencia de trastornos psiquiátricos graves (esquizofrenia, depresión mayor, manía) o enfermedades médicas/neurológicas graves.`,
+        redFlags: [
+          `Obligación absoluta de descartar causa orgánica subyacente (encefalitis, lesión cerebral, síndrome neuroléptico maligno, alteraciones metabólicas).`,
+          `Inmovilidad prolongada o rechazo absoluto de ingesta (riesgo de deshidratación, trombosis y fallo orgánico).`,
+          `Aparición de fiebre, rigidez severa o inestabilidad autonómica (sospechar SNM o catatonía maligna).`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Criterio diagnóstico (Harrison):</strong> documentación de <strong>3 o más</strong> de los siguientes síntomas motores y conductuales:<br>• <strong>Estupor</strong> (disminución marcada de reactividad a estímulos y percepción del entorno).<br>• <strong>Cataplejía / Flexibilidad cérea</strong> (mantenimiento pasivo de posturas impuestas).<br>• <strong>Mutismo</strong> (incapacidad de articular palabras estando consciente).<br>• <strong>Estereotipia</strong> (repetición mecánica continua de actividades discursivas o físicas).<br>• Manierismos, posturas fijas extravagantes, negativismo o agitación.`
+          ],
+          exploracion: [
+            `Evaluar flexibilidad cérea, estupor, mutismo y signos de deshidratación o hipertermia.`,
+            `Exploración neurológica completa y constantes vitales seriadas.`,
+            `Analítica general, tóxicos, y valorar neuroimagen/EEG para descartar patología orgánica aguda.`
+          ],
+          algoritmoTitle: `Algoritmo de abordaje de la catatonía en urgencias`,
+          algoritmoSteps: [
+            `Controlar constantes vitales (especialmente temperatura y TA) para descartar síndrome neuroléptico maligno.`,
+            `Descartar causas médicas/orgánicas y consumo/abstinencia de fármacos o tóxicos.`,
+            `Si el servicio de urgencias dispone de capacidad de observación durante varias horas, considerar tranquilización rápida/prueba terapéutica.`,
+            `Garantizar hidratación, nutrición y prevención de complicaciones de la inmovilidad.`
+          ]
+        },
+        diferencial: {
+          intro: `La catatonía es un síndrome inespecífico, no exclusivo de la esquizofrenia; es más frecuente en trastornos afectivos y cuadros orgánicos.`,
+          tablaHeaders: [`Diagnóstico diferencial`, `Claves clínicas`],
+          tablaRows: [
+            [`Causas orgánicas / neurológicas`, `Lesiones cerebrales, trastornos metabólicos, encefalopatías, intoxicación o abstinencia farmacológica`],
+            [`Síndrome neuroléptico maligno`, `Exposición a antipsicóticos + fiebre alta, rigidez intensa, CPK muy alta y leucocitosis`],
+            [`Trastornos del estado de ánimo`, `Depresión mayor grave con inhibición psicomotora extrema o episodio maníaco`],
+            [`Mutismo disociativo / conversivo / afasia`, `En afasia motora hay lesión neurológica focal; en depresión grave aparece hipofonía por agotamiento`]
+          ],
+          otrosDiferenciales: [
+            `Esquizofrenia catatónica: antecedente de síntomas psicóticos crónicos.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Observación continua en área segura con monitorización de constantes, hidratación y estado neurológico.`
+          ],
+          farmacoIntro: `Descartada la causa orgánica urgente, el manejo sintomático rápido en urgencias se realiza habitualmente con benzodiacepinas bajo observación (Tabla 24-8), reservando la TEC para cuadros refractarios o graves en medio hospitalario.`,
+          dosisTabla: [
+            { farmaco: `Lorazepam / Benzodiacepinas`, dosis: `Pauta de tranquilización rápida (ej. lorazepam 1–2 mg)`, via: `v.o. / i.m. / i.v.`, precauciones: `Solo si el servicio de urgencias puede observar al paciente varias horas tras descartar organicidad.` },
+            { farmaco: `Terapia Electroconvulsiva (TEC)`, dosis: `Valoración hospitalaria`, via: `Hospitalaria`, precauciones: `Recurso altamente eficaz en catatonía grave o depresión delirante/estuporosa resistente.` }
+          ],
+          evitar: [
+            `Evitar administrar antipsicóticos de entrada ante una catatonía de causa no aclarada por el riesgo de agravar o desencadenar un SNM.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Ingreso hospitalario indicado para estudio etiológico orgánico/psiquiátrico completo, protección, soporte nutricional/hídrico y tratamiento definitivo.`
+          ],
+          alta: [
+            `Solo excepcionalmente si remisión completa en urgencias tras causa transitoria claramente identificada y seguimiento asegurado.`
+          ],
+          seguimiento: `Coordinar valoración médica y psiquiátrica conjunta para prevenir recurrencias.`
+        }
+      },
+      {
+        id: `angustia`,
+        group: `Urgencias Conductuales y Afectivas`,
+        shortTitle: `Crisis de angustia y pánico`,
+        title: `Crisis de Angustia (Pánico), Agorafobia e Hiperventilación`,
+        severity: `standard`,
+        severityLabel: `Prioridad Clínica · Descartar Cardiopatía / Tóxicos`,
+        categoryTag: `Trastorno de ansiedad`,
+        lede: `Inicio repentino de miedo o ansiedad intensa acompañado de síntomas autonómicos intensos (palpitaciones, dolor torácico, disnea, mareo) y sensación de muerte inminente o pérdida de control.`,
+        redFlags: [
+          `Dolor torácico o palpitaciones en pacientes con factores de riesgo cardiovascular (descartar síndrome coronario o arritmias primero).`,
+          `Asociación con depresión mayor: casi el 20% de pacientes con trastorno de angustia/fobia social realizan tentativas frustradas de suicidio; el pánico aumenta el riesgo suicida a corto plazo.`,
+          `Descartar hipoglucemia, tormenta tiroidea o intoxicación por estimulantes/cannabis.`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Crisis de angustia / pánico:</strong> aparición súbita de palpitaciones, dolor torácico, sensación de asfixia, mareo, parestesias por hiperventilación y sensaciones de irrealidad (<strong>despersonalización o desrealización</strong>), junto a miedo intenso a morir, perder el control o volverse loco.`,
+            `<strong>Agorafobia:</strong> temor intenso a lugares donde escapar sea difícil o embarazoso o donde no haya ayuda disponible (estar solo fuera de casa, hacer cola, multitudes, cruzar un puente, viajar en autobús/tren/coche), generando ansiedad anticipatoria y conductas evitativas.`,
+            `<strong>TEPT (reexperimentación aguda):</strong> si la crisis aparece tras exposición directa o indirecta a suceso traumático grave, acompañada de recuerdos intrusos, <em>flashbacks</em>, respuestas fisiológicas intensas, evitación y embotamiento emocional.`
+          ],
+          exploracion: [
+            `Constantes vitales completas, ECG si dolor torácico o palpitaciones (valorar Holter ambulatorio si procede), glucemia capilar.`,
+            `Preguntar sistemáticamente por consumo reciente de cafeína, cocaína, anfetaminas, cannabis, LSD o MDMA.`,
+            `Explorar estado de ánimo depresivo e ideación suicida concomitante.`
+          ],
+          algoritmoTitle: `Manejo rápido de crisis de angustia e hiperventilación`,
+          algoritmoSteps: [
+            `Descartar patología médica aguda (cardíaca, respiratoria, hipoglucemia, hipertiroidismo) e intoxicación o abstinencia de sustancias.`,
+            `Si cursa con hiperventilación: explicar brevemente al paciente que sus síntomas físicos se deben a la hiperventilación.`,
+            `Instruir al paciente para que respire en una bolsa de papel durante unos minutos (puede alentarse a observar/confirmar el origen de los síntomas tras descartar hipoxia/cardiopatía).`,
+            `Explorar capacidad de introspección respecto al factor precipitante y evaluar si existe depresión o abuso de alcohol comórbido.`
+          ]
+        },
+        diferencial: {
+          intro: `Los síntomas somáticos de la crisis de pánico obligan a descartar patología médica y consumo de sustancias antes de confirmar origen psiquiátrico.`,
+          tablaHeaders: [`Grupo etiológico`, `Entidades a descartar`, `Hallazgos en las fuentes`],
+          tablaRows: [
+            [`Cardiovascular / Respiratorio`, `Arritmias, cardiopatía isquémica, asma`, `Valorar ECG / monitor Holter ante palpitaciones y dolor torácico`],
+            [`Endocrino-metabólico`, `Hipoglucemia, hipertiroidismo, hipofosfatemia`, `Glucemia en ayuno muy baja se asocia a ataques de pánico; fósforo sérico bajo en hiperventilación y pánico`],
+            [`Sustancias / Tóxicos`, `Cafeína, cocaína, anfetaminas, cannabis, LSD, MDMA`, `El cannabis desencadena crisis de pánico y despersonalización frecuentes; retirar sustancia implicada`],
+            [`Otros trastornos psiquiátricos`, `Depresión mayor, TEPT, ansiedad por enfermedad`, `En ansiedad por enfermedad hay preocupación persistente por padecer enfermedad grave pese a pruebas negativas`]
+          ],
+          otrosDiferenciales: [
+            `Fobia social: alta tasa de abuso comórbido de alcohol (hipótesis de automedicación), requiriendo manejo paralelo.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Tranquilización verbal firme, espacio calmado, explicar el mecanismo benigno de la hiperventilación y guiar la respiración lenta.`,
+            `Técnica de bolsa de papel durante unos minutos en hiperventilación aguda no hipóxica (Tabla 24-8).`
+          ],
+          farmacoIntro: `En el servicio de urgencias debe evitarse la prescripción sistemática de benzodiacepinas porque son objeto de abuso y los fármacos solos conllevan recaída temprana; el tratamiento de elección combina ISRS y terapia cognitivo-conductual.`,
+          dosisTabla: [
+            { farmaco: `Diazepam (rescate puntual)`, dosis: `5 mg (efecto condicionado si crisis)`, via: `v.o.`, precauciones: `Saber que disponen de una pastilla puede abortar el ataque; evitar prescribir en urgencias sin seguimiento garantizado.` },
+            { farmaco: `ISRS (tratamiento de elección)`, dosis: `Pauta ambulatoria estándar`, via: `v.o.`, precauciones: `Primera línea en trastorno de pánico y agorafobia generalizada junto a terapia conductual.` },
+            { farmaco: `Venlafaxina (2.ª línea) / Clonazepam / Pregabalina`, dosis: `Ajuste ambulatorio`, via: `v.o.`, precauciones: `Opciones de segunda línea o coadyuvantes en ansiedad/fobias; vigilar TA con venlafaxina.` }
+          ],
+          evitar: [
+            `Evitar prescribir benzodiacepinas al alta desde urgencias en agorafobia o ansiedad aguda salvo que exista seguimiento médico asegurado.`,
+            `No omitir el cribado de depresión ni el descarte de arritmias/hipoglucemia.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Excepcional por la crisis de pánico aislada; solo si existe riesgo suicida grave asociado (depresión concomitante) o duda diagnóstica médico-cardiológica que requiera observación.`
+          ],
+          alta: [
+            `Descartada patología orgánica y suicidio, con remisión sintomática en urgencias y derivación a tratamiento psiquiátrico ambulatorio / programa de terapia cognitivo-conductual.`
+          ],
+          seguimiento: `Si se identifica un factor precipitante traumático reciente (TEPT), derivar a programa de tratamiento breve enfocado en manejo del estrés.`
+        }
+      },
+      {
+        id: `alcohol`,
+        group: `Urgencias por Sustancias`,
+        shortTitle: `Alcohol (Intox., Abstin., Alucinosis)`,
+        title: `Trastornos Urgentes por Alcohol: Intoxicación, Abstinencia y Alucinosis`,
+        severity: `urgent`,
+        severityLabel: `Alta Prevalencia · Vigilar Abstinencia y Suicidio`,
+        categoryTag: `Consumo de alcohol`,
+        lede: `El alcohol puede presentarse en urgencias como intoxicación aguda, síndrome de abstinencia no complicado, crisis convulsivas por abstinencia o alucinosis alcohólica. Casi dos tercios de los dependientes que se suicidan presentan síntomas afectivos.`,
+        redFlags: [
+          `Alcoholemia >300 mg/dL (indica abuso muy prolongado y tolerancia severa).`,
+          `Signos de abstinencia progresiva (temblor, taquicardia, hipertensión, sudoración, agitación) → riesgo de convulsiones (2%) y evolución a delirium tremens (~1–3%).`,
+          `Ideación suicida o conducta agresiva (retener en urgencias hasta que baje la alcoholemia para evaluar juicio y riesgo suicida).`,
+          `Traumatismo craneoencefálico oculto, hemorragia digestiva, arritmias ("corazón de día de fiesta") o hepatopatía descompensada.`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>1. Intoxicación alcohólica aguda:</strong> fase inicial con desinhibición y euforia, seguida de irritabilidad, disartria, ataxia, pérdida de reflejos, deterioro mental y del juicio, vasodilatación y efecto diurético (inhibición ADH). Puede asociar FA paroxística ("corazón de día de fiesta").`,
+            `<strong>2. Abstinencia de alcohol:</strong> inicia a las <strong>5–10 h</strong> de reducir/cesar la ingesta, pico en día 2–3 y mejora en día 4–5 (síntomas leves residuales hasta 4–6 meses). Requiere ≥2 signos: hiperactividad vegetativa (taquicardia, TA, taquipnea, sudoración, fiebre), temblor de manos, insomnio, náuseas/vómitos, ilusiones/alucinaciones transitorias, ansiedad, agitación o convulsiones tónico-clónicas.`,
+            `<strong>3. Alucinosis alcohólica (Trastorno psicótico inducido por alcohol):</strong> ocurre en consumidores crónicos (>10 años; ratio H:M 4:1) por consumo elevado o en los primeros 2 días tras reducirlo. Alucinaciones <strong>auditivas</strong> vívidas, persistentes y organizadas, <strong>conciencia clara</strong> y <strong>SIN hiperactividad autonómica</strong> ni delirium. Si hay delirios, son secundarios a las voces.`
+          ],
+          exploracion: [
+            `Exploración física completa obligatoria antes de iniciar abstinencia: hígado (cirrosis/hepatomegalia), signos de hemorragia GI, arritmias, infección, traumatismo craneal y equilibrio glucémico/electrolítico.`,
+            `Determinar alcoholemia y función hepática (glutamil transaminasa alta, bilirrubina, coagulación, albúmina, ácido fólico, electrolitos incluyendo Ca y Mg).`
+          ],
+          algoritmoTitle: `Protocolo de urgencias en consumo agudo y abstinencia alcohólica`,
+          algoritmoSteps: [
+            `Valorar estabilidad médica, descartar TCE, hipoglucemia, arritmias e infecciones.`,
+            `Si intoxicación con confusión, agresividad o ideación suicida: mantener en observación hasta que disminuya la alcoholemia para reevaluar juicio y suicidio.`,
+            `Si síndrome de abstinencia instaurado: iniciar tiamina oral/parenteral + benzodiacepinas de semivida larga y monitorizar constantes cada pocas horas para detectar evolución a delirium tremens.`,
+            `Si alucinosis alcohólica (conciencia clara, alucinaciones auditivas, sin disautonomía): antipsicóticos en dosis bajas + abstinencia.`
+          ]
+        },
+        diferencial: {
+          intro: `Es esencial distinguir la alucinosis alcohólica del delirium tremens y descartar patología orgánica superpuesta a la intoxicación.`,
+          tablaHeaders: [`Característica`, `Delirium Tremens`, `Alucinosis Alcohólica`],
+          tablaRows: [
+            [`Inicio`, `3.º–4.º día de abstinencia (72–96 h)`, `Consumo elevado crónico o primeros 2 días de reducción`],
+            [`Nivel de conciencia`, `Reducido y fluctuante (desorientación)`, `Conciencia clara`],
+            [`Alucinaciones`, `Visuales (zoopsias), táctiles`, `Auditivas persistentes y organizadas`],
+            [`Hiperactividad autonómica`, `Intensa (taquicardia, fiebre, diaforesis)`, `Ausente`],
+            [`Mortalidad`, `~5%`, `No`],
+            [`Tratamiento`, `Sedación con BZD + hidratación + vitaminas`, `Antipsicóticos + abstinencia (mejora en días/semanas)`]
+          ],
+          otrosDiferenciales: [
+            `Encefalopatía de Wernicke y síndrome de Korsakoff por déficit crónico de tiamina.`,
+            `Esquizofrenia: la alucinosis alcohólica crónica puede simularla clínicamente.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Observación estrecha de constantes vitales durante varias horas en abstinencia para detectar precozmente delirium tremens.`,
+            `Evitar sueros intravenosos rutinarios en abstinencia leve/moderada (la mayoría están normo o levemente sobrehidratados), salvo problema médico relevante, sangrado, vómitos o diarrea.`
+          ],
+          farmacoIntro: `En abstinencia instaurada, administrar dosis altas iniciales de benzodiacepinas de semivida larga vía oral y reducir paulatinamente según respuesta, junto a vitaminoterapia B.`,
+          dosisTabla: [
+            { farmaco: `Tiamina + Multivitamínicos B`, dosis: `Tiamina 50–100 mg/día (≥1 semana)`, via: `v.o. (o parenteral si vómitos/riesgo Wernicke)`, precauciones: `Imprescindible en todo paciente bebedor intenso que inicia abstinencia.` },
+            { farmaco: `Diazepam`, dosis: `10–20 mg/8 h (abstinencia instaurada) o 15–30 mg/día`, via: `v.o.`, precauciones: `BZD de semivida larga de elección; ajustar según sedación y función hepática (preferir lorazepam si hepatopatía grave).` },
+            { farmaco: `Cloracepato / Clonazepam`, dosis: `Cloracepato 50–100 mg/8 h · Clonazepam 2–4 mg/8 h`, via: `v.o.`, precauciones: `Pauta en reducción paulatina; derivar a CAD.` },
+            { farmaco: `Haloperidol (Alucinosis alcohólica)`, dosis: `2–5 mg c/4–6 h PRN`, via: `v.o. / i.m.`, precauciones: `En alucinosis alcohólica sin delirium; asociar BZD (lorazepam 1–2 mg o diazepam 5–10 mg) si agitación.` }
+          ],
+          evitar: [
+            `No dar el alta a un paciente intoxicado con riesgo suicida hasta que descienda la alcoholemia.`,
+            `No administrar fluidos i.v. indiscriminadamente sin indicación clínica en abstinencia no complicada.`,
+            `No administrar glucosa i.v. sin tiamina previa en bebedores crónicos desnutridos.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Presencia de convulsiones por abstinencia, sospecha de delirium tremens o hiperactividad autonómica no controlada.`,
+            `Alucinosis alcohólica con agitación severa o ideación suicida/homicida asociada.`,
+            `Complicaciones médicas agudas (hemorragia GI, arritmias, infección grave, insuficiencia hepática).`
+          ],
+          alta: [
+            `Intoxicación resuelta sin riesgo autolítico ni complicaciones médicas, o abstinencia leve controlada con pauta oral y soporte familiar.`,
+            `Informar con firmeza del diagnóstico de dependencia al alcohol y derivar a programa de tratamiento del alcoholismo / CAD.`
+          ],
+          seguimiento: `Derivación formal a Centro de Atención a Drogodependencias (CAD) / programa cognitivo-conductual de rehabilitación.`
+        }
+      },
+      {
+        id: `delirium_tremens`,
+        group: `Urgencias por Sustancias`,
+        shortTitle: `Delirium tremens`,
+        title: `Delirium Tremens (Delírium por Abstinencia Alcohólica)`,
+        severity: `critical`,
+        severityLabel: `Emergencia Médica · Mortalidad ~5%`,
+        categoryTag: `Urgencia vital por abstinencia`,
+        lede: `Reacción aguda y potencialmente mortal debida al cese o reducción brusca de una ingesta intensa y prolongada de alcohol en un paciente debilitado (afecta al 1–3% de dependientes). Aparece típicamente entre las 72 y 96 horas.`,
+        redFlags: [
+          `Aparición a partir del 3.º–4.º día (72–96 h) de abstinencia alcohólica.`,
+          `Notable hiperactividad autonómica: taquicardia marcada, diaforesis profusa, fiebre, hipertensión y midriasis.`,
+          `Delirium agitado con desorientación intensa, nivel de conciencia fluctuante y temblor grueso.`,
+          `Alucinaciones vívidas visuales (insectos o pequeños animales), táctiles (formicación) u olfativas + delirios paranoides.`,
+          `Deshidratación, pirosis y riesgo de crisis convulsivas (si aparecen, ocurren siempre ANTES del delirium).`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Tríada característica (Manual de Psiquiatría / Psiquiatría Clínica):</strong><br>1. <strong>Síntomas de abstinencia física</strong>, deshidratación, pirosis y notable <strong>hiperactividad autonómica</strong> (taquicardia, fiebre, diaforesis, HTA, midriasis).<br>2. <strong>Delirium</strong>: reducción/fluctuación del nivel de conciencia y desorientación grave.<br>3. <strong>Trastornos sensoperceptivos</strong> (alucinaciones visuales de insectos/animales, táctiles, olfativas) y del contenido del pensamiento (delirios paranoides).`,
+            `<strong>Temporalidad:</strong> inicio al 3.º–4.º día tras cesar el consumo intenso; las convulsiones por abstinencia preceden al cuadro.`
+          ],
+          exploracion: [
+            `Constantes vitales cada 6 horas (o monitorización continua en UCI/urgencias).`,
+            `Estudio clínico completo (Psiquiatría Clínica): hemograma con leucocitos, electrolitos (incluyendo <strong>calcio y magnesio</strong>), bioquímica, función hepática, bilirrubina, urea/creatinina, glucosa en ayuno, tiempo de protrombina, albúmina, proteínas totales, AgHBs, vitamina B, ácido fólico, amilasa, sangre oculta en heces, orina y tóxicos, ECG y Rx tórax.`,
+            `Valorar EEG, punción lumbar o TC craneal si signos focales o duda diagnóstica.`
+          ],
+          algoritmoTitle: `Protocolo urgente en Delirium Tremens`,
+          algoritmoSteps: [
+            `Ingreso inmediato con observación constante y monitorización de constantes vitales (c/6 h mínimo).`,
+            `Disminuir estímulos ambientales (habitación tranquila e iluminada sin exceso).`,
+            `Iniciar sedación intensiva titrable con benzodiacepinas.`,
+            `Rehidratar, corregir alteraciones electrolíticas (Mg, Ca, K) y administrar vitaminoterapia (tiamina / complejo B).`,
+            `Tratar infecciones, traumatismos o patología médica concomitante; añadir anticonvulsivantes SOLO si antecedentes previos.`
+          ]
+        },
+        diferencial: {
+          intro: `Debe diferenciarse de cuadros psiquiátricos y de otras urgencias médicas potencialmente letales.`,
+          tablaHeaders: [`Diagnóstico diferencial`, `Datos clave`],
+          tablaRows: [
+            [`Alucinosis alcohólica`, `Conciencia clara, alucinaciones auditivas organizadas, SIN hiperactividad autonómica ni mortalidad`],
+            [`Abstinencia alcohólica no complicada`, `Temblor e hiperactividad vegetativa sin delirium ni desorientación grave (inicia 5–10 h)`],
+            [`Meningitis / HSA / TCE`, `Rigidez nucal, focalidad neurológica o signos de trauma; valorar TC/PL`],
+            [`Sepsis / Tormenta tiroidea / Hipertermia`, `Fiebre alta y taquicardia por foco infeccioso o tirotoxicosis`],
+            [`Intoxicación por estimulantes (cocaína/anfetaminas)`, `Midriasis y descarga simpática pero orientación conservada y sin historia de cese alcohólico a las 72–96 h`]
+          ],
+          otrosDiferenciales: [
+            `Síndrome neuroléptico maligno si recibió antipsicóticos (rigidez en tubo + CPK muy elevada).`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Observación continua del paciente, control de constantes c/6 h y reducción de estímulos ambientales.`,
+            `Identificar y tratar precozmente infecciones, hemorragia GI o desequilibrios metabólicos.`
+          ],
+          farmacoIntro: `La base terapéutica del Delirium Tremens (Manual de Psiquiatría) consta de tres pilares: sedación con benzodiacepinas, rehidratación + vitaminoterapia, y anticonvulsivantes únicamente si existen antecedentes.`,
+          dosisTabla: [
+            { farmaco: `Benzodiacepinas (pilar terapéutico)`, dosis: `Sedación titulada hasta control de agitación y constantes`, via: `i.v. / v.o.`, precauciones: `Diazepam (o lorazepam si hepatopatía severa); reducen progresión y mortalidad.` },
+            { farmaco: `Rehidratación y electrolitos`, dosis: `Reposición hídrica + corrección de Mg, Ca y K`, via: `i.v.`, precauciones: `Corregir deshidratación y desequilibrios electrolíticos frecuentes.` },
+            { farmaco: `Vitaminoterapia (Tiamina / Complejo B)`, dosis: `Tiamina 50–100 mg/día o pauta parenteral inicial`, via: `i.v. / i.m. / v.o.`, precauciones: `Prevención de encefalopatía de Wernicke.` },
+            { farmaco: `Anticonvulsivantes`, dosis: `Solo si antecedentes previos de crisis`, via: `Según protocolo`, precauciones: `No indicados de rutina sin antecedentes (las BZD ya cubren riesgo agudo).` }
+          ],
+          evitar: [
+            `No usar antipsicóticos como monoterapia (bajan el umbral convulsivo y no controlan la disautonomía).`,
+            `No descuidar la corrección de magnesio, calcio y tiamina.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Ingreso hospitalario OBLIGATORIO (planta médica / UCI según gravedad autonómica) en todos los casos por mortalidad del 5%.`
+          ],
+          alta: [
+            `Nunca dar de alta desde urgencias ante sospecha o diagnóstico de delirium tremens.`
+          ],
+          seguimiento: `Tras la resolución hospitalaria, derivar a programa de deshabituación alcohólica y rehabilitación cognitivo-conductual.`
+        }
+      },
+      {
+        id: `opiaceos`,
+        group: `Urgencias por Sustancias`,
+        shortTitle: `Opiáceos (Sobredosis y Abstin.)`,
+        title: `Intoxicación (Sobredosis) y Abstinencia de Opiáceos`,
+        severity: `critical`,
+        severityLabel: `Sobredosis = Emergencia Vital (Naloxona)`,
+        categoryTag: `Trastorno por uso de opioides`,
+        lede: `Agonistas de receptores opioides μ y δ (heroína, opiáceos de prescripción, fentanilo y análogos sintéticos). La sobredosis es una emergencia médica inmediata; la abstinencia rara vez compromete la vida pero genera gran demanda clínica.`,
+        redFlags: [
+          `Sobredosis aguda: depresión respiratoria, coma/sedación profunda ("the nod") y miosis pupilar → administrar NALOXONA de inmediato.`,
+          `Nuevos opioides sintéticos (nitazenos —más potentes que el fentanilo—, brorfina, U-47700, tianeptina): efectos graves impredecibles y NO detectados en test rutinarios de urgencias.`,
+          `Tasa de suicidio ~20 veces superior a la población general en personas dependientes de heroína u otras drogas.`,
+          `En abstinencia: no administrar opiáceos sin signos objetivos (piloerección, midriasis, taquicardia, HTA) por riesgo de manipulación/simulación.`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Intoxicación / Sobredosis:</strong> "rush" inicial tras vía i.v. o fumada seguido de euforia, tranquilidad, somnolencia ("the nod"), constricción pupilar (<strong>miosis</strong>) y depresión del centro respiratorio (efecto de heroína dura 3–5 h).`,
+            `<strong>Abstinencia de opiáceos:</strong> hiperactividad noradrenérgica de rebote en el <em>locus cerúleo</em>. Inicia a las <strong>8–10 h</strong> tras última dosis (curso agudo 7–10 días; fase prolongada 26–30 semanas con hipotensión, bradicardia, hipotermia, midriasis e hiporrespuesta al CO₂).`,
+            `<strong>Síntomas de abstinencia (seudogripales):</strong> <em>Iniciales:</em> craving intenso, ansiedad, lagrimeo, rinorrea, bostezos, diaforesis. <em>Tardíos:</em> sueño inquieto, debilidad, escalofríos, <strong>piloerección ("cold turkey")</strong>, náuseas, vómitos, diarrea, mialgias, cólicos, movimientos involuntarios ("kicking the habit"), hiperpnea, hipertermia, taquicardia, hipertensión y <strong>midriasis</strong>.`
+          ],
+          exploracion: [
+            `Valorar vía aérea, frecuencia respiratoria y SatO₂ en sospecha de sobredosis.`,
+            `Examen pupilar diferencial: <strong>miosis</strong> en intoxicación vs. <strong>midriasis</strong> en abstinencia.`,
+            `En demanda de medicación por abstinencia, buscar signos objetivos irreprimibles: piloerección, midriasis, taquicardia e hipertensión.`
+          ],
+          algoritmoTitle: `Actuación en sobredosis vs. síndrome de abstinencia de opiáceos`,
+          algoritmoSteps: [
+            `Si depresión respiratoria / sobredosis: soporte ABC y reversión urgente con naloxona o nalmefeno.`,
+            `Vigilar rebote de depresión respiratoria tras naloxona si el opioide tiene vida media prolongada o es un opioide sintético (nitazenos).`,
+            `Si abstinencia sin emergencia vital: verificar signos objetivos (piloerección, midriasis, TA/FC).`,
+            `Iniciar pauta sintomática (clonazepam + paracetamol + clonidina vigilando hipotensión) o desintoxicación con metadona si signos objetivos persistentes.`
+          ]
+        },
+        diferencial: {
+          intro: `Es clave diferenciar la intoxicación de otros depresores del SNC y verificar la autenticidad de la abstinencia.`,
+          tablaHeaders: [`Situación`, `Signos clave`, `Diagnóstico diferencial`],
+          tablaRows: [
+            [`Sobredosis opioide`, `Miosis, depresión respiratoria, coma`, `Intoxicación alcohólica o por BZD/NPS sedantes (sin miosis puntiforme marcada)`],
+            [`Abstinencia opioide`, `Lagrimeo, rinorrea, bostezos, piloerección, midriasis, diarrea`, `Cuadro gripal real, abstinencia de alcohol/estimulantes, simulación`],
+            [`Adulteración por nitazenos/NPS`, `Depresión respiratoria refractaria con test de opiáceos negativo`, `Los nitazenos y brorfina no se detectan en pruebas toxicológicas estándar`]
+          ],
+          otrosDiferenciales: [
+            `Recordar que la adicción a opiáceos de prescripción supera actualmente a la causada por heroína.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `En sobredosis: monitorización cardiorrespiratoria estrecha y reevaluación repetida de nivel de conciencia.`,
+            `En abstinencia: actitud firme, empática y objetiva; explicar que la abstinencia rara vez supone riesgo vital.`
+          ],
+          farmacoIntro: `En sobredosis se emplean antagonistas opioides de urgencia. En abstinencia existen dos estrategias recogidas en las fuentes: pauta sintomática no opioide (Urgencias Psiquiátricas) y desintoxicación con agonistas (Psiquiatría Clínica).`,
+          dosisTabla: [
+            { farmaco: `Naloxona / Nalmefeno`, dosis: `Dosis de rescate urgente titulada`, via: `i.v. / i.m. / intranasal`, precauciones: `Emergencia médica para revertir depresión respiratoria por sobredosis; puede precipitar abstinencia aguda.` },
+            { farmaco: `Clonidina (pauta sintomática)`, dosis: `0,15 mg c/8 h`, via: `v.o.`, precauciones: `Agonista α₂-adrenérgico frente a descarga noradrenérgica. PRECAUCIÓN: potente hipotensor (controlar TA).` },
+            { farmaco: `Clonazepam + Paracetamol`, dosis: `Clonazepam 2 mg/8 h · Paracetamol 500 mg/6–8 h`, via: `v.o.`, precauciones: `Alivio sintomático de ansiedad, insomnio y mialgias en abstinencia.` },
+            { farmaco: `Metadona (desintoxicación)`, dosis: `10 mg inicial; si sin cambios a las 4–6 h, añadir 5–10 mg c/4–6 h`, via: `v.o.`, precauciones: `Solo si persisten signos objetivos de abstinencia. La dosis total de 24 h equivale a la del día 2 (rara vez >40 mg).` }
+          ],
+          evitar: [
+            `No administrar opiáceos ni metadona ante ausencia de signos objetivos de abstinencia.`,
+            `No pautar clonidina sin control tensional previo por riesgo de hipotensión severa.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Sobredosis aguda que requirió naloxona (observación prolongada por riesgo de resedación), aspiración pulmonar o hipoxia.`,
+            `Abstinencia grave complicada con deshidratación severa, embarazo o riesgo suicida agudo.`
+          ],
+          alta: [
+            `Abstinencia no complicada estabilizada con pauta ambulatoria y derivación a programa de mantenimiento/desintoxicación (los programas con medicación superan a los libres de fármacos).`
+          ],
+          seguimiento: `Derivar a centro de adicciones para valorar mantenimiento con agonistas/agonistas parciales o antagonistas tras desintoxicación, y cribado de riesgo suicida y comorbilidades (VIH).`
+        }
+      },
+      {
+        id: `estimulantes`,
+        group: `Urgencias por Sustancias`,
+        shortTitle: `Cocaína y anfetaminas`,
+        title: `Intoxicación y Abstinencia por Psicoestimulantes (Cocaína, Anfetaminas, MDMA)`,
+        severity: `critical`,
+        severityLabel: `Emergencia Simpática · Vigilar Corazón, SNC e Hipertermia`,
+        categoryTag: `Psicoestimulantes`,
+        lede: `Sustancias que potencian la dopamina (cocaína bloquea su transportador; anfetaminas/metanfetamina revierten el transporte). La intoxicación por cocaína tiene semivida breve (~1 h) y la anfetamínica suele resolverse en 24–48 h, pero su sobredosis es una emergencia vital.`,
+        redFlags: [
+          `Hiperactividad simpática severa: hipertensión grave, taquicardia, cefalea intensa, agitación psicomotriz extrema y midriasis.`,
+          `Riesgo de convulsiones, hemorragia o infarto cerebral, arritmias, isquemia miocárdica, insuficiencia respiratoria y rabdomiólisis.`,
+          `MDMA: elevación crítica de la temperatura corporal con fallo hepático, renal o cardíaco e incluso muerte.`,
+          `Crack vaporizado: quemaduras de vía aérea y broncoespasmo agudo.`,
+          `CONTRAINDICACIÓN RELATIVA DE SUCCINILCOLINA en intubación de secuencia rápida por cocaína (usar rocuronio 1 mg/kg i.v.).`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Intoxicación por cocaína/anfetaminas:</strong> euforia, hipervigilancia, agitación psicomotriz, irritabilidad, cólera/agresividad, impulsividad sexual peligrosa, conducta repetitiva estereotipada, bruxismo, hormigueo y estimulación adrenérgica (HTA, taquicardia, hipertermia, vasoconstricción, <strong>midriasis</strong>).`,
+            `<strong>Psicosis por estimulantes:</strong> delirios persecutorios, ideas de referencia y alucinaciones auditivas, visuales o táctiles. <strong>Dato diferencial clave: los pacientes permanecen totalmente orientados.</strong>`,
+            `<strong>Abstinencia de estimulantes (Tabla 8-20):</strong> dura 2–4 días (aguda hasta 7–10 días; craving condicionado persistente meses). Cursa con ansiedad, disforia, depresión e <strong>ideación suicida</strong>, letargia/hipersomnia, temblores, fatiga, cefalea, pesadillas, sudoración profusa, calambres musculares, hambre insaciable y cólicos.`
+          ],
+          exploracion: [
+            `Valorar ABC inmediato, glucemia capilar e hipoxemia antes de tratar agitación.`,
+            `ECG urgente si dolor torácico o taquicardia marcada; CPK y función renal si hipertermia o agitación prolongada.`,
+            `Evaluar vía aérea en consumidores de crack fumado.`
+          ],
+          algoritmoTitle: `Protocolo de manejo urgente en intoxicación por estimulantes`,
+          algoritmoSteps: [
+            `Asegurar circulación, vía aérea y respiración (ABC). Si precisa intubación por cocaína, evitar succinilcolina y utilizar rocuronio 1 mg/kg i.v.`,
+            `Descartar hipoglucemia e hipoxemia antes de administrar sedación.`,
+            `Administrar benzodiacepinas intravenosas tituladas para controlar agitación, taquicardia, HTA y prevenir convulsiones.`,
+            `Si aparecen convulsiones: diazepam i.v. Si persiste psicosis tras sedación: valorar haloperidol.`,
+            `Monitorización en unidad de cuidados intensivos o telemetría ante signos de sobredosis o toxicidad orgánica.`
+          ]
+        },
+        diferencial: {
+          intro: `La presencia de midriasis, excitabilidad muscular intensa, síntomas vegetativos y orientación conservada ayuda a distinguir el cuadro.`,
+          tablaHeaders: [`Diagnóstico`, `Puntos diferenciales`],
+          tablaRows: [
+            [`Esquizofrenia / Manía`, `En cocaína la orientación es total, existe intensa estimulación simpática/muscular y semivida corta (~1 h)`],
+            [`Delirium`, `En intoxicación por estimulantes no hay desorientación ni fluctuación de conciencia salvo dosis masivas/coma`],
+            [`Abstinencia de opiáceos`, `También hay midriasis y taquicardia, pero cursa con rinorrea, lagrimeo, piloerección y diarrea`],
+            [`Catinonas sintéticas ("sales de baño")`, `NPS diseñadas para imitar cocaína/metanfetamina con efectos impredecibles y test negativo`]
+          ],
+          otrosDiferenciales: [
+            `Adulterantes habituales en cocaína (lidocaína, cafeína, fenacetina, diltiazem, levamisol/otros).`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Ambiente tranquilo con baja estimulación, monitorización continua de constantes y telemetría cardíaca si dolor torácico o arritmia.`
+          ],
+          farmacoIntro: `Las benzodiacepinas constituyen el tratamiento de primera línea tanto para la agitación como para las convulsiones y síntomas psicóticos leves en intoxicación por estimulantes.`,
+          dosisTabla: [
+            { farmaco: `Diazepam`, dosis: `10 mg i.v. inicial; luego 5–10 mg i.v. c/3–5 h hasta control`, via: `i.v. / v.o.`, precauciones: `Fármaco de elección para agitación y convulsiones por cocaína o anfetaminas.` },
+            { farmaco: `Rocuronio (si intubación)`, dosis: `1 mg/kg`, via: `i.v.`, precauciones: `Alternativa obligada a succinilcolina en intoxicación por cocaína.` },
+            { farmaco: `Haloperidol`, dosis: `Dosis bajas PRN`, via: `v.o. / i.m.`, precauciones: `Solo si síntomas psicóticos graves que no ceden con benzodiacepinas; vigilar QTc y distonías.` }
+          ],
+          evitar: [
+            `Evitar succinilcolina en intubación de secuencia rápida en intoxicación por cocaína.`,
+            `No sedar sin descartar hipoglucemia ni hipoxemia.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Sobredosis con convulsiones, hipertermia, arritmias, isquemia miocárdica, focalidad neurológica o rabdomiólisis (UCI / telemetría).`,
+            `Abstinencia de estimulantes con depresión severa o ideación suicida activa.`
+          ],
+          alta: [
+            `Intoxicación leve anfetamínica o por cocaína completamente resuelta (24–48 h o tras aclaramiento), constantes normales y sin riesgo suicida.`,
+            `Derivación a tratamiento cognitivo-conductual para manejo del craving condicionado.`
+          ],
+          seguimiento: `Evaluar en seguimiento depresión postconsumo y craving condicionado ante estímulos ambientales.`
+        }
+      },
+      {
+        id: `cannabis`,
+        group: `Urgencias por Sustancias`,
+        shortTitle: `Cannabis`,
+        title: `Intoxicación Aguda, Hiperémesis y Psicosis por Cannabis`,
+        severity: `standard`,
+        severityLabel: `Urgencia Frecuente · Vigilar Pánico, Psicosis e Hiperémesis`,
+        categoryTag: `Cannabinoides (CB1)`,
+        lede: `Agonista de receptores cannabinoides CB1 (Δ9-THC). Muy lipofílico con eliminación lenta (detectable semanas en orina). Los productos de alto THC y los comestibles aumentan las consultas urgentes por ansiedad severa, psicosis e hiperémesis.`,
+        redFlags: [
+          `Ingesta accidental de comestibles (edibles) en niños o usuarios inexpertos (inicio tardío favorece sobredosis).`,
+          `Síndrome de hiperémesis cannábica: ciclos graves de náuseas, vómitos incoercibles y dolor abdominal en consumidores crónicos de altas dosis.`,
+          `Crisis de pánico grave, despersonalización intensa o psicosis cannábica aguda (ideas paranoides y alucinaciones).`,
+          `EVALI (lesión pulmonar asociada a vapeo): insuficiencia respiratoria en vapeadores ilícitos (asociada a acetato de vitamina E).`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Signos físicos más frecuentes (Urgencias Psiquiátricas):</strong> <strong>taquicardia e hiperemia/inyección conjuntival</strong>, junto a sequedad de boca (anticolinérgico), aumento del apetito (hiperfagia) e hiperreflexia.`,
+            `<strong>Intoxicación aguda:</strong> acción máxima a los 30 min (fumado) y decrece a las 2 h. Relajación/euforia o excitación, disociación de ideas, distorsión perceptiva (colores, sabores, sonidos), deterioro de atención/concentración y coordinación (accidentes de tráfico).`,
+            `<strong>Cuadros psiquiátricos agudos:</strong> crisis de pánico, <em>bad trips</em>, despersonalización, desrealización, paranoidismo, <em>flashbacks</em> y psicosis cannábica.`,
+            `<strong>Abstinencia (CUD):</strong> no produce síndrome físico grave, pero sí inquietud psíquica, ansiedad, depresión, insomnio y anorexia (pico días 1–3, resolución ~2 semanas; receptores CB1 se recuperan en 28 días).`
+          ],
+          exploracion: [
+            `Explorar conjuntivas (inyección conjuntival), frecuencia cardíaca, estado respiratorio (descartar EVALI si vapeo) y abdomen/hidratación (si vómitos cíclicos).`,
+            `Preguntar por formato de consumo (fumado, vapeo, comestibles o cannabinoides sintéticos K2/Spice).`
+          ],
+          algoritmoTitle: `Abordaje de urgencias relacionadas con cannabis`,
+          algoritmoSteps: [
+            `Si crisis de pánico o <em>bad trip</em>: tranquilización verbal en entorno calmado y baja estimulación.`,
+            `Si hiperémesis cannábica: rehidratación intravenosa, corrección hidroelectrolítica y descartar abdomen agudo quirúrgico.`,
+            `Si psicosis cannábica: descartar consumo de sintéticos (K2/Spice) o estimulantes; valorar benzodiacepinas o antipsicótico breve si agitación/psicosis persistente.`,
+            `En consumidores habituales con apatía/desinterés (síndrome amotivacional): informar de reversibilidad con abstinencia.`
+          ]
+        },
+        diferencial: {
+          intro: `Distinguir la intoxicación cannábica de psicosis primarias y de nuevos cannabinoides sintéticos.`,
+          tablaHeaders: [`Cuadro`, `Diferenciación`],
+          tablaRows: [
+            [`Cannabinoides sintéticos (K2 / Spice)`, `Efectos mucho más intensos e impredecibles; NO detectados en test estándar de THC en orina`],
+            [`Crisis de pánico primaria`, `Ausencia de inyección conjuntival, sequedad bucal e historia de consumo reciente`],
+            [`Esquizofrenia / Psicosis primaria`, `La psicosis cannábica remite habitualmente con abstinencia, aunque el consumo crónico puede precipitar brotes`]
+          ],
+          otrosDiferenciales: [
+            `Vómitos cíclicos / abdomen agudo frente a síndrome de hiperémesis cannábica.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Medidas de tranquilidad y acompañamiento empático (la mayoría de efectos agudos fumados decrecen a las 2 horas).`
+          ],
+          farmacoIntro: `El tratamiento es sintomático y de sostén según el cuadro predominante (ansiedad, psicosis o hiperémesis).`,
+          dosisTabla: [
+            { farmaco: `Benzodiacepinas (si pánico/agitación severa)`, dosis: `Diazepam 5–10 mg o lorazepam 1–2 mg`, via: `v.o.`, precauciones: `Solo si la tranquilización verbal es insuficiente en crisis de pánico o agitación.` },
+            { farmaco: `Soporte hídrico (hiperémesis)`, dosis: `Según deshidratación`, via: `i.v.`, precauciones: `Corregir alteraciones electrolíticas por vómitos repetidos.` }
+          ],
+          evitar: [
+            `No asumir que un test negativo en orina descarta cannabinoides sintéticos (K2/Spice).`,
+            `No olvidar descartar ingesta accidental en niños ante cuadros confusionales o ataxia tras comer dulces.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Psicosis aguda persistente con agitación incontrolable o riesgo auto/heteroagresivo.`,
+            `Hiperémesis cannábica con deshidratación grave o fracaso de tolerancia oral; sospecha de EVALI con insuficiencia respiratoria; intoxicación pediátrica por comestibles.`
+          ],
+          alta: [
+            `Resolución completa de la crisis de ansiedad/despersonalización tras observación breve (2–4 h), tolerancia oral adecuada y seguimiento ambulatorio.`
+          ],
+          seguimiento: `Consejo breve motivacional sobre abandono del consumo (los síntomas de abstinencia suelen ceder en ~2 semanas).`
+        }
+      },
+      {
+        id: `alucinogenos`,
+        group: `Urgencias por Sustancias`,
+        shortTitle: `Alucinógenos, disociativos y NPS`,
+        title: `Alucinógenos (LSD), Disociativos (PCP, Ketamina) y Drogas Emergentes (NPS)`,
+        severity: `urgent`,
+        severityLabel: `Alerta · Test Estándar Negativos en NPS`,
+        categoryTag: `Alucinógenos / Disociativos / NPS`,
+        lede: `Incluye alucinógenos clásicos (LSD), disociativos antagonistas NMDA (PCP, ketamina, DXM a altas dosis, Salvia divinorum) y Nuevas Sustancias Psicoactivas (NPS) elaboradas clandestinamente con efectos impredecibles.`,
+        redFlags: [
+          `Drogas disociativas (PCP, ketamina, DXM, salvia): conductas bizarras y peligrosas por desconexión corporal, depresión respiratoria y anomalías del ritmo cardíaco.`,
+          `"Bad trip" (viaje malo): pánico extremo, paranoia y psicosis aguda que pueden persistir hasta 24 horas.`,
+          `Nuevas Sustancias Psicoactivas (NPS: catinonas sintéticas, K2/Spice, nitazenos, bromazepams/flubromazepam): NO suelen aparecer en los test de drogas de urgencias y actúan frecuentemente como adulterantes ocultos.`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Alucinógenos (LSD, psilocibina):</strong> falsas experiencias sensoriales, sinestesia, intensificación emocional/sensorial, distorsión del tiempo, náuseas, taquicardia, HTA, taquipnea, hipertermia, xerostomía, hiperhidrosis e incoordinación.`,
+            `<strong>Disociativos (PCP, ketamina, DXM altas dosis, Salvia):</strong> sensación de estar desconectado del cuerpo o entorno, distorsión de tiempo, movimiento, color, sonido y del yo; riesgo de abstinencia con craving, confusión, cefalea y sudoración.`,
+            `<strong>Efectos crónicos:</strong> <em>flashbacks</em>, psicosis persistente, pérdida de memoria, ansiedad y depresión. Con PCP/disociativos: dificultades persistentes del habla, memoria, depresión e ideación suicida durante >1 año tras cesar.`
+          ],
+          exploracion: [
+            `Control de constantes vitales (TA, FC, FR, T.ª) y seguridad física frente a conductas temerarias.`,
+            `Preguntar por posibles mezclas o compra por internet/tiendas de conveniencia (sospechar NPS).`
+          ],
+          algoritmoTitle: `Actuación urgente ante "bad trip" o intoxicación por disociativos/NPS`,
+          algoritmoSteps: [
+            `Garantizar seguridad física del paciente y entorno calmado sin estímulos intensos.`,
+            `Tranquilización y apoyo verbal continuo ("talking down" / supportive reassurance) como primera medida en el "bad trip".`,
+            `Si agitación severa o pánico incoercible: administrar benzodiacepinas (diazepam o lorazepam si hepatopatía).`,
+            `Vigilar función respiratoria y cardíaca si sospecha de disociativos (PCP/ketamina) o opioides/sedantes sintéticos ocultos (NPS).`
+          ]
+        },
+        diferencial: {
+          intro: `El antecedente de consumo y la marcada alteración sensoperceptiva/sinestesia orientan el diagnóstico; recordar la invisibilidad de las NPS en inmunoensayos de urgencias.`,
+          tablaHeaders: [`Sustancia / Grupo`, `Manifestación diferencial`],
+          tablaRows: [
+            [`LSD / Alucinógenos`, `Sinestesia, distorsión temporal, hiperhidrosis y bad trip sin depresión respiratoria`],
+            [`PCP / Ketamina / DXM`, `Disociación marcada, conductas peligrosas, riesgo de depresión respiratoria y arritmias`],
+            [`NPS (nitazenos, K2, catinonas, BZD sintéticas)`, `Cuadros mixtos o atípicos por adulteración; test rutinario de tóxicos negativo`]
+          ],
+          otrosDiferenciales: [
+            `Psicosis aguda primaria, manía o delirium febril.`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Acompañamiento tranquilo y reaseguramiento empático ("supportive reassurance") para manejar experiencias negativas de hasta 24 h.`
+          ],
+          farmacoIntro: `En agitación grave que no cede con apoyo verbal se emplean benzodiacepinas, ajustando según función hepática (Harrison). No existen fármacos aprobados por la FDA para la adicción a alucinógenos.`,
+          dosisTabla: [
+            { farmaco: `Diazepam`, dosis: `10 mg`, via: `v.o. / i.v.`, precauciones: `De elección si agitación grave por alucinógenos.` },
+            { farmaco: `Lorazepam (si daño hepático)`, dosis: `1–2 mg`, via: `v.o. / i.m.`, precauciones: `Preferible al diazepam cuando existe hepatopatía conocida.` }
+          ],
+          evitar: [
+            `No descartar intoxicación grave por el mero hecho de obtener un cribado toxicológico de orina negativo si hay sospecha clínica de NPS.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Depresión respiratoria, arritmias, hipertermia severa o conductas peligrosas por disociativos.`,
+            `Psicosis persistente >24 h o ideación suicida asociada (frecuente en uso crónico de PCP).`
+          ],
+          alta: [
+            `Remisión del bad trip o intoxicación leve con constantes normales y acompañamiento familiar.`
+          ],
+          seguimiento: `Derivar a terapia conductual/adicciones y vigilar aparición tardía de flashbacks, depresión o alteraciones de memoria.`
+        }
+      },
+      {
+        id: `benzodiacepinas`,
+        group: `Urgencias por Sustancias`,
+        shortTitle: `Benzodiacepinas y sedantes`,
+        title: `Uso Crítico, Abstinencia y Adulteración con Benzodiacepinas`,
+        severity: `standard`,
+        severityLabel: `Precaución en Prescripción y Abstinencia`,
+        categoryTag: `Sedantes / BZD sintéticas`,
+        lede: `Las benzodiacepinas son herramientas esenciales en la urgencia psiquiátrica (agitación, abstinencia alcohólica, catatonía), pero su uso indiscriminado genera dependencia, abstinencia grave y riesgo por nuevas benzodiacepinas sintéticas (NPS).`,
+        redFlags: [
+          `Abstinencia instaurada a sedantes/alcohol: riesgo de hiperactividad autonómica, insomnio severo, agitación y convulsiones.`,
+          `Benzodiacepinas sintéticas ilícitas (bromazepam, desalkylgidazepam, flubromazepam): mezcladas en el mercado ilícito con efectos prolongados e impredecibles, no detectadas en test rutinarios.`,
+          `Pacientes ancianos o con delirium no alcohólico: riesgo de empeoramiento confusional y caídas.`
+        ],
+        clinica: {
+          criterios: [
+            `<strong>Abstinencia instaurada (Urgencias Psiquiátricas):</strong> irritabilidad, ansiedad, insomnio, hiperactividad autonómica y riesgo convulsivo ante retirada brusca tras consumo prolongado.`,
+            `<strong>Toxicidad emergente (NPS):</strong> sedación profunda atípica o prolongada por consumo inadvertido de benzodiacepinas sintéticas como adulterantes.`,
+            `<strong>Criterio de manejo en urgencias (Tabla 24-8):</strong> en ansiedad aguda o insomnio primario, evitar prescribir benzodiacepinas al alta si no hay seguimiento asegurado por su potencial de abuso.`
+          ],
+          exploracion: [
+            `Valorar nivel de conciencia, frecuencia respiratoria, marcha/ataxia y antecedentes de prescripción o compra ilícita.`,
+            `Revisar función hepática antes de elegir benzodiacepina (diazepam vs. lorazepam).`
+          ],
+          algoritmoTitle: `Criterios de uso seguro de benzodiacepinas en urgencias`,
+          algoritmoSteps: [
+            `Confirmar indicación aguda real (abstinencia alcohólica/sedantes, agitación psicótica o por estimulantes, catatonía en observación).`,
+            `Seleccionar molécula según función hepática y vida media: lorazepam en daño hepático; diazepam/cloracepato/clonazepam en abstinencia.`,
+            `Si dependencia/abstinencia instaurada: pautar dosis de ataque oral de semivida larga y remitir a CAD para retirada paulatina.`,
+            `En ansiedad aguda o insomnio sin dependencia: NO prescribir BZD para domicilio desde urgencias.`
+          ]
+        },
+        diferencial: {
+          intro: `Diferenciar sedación por BZD/NPS de otras intoxicaciones depresoras y evaluar abstinencia cruzada con alcohol.`,
+          tablaHeaders: [`Escenario`, `Claves`],
+          tablaRows: [
+            [`Sobredosis por BZD sintéticas (NPS)`, `Sedación profunda con test estándar variable; posible coingesta con opioides sintéticos (nitazenos)`],
+            [`Abstinencia de BZD vs. Alcohol`, `Sintomatología similar; requiere pauta descendente supervisada con BZD de semivida larga`]
+          ],
+          otrosDiferenciales: [
+            `Delirium hipoactivo o intoxicación por antiarrítmicos clase I (lidocaína: somnolencia, letargia, confusión).`
+          ]
+        },
+        tratamiento: {
+          ambiental: [
+            `Vigilancia respiratoria y prevención de caídas; evitar prescripción compulsiva en pacientes demandantes sin plan de seguimiento.`
+          ],
+          farmacoIntro: `Pautas generales recogidas en Urgencias Psiquiátricas para síndrome de abstinencia instaurado (preferible vía oral) y manejo en hepatopatía.`,
+          dosisTabla: [
+            { farmaco: `Diazepam`, dosis: `10–20 mg/8 h (ataque abstinencia) o 15–30 mg/día`, via: `v.o.`, precauciones: `Semivida larga; retirar paulatinamente según respuesta. Evitar en hepatopatía grave.` },
+            { farmaco: `Cloracepato`, dosis: `50–100 mg/8 h (o 50–100 mg/día)`, via: `v.o.`, precauciones: `Alternativa de semivida larga con remisión a CAD para descenso gradual.` },
+            { farmaco: `Clonazepam`, dosis: `2–4 mg/8 h (o 2–4 mg/día)`, via: `v.o.`, precauciones: `Útil en abstinencia y ciertos trastornos de ansiedad en seguimiento.` },
+            { farmaco: `Lorazepam`, dosis: `1–2 mg`, via: `v.o. / i.m.`, precauciones: `Elección preferente si existe daño hepático.` }
+          ],
+          evitar: [
+            `No iniciar prescripciones crónicas de BZD para insomnio o ansiedad aguda en el servicio de urgencias (Tabla 24-8).`,
+            `No retirar bruscamente dosis altas crónicas sin cobertura descendente.`
+          ]
+        },
+        ingreso: {
+          ingresar: [
+            `Depresión respiratoria o coma por policonsumo/NPS.`,
+            `Abstinencia grave no contenible ambulatoriamente o con convulsiones.`
+          ],
+          alta: [
+            `Estabilización con pauta oral de descenso y derivación obligatoria a CAD o psiquiatría ambulatoria.`
+          ],
+          seguimiento: `Plan de retirada paulatina supervisada en CAD y psicoeducación sobre riesgos de abuso.`
+        }
+      }
+    ];
+
+    // Toxidrome matrix data (Overview Hub)
+    const TOXIDROMES = [
+      {
+        id: `tox-alcohol`,
+        substance: `Alcohol (Abstinencia / Delirium Tremens)`,
+        pupilas: `Midriasis (en DT)`,
+        constantes: `Taquicardia, HTA, fiebre, diaforesis`,
+        conciencia: `Clara en alucinosis · Fluctuante en DT`,
+        claveClinica: `Temblor, alucinaciones visuales/zoopsias en DT (72–96 h); auditivas con conciencia clara en alucinosis`,
+        manejo: `Benzodiacepinas + Tiamina (50–100 mg/d) + hidratación en DT; haloperidol en alucinosis`,
+        tags: [`midriasis`, `fiebre`, `taquicardia`, `fluctuante`],
+        linkId: `delirium_tremens`
+      },
+      {
+        id: `tox-opiaceos-intox`,
+        substance: `Opiáceos — Intoxicación / Sobredosis`,
+        pupilas: `Miosis (constricción pupilar)`,
+        constantes: `Depresión respiratoria, bradipnea`,
+        conciencia: `Somnolencia ("the nod") a coma`,
+        claveClinica: `Tríada de miosis, coma y depresión respiratoria; vigilar nitazenos con test negativo`,
+        manejo: `Naloxona o nalmefeno urgente + soporte ventilatorio ABC`,
+        tags: [`miosis`, `depresion_respiratoria`, `coma`],
+        linkId: `opiaceos`
+      },
+      {
+        id: `tox-opiaceos-abst`,
+        substance: `Opiáceos — Abstinencia`,
+        pupilas: `Midriasis`,
+        constantes: `Taquicardia, HTA, hipertermia leve`,
+        conciencia: `Clara (ansiedad/inquietud)`,
+        claveClinica: `Lagrimeo, rinorrea, bostezos, piloerección ("cold turkey"), mialgias y diarrea (inicio 8–10 h)`,
+        manejo: `Clonidina 0,15 mg/8 h (vigilar TA) + clonazepam + paracetamol, o metadona si signos objetivos`,
+        tags: [`midriasis`, `taquicardia`, `clara`],
+        linkId: `opiaceos`
+      },
+      {
+        id: `tox-estimulantes`,
+        substance: `Cocaína / Anfetaminas / MDMA`,
+        pupilas: `Midriasis`,
+        constantes: `HTA, taquicardia, hipertermia (MDMA)`,
+        conciencia: `Totalmente orientado (salvo dosis masiva)`,
+        claveClinica: `Agitación simpática, paranoia, estereotipias, bruxismo, riesgo de convulsiones/ictus/IAM`,
+        manejo: `Diazepam 10 mg i.v. (evitar succinilcolina en cocaína; usar rocuronio 1 mg/kg)`,
+        tags: [`midriasis`, `fiebre`, `taquicardia`, `clara`],
+        linkId: `estimulantes`
+      },
+      {
+        id: `tox-cannabis`,
+        substance: `Cannabis`,
+        pupilas: `Normales · Inyección conjuntival`,
+        constantes: `Taquicardia`,
+        conciencia: `Clara (distorsión / despersonalización)`,
+        claveClinica: `Hiperemia conjuntival, boca seca, hiperfagia, crisis de pánico, psicosis o hiperémesis cíclica`,
+        manejo: `Apoyo verbal; benzodiacepinas si pánico severo; hidratación i.v. en hiperémesis`,
+        tags: [`taquicardia`, `clara`, `conjuntival`],
+        linkId: `cannabis`
+      },
+      {
+        id: `tox-snm`,
+        substance: `Síndrome Neuroléptico Maligno (Antipsicóticos)`,
+        pupilas: `Variables`,
+        constantes: `Fiebre hasta 41 ºC, TA lábil, taquicardia`,
+        conciencia: `Delirium / obnubilación / coma`,
+        claveClinica: `Rigidez muscular intensa, CPK muy elevada, leucocitosis, disfagia (1.er mes de neurolépticos)`,
+        manejo: `Retirada inmediata de antipsicótico + enfriamiento + fluidoterapia i.v. (prevenir fallo renal)`,
+        tags: [`fiebre`, `taquicardia`, `fluctuante`],
+        linkId: `snm`
+      }
+    ];
+
+    const ORGANICITY_ITEMS = [
+      { id: `org-1`, label: `Inicio abrupto sin período prodrómico` },
+      { id: `org-2`, label: `Alteración o fluctuación del nivel de conciencia` },
+      { id: `org-3`, label: `Antecedentes o signos de consumo / abstinencia de tóxicos` },
+      { id: `org-4`, label: `Alteración de las constantes vitales (T.ª, FC, TA, FR)` },
+      { id: `org-5`, label: `Antecedentes personales o familiares de patología orgánica` },
+      { id: `org-6`, label: `Ausencia de historia personal previa de psicosis` },
+      { id: `org-7`, label: `Atipicidad: edad inhabitual, curso fluctuante o alucinaciones visuales/táctiles` }
+    ];
+
+    const SAD_PERSONS_ITEMS = [
+      { id: `sp-s`, code: `S`, label: `Sexo masculino (mayor letalidad consumada)` },
+      { id: `sp-a`, code: `A`, label: `Edad (Age: adolescentes/ancianos de riesgo)` },
+      { id: `sp-d`, code: `D`, label: `Depresión o desesperanza (50% de suicidios)` },
+      { id: `sp-p`, code: `P`, label: `Intentos previos (Previous attempts)` },
+      { id: `sp-e`, code: `E`, label: `Etanol o abuso de otras sustancias (heroína ×20)` },
+      { id: `sp-r`, code: `R`, label: `Pérdida de pensamiento racional (psicosis / voces imperativas)` },
+      { id: `sp-s2`, code: `S`, label: `Falta de apoyo social / aislamiento` },
+      { id: `sp-o`, code: `O`, label: `Plan suicida organizado o acopio de medios` },
+      { id: `sp-n`, code: `N`, label: `Sin pareja o red afectiva estable (No spouse)` },
+      { id: `sp-s3`, code: `S`, label: `Enfermedad médica crónica, dolorosa o terminal (Sickness)` }
+    ];
+
+    // =========================================================================
+    // APPLICATION STATE (Persisted via notebookAppApi)
+    // =========================================================================
+    const APP_STATE = {
+      darkMode: false,
+      activeView: `overview`, // 'overview' or syndrome id
+      activeTab: `clinica`,   // 'clinica' | 'diferencial' | 'tratamiento' | 'ingreso'
+      searchQuery: ``,
+      toxFilter: `all`,
+      reviewedIds: [],
+      organicityChecked: [],
+      sadPersonsChecked: []
+    };
+
+    async function persistState() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+          await window.notebookAppApi.setAppState({
+            darkMode: APP_STATE.darkMode,
+            activeView: APP_STATE.activeView,
+            activeTab: APP_STATE.activeTab,
+            toxFilter: APP_STATE.toxFilter,
+            reviewedIds: APP_STATE.reviewedIds,
+            organicityChecked: APP_STATE.organicityChecked,
+            sadPersonsChecked: APP_STATE.sadPersonsChecked
+          });
+        }
+      } catch (e) {
+        // Safe fallback inside sandbox
+      }
+    }
+
+    function applyTheme() {
+      const htmlEl = document.documentElement;
+      if (htmlEl) {
+        htmlEl.setAttribute(`data-theme`, APP_STATE.darkMode ? `dark` : `light`);
+      }
+      const btn = document.getElementById(`btn-night-mode`);
+      const label = document.getElementById(`night-mode-label`);
+      if (btn) {
+        btn.setAttribute(`aria-pressed`, APP_STATE.darkMode ? `true` : `false`);
+      }
+      if (label) {
+        label.textContent = APP_STATE.darkMode ? `Modo Día Clínico` : `Modo Guardia Nocturna`;
+      }
+    }
+
+    function toggleNightMode() {
+      APP_STATE.darkMode = !APP_STATE.darkMode;
+      applyTheme();
+      persistState();
+    }
+
+    function selectView(viewId, tabId) {
+      APP_STATE.activeView = viewId || `overview`;
+      if (tabId) {
+        APP_STATE.activeTab = tabId;
+      } else if (viewId !== `overview`) {
+        APP_STATE.activeTab = `clinica`;
+      }
+      renderAll();
+      persistState();
+      const mainEl = document.getElementById(`main-content`);
+      if (mainEl) mainEl.focus({ preventScroll: true });
+    }
+
+    function selectTab(tabId) {
+      APP_STATE.activeTab = tabId;
+      renderMain();
+      persistState();
+    }
+
+    function toggleReviewed(syndromeId) {
+      const idx = APP_STATE.reviewedIds.indexOf(syndromeId);
+      if (idx === -1) {
+        APP_STATE.reviewedIds.push(syndromeId);
+      } else {
+        APP_STATE.reviewedIds.splice(idx, 1);
+      }
+      renderMain();
+      updateReviewedCounter();
+      persistState();
+    }
+
+    function updateReviewedCounter() {
+      const counter = document.getElementById(`reviewed-counter`);
+      if (counter) {
+        counter.textContent = `Protocolos revisados en guardia: ` + APP_STATE.reviewedIds.length + ` / ` + CLINICAL_SYNDROMES.length;
+      }
+    }
+
+    function handleSearch(query) {
+      APP_STATE.searchQuery = (query || ``).trim();
+      const clearBtn = document.getElementById(`search-clear-btn`);
+      if (clearBtn) {
+        if (APP_STATE.searchQuery.length > 0) {
+          clearBtn.classList.add(`visible`);
+        } else {
+          clearBtn.classList.remove(`visible`);
+        }
+      }
+      renderSidebar();
+      renderMain();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById(`clinical-search`);
+      if (input) input.value = ``;
+      handleSearch(``);
+    }
+
+    function setToxFilter(tag) {
+      APP_STATE.toxFilter = tag;
+      renderMain();
+      persistState();
+    }
+
+    function toggleOrganicityItem(itemId) {
+      const idx = APP_STATE.organicityChecked.indexOf(itemId);
+      if (idx === -1) {
+        APP_STATE.organicityChecked.push(itemId);
+      } else {
+        APP_STATE.organicityChecked.splice(idx, 1);
+      }
+      renderMain();
+      persistState();
+    }
+
+    function resetOrganicityChecklist() {
+      APP_STATE.organicityChecked = [];
+      renderMain();
+      persistState();
+    }
+
+    function toggleSadPersonsItem(itemId) {
+      const idx = APP_STATE.sadPersonsChecked.indexOf(itemId);
+      if (idx === -1) {
+        APP_STATE.sadPersonsChecked.push(itemId);
+      } else {
+        APP_STATE.sadPersonsChecked.splice(idx, 1);
+      }
+      renderMain();
+      persistState();
+    }
+
+    function resetSadPersonsChecklist() {
+      APP_STATE.sadPersonsChecked = [];
+      renderMain();
+      persistState();
+    }
+
+    // =========================================================================
+    // SEARCH MATCHING ACROSS ALL CONTENT
+    // =========================================================================
+    function stripTags(str) {
+      return String(str || ``).replace(/<[^>]*>/g, ` `);
+    }
+
+    function normalizeText(str) {
+      return stripTags(str)
+        .toLowerCase()
+        .normalize(`NFD`)
+        .replace(/[\u0300-\u036f]/g, ``);
+    }
+
+    function findMatchesForSyndrome(syn, normQuery) {
+      if (!normQuery) return { count: 0, bestTab: `clinica`, snippets: [] };
+      const fields = [
+        { tab: `clinica`, label: `Título y Banderas Rojas`, text: [syn.title, syn.shortTitle, syn.lede].concat(syn.redFlags).join(` `) },
+        { tab: `clinica`, label: `Clínica y Diagnóstico`, text: syn.clinica.criterios.concat(syn.clinica.exploracion, syn.clinica.algoritmoSteps).join(` `) },
+        { tab: `diferencial`, label: `Diagnóstico Diferencial`, text: [syn.diferencial.intro].concat(syn.diferencial.tablaRows.flat(), syn.diferencial.otrosDiferenciales).join(` `) },
+        { tab: `tratamiento`, label: `Tratamiento y Dosis`, text: syn.tratamiento.ambiental.concat([syn.tratamiento.farmacoIntro], syn.tratamiento.dosisTabla.map(d => d.farmaco + ` ` + d.dosis + ` ` + d.precauciones), syn.tratamiento.evitar).join(` `) },
+        { tab: `ingreso`, label: `Criterios de Ingreso`, text: syn.ingreso.ingresar.concat(syn.ingreso.alta, [syn.ingreso.seguimiento]).join(` `) }
+      ];
+      let count = 0;
+      let bestTab = `clinica`;
+      const matchedTabs = [];
+      for (let i = 0; i < fields.length; i++) {
+        const normText = normalizeText(fields[i].text);
+        if (normText.indexOf(normQuery) !== -1) {
+          count++;
+          if (matchedTabs.length === 0) bestTab = fields[i].tab;
+          if (matchedTabs.indexOf(fields[i].label) === -1) {
+            matchedTabs.push(fields[i].label);
+          }
+        }
+      }
+      return { count: count, bestTab: bestTab, snippets: matchedTabs };
+    }
+
+    // =========================================================================
+    // RENDERING
+    // =========================================================================
+    function renderSidebar() {
+      const nav = document.getElementById(`sidebar-nav`);
+      const mobileSelect = document.getElementById(`mobile-syndrome-select`);
+      const normQuery = normalizeText(APP_STATE.searchQuery);
+
+      const groups = [
+        `Urgencias Conductuales y Afectivas`,
+        `Urgencias Psicóticas y Neurológicas`,
+        `Urgencias por Sustancias`
+      ];
+
+      if (nav) {
+        let html = `<div><ul class="nav-list"><li>
+          <button type="button" class="nav-btn ` + (APP_STATE.activeView === `overview` ? `active` : ``) + `" onclick="selectView('overview')">
+            <span class="nav-btn-left">
+              <span class="nav-dot"></span>
+              <span>Vista General: Triaje y Toxíndromes</span>
+            </span>
+          </button>
+        </li></ul></div>`;
+
+        for (let g = 0; g < groups.length; g++) {
+          const groupName = groups[g];
+          const items = CLINICAL_SYNDROMES.filter(s => s.group === groupName);
+          let itemsHtml = ``;
+          for (let i = 0; i < items.length; i++) {
+            const syn = items[i];
+            const match = findMatchesForSyndrome(syn, normQuery);
+            if (normQuery && match.count === 0) continue;
+            const isActive = APP_STATE.activeView === syn.id;
+            const isRev = APP_STATE.reviewedIds.indexOf(syn.id) !== -1;
+            itemsHtml += `<li>
+              <button type="button" class="nav-btn ` + (isActive ? `active` : ``) + `" onclick="selectView('` + syn.id + `'` + (normQuery ? `,'` + match.bestTab + `'` : ``) + `)">
+                <span class="nav-btn-left">
+                  <span class="nav-dot" data-severity="` + syn.severity + `"></span>
+                  <span>` + syn.shortTitle + (isRev ? ` ✓` : ``) + `</span>
+                </span>
+                ` + (normQuery ? `<span class="nav-match-count">` + match.count + `</span>` : ``) + `
+              </button>
+            </li>`;
+          }
+          if (itemsHtml) {
+            html += `<div>
+              <h2 class="nav-group-title">` + groupName + `</h2>
+              <ul class="nav-list">` + itemsHtml + `</ul>
+            </div>`;
+          }
+        }
+        if (normQuery && html.indexOf(`nav-match-count`) === -1) {
+          html += `<div class="info-callout">No hay coincidencias para "<strong>` + escapeHtml(APP_STATE.searchQuery) + `</strong>". Prueba con otro síntoma, diagnóstico o fármaco (ej. <em>CPK</em>, <em>naloxona</em>, <em>lorazepam</em>, <em>midriasis</em>).</div>`;
+        }
+        nav.innerHTML = html;
+      }
+
+      if (mobileSelect) {
+        let optHtml = `<option value="overview"` + (APP_STATE.activeView === `overview` ? ` selected` : ``) + `>Vista General: Triaje y Toxíndromes</option>`;
+        for (let g = 0; g < groups.length; g++) {
+          const groupName = groups[g];
+          const items = CLINICAL_SYNDROMES.filter(s => s.group === groupName);
+          optHtml += `<optgroup label="` + groupName + `">`;
+          for (let i = 0; i < items.length; i++) {
+            const syn = items[i];
+            optHtml += `<option value="` + syn.id + `"` + (APP_STATE.activeView === syn.id ? ` selected` : ``) + `>` + syn.shortTitle + `</option>`;
+          }
+          optHtml += `</optgroup>`;
+        }
+        mobileSelect.innerHTML = optHtml;
+      }
+
+      const btnOverview = document.getElementById(`btn-overview`);
+      if (btnOverview) {
+        if (APP_STATE.activeView === `overview`) {
+          btnOverview.classList.add(`btn-primary`);
+        } else {
+          btnOverview.classList.remove(`btn-primary`);
+        }
+      }
+    }
+
+    function escapeHtml(text) {
+      return String(text || ``)
+        .replace(/&/g, `&amp;`)
+        .replace(/</g, `&lt;`)
+        .replace(/>/g, `&gt;`)
+        .replace(/"/g, `&quot;`);
+    }
+
+    function renderSearchBanner() {
+      const normQuery = normalizeText(APP_STATE.searchQuery);
+      if (!normQuery) return ``;
+      const hits = [];
+      for (let i = 0; i < CLINICAL_SYNDROMES.length; i++) {
+        const syn = CLINICAL_SYNDROMES[i];
+        const m = findMatchesForSyndrome(syn, normQuery);
+        if (m.count > 0) {
+          hits.push({ syn: syn, match: m });
+        }
+      }
+      if (hits.length === 0) {
+        return `<div class="search-results-banner">
+          <strong>Sin resultados para "${escapeHtml(APP_STATE.searchQuery)}"</strong>
+          <p style="margin: var(--space-xs) 0 0 0; color: var(--on-surface-variant);">Comprueba la ortografía o limpia el filtro para ver los 15 protocolos de guardia.</p>
+        </div>`;
+      }
+      let hitCards = ``;
+      for (let i = 0; i < hits.length; i++) {
+        const h = hits[i];
+        hitCards += `<button type="button" class="search-hit-btn" onclick="selectView('${h.syn.id}', '${h.match.bestTab}')">
+          <strong style="color: var(--primary); font-family: var(--font-label);">${h.syn.shortTitle}</strong>
+          <span style="font-size: 0.82rem; color: var(--on-surface-variant);">Coincide en: ${h.match.snippets.join(` · `)}</span>
+        </button>`;
+      }
+      return `<div class="search-results-banner">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-sm);">
+          <strong>Resultados para "${escapeHtml(APP_STATE.searchQuery)}" (${hits.length} protocolos)</strong>
+          <button type="button" class="btn" style="min-height:36px; padding:4px 10px;" onclick="clearSearch()">Limpiar filtro</button>
+        </div>
+        <div class="search-hit-list">${hitCards}</div>
+      </div>`;
+    }
+
+    function renderOverview() {
+      const orgCount = APP_STATE.organicityChecked.length;
+      const spCount = APP_STATE.sadPersonsChecked.length;
+
+      let orgLevel = `low`;
+      let orgMsg = `Sin criterios de organicidad marcados (si sospecha clínica, completar constantes y glucemia).`;
+      if (orgCount >= 2) {
+        orgLevel = `high`;
+        orgMsg = `ALTA SOSPECHA DE PATOLOGÍA ORGÁNICA (` + orgCount + `/7): Priorizar descarte médico urgente, constantes, analítica, tóxicos y valorar Delirium / SNM antes de sedar con neurolépticos.`;
+      } else if (orgCount === 1) {
+        orgLevel = `medium`;
+        orgMsg = `1 indicador presente: Realizar exploración física completa, 5 constantes y glucemia capilar para descartar causa médica o tóxica.`;
+      }
+
+      let spLevel = `low`;
+      let spMsg = `Puntuación SAD PERSONS: ` + spCount + `/10 (Bajo). Evaluar siempre plan específico y red de apoyo mediante pregunta directa.`;
+      if (spCount >= 7) {
+        spLevel = `high`;
+        spMsg = `Puntuación SAD PERSONS: ` + spCount + `/10 (ALTO RIESGO). Indicación prioritaria de ingreso psiquiátrico y vigilancia continua.`;
+      } else if (spCount >= 4) {
+        spLevel = `medium`;
+        spMsg = `Puntuación SAD PERSONS: ` + spCount + `/10 (RIESGO MODERADO). Valorar ingreso según plan estructurado, soporte familiar y comorbilidad con pánico/agitación.`;
+      }
+
+      const filteredTox = TOXIDROMES.filter(t => APP_STATE.toxFilter === `all` || t.tags.indexOf(APP_STATE.toxFilter) !== -1);
+
+      let orgHtml = ``;
+      for (let i = 0; i < ORGANICITY_ITEMS.length; i++) {
+        const item = ORGANICITY_ITEMS[i];
+        const checked = APP_STATE.organicityChecked.indexOf(item.id) !== -1;
+        orgHtml += `<label class="check-item">
+          <input type="checkbox" ${checked ? `checked` : ``} onchange="toggleOrganicityItem('${item.id}')">
+          <span>${item.label}</span>
+        </label>`;
+      }
+
+      let spHtml = ``;
+      for (let i = 0; i < SAD_PERSONS_ITEMS.length; i++) {
+        const item = SAD_PERSONS_ITEMS[i];
+        const checked = APP_STATE.sadPersonsChecked.indexOf(item.id) !== -1;
+        spHtml += `<label class="check-item">
+          <input type="checkbox" ${checked ? `checked` : ``} onchange="toggleSadPersonsItem('${item.id}')">
+          <span><strong style="font-family:var(--font-mono); color:var(--primary);">${item.code}</strong> · ${item.label}</span>
+        </label>`;
+      }
+
+      let toxRows = ``;
+      for (let i = 0; i < filteredTox.length; i++) {
+        const t = filteredTox[i];
+        toxRows += `<tr>
+          <td>
+            <button type="button" class="btn" style="min-height:36px; padding:4px 10px; font-weight:700; color:var(--primary); text-align:left;" onclick="selectView('${t.linkId}')">
+              ${t.substance} →
+            </button>
+          </td>
+          <td><strong>${t.pupilas}</strong></td>
+          <td>${t.constantes}</td>
+          <td>${t.conciencia}</td>
+          <td>${t.claveClinica}</td>
+          <td>${t.manejo}</td>
+        </tr>`;
+      }
+
+      return `
+        <section class="kpi-grid" aria-label="Resumen de triaje de urgencias">
+          <div class="status-card" data-status="alert">
+            <div class="kpi-label">Emergencias de Riesgo Vital</div>
+            <div class="kpi-value">6 Protocolos</div>
+            <div class="kpi-caption">SNM, Delirium Tremens, Conducta Suicida, Delirium, Opiáceos y Estimulantes</div>
+          </div>
+          <div class="status-card" data-status="warning">
+            <div class="kpi-label">Regla de Oro en Triaje</div>
+            <div class="kpi-value">Organicidad 1.º</div>
+            <div class="kpi-caption">Descartar hipoglucemia, hipoxemia, TCE y tóxicos antes de diagnosticar psicosis</div>
+          </div>
+          <div class="status-card">
+            <div class="kpi-label">Entrevista Inicial (Carlat)</div>
+            <div class="kpi-value">5 min Libres</div>
+            <div class="kpi-caption">Periodo de exploración y alianza antes del interrogatorio dirigido</div>
+          </div>
+          <div class="status-card" data-status="ok">
+            <div class="kpi-label">Cobertura de Guardia</div>
+            <div class="kpi-value">${CLINICAL_SYNDROMES.length} Cuadros</div>
+            <div class="kpi-caption">Síndromes psiquiátricos mayores y todas las sustancias de abuso</div>
+          </div>
+        </section>
+
+        <section class="interactive-tool-card" aria-labelledby="tox-title">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--space-sm);">
+            <div>
+              <h2 class="section-heading" id="tox-title" style="margin-bottom:2px;">Matriz Rápida de Toxíndromes y Signos Físicos</h2>
+              <p style="margin:0; color:var(--on-surface-variant); font-size:0.9rem;">Filtra por signo exploratorio inmediato (pupilas, fiebre, constantes o conciencia) y salta al protocolo.</p>
+            </div>
+          </div>
+          <div class="filter-pills" role="group" aria-label="Filtrar toxíndromes por signo clínico">
+            <button type="button" class="filter-pill ${APP_STATE.toxFilter === `all` ? `active` : ``}" onclick="setToxFilter('all')">Todos (${TOXIDROMES.length})</button>
+            <button type="button" class="filter-pill ${APP_STATE.toxFilter === `miosis` ? `active` : ``}" onclick="setToxFilter('miosis')">Miosis</button>
+            <button type="button" class="filter-pill ${APP_STATE.toxFilter === `midriasis` ? `active` : ``}" onclick="setToxFilter('midriasis')">Midriasis</button>
+            <button type="button" class="filter-pill ${APP_STATE.toxFilter === `conjuntival` ? `active` : ``}" onclick="setToxFilter('conjuntival')">Ojo rojo conjuntival</button>
+            <button type="button" class="filter-pill ${APP_STATE.toxFilter === `fiebre` ? `active` : ``}" onclick="setToxFilter('fiebre')">Hipertermia / Fiebre</button>
+            <button type="button" class="filter-pill ${APP_STATE.toxFilter === `fluctuante` ? `active` : ``}" onclick="setToxFilter('fluctuante')">Conciencia fluctuante</button>
+          </div>
+          <div class="table-wrap">
+            <table class="clinical-table">
+              <thead>
+                <tr>
+                  <th>Cuadro / Sustancia</th>
+                  <th>Pupilas</th>
+                  <th>Constantes</th>
+                  <th>Conciencia</th>
+                  <th>Clave clínica</th>
+                  <th>Acción inmediata</th>
+                </tr>
+              </thead>
+              <tbody>${toxRows}</tbody>
+            </table>
+          </div>
+        </section>
+
+        <div class="two-col-grid">
+          <section class="interactive-tool-card" aria-labelledby="org-title">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-sm);">
+              <h2 class="section-heading" id="org-title" style="margin:0;">Detector de Organicidad (7 Indicadores)</h2>
+              <button type="button" class="btn" style="min-height:36px; padding:4px 10px;" onclick="resetOrganicityChecklist()">Reiniciar</button>
+            </div>
+            <p style="margin:0; color:var(--on-surface-variant); font-size:0.9rem;">Marca los indicadores presentes en urgencias (Protocolo de Urgencias Psiquiátricas):</p>
+            <div class="checklist-grid">${orgHtml}</div>
+            <div class="result-banner" data-level="${orgLevel}">
+              <strong>${orgMsg}</strong>
+              <button type="button" class="btn" style="min-height:38px;" onclick="selectView('delirium')">Ver protocolo Delirium →</button>
+            </div>
+          </section>
+
+          <section class="interactive-tool-card" aria-labelledby="sp-title">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-sm);">
+              <h2 class="section-heading" id="sp-title" style="margin:0;">Cribado de Riesgo Suicida (SAD PERSONS)</h2>
+              <button type="button" class="btn" style="min-height:36px; padding:4px 10px;" onclick="resetSadPersonsChecklist()">Reiniciar</button>
+            </div>
+            <p style="margin:0; color:var(--on-surface-variant); font-size:0.9rem;">Herramienta orientativa (Patterson et al.) complementaria a la entrevista clínica directa:</p>
+            <div class="checklist-grid">${spHtml}</div>
+            <div class="result-banner" data-level="${spLevel}">
+              <strong>${spMsg}</strong>
+              <button type="button" class="btn" style="min-height:38px;" onclick="selectView('suicidio')">Ver protocolo Suicidio →</button>
+            </div>
+          </section>
+        </div>
+
+        <details class="clinical-accordion">
+          <summary>
+            <span>Estructura obligatoria del Informe Escrito de Urgencias (Tabla 3-6) y Exploración Mínima</span>
+            <i data-lucide="chevron-down" class="accordion-chevron" aria-hidden="true"></i>
+          </summary>
+          <div class="accordion-body">
+            <div class="two-col-grid">
+              <div class="section-card">
+                <h3 class="section-heading">Partes que SIEMPRE deben constar en el informe</h3>
+                <ul class="clinical-list">
+                  <li><strong>Motivo de consulta</strong></li>
+                  <li><strong>Antecedentes personales:</strong> somáticos, tóxicos, tratamiento actual y psicopatológicos</li>
+                  <li><strong>Enfermedad actual</strong> (perfil cronológico y desencadenantes)</li>
+                  <li><strong>Exploración física y cinco constantes físicas</strong></li>
+                  <li><strong>Examen mental</strong> (aspecto, habla, ánimo/afecto, pensamiento, percepción, atención, memoria, juicio)</li>
+                  <li><strong>Juicio clínico y Tratamiento administrado</strong></li>
+                  <li><strong>Recomendaciones al alta:</strong> destino al alta y tratamientos psicofarmacológicos pautados</li>
+                </ul>
+              </div>
+              <div class="section-card">
+                <h3 class="section-heading">Examen Mental Mínimo (Psiquiatría Clínica / Urgencias)</h3>
+                <ul class="clinical-list">
+                  <li><strong>Atención:</strong> evaluar primero (sin atención suficiente no es valorable la memoria); hiperprosexia vs. distraibilidad.</li>
+                  <li><strong>Memoria:</strong> inmediata (registro), reciente (subtest 3 palabras del MEC), remota (confabulaciones).</li>
+                  <li><strong>Lenguaje y habla:</strong> mutismo, hipofonía (depresión/conversión), disartria (lesión cerebral), afasia de Wernicke vs. jergafasia, hipergrafía (manía/epilepsia), criptoescritura (esquizofrenia paranoide).</li>
+                  <li><strong>Motricidad:</strong> temblor, asterixis, parkinsonismo, distonía, discinesia tardía, acatisia, estereotipias.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </details>
+      `;
+    }
+
+    function renderSyndromeView(syn) {
+      const isReviewed = APP_STATE.reviewedIds.indexOf(syn.id) !== -1;
+      const chipStatus = syn.severity === `critical` ? `alert` : (syn.severity === `urgent` ? `warning` : `info`);
+
+      let redFlagItems = ``;
+      for (let i = 0; i < syn.redFlags.length; i++) {
+        redFlagItems += `<li>${syn.redFlags[i]}</li>`;
+      }
+
+      let tabContentHtml = ``;
+      if (APP_STATE.activeTab === `clinica`) {
+        let critHtml = ``;
+        for (let i = 0; i < syn.clinica.criterios.length; i++) {
+          critHtml += `<li>${syn.clinica.criterios[i]}</li>`;
+        }
+        let expHtml = ``;
+        for (let i = 0; i < syn.clinica.exploracion.length; i++) {
+          expHtml += `<li>${syn.clinica.exploracion[i]}</li>`;
+        }
+        let stepsHtml = ``;
+        for (let i = 0; i < syn.clinica.algoritmoSteps.length; i++) {
+          stepsHtml += `<li class="algo-step">
+            <span class="algo-num">${i + 1}</span>
+            <div>${syn.clinica.algoritmoSteps[i]}</div>
+          </li>`;
+        }
+        tabContentHtml = `
+          <div class="two-col-grid">
+            <div class="section-card white-card">
+              <h3 class="section-heading">Sintomatología Clave y Criterios Rápidos</h3>
+              <ul class="clinical-list">${critHtml}</ul>
+            </div>
+            <div class="section-card">
+              <h3 class="section-heading">Exploración Física y Pruebas en Urgencias</h3>
+              <ul class="clinical-list">${expHtml}</ul>
+            </div>
+          </div>
+          <div class="accordion-group">
+            <details class="clinical-accordion" open>
+              <summary>
+                <span>Algoritmo de Actuación Rápida · ${syn.clinica.algoritmoTitle}</span>
+                <i data-lucide="chevron-down" class="accordion-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="accordion-body">
+                <ol class="algo-steps">${stepsHtml}</ol>
+              </div>
+            </details>
+          </div>
+        `;
+      } else if (APP_STATE.activeTab === `diferencial`) {
+        let thHtml = ``;
+        for (let i = 0; i < syn.diferencial.tablaHeaders.length; i++) {
+          thHtml += `<th>${syn.diferencial.tablaHeaders[i]}</th>`;
+        }
+        let trHtml = ``;
+        for (let r = 0; r < syn.diferencial.tablaRows.length; r++) {
+          const row = syn.diferencial.tablaRows[r];
+          trHtml += `<tr>`;
+          for (let c = 0; c < row.length; c++) {
+            trHtml += `<td>${c === 0 ? `<strong>` + row[c] + `</strong>` : row[c]}</td>`;
+          }
+          trHtml += `</tr>`;
+        }
+        let otrosHtml = ``;
+        for (let i = 0; i < syn.diferencial.otrosDiferenciales.length; i++) {
+          otrosHtml += `<li>${syn.diferencial.otrosDiferenciales[i]}</li>`;
+        }
+        tabContentHtml = `
+          <div class="info-callout">
+            <strong>Prioridad Orgánica / Médica:</strong> ${syn.diferencial.intro}
+          </div>
+          <div class="table-wrap">
+            <table class="clinical-table">
+              <thead><tr>${thHtml}</tr></thead>
+              <tbody>${trHtml}</tbody>
+            </table>
+          </div>
+          ${otrosHtml ? `<div class="section-card"><h3 class="section-heading">Otros Diagnósticos Diferenciales a Considerar</h3><ul class="clinical-list">${otrosHtml}</ul></div>` : ``}
+        `;
+      } else if (APP_STATE.activeTab === `tratamiento`) {
+        let ambHtml = ``;
+        for (let i = 0; i < syn.tratamiento.ambiental.length; i++) {
+          ambHtml += `<li>${syn.tratamiento.ambiental[i]}</li>`;
+        }
+        let doseRows = ``;
+        for (let i = 0; i < syn.tratamiento.dosisTabla.length; i++) {
+          const d = syn.tratamiento.dosisTabla[i];
+          doseRows += `<tr>
+            <td><strong>${d.farmaco}</strong></td>
+            <td><span class="mono-dose">${d.dosis}</span></td>
+            <td><span class="mono-dose">${d.via}</span></td>
+            <td>${d.precauciones}</td>
+          </tr>`;
+        }
+        let avoidHtml = ``;
+        for (let i = 0; i < syn.tratamiento.evitar.length; i++) {
+          avoidHtml += `<li>${syn.tratamiento.evitar[i]}</li>`;
+        }
+        tabContentHtml = `
+          <div class="section-card white-card">
+            <h3 class="section-heading">Medidas Ambientales, Contención Verbal y Física</h3>
+            <ul class="clinical-list">${ambHtml}</ul>
+          </div>
+          <div class="accordion-group">
+            <details class="clinical-accordion" open>
+              <summary>
+                <span>Tabla de Dosificación Farmacológica en Urgencias</span>
+                <i data-lucide="chevron-down" class="accordion-chevron" aria-hidden="true"></i>
+              </summary>
+              <div class="accordion-body">
+                <p style="margin:0 0 var(--space-md) 0; color:var(--on-surface-variant);">${syn.tratamiento.farmacoIntro}</p>
+                <div class="table-wrap">
+                  <table class="clinical-table">
+                    <thead>
+                      <tr>
+                        <th>Fármaco / Intervención</th>
+                        <th>Dosis</th>
+                        <th>Vía</th>
+                        <th>Precauciones y Notas Clínicas</th>
+                      </tr>
+                    </thead>
+                    <tbody>${doseRows}</tbody>
+                  </table>
+                </div>
+              </div>
+            </details>
+          </div>
+          <div class="warning-callout">
+            <strong>Errores críticos y contraindicaciones a evitar:</strong>
+            <ul class="clinical-list" style="margin-top:var(--space-xs);">${avoidHtml}</ul>
+          </div>
+        `;
+      } else if (APP_STATE.activeTab === `ingreso`) {
+        let admitHtml = ``;
+        for (let i = 0; i < syn.ingreso.ingresar.length; i++) {
+          admitHtml += `<li>${syn.ingreso.ingresar[i]}</li>`;
+        }
+        let disHtml = ``;
+        for (let i = 0; i < syn.ingreso.alta.length; i++) {
+          disHtml += `<li>${syn.ingreso.alta[i]}</li>`;
+        }
+        tabContentHtml = `
+          <div class="disposition-grid">
+            <div class="disposition-card admit">
+              <h3 class="section-heading" style="color:var(--error);">Criterios de Ingreso Hospitalario</h3>
+              <ul class="clinical-list">${admitHtml}</ul>
+            </div>
+            <div class="disposition-card discharge">
+              <h3 class="section-heading" style="color:var(--tertiary);">Alta con Seguimiento Ambulatorio</h3>
+              <ul class="clinical-list">${disHtml}</ul>
+            </div>
+          </div>
+          <div class="info-callout">
+            <strong>Plan al alta y seguimiento recomendado:</strong> ${syn.ingreso.seguimiento}
+          </div>
+        `;
+      }
+
+      return `
+        <article class="syndrome-hero" data-severity="${syn.severity}">
+          <div class="hero-top-row">
+            <div class="chip-row">
+              <span class="chip" data-status="${chipStatus}">${syn.severityLabel}</span>
+              <span class="chip">${syn.categoryTag}</span>
+            </div>
+            <button type="button" class="btn" onclick="toggleReviewed('${syn.id}')" aria-pressed="${isReviewed}">
+              <i data-lucide="${isReviewed ? `check-circle-2` : `bookmark`}" aria-hidden="true"></i>
+              <span>${isReviewed ? `Revisado en guardia` : `Marcar revisado`}</span>
+            </button>
+          </div>
+          <div>
+            <h2 class="syndrome-title">${syn.title}</h2>
+            <p class="syndrome-lede">${syn.lede}</p>
+          </div>
+        </article>
+
+        <section class="red-flags-panel" aria-label="Triaje y banderas rojas">
+          <div class="red-flags-header">
+            <i data-lucide="alert-triangle" aria-hidden="true"></i>
+            <span>1. Triaje y Banderas Rojas (Prioridad Inmediata)</span>
+          </div>
+          <ul class="red-flags-list">${redFlagItems}</ul>
+        </section>
+
+        <section class="tabs-container" aria-label="Protocolo clínico por pestañas">
+          <div class="tab-list" role="tablist">
+            <button type="button" role="tab" class="tab-btn" aria-selected="${APP_STATE.activeTab === `clinica`}" onclick="selectTab('clinica')">
+              Clínica y Diagnóstico
+            </button>
+            <button type="button" role="tab" class="tab-btn" aria-selected="${APP_STATE.activeTab === `diferencial`}" onclick="selectTab('diferencial')">
+              Diagnóstico Diferencial
+            </button>
+            <button type="button" role="tab" class="tab-btn" aria-selected="${APP_STATE.activeTab === `tratamiento`}" onclick="selectTab('tratamiento')">
+              Tratamiento y Dosis
+            </button>
+            <button type="button" role="tab" class="tab-btn" aria-selected="${APP_STATE.activeTab === `ingreso`}" onclick="selectTab('ingreso')">
+              Criterios de Ingreso
+            </button>
+          </div>
+          <div class="tab-panel" role="tabpanel">
+            ${tabContentHtml}
+          </div>
+        </section>
+      `;
+    }
+
+    function renderMain() {
+      const main = document.getElementById(`main-content`);
+      if (!main) return;
+
+      let content = renderSearchBanner();
+      if (APP_STATE.activeView === `overview`) {
+        content += renderOverview();
+      } else {
+        let found = null;
+        for (let i = 0; i < CLINICAL_SYNDROMES.length; i++) {
+          if (CLINICAL_SYNDROMES[i].id === APP_STATE.activeView) {
+            found = CLINICAL_SYNDROMES[i];
+            break;
+          }
+        }
+        content += found ? renderSyndromeView(found) : renderOverview();
+      }
+      main.innerHTML = content;
+
+      if (typeof window.lucide !== `undefined` && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+    }
+
+    function renderAll() {
+      applyTheme();
+      renderSidebar();
+      renderMain();
+      updateReviewedCounter();
+    }
+
+    // =========================================================================
+    // STARTUP & SHIM INITIALIZATION
+    // =========================================================================
+    async function initApp() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === `object`) {
+            if (typeof saved.darkMode === `boolean`) APP_STATE.darkMode = saved.darkMode;
+            if (typeof saved.activeView === `string`) APP_STATE.activeView = saved.activeView;
+            if (typeof saved.activeTab === `string`) APP_STATE.activeTab = saved.activeTab;
+            if (typeof saved.toxFilter === `string`) APP_STATE.toxFilter = saved.toxFilter;
+            if (Array.isArray(saved.reviewedIds)) APP_STATE.reviewedIds = saved.reviewedIds;
+            if (Array.isArray(saved.organicityChecked)) APP_STATE.organicityChecked = saved.organicityChecked;
+            if (Array.isArray(saved.sadPersonsChecked)) APP_STATE.sadPersonsChecked = saved.sadPersonsChecked;
+          }
+        }
+      } catch (e) {
+        // Fallback silently if shim unavailable
+      }
+
+      renderAll();
+
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+          window.notebookAppApi.notifyAppReady();
+        }
+      } catch (e) {
+        // Safe fallback
+      }
+    }
+
+    document.addEventListener(`DOMContentLoaded`, function() {
+      initApp();
+    });
+  </script>
+</body>
+</html>

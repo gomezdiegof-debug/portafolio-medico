@@ -1,0 +1,2357 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="vitals">
+  <title>Guía Clínica Integral de Urgencias en Neumología</title>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@300..900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Vitals palette */
+      --background: #ffffff;
+      --surface-container-low: #f1f7f8;
+      --surface-container: #e3f1f3;
+      --surface-container-high: #d5e9ec;
+
+      --on-surface: #1b2b33;
+      --on-surface-variant: #46585f;
+
+      --outline: #7b9198;
+      --outline-variant: #d5e3e5;
+
+      --primary: #0f7c8a;
+      --on-primary: #ffffff;
+      --primary-container: #e3f1f3;
+      --on-primary-container: #0a5560;
+      --secondary: #1d5e3a;
+      --tertiary: #2e7d4f;
+      --error: #b3261e;
+      --on-error: #ffffff;
+
+      --data-1: #0f7c8a;
+      --data-2: #2e7d4f;
+      --data-3: #b86e00;
+      --data-4: #5c5fb0;
+      --data-context: #b8c7ca;
+
+      --font-headline: 'Figtree', sans-serif;
+      --font-body: 'Atkinson Hyperlegible', sans-serif;
+      --font-label: 'Figtree', sans-serif;
+
+      --rounded: 0.625rem;
+      --rounded-lg: 0.875rem;
+      --rounded-full: 9999px;
+
+      --top-bar: 6px solid var(--primary);
+      --status-bar-width: 4px;
+      --card-border: 1px solid var(--outline-variant);
+      --card-lift: 0 1px 2px rgb(27 43 51 / 0.05), 0 6px 16px rgb(27 43 51 / 0.05);
+
+      /* Shared semantic & foundation tokens */
+      --positive: var(--tertiary);
+      --warning: var(--data-3);
+      --focus: var(--primary);
+
+      /* Type scale (Dashboard / Tool) */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+
+    .page-shell {
+      border-top: var(--top-bar);
+      min-height: 100vh;
+    }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1360px;
+      margin: 0 auto;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Focus visibility */
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Header */
+    .masthead {
+      background: var(--background);
+      border-bottom: var(--card-border);
+      padding: var(--space-lg) var(--space-lg);
+    }
+    .masthead-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: end;
+    }
+    .kicker {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-xs);
+    }
+    .title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--display-size);
+      letter-spacing: -0.015em;
+      line-height: 1.08;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .lede {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--on-surface-variant);
+      max-width: 65ch;
+      margin: var(--space-sm) 0 0 0;
+    }
+
+    /* Search & Quick Telemetry */
+    .masthead-controls {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+    input[type="text"], input[type="search"], input[type="number"], select {
+      font-family: inherit;
+      font-size: var(--body-size);
+      color: var(--on-surface);
+      background: var(--background);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      padding: 0.625rem 0.875rem;
+      min-height: 44px;
+      width: 100%;
+      transition: border-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+    select { padding-right: 2.25rem; }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+      outline: none;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      position: sticky;
+      top: var(--space-md);
+      align-self: start;
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .nav-btn {
+      width: 100%;
+      text-align: left;
+      background: transparent;
+      border: 0;
+      border-left: 3px solid transparent;
+      border-radius: 0 var(--rounded) var(--rounded) 0;
+      padding: 0.55rem 0.75rem;
+      min-height: 44px;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .nav-btn:hover {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+    .nav-btn.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-left-color: var(--primary);
+    }
+    .nav-divider {
+      height: 1px;
+      background: var(--outline-variant);
+      margin: var(--space-xs) 0;
+    }
+    .progress-summary {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+    }
+    .progress-num {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: var(--on-surface);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Main Column */
+    .main-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+    }
+
+    /* Top KPI Strip */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .status-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .status-card[data-status="ok"] { border-left-color: var(--tertiary); }
+    .status-card[data-status="alert"] { border-left-color: var(--error); }
+    .status-card[data-status="warn"] { border-left-color: var(--data-3); }
+
+    .kpi-value {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.55rem;
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+      margin: var(--space-xs) 0;
+    }
+    .kpi-caption {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+    .kpi-caption[data-status="ok"] { color: var(--secondary); font-weight: 700; }
+    .kpi-caption[data-status="alert"] { color: var(--error); font-weight: 700; }
+
+    /* Section */
+    .guide-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      scroll-margin-top: var(--space-md);
+    }
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-sm);
+    }
+    .section-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--headline-size);
+      letter-spacing: -0.015em;
+      line-height: 1.15;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .section-sub {
+      color: var(--on-surface-variant);
+      margin: var(--space-xs) 0 0 0;
+      max-width: 65ch;
+      font-size: 0.95rem;
+    }
+
+    /* Panels & Cards */
+    .panel {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+    }
+    .callout {
+      background: var(--primary-container);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      color: var(--on-primary-container);
+    }
+    .callout[data-status="alert"] {
+      background: color-mix(in srgb, var(--error) 8%, var(--background));
+      border-left-color: var(--error);
+      color: var(--on-surface);
+    }
+    .callout[data-status="ok"] {
+      background: color-mix(in srgb, var(--tertiary) 10%, var(--background));
+      border-left-color: var(--tertiary);
+      color: var(--on-surface);
+    }
+    .callout-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      margin: 0 0 var(--space-xs) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    /* Chips & Buttons */
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+    .chip {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded-full);
+      background: color-mix(in srgb, var(--tertiary) 14%, var(--background));
+      color: var(--secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+    .chip[data-status="info"] { background: var(--primary-container); color: var(--on-primary-container); }
+    .chip[data-status="alert"] { background: color-mix(in srgb, var(--error) 10%, var(--background)); color: var(--error); }
+    .chip[data-status="neutral"] { background: var(--surface-container-low); color: var(--on-surface-variant); }
+
+    .btn {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: var(--rounded);
+      padding: 0.55rem 1rem;
+      min-height: 44px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      border: 1px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      background: var(--on-primary-container);
+    }
+    .btn-secondary {
+      background: var(--background);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .btn-secondary:hover, .btn-secondary.active {
+      background: var(--surface-container);
+    }
+    .btn-ghost {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border-color: var(--outline-variant);
+    }
+    .btn-ghost:hover, .btn-ghost.active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--primary);
+    }
+    .btn:active { transform: translateY(1px); }
+
+    /* Grids & Container Queries */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .two-col-asym {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+    }
+    .card-wrapper { container-type: inline-size; }
+    .card-inner {
+      display: grid;
+      gap: var(--space-md);
+    }
+    @container (min-width: 520px) {
+      .card-inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    }
+    @container (max-width: 519px) {
+      .card-inner { grid-template-columns: 1fr; }
+    }
+
+    /* Checklist ABCDE */
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      cursor: pointer;
+    }
+    .check-item:last-child { border-bottom: 0; }
+    .check-item input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+    }
+    thead th {
+      background: var(--surface-container-low);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+    .num { font-variant-numeric: tabular-nums; font-weight: 700; }
+
+    /* Pathology Accordion / Dossier */
+    .pathology-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      overflow: hidden;
+    }
+    .pathology-card[data-cat="infecciosa"] { border-left-color: var(--data-4); }
+    .pathology-card[data-cat="critica"] { border-left-color: var(--error); }
+    .pathology-card[data-cat="pleura"] { border-left-color: var(--tertiary); }
+    .pathology-card[data-cat="especial"] { border-left-color: var(--data-3); }
+    .pathology-card[data-cat="transparencia"] { border-left-color: var(--outline); }
+
+    .pathology-head {
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-md);
+      cursor: pointer;
+      background: var(--background);
+      border: 0;
+      width: 100%;
+      text-align: left;
+      font-family: inherit;
+    }
+    .pathology-head:hover { background: var(--surface-container-low); }
+    .pathology-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .pathology-summary {
+      color: var(--on-surface-variant);
+      font-size: 0.92rem;
+      margin: 2px 0 0 0;
+    }
+    .pathology-body {
+      padding: 0 var(--space-lg) var(--space-lg) var(--space-lg);
+      border-top: 1px solid var(--outline-variant);
+      display: none;
+    }
+    .pathology-body.open { display: block; }
+
+    .dossier-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+    .dossier-block {
+      background: var(--surface-container-low);
+      border-radius: var(--rounded);
+      padding: var(--space-md);
+    }
+    .dossier-block h4 {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--on-surface);
+      margin: 0 0 var(--space-xs) 0;
+    }
+    .dossier-block p, .dossier-block ul {
+      margin: 0;
+      font-size: 0.91rem;
+      color: var(--on-surface);
+    }
+    .dossier-block ul { padding-left: 1.15rem; }
+    .dossier-block li + li { margin-top: 0.25rem; }
+
+    /* Interactive Tabs (within component only) */
+    .subtab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+    .subtab-btn {
+      background: transparent;
+      border: 0;
+      border-bottom: 3px solid transparent;
+      padding: 0.5rem 0.75rem;
+      min-height: 44px;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--on-surface-variant);
+      cursor: pointer;
+    }
+    .subtab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Form rows */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+      gap: var(--space-md);
+      align-items: end;
+    }
+
+    /* SVG containers */
+    .svg-box {
+      width: 100%;
+      min-height: 220px;
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+    }
+    .svg-box svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Flashcards & Cases */
+    .flashcard {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      min-height: 210px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+    .quiz-option {
+      width: 100%;
+      text-align: left;
+      background: var(--background);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      padding: 0.75rem 1rem;
+      min-height: 44px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.95rem;
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+    .quiz-option:hover { background: var(--surface-container-low); border-color: var(--primary); }
+    .quiz-option.selected-ok {
+      background: color-mix(in srgb, var(--tertiary) 12%, var(--background));
+      border-color: var(--tertiary);
+      font-weight: 700;
+    }
+    .quiz-option.selected-err {
+      background: color-mix(in srgb, var(--error) 10%, var(--background));
+      border-color: var(--error);
+    }
+
+    .mobile-nav-bar { display: none; }
+
+    @media (max-width: 960px) {
+      .masthead-inner, .two-col-asym { grid-template-columns: 1fr; }
+      .page-grid { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .mobile-nav-bar {
+        display: flex;
+        gap: var(--space-sm);
+        overflow-x: auto;
+        padding: var(--space-sm) var(--space-md);
+        background: var(--background);
+        border-bottom: var(--card-border);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid { padding: var(--space-md); gap: var(--space-lg); }
+      .masthead { padding: var(--space-md); }
+      .panel, .pathology-head, .pathology-body { padding-left: var(--space-md); padding-right: var(--space-md); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  
+    .portfolio-back-bar {
+      width: 100%;
+      flex: 0 0 100%;
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .portfolio-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      color: var(--on-primary-container);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .portfolio-back-link:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .portfolio-author-tag {
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+  </style>
+</head>
+<body>
+<div class="page-shell">
+  <header class="masthead">
+    <div class="masthead-inner">
+        <div class="portfolio-back-bar">
+          <a class="portfolio-back-link" href="index.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Volver al Portafolio
+          </a>
+          <span class="portfolio-author-tag">DIEGO GOMEZ | Médico de Familia &amp; SST</span>
+        </div>
+      <div>
+        <div class="kicker">Referencia Clínica · Neumología y Medicina de Urgencias</div>
+        <h1 class="title">Guía Clínica Integral de Urgencias en Neumología</h1>
+        <p class="lede">Protocolos de evaluación inicial, algoritmos terapéuticos, gasometría, oxigenoterapia/VMNI y vademécum de urgencias fundamentados exclusivamente en los manuales y normativas de las fuentes del cuaderno (SEPAR, GesEPOC, GOLD, Harrison 22.ª ed. y Fisiología de la Respiración).</p>
+      </div>
+      <div class="masthead-controls">
+        <div class="field-group">
+          <label class="field-label" for="global-search">Buscador clínico rápido (patología, fármaco, escala o signo)</label>
+          <input type="search" id="global-search" placeholder="Ej.: CURB65, carbonarcosis, ceftriaxona, PaCO2, Pneumocystis…" oninput="handleGlobalSearch(this.value)">
+        </div>
+        <div class="chip-row" aria-live="polite">
+          <span class="chip" data-status="info" id="search-status-chip">Mostrando todo el contenido verificado</span>
+          <button type="button" class="btn btn-ghost" onclick="resetSearch()">Limpiar filtro</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <nav class="mobile-nav-bar" aria-label="Navegación rápida móvil">
+    <button type="button" class="btn btn-ghost" onclick="jumpTo('sec-evaluacion')">ABCDE y Criterios</button>
+    <button type="button" class="btn btn-ghost" onclick="jumpTo('sec-patologias')">Patologías</button>
+    <button type="button" class="btn btn-ghost" onclick="jumpTo('sec-algoritmos')">Algoritmos</button>
+    <button type="button" class="btn btn-ghost" onclick="jumpTo('sec-gasometria')">Gasometría y Rx</button>
+    <button type="button" class="btn btn-ghost" onclick="jumpTo('sec-calculadoras')">Calculadoras</button>
+    <button type="button" class="btn btn-ghost" onclick="jumpTo('sec-oxigeno')">O2 y VMNI</button>
+    <button type="button" class="btn btn-ghost" onclick="jumpTo('sec-vademecum')">Vademécum</button>
+    <button type="button" class="btn btn-ghost" onclick="jumpTo('sec-practica')">Casos y Test</button>
+  </nav>
+
+  <div class="page-grid">
+    <aside class="sidebar" aria-label="Índice clínico lateral">
+      <div class="kicker">Navegación clínica</div>
+      <ul class="nav-list">
+        <li><button type="button" class="nav-btn active" data-target="sec-evaluacion" onclick="jumpTo('sec-evaluacion', this)"><i data-lucide="activity" aria-hidden="true"></i> Evaluación ABCDE y UCI</button></li>
+        <li><button type="button" class="nav-btn" data-target="sec-patologias" onclick="jumpTo('sec-patologias', this)"><i data-lucide="stethoscope" aria-hidden="true"></i> Patologías y Dossiers</button></li>
+        <li><button type="button" class="nav-btn" data-target="sec-algoritmos" onclick="jumpTo('sec-algoritmos', this)"><i data-lucide="git-branch" aria-hidden="true"></i> Algoritmos de Decisión</button></li>
+        <li><button type="button" class="nav-btn" data-target="sec-gasometria" onclick="jumpTo('sec-gasometria', this)"><i data-lucide="gauge" aria-hidden="true"></i> Gasometría, Rx y VM</button></li>
+        <li><button type="button" class="nav-btn" data-target="sec-calculadoras" onclick="jumpTo('sec-calculadoras', this)"><i data-lucide="calculator" aria-hidden="true"></i> Calculadoras Clínicas</button></li>
+        <li><button type="button" class="nav-btn" data-target="sec-oxigeno" onclick="jumpTo('sec-oxigeno', this)"><i data-lucide="wind" aria-hidden="true"></i> Oxigenoterapia y VMNI</button></li>
+        <li><button type="button" class="nav-btn" data-target="sec-vademecum" onclick="jumpTo('sec-vademecum', this)"><i data-lucide="pill" aria-hidden="true"></i> Vademécum Filtrable</button></li>
+        <li><button type="button" class="nav-btn" data-target="sec-comparativas" onclick="jumpTo('sec-comparativas', this)"><i data-lucide="table" aria-hidden="true"></i> Tablas Comparativas</button></li>
+        <li><button type="button" class="nav-btn" data-target="sec-practica" onclick="jumpTo('sec-practica', this)"><i data-lucide="graduation-cap" aria-hidden="true"></i> Casos, Test y Flashcards</button></li>
+      </ul>
+      <div class="nav-divider"></div>
+      <div class="progress-summary">
+        <div class="kicker">Progreso de estudio</div>
+        <div class="progress-num" id="sidebar-progress">0%</div>
+        <div id="sidebar-progress-detail">0/5 casos · 0/10 test · 0/12 tarjetas</div>
+      </div>
+      <button type="button" class="btn btn-ghost" id="btn-reset-progress" onclick="handleResetProgress(this)">Reiniciar progreso</button>
+    </aside>
+
+    <main class="main-col">
+      <!-- KPI OVERVIEW -->
+      <section aria-label="Resumen de umbrales críticos">
+        <div class="kpi-grid">
+          <div class="status-card" data-status="ok">
+            <div class="kicker">Objetivo SpO2 en EPOC</div>
+            <div class="kpi-value">88–92%</div>
+            <p class="kpi-caption" data-status="ok">Guía GOLD · Gasometría a los 30–60 min</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <div class="kicker">Criterio UCI Acidosis (EPOC)</div>
+            <div class="kpi-value">pH &lt; 7,30</div>
+            <p class="kpi-caption" data-status="alert">pH &lt; 7,25 pese a VMNI · PaO2 &lt; 40 mmHg</p>
+          </div>
+          <div class="status-card" data-status="warn">
+            <div class="kicker">Alerta en Crisis Asmática</div>
+            <div class="kpi-value">PaCO2 normal</div>
+            <p class="kpi-caption">Indica agotamiento y fallo ventilatorio inminente</p>
+          </div>
+          <div class="status-card" data-status="info">
+            <div class="kicker">Umbral Falla Aguda (Demling)</div>
+            <div class="kpi-value">FR &gt; 35 rpm</div>
+            <p class="kpi-caption">PaCO2 &gt; 55 mmHg · A-aDO2 &gt; 450 mmHg</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 1: EVALUACIÓN INICIAL ABCDE Y CRITERIOS DE INGRESO -->
+      <section id="sec-evaluacion" class="guide-section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">1. Evaluación Inicial ABCDE, Escalas y Criterios de Ingreso / UCI</h2>
+            <p class="section-sub">Valoración estructurada en urgencias respiratorias según SEPAR, GesEPOC, Harrison y Demling.</p>
+          </div>
+          <div class="chip-row">
+            <span class="chip" id="abcde-counter">0/6 pasos verificados</span>
+          </div>
+        </div>
+
+        <div class="two-col-asym">
+          <div class="panel">
+            <h3 style="margin-top:0;font-family:var(--font-headline);font-weight:700;">Lista de verificación rápida ABCDE</h3>
+            <div id="abcde-list">
+              <label class="check-item">
+                <input type="checkbox" data-abcde="A" onchange="toggleAbcde(this)">
+                <div><strong>A — Vía aérea y secreciones:</strong> Verificar permeabilidad, riesgo de broncoaspiración en pacientes semicomatosos/postanestésicos, secreciones purulentas o tapones mucosos y necesidad de intubación o aspiración subglótica.</div>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" data-abcde="B1" onchange="toggleAbcde(this)">
+                <div><strong>B — Mecánica ventilatoria:</strong> Frecuencia respiratoria (alerta si ≥30 rpm en CURB-65 o &gt;35 rpm en Demling), uso de musculatura accesoria, postura en trípode, fase espiratoria prolongada o taquipnea persistente 4–6 h.</div>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" data-abcde="B2" onchange="toggleAbcde(this)">
+                <div><strong>B — Oxigenación y ventilación:</strong> Pulsioximetría (SpO2 &lt;90% criterio hospitalario en EPOC), cianosis de nueva aparición, PEFR o FEV1 en asma (objetivo &gt;60% del predicho) y gasometría arterial basal o a los 30–60 min tras O2.</div>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" data-abcde="C" onchange="toggleAbcde(this)">
+                <div><strong>C — Circulación y hemodinámica:</strong> Presión arterial (PAS &lt;90 o PAD ≤60 mmHg en CURB-65), inestabilidad hemodinámica, edemas periféricos de nueva aparición, ECG para descartar arritmias o cardiopatía isquémica.</div>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" data-abcde="D" onchange="toggleAbcde(this)">
+                <div><strong>D — Nivel de consciencia (Estado neurológico):</strong> Confusión, letargia, coma o cambios conductuales/aprehensión (signo precoz de SDRA o hipoxemia/carbonarcosis; criterio directo de UCI y de puntuación en CURB-65).</div>
+              </label>
+              <label class="check-item">
+                <input type="checkbox" data-abcde="E" onchange="toggleAbcde(this)">
+                <div><strong>E — Exposición, comorbilidades y foco:</strong> Fiebre &gt;38 °C o hipotermia, aspecto del esputo (Anthonisen), comorbilidad grave (diabetes, cardiopatía, hepatopatía, insuficiencia renal, inmunodepresión), soporte domiciliario y Rx de tórax.</div>
+              </label>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:var(--space-md);">
+            <div class="callout" data-status="alert">
+              <h3 class="callout-title"><i data-lucide="alert-triangle" aria-hidden="true"></i> Criterios de Ingreso en UCI (SEPAR / GesEPOC)</h3>
+              <ul style="margin:0;padding-left:1.2rem;font-size:0.92rem;">
+                <li>Parada respiratoria o necesidad de ventilación mecánica invasiva.</li>
+                <li>Alteración del nivel de conciencia (confusión, letargia, coma).</li>
+                <li>Inestabilidad hemodinámica.</li>
+                <li>Acidosis respiratoria grave (<strong>pH &lt; 7,30</strong>) o <strong>pH &lt; 7,25</strong> / hipercapnia pese a VMNI.</li>
+                <li>Hipoxemia grave pese a tratamiento (<strong>PaO2 &lt; 40 mmHg</strong>) o disnea grave refractaria al tratamiento inicial.</li>
+              </ul>
+            </div>
+
+            <div class="panel">
+              <h3 style="margin-top:0;font-family:var(--font-headline);font-weight:700;">Indicaciones de Derivación Hospitalaria (Tabla 5 SEPAR)</h3>
+              <ul style="margin:0;padding-left:1.2rem;font-size:0.9rem;color:var(--on-surface-variant);">
+                <li>Disnea 3–4 mMRC, cianosis o edemas periféricos de nueva aparición, musculatura accesoria, SpO2 &lt;90% o PaO2 &lt;60 mmHg.</li>
+                <li>Comorbilidad significativa grave (cardiopatía isquémica reciente, IRC, hepatopatía moderada-grave) o complicaciones (arritmias, IC).</li>
+                <li>Fracaso terapéutico en agudización moderada o EPOC grave/muy grave con ≥2 agudizaciones/año previo.</li>
+                <li>Descartar diagnósticos alternativos (neumonía, neumotórax, IC, embolia pulmonar), apoyo domiciliario insuficiente o deterioro general.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2: PATOLOGÍAS -->
+      <section id="sec-patologias" class="guide-section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">2. Fichas Clínicas por Patología</h2>
+            <p class="section-sub">Despliega cualquier entidad para revisar definición, fisiopatología, diagnóstico, tratamiento con dosis verificadas, complicaciones y perlas clínicas.</p>
+          </div>
+          <div class="chip-row" id="cat-filters" role="group" aria-label="Filtrar patologías por categoría">
+            <button type="button" class="btn btn-ghost active" data-cat="all" onclick="setPathologyFilter('all', this)">Todas</button>
+            <button type="button" class="btn btn-ghost" data-cat="obstructiva" onclick="setPathologyFilter('obstructiva', this)">Obstructivas</button>
+            <button type="button" class="btn btn-ghost" data-cat="infecciosa" onclick="setPathologyFilter('infecciosa', this)">Infecciosas</button>
+            <button type="button" class="btn btn-ghost" data-cat="critica" onclick="setPathologyFilter('critica', this)">IRA y SDRA</button>
+            <button type="button" class="btn btn-ghost" data-cat="pleura" onclick="setPathologyFilter('pleura', this)">Pleura</button>
+            <button type="button" class="btn btn-ghost" data-cat="especial" onclick="setPathologyFilter('especial', this)">Poblaciones Especiales</button>
+            <button type="button" class="btn btn-ghost" data-cat="transparencia" onclick="setPathologyFilter('transparencia', this)">Alcance de Fuentes</button>
+          </div>
+        </div>
+
+        <div id="pathologies-container" style="display:flex;flex-direction:column;gap:var(--space-md);"></div>
+      </section>
+
+      <!-- SECCIÓN 3: ALGORITMOS INTERACTIVOS Y FLUJOGRAMAS -->
+      <section id="sec-algoritmos" class="guide-section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">3. Algoritmos Interactivos de Decisión y Flujogramas</h2>
+            <p class="section-sub">Simula la toma de decisiones clínicas según criterios SEPAR, GesEPOC y Harrison.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="subtab-bar" role="tablist">
+            <button type="button" class="subtab-btn active" onclick="switchAlgo('epoc', this)">Algoritmo E-EPOC</button>
+            <button type="button" class="subtab-btn" onclick="switchAlgo('asma', this)">Algoritmo Crisis Asmática</button>
+            <button type="button" class="subtab-btn" onclick="switchAlgo('nac', this)">Empírico NAC / NN-NAV</button>
+          </div>
+
+          <div id="algo-epoc" class="algo-pane">
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label" for="epoc-gravedad">Gravedad / Criterios clínicos</label>
+                <select id="epoc-gravedad" onchange="updateEpocAlgo()">
+                  <option value="leve">Leve (sin criterios Tabla 5, manejo inicial)</option>
+                  <option value="moderada">Moderada (sin gravedad vital, valorar corticoides)</option>
+                  <option value="grave">Grave (SpO2 &lt;90%, mMRC 3–4, comorbilidad o fracaso)</option>
+                  <option value="uci">Muy grave (pH &lt;7,30, coma/letargia, PaO2 &lt;40)</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="epoc-esputo">Esputo / Criterios Anthonisen</label>
+                <select id="epoc-esputo" onchange="updateEpocAlgo()">
+                  <option value="purulento">Esputo purulento (sospecha infección bacteriana)</option>
+                  <option value="mucoso">Sin purulencia ni sospecha infecciosa clara</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="epoc-pseudo">Riesgo de Pseudomonas aeruginosa</label>
+                <select id="epoc-pseudo" onchange="updateEpocAlgo()">
+                  <option value="no">Sin factores de riesgo de Pseudomonas</option>
+                  <option value="si">Con riesgo de Pseudomonas</option>
+                </select>
+              </div>
+            </div>
+            <div id="epoc-algo-output" class="callout" style="margin-top:var(--space-md);"></div>
+          </div>
+
+          <div id="algo-asma" class="algo-pane" style="display:none;">
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label" for="asma-pefr">Respuesta a β2-agonista nebulizado (cada 20 min)</label>
+                <select id="asma-pefr" onchange="updateAsmaAlgo()">
+                  <option value="pefr60">PEFR &gt; 60% del predicho con buena respuesta en 1–2 h</option>
+                  <option value="noresp">Sin respuesta en 1–2 h o PEFR ≤ 60% / taquipnea 4–6 h</option>
+                  <option value="paco2">Distrés grave con PaCO2 normal o casi normal</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="asma-inf">¿Signos de infección?</label>
+                <select id="asma-inf" onchange="updateAsmaAlgo()">
+                  <option value="no">No hay signos de infección</option>
+                  <option value="si">Sí hay signos clínicos de infección</option>
+                </select>
+              </div>
+            </div>
+            <div id="asma-algo-output" class="callout" style="margin-top:var(--space-md);"></div>
+          </div>
+
+          <div id="algo-nac" class="algo-pane" style="display:none;">
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label" for="nac-ambito">Entidad y ámbito asistencial</label>
+                <select id="nac-ambito" onchange="updateNacAlgo()">
+                  <option value="nac-amb">NAC — Tratamiento ambulatorio</option>
+                  <option value="nac-sala">NAC — Ingreso en sala de hospitalización</option>
+                  <option value="nac-uci">NAC — Ingreso en UCI</option>
+                  <option value="nac-asp">NAC — Sospecha de aspiración</option>
+                  <option value="nac-pseudo">NAC — Sospecha de P. aeruginosa</option>
+                  <option value="nn-precoz">NN — Precoz (&lt;5º día) sin factores de riesgo GMR</option>
+                  <option value="nn-tardia">NN / NAV — Tardía (≥5º día), riesgo GMR o gravedad máxima</option>
+                </select>
+              </div>
+            </div>
+            <div id="nac-algo-output" class="callout" style="margin-top:var(--space-md);"></div>
+          </div>
+
+          <!-- Flujograma SVG de Urgencias Respiratorias -->
+          <div class="svg-box" style="margin-top:var(--space-lg);">
+            <div class="kicker" style="margin-bottom:var(--space-sm);">Flujograma integrado de decisión clínica (SEPAR / Harrison / Fisiología)</div>
+            <svg viewBox="0 0 920 265" role="img" aria-label="Flujograma diagnóstico y terapéutico de urgencias respiratorias">
+              <rect x="10" y="20" width="185" height="68" rx="10" fill="var(--primary-container)" stroke="var(--primary)" stroke-width="2"/>
+              <text x="102" y="45" text-anchor="middle" font-family="Figtree,sans-serif" font-weight="700" font-size="13" fill="var(--on-primary-container)">1. Valoración ABCDE</text>
+              <text x="102" y="64" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11.5" fill="var(--on-surface)">SpO2 · FR · Conciencia · Rx · ECG</text>
+
+              <line x1="195" y1="54" x2="245" y2="54" stroke="var(--outline)" stroke-width="2"/>
+              <polygon points="245,49 255,54 245,59" fill="var(--primary)"/>
+
+              <rect x="255" y="15" width="210" height="78" rx="10" fill="var(--background)" stroke="var(--error)" stroke-width="2"/>
+              <text x="360" y="38" text-anchor="middle" font-family="Figtree,sans-serif" font-weight="700" font-size="13" fill="var(--error)">2. ¿Criterios UCI / Riesgo Vital?</text>
+              <text x="360" y="56" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" fill="var(--on-surface)">pH &lt;7,30 · PaO2 &lt;40 · Coma</text>
+              <text x="360" y="72" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" fill="var(--on-surface)">Asma con PaCO2 normal · Inestabilidad</text>
+
+              <line x1="360" y1="93" x2="360" y2="145" stroke="var(--outline)" stroke-width="2"/>
+              <polygon points="355,145 360,155 365,145" fill="var(--error)"/>
+              <rect x="255" y="155" width="210" height="88" rx="10" fill="var(--background)" stroke="var(--error)" stroke-width="2"/>
+              <text x="360" y="178" text-anchor="middle" font-family="Figtree,sans-serif" font-weight="700" font-size="12.5" fill="var(--error)">SÍ → Ingreso UCI / Soporte VM</text>
+              <text x="360" y="196" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" fill="var(--on-surface)">VMNI si EPOC/SDRA/inmunodepr.</text>
+              <text x="360" y="212" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" fill="var(--on-surface)">VMI protectora si refractario (pH &lt;7,25)</text>
+              <text x="360" y="228" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" fill="var(--on-surface)">Asma: FR baja + hipercapnia permisiva</text>
+
+              <line x1="465" y1="54" x2="520" y2="54" stroke="var(--outline)" stroke-width="2"/>
+              <polygon points="520,49 530,54 520,59" fill="var(--primary)"/>
+
+              <rect x="530" y="15" width="185" height="78" rx="10" fill="var(--background)" stroke="var(--primary)" stroke-width="2"/>
+              <text x="622" y="38" text-anchor="middle" font-family="Figtree,sans-serif" font-weight="700" font-size="13" fill="var(--on-primary-container)">3. NO → Fenotipo Clínico</text>
+              <text x="622" y="56" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" fill="var(--on-surface)">E-EPOC · Asma · NAC/NN</text>
+              <text x="622" y="72" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" fill="var(--on-surface)">Derrame · Inmunodeprimido</text>
+
+              <line x1="715" y1="54" x2="765" y2="54" stroke="var(--outline)" stroke-width="2"/>
+              <polygon points="765,49 775,54 765,59" fill="var(--tertiary)"/>
+
+              <rect x="775" y="15" width="135" height="78" rx="10" fill="var(--primary-container)" stroke="var(--tertiary)" stroke-width="2"/>
+              <text x="842" y="38" text-anchor="middle" font-family="Figtree,sans-serif" font-weight="700" font-size="12.5" fill="var(--secondary)">4. Reevaluación</text>
+              <text x="842" y="56" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" fill="var(--on-surface)">GSA 30–60 min</text>
+              <text x="842" y="72" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="11" fill="var(--on-surface)">Control 48–72 h</text>
+
+              <rect x="530" y="155" width="380" height="88" rx="10" fill="var(--surface-container-low)" stroke="var(--primary)" stroke-width="1.5"/>
+              <text x="545" y="178" font-family="Figtree,sans-serif" font-weight="700" font-size="12.5" fill="var(--on-primary-container)">Pilares Terapéuticos Iniciales Dirigidos</text>
+              <text x="545" y="198" font-family="Atkinson Hyperlegible,sans-serif" font-size="11.5" fill="var(--on-surface)">• EPOC: SABA/SAMA + Prednisona ≤40 mg/d + O2 88–92% + ATB si purulencia</text>
+              <text x="545" y="215" font-family="Atkinson Hyperlegible,sans-serif" font-size="11.5" fill="var(--on-surface)">• Asma: SABA c/20 min + Corticoide i.v. si no respuesta 1–2 h + Mg/SAMA</text>
+              <text x="545" y="232" font-family="Atkinson Hyperlegible,sans-serif" font-size="11.5" fill="var(--on-surface)">• Neumonía: Escala CURB65/PSI + Cultivos + ATB precoz según ámbito/GMR</text>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 4: INTERPRETACIÓN GUIADA DE GASOMETRÍAS, RADIOLOGÍA Y VENTILACIÓN -->
+      <section id="sec-gasometria" class="guide-section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">4. Interpretación Guiada de Gasometrías, Radiología y Curvas de Ventilación</h2>
+            <p class="section-sub">Análisis ácido-base e intercambio gaseoso (Fisiología de la Respiración), signos radiológicos clave y curvas presión/flujo/volumen.</p>
+          </div>
+        </div>
+
+        <div class="two-col-asym">
+          <div class="panel">
+            <h3 style="margin-top:0;font-family:var(--font-headline);font-weight:700;">Intérprete interactivo de Gasometría Arterial</h3>
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label" for="gsa-ph">pH arterial</label>
+                <input type="number" id="gsa-ph" step="0.01" value="7.28" oninput="interpretGsa()">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="gsa-paco2">PaCO2 (mmHg)</label>
+                <input type="number" id="gsa-paco2" step="1" value="62" oninput="interpretGsa()">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="gsa-pao2">PaO2 (mmHg)</label>
+                <input type="number" id="gsa-pao2" step="1" value="54" oninput="interpretGsa()">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="gsa-fio2">FiO2 (0.21–1.0)</label>
+                <input type="number" id="gsa-fio2" step="0.01" min="0.21" max="1" value="0.28" oninput="interpretGsa()">
+              </div>
+            </div>
+            <div class="form-row" style="margin-top:var(--space-sm);">
+              <div class="field-group">
+                <label class="field-label" for="gsa-contexto">Escenario clínico</label>
+                <select id="gsa-contexto" onchange="interpretGsa()">
+                  <option value="epoc">Exacerbación EPOC</option>
+                  <option value="asma">Crisis Asmática Aguda</option>
+                  <option value="sdra">Sospecha SDRA / Falla Aguda</option>
+                  <option value="bogota">Altitud de Bogotá (referencia fuente)</option>
+                </select>
+              </div>
+              <div>
+                <button type="button" class="btn btn-secondary" onclick="loadGsaPreset('carbonarcosis')">Cargar Carbonarcosis</button>
+              </div>
+            </div>
+            <div id="gsa-result" class="callout" style="margin-top:var(--space-md);"></div>
+          </div>
+
+          <div class="panel">
+            <h3 style="margin-top:0;font-family:var(--font-headline);font-weight:700;">Banda de Seguridad de Oxigenación (GOLD / Demling)</h3>
+            <div class="svg-box" style="min-height:170px;">
+              <svg viewBox="0 0 420 140" role="img" aria-label="Banda de rango objetivo de saturación en EPOC 88 a 92%">
+                <rect x="20" y="38" width="380" height="34" rx="6" fill="var(--surface-container-low)" stroke="var(--outline-variant)"/>
+                <!-- Zone <88% -->
+                <rect x="20" y="38" width="115" height="34" rx="6" fill="var(--error)" fill-opacity="0.16"/>
+                <!-- Target 88-92% -->
+                <rect x="135" y="38" width="110" height="34" fill="var(--tertiary)" fill-opacity="0.24"/>
+                <!-- Hyperoxia >92% -->
+                <rect x="245" y="38" width="155" height="34" rx="6" fill="var(--data-3)" fill-opacity="0.16"/>
+                <line x1="135" y1="30" x2="135" y2="82" stroke="var(--tertiary)" stroke-width="2" stroke-dasharray="4 3"/>
+                <line x1="245" y1="30" x2="245" y2="82" stroke="var(--tertiary)" stroke-width="2" stroke-dasharray="4 3"/>
+                <text x="77" y="59" text-anchor="middle" font-family="Figtree,sans-serif" font-weight="700" font-size="11.5" fill="var(--error)">Hipoxemia (&lt;88%)</text>
+                <text x="190" y="59" text-anchor="middle" font-family="Figtree,sans-serif" font-weight="800" font-size="12" fill="var(--secondary)">Objetivo 88–92%</text>
+                <text x="322" y="59" text-anchor="middle" font-family="Figtree,sans-serif" font-weight="700" font-size="11.5" fill="var(--data-3)">Riesgo Carbonarcosis</text>
+                <text x="135" y="98" text-anchor="middle" font-family="Figtree,sans-serif" font-size="11" fill="var(--on-surface-variant)">88%</text>
+                <text x="245" y="98" text-anchor="middle" font-family="Figtree,sans-serif" font-size="11" fill="var(--on-surface-variant)">92%</text>
+                <text x="20" y="124" font-family="Atkinson Hyperlegible,sans-serif" font-size="11.5" fill="var(--on-surface-variant)">Ecuación fisiológica: H2CO3 ↔ H+ + HCO3− · ↑PaCO2 = Acidosis respiratoria</text>
+              </svg>
+            </div>
+
+            <h4 style="font-family:var(--font-headline);font-weight:700;margin:var(--space-md) 0 var(--space-xs) 0;">Hallazgos Radiológicos y TACAR en Fuentes</h4>
+            <ul style="margin:0;padding-left:1.15rem;font-size:0.9rem;">
+              <li><strong>SDRA:</strong> Infiltrados alveolares bilaterales difusos sin falla ventricular izquierda (las fases iniciales pueden tener Rx negativa).</li>
+              <li><strong>Neumonía Nosocomial / NAV:</strong> Infiltrado pulmonar nuevo o progresivo + ≥2 criterios clínicos (fiebre &gt;38 °C, leucocitosis/leucopenia, esputo purulento).</li>
+              <li><strong>Bronquiectasias (TACAR):</strong> Signo de raíl de tranvía, engrosamiento de pared bronquial, nódulos en árbol en brote.</li>
+              <li><strong>Neumonitis por Hipersensibilidad:</strong> Vidrio deslustrado en patrón mosaico bilateral con atrapamiento aéreo.</li>
+              <li><strong>Aspergilosis Crónica Necrotizante:</strong> Lesión cavitada/necrótica en EPOC tratado con corticoides.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Curvas de Ventilación Mecánica (Figs IV-5 y IV-6) -->
+        <div class="panel">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--space-sm);">
+            <div>
+              <h3 style="margin:0;font-family:var(--font-headline);font-weight:700;">Esquema de Curvas de Ventilación Mecánica (Figs. IV-5 y IV-6)</h3>
+              <p class="section-sub">Comparación entre Ventilación Controlada por Presión y Ventilación Asistida/Controlada según <em>Fisiología de la Respiración</em>.</p>
+            </div>
+            <div class="chip-row">
+              <button type="button" class="btn btn-ghost active" id="btn-vm-pcv" onclick="setVmMode('pcv', this)">Controlada por Presión</button>
+              <button type="button" class="btn btn-ghost" id="btn-vm-ac" onclick="setVmMode('ac', this)">Asistida / Controlada</button>
+            </div>
+          </div>
+          <div class="svg-box" style="margin-top:var(--space-md);">
+            <svg id="vm-svg" viewBox="0 0 760 220" role="img" aria-label="Curvas de presión y volumen en ventilación mecánica"></svg>
+          </div>
+          <p id="vm-caption" style="margin:var(--space-sm) 0 0 0;font-size:0.92rem;color:var(--on-surface-variant);"></p>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 5: CALCULADORAS CLÍNICAS -->
+      <section id="sec-calculadoras" class="guide-section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">5. Calculadoras Clínicas de Gravedad y Pronóstico</h2>
+            <p class="section-sub">Herramientas validadas en las fuentes: CURB-65, Criterios Demling de Falla Respiratoria Aguda y Puntaje Ampliado de SDRA.</p>
+          </div>
+        </div>
+
+        <div class="card-grid">
+          <!-- CURB-65 -->
+          <div class="panel">
+            <h3 style="margin-top:0;font-family:var(--font-headline);font-weight:700;">Escala CURB-65 (Neumonía)</h3>
+            <div style="display:flex;flex-direction:column;gap:var(--space-xs);">
+              <label class="check-item"><input type="checkbox" id="curb-c" onchange="calcCurb()"><span><strong>C</strong> — Confusión de nueva aparición</span></label>
+              <label class="check-item"><input type="checkbox" id="curb-u" onchange="calcCurb()"><span><strong>U</strong> — Urea &gt; 7 mmol/L</span></label>
+              <label class="check-item"><input type="checkbox" id="curb-r" onchange="calcCurb()"><span><strong>R</strong> — Frecuencia respiratoria ≥ 30 rpm</span></label>
+              <label class="check-item"><input type="checkbox" id="curb-b" onchange="calcCurb()"><span><strong>B</strong> — PAD ≤ 60 mmHg o PAS &lt; 90 mmHg</span></label>
+              <label class="check-item"><input type="checkbox" id="curb-65" onchange="calcCurb()"><span><strong>65</strong> — Edad ≥ 65 años</span></label>
+            </div>
+            <div id="curb-output" class="callout" style="margin-top:var(--space-md);"></div>
+          </div>
+
+          <!-- PaO2/FiO2 y Demling -->
+          <div class="panel">
+            <h3 style="margin-top:0;font-family:var(--font-headline);font-weight:700;">Índice PaO2/FiO2 y Criterios Demling (2002)</h3>
+            <div class="form-row">
+              <div class="field-group">
+                <label class="field-label" for="calc-pao2">PaO2 (mmHg)</label>
+                <input type="number" id="calc-pao2" value="65" oninput="calcRespScore()">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="calc-fio2">FiO2 (0.21–1.0)</label>
+                <input type="number" id="calc-fio2" step="0.01" min="0.21" max="1" value="0.50" oninput="calcRespScore()">
+              </div>
+            </div>
+            <div class="form-row" style="margin-top:var(--space-sm);">
+              <div class="field-group">
+                <label class="field-label" for="calc-fr">FR (rpm)</label>
+                <input type="number" id="calc-fr" value="36" oninput="calcRespScore()">
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="calc-paco2">PaCO2 (mmHg)</label>
+                <input type="number" id="calc-paco2" value="52" oninput="calcRespScore()">
+              </div>
+            </div>
+            <div class="field-group" style="margin-top:var(--space-sm);">
+              <label class="field-label" for="calc-lis">Puntaje ampliado SDRA (Matthay / Wiener-Kronish)</label>
+              <select id="calc-lis" onchange="calcRespScore()">
+                <option value="0">0 puntos — Sin lesión pulmonar</option>
+                <option value="1.5" selected>0,1 – 2,5 puntos — Lesión pulmonar leve a moderada</option>
+                <option value="3.0">&gt; 2,5 puntos — Lesión grave (SDRA)</option>
+              </select>
+            </div>
+            <div id="resp-score-output" class="callout" style="margin-top:var(--space-md);"></div>
+          </div>
+        </div>
+
+        <!-- PSI Summary Table -->
+        <div class="panel">
+          <h3 style="margin-top:0;font-family:var(--font-headline);font-weight:700;">Estratificación PSI (Pneumonia Severity Index — 20 variables)</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Clase PSI</th>
+                  <th>Categoría de riesgo</th>
+                  <th>Mortalidad a 30 días</th>
+                  <th>Orientación clínica (fuente)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td class="num">Clases I – III</td><td><span class="chip" data-status="ok">Riesgo bajo</span></td><td class="num">0,1 – 2,8%</td><td>NAC leve; candidata a manejo ambulatorio según valoración global.</td></tr>
+                <tr><td class="num">Clase IV</td><td><span class="chip" data-status="info">Riesgo intermedio</span></td><td class="num">8,2 – 9,3%</td><td>Valorar observación / ingreso hospitalario.</td></tr>
+                <tr><td class="num">Clase V</td><td><span class="chip" data-status="alert">Riesgo elevado</span></td><td class="num">27 – 31%</td><td>Ingreso hospitalario / valoración UCI.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="kpi-caption" style="margin-top:var(--space-sm);"><strong>Limitación documentada:</strong> Tanto PSI como CURB-65 tienden a sobreestimar la gravedad en pacientes de mayor edad.</p>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 6: OXIGENOTERAPIA Y VMNI -->
+      <section id="sec-oxigeno" class="guide-section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">6. Guía Interactiva de Oxigenoterapia, VMNI y Seguridad</h2>
+            <p class="section-sub">Selección de dispositivo, saturación objetivo, control gasométrico y las 9 alertas de iatrogenia en SDRA.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="field-group" style="max-width:460px;">
+            <label class="field-label" for="o2-scenario">Selecciona el escenario respiratorio agudo</label>
+            <select id="o2-scenario" onchange="updateOxygenGuide()">
+              <option value="epoc">EPOC agudizada con insuficiencia respiratoria</option>
+              <option value="asma">Asma aguda grave / estatus asmático</option>
+              <option value="sdra">SDRA / Neumonía grave con hipoxemia</option>
+              <option value="sho">Síndrome de Hipoventilación por Obesidad (SHO)</option>
+              <option value="inmuno">Inmunodeprimido con insuficiencia respiratoria progresiva</option>
+            </select>
+          </div>
+          <div id="o2-guide-output" class="dossier-grid" style="margin-top:var(--space-md);"></div>
+        </div>
+
+        <div class="callout" data-status="alert">
+          <h3 class="callout-title"><i data-lucide="shield-alert" aria-hidden="true"></i> 9 Acciones a EVITAR en SDRA y Fallo Respiratorio (Fisiología de la Respiración)</h3>
+          <div class="dossier-grid" style="margin-top:var(--space-sm);">
+            <div class="dossier-block" style="background:var(--background);">
+              <h4>Líquidos, Sangre y Coloides</h4>
+              <ul>
+                <li><strong>Sobrecarga de líquidos:</strong> desencadena o agrava el edema pulmonar (diuresis objetivo ~50 ml/h una vez recuperada la volemia).</li>
+                <li><strong>Transfusiones de sangre almacenada:</strong> microembolias y alteración de curva de Hb; pueden causar LPA/SDRA.</li>
+                <li><strong>Albúmina o coloides:</strong> escapan al intersticio por permeabilidad capilar anormal y agravan el edema.</li>
+              </ul>
+            </div>
+            <div class="dossier-block" style="background:var(--background);">
+              <h4>Ventilación, Oxígeno y Equilibrio Ácido-Base</h4>
+              <ul>
+                <li><strong>FiO2 &gt; 0,50 (50%):</strong> riesgo de toxicidad alveolar por oxígeno.</li>
+                <li><strong>PEEP alta y prolongada:</strong> neumotórax (&gt;25% si PEEP &gt;15–20 cmH2O), caída del gasto cardíaco y retención hídrica.</li>
+                <li><strong>VM innecesariamente prolongada</strong>, <strong>hipocapnia prolongada</strong> y <strong>alcalosis prolongada</strong> (desvía curva Hb a la izquierda).</li>
+              </ul>
+            </div>
+            <div class="dossier-block" style="background:var(--background);">
+              <h4>Antibioticoterapia Inadecuada</h4>
+              <ul>
+                <li><strong>Uso prolongado de antibióticos de amplio espectro:</strong> destruye flora saprofita normal, favorece microorganismos altamente patógenos, sepsis generalizada y falla multisistémica.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 7: VADEMÉCUM FILTRABLE -->
+      <section id="sec-vademecum" class="guide-section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">7. Vademécum de Urgencias Respiratorias</h2>
+            <p class="section-sub">Fármacos y pautas estrictamente extraídas de las fuentes del cuaderno (sin posologías inventadas).</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="form-row">
+            <div class="field-group">
+              <label class="field-label" for="vad-search">Buscar principio activo o indicación</label>
+              <input type="search" id="vad-search" placeholder="Ej.: prednisona, ceftriaxona, linezolid, salbutamol…" oninput="renderVademecum()">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="vad-group">Filtrar por grupo farmacológico</label>
+              <select id="vad-group" onchange="renderVademecum()">
+                <option value="all">Todos los grupos</option>
+                <option value="bronco">Broncodilatadores y vía aérea</option>
+                <option value="cortico">Glucocorticoides sistémicos / inhalados</option>
+                <option value="atb-nac">Antibióticos — NAC</option>
+                <option value="atb-epoc">Antibióticos — EPOC y Bronquiectasias</option>
+                <option value="atb-nn">Antibióticos — NN y NAV</option>
+                <option value="soporte">Profilaxis, antifúngicos y otros</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-wrap" style="margin-top:var(--space-md);">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fármaco / Grupo</th>
+                  <th>Indicación en fuentes</th>
+                  <th>Dosis, vía, frecuencia y duración (fuente)</th>
+                  <th>Precauciones / Notas</th>
+                </tr>
+              </thead>
+              <tbody id="vademecum-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 8: TABLAS COMPARATIVAS -->
+      <section id="sec-comparativas" class="guide-section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">8. Tablas Comparativas de Diagnóstico Diferencial</h2>
+            <p class="section-sub">Contrastes clínicos rápidos basados en SEPAR, Harrison y Fisiología de la Respiración.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Parámetro</th>
+                <th>Exacerbación EPOC</th>
+                <th>Asma Aguda Grave</th>
+                <th>SDRA / Falla Aguda</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Base fisiopatológica</strong></td>
+                <td>Vía aérea pequeña (&lt;2 mm) + enfisema; inflamación/infección (purulencia esputo).</td>
+                <td>Broncoconstricción reversible, inflamación y tapones mucosos con alta resistencia al flujo.</td>
+                <td>Lesión pulmonar aguda por sepsis/trauma/shock; edema por permeabilidad capilar sin fallo VI.</td>
+              </tr>
+              <tr>
+                <td><strong>Gasometría clave</strong></td>
+                <td>Hipoxemia ± hipercapnia; vigilar carbonarcosis si O2 excesivo.</td>
+                <td>Hipocapnia inicial; <strong>PaCO2 normal/casi normal</strong> = fallo inminente.</td>
+                <td>PaO2 &lt;60 mmHg (≤45 Bogotá), PaCO2 &gt;50 (&gt;45 Bogotá), PaO2/FiO2 deteriorado.</td>
+              </tr>
+              <tr>
+                <td><strong>Oxigenoterapia / VMNI</strong></td>
+                <td>Venturi 24–28% o gafas 2–4 L/min; objetivo SpO2 88–92%. VMNI si acidosis.</td>
+                <td>O2 suplementario para hipoxemia; VMNI si agotamiento; heliox opcional; VMI con FR baja.</td>
+                <td>Evitar FiO2 &gt;0,50 si posible; VMNI reduce intubación 54% (fuente); VMI volumen bajo + PEEP óptimo.</td>
+              </tr>
+              <tr>
+                <td><strong>Corticoides sistémicos</strong></td>
+                <td>Recomendados (moderada-grave): prednisona máx 40 mg/d 7–10 d (5 d en REDUCE).</td>
+                <td>i.v. si no responde a SABA nebulizado en 1–2 h; cuadruplicar/quintuplicar CSI en leve-moderada.</td>
+                <td>Uso controvertido; no rutinario en NAC ni fase temprana SDRA (descartar infección).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Característica</th>
+                <th>NAC</th>
+                <th>Neumonía Sociosanitaria (NSS)</th>
+                <th>Neumonía Nosocomial (NN / NAV)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Criterio temporal / ámbito</strong></td>
+                <td>Adquirida en la comunidad (fuera del hospital).</td>
+                <td>Comunidad con contacto sanitario periódico (ej. diálisis).</td>
+                <td>Tras &gt;48 h de ingreso hospitalario (NAV: paciente con VM y tubo endotraqueal, &gt;80% de NN).</td>
+              </tr>
+              <tr>
+                <td><strong>Microbiología predominante</strong></td>
+                <td><em>S. pneumoniae</em> y atípicos (<em>Mycoplasma, Chlamydophila, Legionella</em>).</td>
+                <td>En España similar a NAC, pero más neumococo resistente, <em>H. influenzae, S. aureus</em>, BGN y aspiración.</td>
+                <td>Alta frecuencia de BGN y gérmenes multirresistentes (GMR), <em>P. aeruginosa</em> y SAOR.</td>
+              </tr>
+              <tr>
+                <td><strong>Pauta empírica clave</strong></td>
+                <td>Ambulatorio: quinolona o betalactámico + macrólido. Sala/UCI: cefalosporina 3ª + macrólido (o levofloxacino).</td>
+                <td>Similar a NN si muy grave o factores de riesgo GMR (cobertura anaerobia si aspiración).</td>
+                <td>Precoz sin FR: monoterapia. Tardía (≥5º d) o FR GMR: 2 antipseudomónicos ± linezolid/vancomicina; desescalar.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 9: CASOS CLÍNICOS, AUTOEVALUACIÓN Y FLASHCARDS -->
+      <section id="sec-practica" class="guide-section">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">9. Casos Clínicos Interactivos, Autoevaluación y Flashcards</h2>
+            <p class="section-sub">Entrenamiento práctico con retroalimentación inmediata y guardado automático de progreso.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="subtab-bar" role="tablist">
+            <button type="button" class="subtab-btn active" onclick="switchPractice('casos', this)">Casos Clínicos (5)</button>
+            <button type="button" class="subtab-btn" onclick="switchPractice('quiz', this)">Autoevaluación (10)</button>
+            <button type="button" class="subtab-btn" onclick="switchPractice('flash', this)">Flashcards de Repaso (12)</button>
+          </div>
+
+          <!-- Casos -->
+          <div id="practice-casos">
+            <div class="chip-row" id="case-selector" style="margin-bottom:var(--space-md);"></div>
+            <div id="case-viewer"></div>
+          </div>
+
+          <!-- Quiz -->
+          <div id="practice-quiz" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-md);">
+              <span class="chip" data-status="info" id="quiz-score-chip">Puntuación: 0 / 10</span>
+              <span class="kicker" id="quiz-progress-label">0 respondidas</span>
+            </div>
+            <div id="quiz-container" style="display:flex;flex-direction:column;gap:var(--space-md);"></div>
+          </div>
+
+          <!-- Flashcards -->
+          <div id="practice-flash" style="display:none;">
+            <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:var(--space-sm);margin-bottom:var(--space-md);">
+              <span class="chip" id="flash-counter">Tarjeta 1 de 12</span>
+              <span class="chip" data-status="ok" id="flash-mastered-chip">0 dominadas</span>
+            </div>
+            <div class="flashcard" id="flashcard-box"></div>
+            <div class="chip-row" style="margin-top:var(--space-md);">
+              <button type="button" class="btn btn-ghost" onclick="prevFlash()">Anterior</button>
+              <button type="button" class="btn btn-primary" onclick="flipFlash()">Voltear tarjeta</button>
+              <button type="button" class="btn btn-secondary" onclick="toggleFlashMastered()">Marcar dominada</button>
+              <button type="button" class="btn btn-ghost" onclick="nextFlash()">Siguiente</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer class="panel" style="background:var(--background);font-size:0.875rem;color:var(--on-surface-variant);">
+        <strong>Fuentes bibliográficas del cuaderno empleadas exclusivamente:</strong>
+        <em>Infecciones respiratorias</em> (Concepción Prados Sánchez, Olga Rajas Naranjo — capítulos de Exacerbaciones infecciosas en la EPOC, NAC, Neumonía Nosocomial/NAV, Bronquiectasias, Infecciones en inmunodeprimidos y Vacunación);
+        <em>Fisiología de la Respiración</em> (capítulos de Gases arteriales, SDRA/Falla Respiratoria Aguda y Ventilación Mecánica);
+        <em>Harrison's Principles of Internal Medicine, 22nd ed.</em> (Trastornos Respiratorios vols. 1 y 2: EBUS-TBNA, Asma aguda, Neumonitis por hipersensibilidad, Bronquiectasias, EPOC, Derrame pleural, SHO).
+        Ningún dato clínico o posología ha sido añadido fuera de estas fuentes.
+      </footer>
+    </main>
+  </div>
+</div>
+
+<api-shim></api-shim>
+<script>
+const PATHOLOGIES = [
+  {
+    id: `ira-hipercapnia`,
+    cat: `critica`,
+    title: `Insuficiencia Respiratoria Aguda y Crisis Hipercápnica`,
+    summary: `Fallo agudo del intercambio gaseoso (criterios Demling 2002), acidosis respiratoria y riesgo de carbonarcosis.`,
+    evidence: `Fisiología de la Respiración (Demling 2002) · Guías GOLD / SEPAR`,
+    blocks: [
+      { h: `Definición y Fisiopatología`, p: `Incapacidad del sistema respiratorio para mantener el intercambio gaseoso. El aumento de PaCO2 refleja hipoventilación y retención de ácido carbónico (H2CO3 ↔ H+ + HCO3−), generando acidosis respiratoria; la hiperventilación produce hipocapnia y alcalosis respiratoria.` },
+      { h: `Criterios Demling (Falla Aguda)`, ul: [
+        `FR > 35 rpm (normal 12–20) · Capacidad vital < 15 ml/kg · FEV1 < 10 ml/kg`,
+        `Fuerza inspiratoria > −25 cmH2O · Distensibilidad < 20 ml/cmH2O`,
+        `PaO2 < 70 mmHg (aire) · A-aDO2 (FiO2 1,0) > 450 mmHg · QS/QT > 20%`,
+        `PaCO2 > 55 mmHg · Relación espacio muerto/volumen corriente (VD/VT) > 0,60`
+      ]},
+      { h: `Manifestaciones, Exploración y Pruebas`, p: `Taquipnea, aprehensión, ansiedad, cianosis leve, cambios del estado mental o letargia/coma (carbonarcosis). La pulsioximetría y la gasometría arterial seriada son esenciales para cuantificar hipoxemia, PaCO2, pH y gradiente A-a.` },
+      { h: `Tratamiento Inicial y Definitivo`, ul: [
+        `Oxigenoterapia controlada en pacientes con riesgo hipercápnico (EPOC): Venturi 24–28% o gafas nasales 2–4 L/min para SpO2 88–92%.`,
+        `Gasometría arterial a los 30–60 min de iniciar O2 para descartar hipercapnia secundaria.`,
+        `VMNI si acidosis respiratoria o fatiga; VMI/UCI si pH < 7,30 (o pH < 7,25 pese a VMNI), PaO2 < 40 mmHg o coma.`,
+        `En Síndrome de Hipoventilación por Obesidad (SHO): CPAP o NIPPV corrigen hipoventilación y restauran respuesta central.`
+      ]},
+      { h: `Perlas y Errores Frecuentes`, p: `Error crítico: administrar O2 a alto flujo sin control en EPOC retenedor, suprimiendo el estímulo hipóxico y desencadenando carbonarcosis con riesgo vital.` }
+    ]
+  },
+  {
+    id: `epoc-exacerbacion`,
+    cat: `obstructiva`,
+    title: `Exacerbación Aguda de la EPOC (E-EPOC)`,
+    summary: `Empeoramiento agudo sostenido con aumento de disnea, volumen o purulencia del esputo.`,
+    evidence: `Normativa SEPAR / GesEPOC 2012–2014 · GOLD 2014 · Estudio REDUCE · Harrison`,
+    blocks: [
+      { h: `Definición y Epidemiología`, p: `Empeoramiento agudo y sostenido que supera la variabilidad diaria y requiere cambio terapéutico. SEPAR: aumento de disnea, aumento de expectoración y/o esputo purulento. Frecuencia media: 1,6/año si FEV1 >60% y ~3/año si FEV1 <40%.` },
+      { h: `Diagnóstico, Exploración y Pruebas`, ul: [
+        `Criterios clásicos de Anthonisen: la purulencia del esputo es el indicador más sugestivo de etiología bacteriana.`,
+        `Exploración: escala MRC de disnea, fiebre, fase espiratoria prolongada, sibilancias, musculatura accesoria, postura en trípode, cianosis.`,
+        `Pruebas ambulatorias: pulsioximetría, Rx de tórax (diagnóstico diferencial) y ECG (arritmias/isquemia). Espirometría NO indicada en fase aguda; PCR y procalcitonina no son suficientemente sensibles ni específicas.`
+      ]},
+      { h: `Tratamiento Farmacológico y Dosis`, ul: [
+        `Broncodilatadores de acción corta (1ª elección): salbutamol o terbutalina + bromuro de ipratropio. Mantener terapia de base ambulatoria; si hospitalizado, reintroducirla días previos al alta. Metilxantinas NO recomendadas.`,
+        `Glucocorticoides sistémicos (moderadas, graves, muy graves o leves sin respuesta): prednisona máx 40 mg/día v.o. 7–10 días (REDUCE: 5 días no inferior a 14 días). Hospitalizados: 0,5 mg/kg/6 h i.v. primeros 3 días, luego v.o. <15 días.`,
+        `Antibióticos (si purulencia): penicilinas, cefalosporinas, quinolonas o macrólidos. Si riesgo de Pseudomonas: ciprofloxacino o levofloxacino dosis altas; casos graves parenterales con betalactámico anti-Pseudomonas (piperacilina-tazobactam, ceftazidima, cefepime, imipenem o meropenem) ± aminoglucósido 3–5 días.`,
+        `Profilaxis tromboembólica: HBPM en graves/muy graves o menos graves con encamamiento/inactividad.`
+      ]},
+      { h: `Oxigenoterapia, Rehabilitación y Seguimiento`, p: `Venturi 24–28% o gafas 2–4 L/min (SpO2 88–92%, GSA a los 30–60 min). Rehabilitación respiratoria precoz (GesEPOC 2014) reduce ingresos y mortalidad. Control ambulatorio a las 48–72 h; Hospital de Día u Hospitalización a Domicilio si no hay acidosis ni deterioro mental.` },
+      { h: `Complicaciones y Perlas Clínicas`, p: `Vigilar neumotórax, arritmias, insuficiencia cardiaca, embolia pulmonar y aspergilosis pulmonar crónica necrotizante en EPOC con corticoides.` }
+    ]
+  },
+  {
+    id: `asma-aguda`,
+    cat: `obstructiva`,
+    title: `Asma Aguda Grave y Estatus Asmático`,
+    summary: `Obstrucción grave al flujo aéreo; la normocapnia en distrés anuncia fallo respiratorio inminente.`,
+    evidence: `Harrison 22.ª ed. Cap. 298 · Guías GINA / NHLBI`,
+    blocks: [
+      { h: `Evaluación Inicial y Signos de Alarma`, p: `Medir PEFR o FEV1 en urgencias. La mayoría presentan hipocapnia por taquipnea. Una PaCO2 normal o casi normal en un paciente asmático con distrés respiratorio indica agotamiento y fallo ventilatorio inminente con necesidad de ventilación mecánica.` },
+      { h: `Tratamiento Inicial (Leve-Moderada y Urgencias)`, ul: [
+        `Leve-moderada: β2-agonista hasta cada 1 h; cuadruplicar o quintuplicar dosis de CSI puede ser útil.`,
+        `En urgencias: β2-agonistas nebulizados hasta cada 20 min + oxígeno suplementario para corregir hipoxemia.`,
+        `Pueden añadirse anticolinérgicos nebulizados, LTRA y magnesio. Los MDI con educación son alternativa eficaz a la nebulización.`,
+        `PEFR >60% del predicho suele responder solo a β2-agonistas. Si no hay respuesta en 1–2 h → administrar corticoides intravenosos.`
+      ]},
+      { h: `Tratamiento Hospitalario y Ventilación Mecánica`, ul: [
+        `Ingreso si no alcanza PEFR >60% o persiste taquipnea grave 4–6 h: nebulización continua, VMNI por agotamiento o mezclas helio-oxígeno (heliox) para reducir trabajo respiratorio.`,
+        `Antibióticos: SOLO si existen signos de infección.`,
+        `Estatus asmático intubado: usar frecuencias respiratorias bajas y/o volúmenes corrientes bajos para reducir presiones pico (hipercapnia permisiva); corregir acidosis crítica temporalmente con bicarbonato si es preciso. Parálisis neuromuscular puede ayudar. Broncoscopia para tapones mucosos es peligrosa en VM difícil.`
+      ]},
+      { h: `Perlas para Examen y Práctica`, p: `3.000–4.000 muertes/año en EE.UU. por asma. Nunca pautar LABA en monoterapia en asma. En ejercicio: calentamiento, mascarilla en frío y SABA previo.` }
+    ]
+  },
+  {
+    id: `nac`,
+    cat: `infecciosa`,
+    title: `Neumonía Adquirida en la Comunidad (NAC)`,
+    summary: `Infección del parénquima pulmonar extrahospitalaria; primera causa infecciosa de muerte mundial según OMS.`,
+    evidence: `Normativa SEPAR 2010 · Conferencia Consenso 2013 · ATS/IDSA`,
+    blocks: [
+      { h: `Epidemiología y Escalas Pronósticas`, p: `La OMS estima casi 3,5 millones de muertes/año por infecciones del tracto respiratorio inferior (NAC la principal). Incidencia 1,6–13,4 casos/1.000 hab/año (Europa 5–11/1.000). Usar PSI (20 variables; Clases I–III riesgo bajo 0,1–2,8%, IV 8,2–9,3%, V 27–31%) y CURB-65. Ambas sobreestiman en ancianos.` },
+      { h: `Diagnóstico Microbiológico`, ul: [
+        `Ambulatorio: ninguna técnica salvo sospecha epidemiológica de patógenos infrecuentes.`,
+        `Ingreso hospital/UCI: hemocultivos (aerobios/anaerobios), líquido pleural (Gram, cultivos, antígeno/biología molecular), antígeno neumococo y Legionella en orina, esputo de buena calidad (Gram y cultivo), aspirado nasofaríngeo si sospecha gripe. Solo se filia ~50% de casos.`
+      ]},
+      { h: `Tratamiento Antibiótico Empírico (SEPAR Tabla 5)`, ul: [
+        `Cobertura obligada: S. pneumoniae y atípicos (Mycoplasma, Chlamydophila, Legionella).`,
+        `Ambulatorio: Moxifloxacino o levofloxacino (5–7 d v.o.) O Amoxicilina/amox-clavulánico/cefditoren (7 d v.o.) + Azitromicina (3 d v.o.) o claritromicina (7 d v.o.).`,
+        `Sala hospitalización: Cefotaxima o ceftriaxona o amox-clavulánico + Macrólido (7–10 d i.v.) O Levofloxacino en monoterapia (puede iniciarse v.o.).`,
+        `UCI: Ceftriaxona 2 g/24 h o cefotaxima 2 g/6–8 h + Azitromicina 500 mg/día o claritromicina 500 mg/12 h (o levofloxacino 500 mg/12 h), 7–14 d i.v.`,
+        `Sospecha aspiración: Amox-clavulánico (amoxicilina 2 g/8 h), moxifloxacino, ertapenem o clindamicina (14 d i.v.).`,
+        `Sospecha P. aeruginosa: Piperacilina-tazobactam, cefepime o carbapenem (meropenem con ventajas sobre imipenem) + 2º antipseudomónico (14 d i.v.).`
+      ]},
+      { h: `Medidas Complementarias y Complicaciones`, p: `Profilaxis con HBPM en insuficiencia respiratoria aguda. VMNI útil especialmente en EPOC y SDRA (reduce intubación en 54%). Corticoides sistémicos no recomendados de rutina en NAC según este manual.` }
+    ]
+  },
+  {
+    id: `nn-nav`,
+    cat: `infecciosa`,
+    title: `Neumonía Nosocomial (NN), Sociosanitaria (NSS) y Asociada a Ventilación (NAV)`,
+    summary: `Neumonía tras >48 h de ingreso; 2ª infección nosocomial y 1ª en mortalidad.`,
+    evidence: `Recomendaciones SEPAR 2011 · ATS/IDSA 2005`,
+    blocks: [
+      { h: `Definición y Microbiología`, p: `NN aparece tras las primeras 48 h de estancia hospitalaria sin incubarse al ingreso. La NAV (>80% de NN) ocurre en pacientes con VM y tubo endotraqueal. Alta frecuencia de BGN y gérmenes multirresistentes (GMR). En España, la NSS presenta flora más próxima a NAC pero con más neumococo resistente, S. aureus, BGN y aspiración.` },
+      { h: `Criterios Diagnósticos`, p: `Infiltrado pulmonar nuevo o progresivo en imagen + al menos 2 criterios en NAV (fiebre >38 °C o hipotermia, leucocitosis >12.000 o leucopenia <4.000, secreciones respiratorias purulentas) o deterioro del intercambio gaseoso. Justifica inicio antibiótico empírico inmediato tras toma de muestras.` },
+      { h: `Tratamiento Empírico y Desescalada`, ul: [
+        `NN precoz (<5º día) sin factores de riesgo GMR: monoterapia con amoxicilina-clavulánico, cefalosporina 3ª generación o levofloxacino (alternativa: ertapenem).`,
+        `NN tardía (≥5º día), factores de riesgo GMR o gravedad máxima: 2 fármacos con actividad antipseudomónica (betalactámico antipseudomónico + aminoglucósido o fluoroquinolona).`,
+        `Si probable S. aureus meticilín-resistente (SAOR): añadir linezolid o vancomicina (linezolid muestra discreta ventaja en curación y erradicación).`,
+        `Desescalada terapéutica: reducir espectro o número de antibióticos según resultados microbiológicos y evolución clínica.`
+      ]},
+      { h: `Prevención de NAV (SEPAR 2011)`, p: `Evitar intubación (preferir VMNI), evitar reintubación, valorar extubación diaria, evitar cambios innecesarios de circuitos, ventanas diarias de sedación, movilización precoz, aspiración subglótica, posición semiincorporada y lavado de manos. No recomendados: tubos con plata ni prono preventivo.` }
+    ]
+  },
+  {
+    id: `sdra`,
+    cat: `critica`,
+    title: `Síndrome de Dificultad Respiratoria Aguda (SDRA / SIRA)`,
+    summary: `Lesión pulmonar aguda difusa no cardiogénica por sepsis, trauma o shock con alta mortalidad.`,
+    evidence: `Fisiología de la Respiración · Matthay/Wiener-Kronish 1990 · ARDS Network`,
+    blocks: [
+      { h: `Definición y Fisiopatología`, p: `Hipoxemia refractaria, caída de distensibilidad pulmonar y capacidad funcional residual, e infiltrados alveolares bilaterales difusos sin falla ventricular izquierda. Típicamente en pulmón previamente sano tras sepsis, trauma mayor, shock o aspiración ("pulmón de trauma").` },
+      { h: `Diagnóstico Precoz y Puntaje Ampliado`, ul: [
+        `Fases iniciales: taquipnea, aprehensión, ansiedad y cianosis leve con auscultación y Rx aún negativas; requiere gasometrías arteriales seriadas.`,
+        `Criterio gasométrico general: PaO2 <60 mmHg y PaCO2 >50 mmHg a nivel del mar (≤45 y >45 mmHg en altitud de Bogotá).`,
+        `Puntaje Matthay/Wiener-Kronish (PaO2/FiO2, Rx, distensibilidad estática, PEEP): 0 sin lesión; 0,1–2,5 leve-moderada; >2,5 SDRA grave.`
+      ]},
+      { h: `Tratamiento y Ventilación Protectora`, p: `1) Eliminar causa (cirugía de foco intraabdominal séptico, drenajes, antibióticos específicos). 2) Ventilación mecánica protectora (ARDS Network: volúmenes corrientes bajos, PEEP óptimo). 3) Balance hídrico juicioso (sin sobrecarga; diuresis ~50 ml/h tras reponer volemia), soporte nutricional precoz, cuidados de enfermería y prevención de aspiración.` },
+      { h: `Controversia Corticoides y Complicaciones`, p: `Uso de glucocorticoides muy controvertido por riesgo de inmunosupresión/infección (Meduri en fase fibroproliferativa tardía: metilprednisolona 2 mg/kg/día por 32 días solo descartando infección). Complicación crítica: neumotórax a tensión (>25% con PEEP >15–20 cmH2O) → tubo intrapleural inmediato.` }
+    ]
+  },
+  {
+    id: `pleura-neumotorax`,
+    cat: `pleura`,
+    title: `Derrame Pleural Agudo y Neumotórax`,
+    summary: `Alteraciones del espacio pleural (−3 a −5 cmH2O): abordaje diagnóstico del derrame y neumotórax a tensión por PEEP.`,
+    evidence: `Harrison 22.ª ed. Cap. 305 · Fisiología de la Respiración · SEPAR`,
+    blocks: [
+      { h: `Fisiología y Derrame Pleural`, p: `El espacio pleural mantiene una presión de −3 a −5 cmH2O. La causa más frecuente de derrame es la disfunción ventricular izquierda (trasudado por aumento de presión hidrostática).` },
+      { h: `Indicaciones de Toracocentesis Diagnóstica en IC`, ul: [
+        `Derrames NO bilaterales o de tamaño asimétrico/no comparable.`,
+        `Presencia de fiebre o dolor torácico pleurítico.`,
+        `Persistencia del derrame pese al tratamiento de la insuficiencia cardiaca.`,
+        `Pruebas del líquido: glucosa, recuento diferencial celular, microbiología, citología y NT-proBNP (>1500 pg/mL sugiere insuficiencia cardiaca congestiva).`
+      ]},
+      { h: `Neumotórax en las Fuentes`, p: `1) Diagnóstico diferencial obligatorio en agudización de EPOC (Tabla 5 SEPAR). 2) Complicación grave en VM/SDRA: incidencia >25% con PEEP >15–20 cmH2O; se comporta como neumotórax a tensión y exige reconocimiento inmediato y colocación de tubo para succión intrapleural.` }
+    ]
+  },
+  {
+    id: `especiales`,
+    cat: `especial`,
+    title: `Inmunodeprimidos, Oncología, Ancianos y Bronquiectasias`,
+    summary: `Manejo en trasplante (TOS/THCM), sospecha de Pneumocystis jirovecii, EBUS-TBNA y peculiaridades geriátricas.`,
+    evidence: `O. Rajas Naranjo (SEPAR) · F. Ezzine De Blas · Harrison EBUS-TBNA`,
+    blocks: [
+      { h: `Inmunodeprimidos (TOS y THCM)`, ul: [
+        `Pneumocystis jirovecii (PJ): curso fulminante en THCM (media inicio 60 días post-trasplante). Sin profilaxis afecta hasta 16% de THCM alogénicos. Trimetoprim-sulfametoxazol reduce el riesgo a nivel insignificante, pero >60% lo suspende por mielosupresión/reacciones adversas. Mortalidad >90% en los 6 primeros meses y 40% tardía.`,
+        `Abordaje diagnóstico: hemocultivos, gasometría, esputo, imagen y broncoscopia precoz con LBA (útil para PJ, CMV, hongos, micobacterias) y biopsia transbronquial si mala evolución.`,
+        `Tratamiento: reducir inmunosupresión (riesgo de rechazo) y valorar precozmente VMNI en insuficiencia respiratoria progresiva para evitar VM invasiva.`
+      ]},
+      { h: `Pacientes Oncológicos y Ancianos`, ul: [
+        `Oncología / Mediastino: EBUS-TBNA ofrece sensibilidad ~90% en neoplasias epiteliales y ~70% en linfoma (≥80% en sarcoidosis); combinada con EUS/EUS-B aumenta rendimiento. Indicada vacunación antigripal y antineumocócica en neoplasias, asplenia e inmunodeprimidos.`,
+        `Ancianos: las escalas PSI y CURB-65 sobreestiman la gravedad en edad avanzada. En NSS española, la mayor mortalidad se asocia a mayor edad, comorbilidad y menor ingreso en UCI.`
+      ]},
+      { h: `Bronquiectasias Agudizadas y Aspergilosis`, p: `En agudización de bronquiectasias: SABA previo a suero hipertónico/aerosolterapia; antibióticos a dosis altas con alta penetrancia durante mínimo 10 días (14–21 días si P. aeruginosa; biterapia i.v. betalactámico + aminoglucósido si moderada-grave). Corticoides sistémicos prolongados contraindicados. En EPOC con corticoides descartar aspergilosis crónica necrotizante (IgG Aspergillus, fibrobroncoscopia).` }
+    ]
+  },
+  {
+    id: `transparencia-fuentes`,
+    cat: `transparencia`,
+    title: `Alcance Estricto de Fuentes: Entidades Sin Protocolo Independiente`,
+    summary: `Registro transparente de temas del índice general que solo figuran como mención o diagnóstico diferencial en los extractos.`,
+    evidence: `Auditoría estricta de fidelidad documental`,
+    blocks: [
+      { h: `Entidades citadas únicamente como diferencial o complicación`, ul: [
+        `Tromboembolismo pulmonar (TEP): mencionado como diagnóstico diferencial a descartar en E-EPOC grave (Tabla 5) y prevención mediante profilaxis con HBPM en E-EPOC grave/encamamiento y NAC con IRA. Sin algoritmo diagnóstico ni dosis anticoagulante terapéutica en los extractos.`,
+        `Edema agudo de pulmón cardiogénico: referido como causa de fallo VI a excluir en SDRA y causa principal de derrame pleural trasudativo (NT-proBNP >1500 pg/mL).`,
+        `Obstrucción de vía aérea / Hemoptisis / Estridor agudo: solo se describen tapones mucosos en asma/FQ, obstrucción bronquial localizada en bronquiectasias y el uso diagnóstico de broncoscopia/EBUS-TBNA.`,
+        `Intoxicaciones y Embarazo: "sobredosis de droga" figura en la tabla de entidades asociadas al SDRA y la carbonarcosis se describe como toxicidad por O2 en EPOC; no hay capítulos de toxicología ni urgencias respiratorias en gestantes en los extractos suministrados.`
+      ]},
+      { h: `Criterio de rigor clínico`, p: `Para cumplir con la exigencia de no inventar datos ni posologías, esta guía no extrapola fármacos, dosis ni protocolos de fuentes externas para estas entidades.` }
+    ]
+  }
+];
+
+const VADEMECUM = [
+  { name: `Salbutamol / Terbutalina (SABA)`, group: `bronco`, ind: `E-EPOC, Asma aguda, Bronquiectasias (previo a aerosol)`, dose: `Inhalado o nebulizado (asma urgencias: cada 20 min; leve-mod cada 1 h). En bronquiectasias antes de salino hipertónico.`, warn: `Primera elección en agudización; MDI con educación equivale a nebulización.` },
+  { name: `Bromuro de Ipratropio (SAMA)`, group: `bronco`, ind: `E-EPOC y Asma aguda grave`, dose: `Añadido a SABA inhalado o nebulizado según gravedad.`, warn: `Potencia broncodilatación en distrés.` },
+  { name: `Metilxantinas (Teofilina)`, group: `bronco`, ind: `E-EPOC (NO recomendada)`, dose: `Evitar uso habitual.`, warn: `Escasa evidencia, estrecho margen terapéutico y efectos adversos.` },
+  { name: `Sulfato de Magnesio / LTRA / Heliox`, group: `bronco`, ind: `Asma aguda grave en urgencias`, dose: `Coadyuvantes según respuesta a SABA nebulizado.`, warn: `Heliox disminuye el trabajo respiratorio.` },
+  { name: `Prednisona (v.o.)`, group: `cortico`, ind: `E-EPOC moderada-grave o leve refractaria`, dose: `Máximo 40 mg/día v.o. 7–10 días (REDUCE: 5 días no inferior a 14 d).`, warn: `Alta biodisponibilidad oral; no requiere pauta descendente si ciclo <15 días.` },
+  { name: `Corticoide i.v. (E-EPOC / Asma)`, group: `cortico`, ind: `E-EPOC hospitalizada · Asma refractaria 1–2 h`, dose: `E-EPOC ingreso: 0,5 mg/kg/6 h i.v. primeros 3 días, luego v.o. <15 d. Asma: i.v. si falla SABA.`, warn: `En SDRA/NAC uso rutinario controvertido o no recomendado.` },
+  { name: `Metilprednisolona (SDRA tardío)`, group: `cortico`, ind: `Fase fibroproliferativa tardía SDRA (protocolo Meduri)`, dose: `2 mg/kg/día durante 32 días.`, warn: `Indispensable descartar infección pulmonar activa; evidencia global controvertida.` },
+  { name: `Corticoides Inhalados (CSI)`, group: `cortico`, ind: `Deterioro leve-moderado de asma · Bronquiectasias`, dose: `Asma: cuadruplicar/quintuplicar dosis. BQ: fluticasona 1.000 µg (reduce esputo).`, warn: `En BQ sin efecto concluyente en exacerbaciones.` },
+  { name: `Amoxicilina / Amox-Clavulánico / Cefditoren`, group: `atb-nac`, ind: `NAC ambulatoria/sala · NAC aspiración · NN precoz`, dose: `NAC amb: 7 d v.o. (+ macrólido). Aspiración: amoxicilina 2 g/8 h i.v. 14 d.`, warn: `Amox-clavulánico cubre anaerobios en aspiración.` },
+  { name: `Azitromicina / Claritromicina`, group: `atb-nac`, ind: `NAC (atípicos) en ambulatorio, sala y UCI`, dose: `Amb: azitromicina 3 d v.o. o claritromicina 7 d v.o. UCI: azitro 500 mg/d o claritro 500 mg/12 h i.v. 7–14 d.`, warn: `Siempre combinado con betalactámico en NAC.` },
+  { name: `Levofloxacino / Moxifloxacino`, group: `atb-nac`, ind: `NAC amb/sala/UCI · NN precoz · E-EPOC riesgo Pseudomonas`, dose: `NAC amb: 5–7 d v.o. UCI (alternativa a macrólido): levofloxacino 500 mg/12 h i.v. 7–14 d. EPOC: dosis altas.`, warn: `Levofloxacino en sala puede iniciarse vía oral.` },
+  { name: `Ceftriaxona / Cefotaxima`, group: `atb-nac`, ind: `NAC hospitalizada / UCI · NN precoz sin FR`, dose: `Sala: 7–10 d i.v. (+ macrólido). UCI: ceftriaxona 2 g/24 h o cefotaxima 2 g/6–8 h i.v. 7–14 d.`, warn: `Cefalosporinas de 3ª generación no antipseudomónicas.` },
+  { name: `Piperacilina-Tazobactam / Cefepime / Meropenem / Imipenem`, group: `atb-epoc`, ind: `NAC/EPOC/NN/NAV con sospecha P. aeruginosa o GMR`, dose: `NAC Pseudomonas: 14 d i.v. + 2º antipseudomónico. EPOC grave: ± aminoglucósido 3–5 d.`, warn: `Meropenem ofrece ventajas sobre imipenem en NAC grave.` },
+  { name: `Ertapenem / Clindamicina`, group: `atb-nn`, ind: `NAC aspiración · Alternativa NN precoz sin FR`, dose: `NAC aspiración: 14 d i.v.`, warn: `Ertapenem no tiene actividad frente a P. aeruginosa.` },
+  { name: `Linezolid / Vancomicina`, group: `atb-nn`, ind: `NN / NAV con riesgo o sospecha de SAOR (MRSA)`, dose: `Asociado a pauta antipseudomónica según protocolo hospitalario.`, warn: `Linezolid presenta discreta ventaja en curación y erradicación.` },
+  { name: `Heparina de Bajo Peso Molecular (HBPM)`, group: `soporte`, ind: `E-EPOC grave/muy grave o encamamiento · NAC con IRA`, dose: `Dosis profiláctica antitrombótica.`, warn: `Previene enfermedad tromboembólica venosa.` },
+  { name: `Trimetoprim-Sulfametoxazol (TMP-SMX)`, group: `soporte`, ind: `Profilaxis de Pneumocystis jirovecii en THCM/inmunodepr.`, dose: `Profilaxis según protocolo trasplante.`, warn: `Mala tolerancia (>60% suspensión por mielosupresión y efectos adversos).` },
+  { name: `Bicarbonato Sódico`, group: `soporte`, ind: `Estatus asmático en VM con acidosis crítica`, dose: `Temporalmente si acidosis crítica bajo hipercapnia permisiva.`, warn: `No usar de rutina sin acidosis crítica.` }
+];
+
+const CASES = [
+  {
+    title: `Caso 1: Varón de 69 años con EPOC grave, esputo purulento y somnolencia`,
+    stem: `Paciente con EPOC (FEV1 basal 35%) acude por aumento de disnea (mMRC 4), aumento de volumen y cambio a esputo purulento de 48 h. En ambulancia recibió O2 con mascarilla reservorio a alto flujo. Llega letárgico, con SpO2 97%, FR 28 rpm, y GSA: pH 7,26, PaCO2 78 mmHg, PaO2 88 mmHg. ¿Cuál es la conducta inmediata más adecuada?`,
+    options: [
+      `Mantener O2 a alto flujo para asegurar SpO2 >96% y pautar teofilina intravenosa.`,
+      `Reducir O2 a Venturi 24–28% buscando SpO2 88–92%, iniciar SABA+SAMA, corticoides i.v. (0,5 mg/kg/6h), antibioterapia y valorar VMNI/UCI por acidosis grave (pH <7,30) y letargia.`,
+      `Realizar espirometría forzada urgente para confirmar obstrucción y dar alta con control en 72 h.`
+    ],
+    correct: 1,
+    feedback: `Correcto. El aporte descontrolado de O2 ha provocado carbonarcosis (pH 7,26 <7,30 + letargia = criterio de UCI/VMNI). Objetivo SpO2 88–92% (Venturi 24–28%), GSA en 30–60 min, SABA+ipratropio, corticoides i.v., antibiótico por purulencia y HBPM. Espirometría y teofilina están contraindicadas/no recomendadas.`
+  },
+  {
+    id: `c2`,
+    title: `Caso 2: Mujer de 32 años con crisis asmática refractaria a SABA`,
+    stem: `Asmática de larga evolución acude por broncoespasmo intenso. Tras 90 minutos de salbutamol nebulizado cada 20 min, mantiene PEFR 52% del predicho, taquipnea intensa y la GSA muestra PaO2 68 mmHg y PaCO2 41 mmHg (pH 7,38). ¿Cómo interpretas esa PaCO2 y qué paso sigue?`,
+    options: [
+      `La PaCO2 normal descarta gravedad; puede continuar solo con SABA cada 4 horas.`,
+      `Una PaCO2 normal en un asmático con distrés indica agotamiento y fallo respiratorio inminente; iniciar corticoides i.v., O2 suplementario, añadir anticolinérgico/magnesio y vigilar necesidad de VMNI o VMI.`,
+      `Administrar amoxicilina-clavulánico empírico aunque no haya fiebre ni signos de infección.`
+    ],
+    correct: 1,
+    feedback: `Exacto (Harrison Cap. 298). El asmático en crisis suele presentar hipocapnia; una PaCO2 normal o casi normal alerta de agotamiento muscular y fallo ventilatorio inminente. Al fallar en 1–2 h con PEFR ≤60%, corresponden corticoides i.v., O2, SAMA/Mg y preparación para soporte ventilatorio.`
+  },
+  {
+    title: `Caso 3: Hombre de 72 años con NAC grave en UCI`,
+    stem: `Ingresa en UCI por neumonía adquirida en la comunidad con confusión, urea 9 mmol/L, FR 34 rpm y PA 85/55 mmHg (CURB-65 = 5). No hay sospecha de P. aeruginosa ni aspiración. ¿Qué pauta antibiótica empírica recomienda la normativa SEPAR?`,
+    options: [
+      `Ceftriaxona 2 g/24 h (o cefotaxima 2 g/6–8 h) i.v. + Azitromicina 500 mg/día (o claritromicina 500 mg/12 h, o levofloxacino 500 mg/12 h) durante 7–14 días.`,
+      `Moxifloxacino oral en monoterapia durante 5 días.`,
+      `Piperacilina-tazobactam más vancomicina más colistina de entrada.`
+    ],
+    correct: 0,
+    feedback: `Correcto (Tabla 5 SEPAR). En NAC en UCI sin sospecha de Pseudomonas se indica cefalosporina no antipseudomónica a dosis altas + macrólido (o levofloxacino 500 mg/12 h) i.v. 7–14 días, además de hemocultivos, antígenos urinarios, esputo y profilaxis con HBPM.`
+  },
+  {
+    title: `Caso 4: Paciente politraumatizado en 7º día de ventilación mecánica`,
+    stem: `Varón intubado hace 7 días por politraumatismo desarrolla fiebre 38,9 °C, leucocitos 16.500/mm³, secreciones purulentas por tubo endotraqueal e infiltrado nuevo en Rx. Hospital con alta prevalencia de SAOR. ¿Cuál es la estrategia correcta?`,
+    options: [
+      `Esperar 72 horas al resultado del cultivo antes de iniciar antibióticos.`,
+      `Iniciar empíricamente combinación de 2 fármacos antipseudomónicos + linezolid (o vancomicina) tras toma de muestras, y valorar desescalada con el antibiograma.`,
+      `Pautar amoxicilina-clavulánico en monoterapia.`
+    ],
+    correct: 1,
+    feedback: `Correcto. Cumple criterios de NAV tardía (≥5º día, >48 h VM + infiltrado + ≥2 criterios clínicos). El tratamiento precoz y apropiado determina el pronóstico: biterapia antipseudomónica + cobertura SAOR (linezolid o vancomicina) y posterior desescalada.`
+  },
+  {
+    title: `Caso 5: Postoperatorio abdominal con taquipnea, ansiedad e hipoxemia progresiva`,
+    stem: `Paciente operado de abdomen superior hace 24 h presenta taquipnea (FR 36 rpm), ansiedad, cianosis leve y PaO2 54 mmHg con FiO2 0,50 (PaO2/FiO2 = 108). La Rx inicial era casi normal y ahora muestra infiltrados alveolares bilaterales difusos sin fallo ventricular izquierdo. ¿Qué medida debe EVITARSE?`,
+    options: [
+      `Buscar y controlar foco séptico intraabdominal y usar VM protectora con volumen corriente bajo.`,
+      `Administrar albúmina o coloides i.v. y sobrecargar líquidos parenterales para expandir volumen.`,
+      `Monitorizar gasometrías seriadas y vigilar neumotórax si requiere PEEP alta.`
+    ],
+    correct: 1,
+    feedback: `Correcto. En SDRA existe alteración de la permeabilidad capilar: la albúmina y los coloides escapan al intersticio y empeoran el edema pulmonar, igual que la sobrecarga hídrica.`
+  }
+];
+
+const QUIZ = [
+  { q: `Según la guía GOLD, ¿cuál es el rango objetivo de SpO2 en la exacerbación de EPOC con insuficiencia respiratoria?`, opts: [`96–100%`, `88–92%`, `80–84%`], ans: 1, exp: `Mantener SpO2 88–92% mediante Venturi 24–28% o gafas 2–4 L/min y realizar GSA a los 30–60 minutos.` },
+  { q: `En el estudio REDUCE sobre corticoides en agudización de EPOC, ¿qué duración demostró no inferioridad frente a 14 días?`, opts: [`5 días`, `2 días`, `21 días`], ans: 0, exp: `Ciclos cortos de 5 días fueron no inferiores a 14 días en nuevas agudizaciones a 6 meses y mortalidad.` },
+  { q: `¿Cuál de los criterios de Anthonisen es el indicador más sugestivo de etiología bacteriana en E-EPOC?`, opts: [`Aumento de la disnea`, `Cambio de color / purulencia del esputo`, `Tos seca nocturna`], ans: 1, exp: `La purulencia del esputo es el principal indicador clínico de infección bronquial bacteriana.` },
+  { q: `En una crisis asmática en urgencias, ¿qué hallazgo gasométrico indica fallo respiratorio inminente?`, opts: [`PaCO2 de 26 mmHg`, `PaCO2 normal o casi normal`, `Alcalosis respiratoria leve`], ans: 1, exp: `La hiperventilación asmática produce hipocapnia; una PaCO2 normalizada refleja agotamiento ventilatorio.` },
+  { q: `¿Qué concentración de NT-proBNP en líquido pleural sugiere derrame secundario a insuficiencia cardiaca congestiva?`, opts: [`> 150 pg/mL`, `> 1.500 pg/mL`, `< 300 pg/mL`], ans: 1, exp: `Según Harrison Cap. 305, un NT-proBNP pleural > 1.500 pg/mL sugiere derrame por ICC.` },
+  { q: `Con niveles de PEEP > 15–20 cmH2O en SDRA, ¿qué frecuencia puede alcanzar el neumotórax?`, opts: [`< 2%`, `> 25%`, `Exactamente 5%`], ans: 1, exp: `Fisiología de la Respiración señala >25% de riesgo de neumotórax (a tensión) con PEEP >15–20 cmH2O.` },
+  { q: `En un paciente con THCM sin profilaxis, ¿qué patógeno oportunista tiene inicio fulminante hacia el día 60 y mortalidad >90% precoz?`, opts: [`Pneumocystis jirovecii`, `Streptococcus pneumoniae`, `Legionella pneumophila`], ans: 0, exp: `Pneumocystis jirovecii complica hasta el 16% de THCM alogénicos sin profilaxis con TMP-SMX.` },
+  { q: `¿Qué sensibilidad aproximada tiene la EBUS-TBNA para neoplasias epiteliales mediastínicas?`, opts: [`~45%`, `~90%`, `~60%`], ans: 1, exp: `Harrison Cap. 297 reporta ~90% para neoplasias epiteliales, ~70% en linfoma y ≥80% en sarcoidosis.` },
+  { q: `¿Por qué NO se recomiendan coloides ni albúmina en el manejo del SDRA?`, opts: [`Porque inducen broncoespasmo`, `Porque escapan al intersticio por permeabilidad capilar anormal y agravan el edema`, `Porque producen hipercapnia directa`], ans: 1, exp: `Es uno de los 9 puntos "Evite" en SDRA de Fisiología de la Respiración.` },
+  { q: `¿En qué situación está indicada la toracocentesis diagnóstica en un paciente con insuficiencia cardiaca y derrame pleural?`, opts: [`Siempre que sea bilateral y simétrico`, `Si no es bilateral comparable, si hay fiebre, dolor pleurítico o persiste tras tratamiento`, `Nunca en insuficiencia cardiaca`], ans: 1, exp: `Harrison Cap. 305 establece estas indicaciones para descartar etiología no trasudativa/complicada.` }
+];
+
+const FLASHCARDS = [
+  { f: `Objetivo SpO2 y control gasométrico en E-EPOC con insuficiencia respiratoria`, b: `SpO2 88–92% (Venturi 24–28% o gafas 2–4 L/min) + GSA a los 30–60 minutos.` },
+  { f: `Pauta de glucocorticoides en E-EPOC ambulatoria vs hospitalaria`, b: `Amb: prednisona máx 40 mg/d v.o. 7–10 d (REDUCE 5 d). Hosp: 0,5 mg/kg/6 h i.v. 3 días, luego v.o. <15 d.` },
+  { f: `Criterios UCI en EPOC (SEPAR)`, b: `Parada, coma/confusión/letargia, inestabilidad hemodinámica, pH <7,30, pH <7,25 pese a VMNI, PaO2 <40 mmHg, VMI.` },
+  { f: `Signo gasométrico de gravedad extrema en crisis asmática`, b: `PaCO2 normal o casi normal en paciente con distrés respiratorio = agotamiento y necesidad de VM.` },
+  { f: `Pauta UCI en NAC sin sospecha de Pseudomonas (SEPAR)`, b: `Ceftriaxona 2 g/24 h o cefotaxima 2 g/6–8 h + azitromicina 500 mg/d o claritromicina 500 mg/12 h (o levofloxacino 500 mg/12 h) i.v. 7–14 días.` },
+  { f: `Criterios de sospecha de NAV`, b: `Infiltrado nuevo/progresivo + ≥2 de: fiebre >38 °C, leucocitosis/leucopenia, secreciones purulentas.` },
+  { f: `Cobertura empírica de NAV tardía (≥5º día) con riesgo GMR/SAOR`, b: `2 fármacos antipseudomónicos + linezolid o vancomicina; desescalada según cultivos.` },
+  { f: `Componentes del acrónimo CURB-65`, b: `Confusión, Urea >7 mmol/L, FR ≥30 rpm, PAD ≤60 o PAS <90 mmHg, Edad ≥65 años.` },
+  { f: `Criterios Demling clave de Falla Respiratoria Aguda`, b: `FR >35 rpm, PaO2 <70 mmHg (aire), PaCO2 >55 mmHg, A-aDO2 >450 mmHg, VD/VT >0,60.` },
+  { f: `9 errores graves a evitar en SDRA (principales)`, b: `Sobrecarga hídrica, sangre almacenada, albúmina/coloides, FiO2 >0,50, PEEP >15–20 prolongada, VM excesiva, ATB amplio espectro prolongado.` },
+  { f: `Hallazgos TACAR en Bronquiectasias`, b: `Signo de raíl de tranvía, engrosamiento de pared bronquial y nódulos en árbol en brote.` },
+  { f: `Ventilación en estatus asmático intubado`, b: `Frecuencias respiratorias bajas y volúmenes bajos (hipercapnia permisiva) para bajar presiones pico; bicarbonato solo si acidosis crítica.` }
+];
+
+// App State (persisted via notebookAppApi)
+let appState = {
+  abcde: {},
+  caseAnswers: {},
+  quizAnswers: {},
+  flashMastered: {},
+  flashIndex: 0,
+  activeCase: 0
+};
+
+let currentPathFilter = `all`;
+let currentSearch = ``;
+let flashFlipped = false;
+
+function saveState() {
+  if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+    window.notebookAppApi.setAppState(appState).catch(() => {});
+  }
+  updateProgressUI();
+}
+
+function updateProgressUI() {
+  const abcdeCount = Object.values(appState.abcde).filter(Boolean).length;
+  const abcdeEl = document.getElementById(`abcde-counter`);
+  if (abcdeEl) abcdeEl.textContent = `${abcdeCount}/6 pasos verificados`;
+
+  const casesDone = Object.keys(appState.caseAnswers).length;
+  const quizDone = Object.keys(appState.quizAnswers).length;
+  const flashDone = Object.values(appState.flashMastered).filter(Boolean).length;
+  const totalPct = Math.round(((casesDone + quizDone + flashDone) / (CASES.length + QUIZ.length + FLASHCARDS.length)) * 100);
+
+  const progEl = document.getElementById(`sidebar-progress`);
+  if (progEl) progEl.textContent = `${totalPct}%`;
+  const detEl = document.getElementById(`sidebar-progress-detail`);
+  if (detEl) detEl.textContent = `${casesDone}/5 casos · ${quizDone}/10 test · ${flashDone}/12 tarjetas`;
+}
+
+function jumpTo(id, btn) {
+  const target = document.getElementById(id);
+  if (target) target.scrollIntoView({ behavior: `smooth`, block: `start` });
+  if (btn && btn.classList.contains(`nav-btn`)) {
+    document.querySelectorAll(`.nav-btn`).forEach(b => b.classList.remove(`active`));
+    btn.classList.add(`active`);
+  }
+}
+
+function toggleAbcde(cb) {
+  appState.abcde[cb.dataset.abcde] = cb.checked;
+  saveState();
+}
+
+function restoreAbcde() {
+  document.querySelectorAll(`#abcde-list input[type="checkbox"]`).forEach(cb => {
+    cb.checked = Boolean(appState.abcde[cb.dataset.abcde]);
+  });
+}
+
+function handleGlobalSearch(val) {
+  currentSearch = val.trim().toLowerCase();
+  renderPathologies();
+  const vadSearch = document.getElementById(`vad-search`);
+  if (vadSearch && document.activeElement !== vadSearch) {
+    vadSearch.value = val;
+    renderVademecum();
+  }
+  const chip = document.getElementById(`search-status-chip`);
+  if (chip) {
+    chip.textContent = currentSearch ? `Filtro activo: "${val.trim()}"` : `Mostrando todo el contenido verificado`;
+  }
+}
+
+function resetSearch() {
+  const gs = document.getElementById(`global-search`);
+  const vs = document.getElementById(`vad-search`);
+  if (gs) gs.value = ``;
+  if (vs) vs.value = ``;
+  currentSearch = ``;
+  currentPathFilter = `all`;
+  document.querySelectorAll(`#cat-filters button`).forEach(b => b.classList.toggle(`active`, b.dataset.cat === `all`));
+  const chip = document.getElementById(`search-status-chip`);
+  if (chip) chip.textContent = `Mostrando todo el contenido verificado`;
+  renderPathologies();
+  renderVademecum();
+}
+
+function setPathologyFilter(cat, btn) {
+  currentPathFilter = cat;
+  document.querySelectorAll(`#cat-filters button`).forEach(b => b.classList.remove(`active`));
+  if (btn) btn.classList.add(`active`);
+  renderPathologies();
+}
+
+function togglePathology(id) {
+  const body = document.getElementById(`pbody-${id}`);
+  const icon = document.getElementById(`picon-${id}`);
+  if (!body) return;
+  const open = body.classList.toggle(`open`);
+  if (icon) icon.style.transform = open ? `rotate(180deg)` : `rotate(0deg)`;
+}
+
+function renderPathologies() {
+  const container = document.getElementById(`pathologies-container`);
+  if (!container) return;
+
+  const filtered = PATHOLOGIES.filter(p => {
+    const catOk = currentPathFilter === `all` || p.cat === currentPathFilter;
+    if (!catOk) return false;
+    if (!currentSearch) return true;
+    const hay = `${p.title} ${p.summary} ${p.evidence} ${p.blocks.map(b => `${b.h} ${b.p || ``} ${(b.ul || []).join(` `)}`).join(` `)}`.toLowerCase();
+    return hay.includes(currentSearch);
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="panel"><p style="margin:0;">No hay fichas que coincidan con "${currentSearch}". Pulsa "Limpiar filtro" para ver todas las patologías.</p></div>`;
+    return;
+  }
+
+  container.innerHTML = filtered.map((p, idx) => {
+    const autoOpen = currentSearch.length > 0 || idx === 0;
+    return `
+      <article class="pathology-card" data-cat="${p.cat}">
+        <button type="button" class="pathology-head" onclick="togglePathology('${p.id}')" aria-expanded="${autoOpen}">
+          <div>
+            <h3 class="pathology-title">${p.title}</h3>
+            <p class="pathology-summary">${p.summary}</p>
+          </div>
+          <div class="chip-row">
+            <span class="chip" data-status="info">${p.evidence}</span>
+            <span id="picon-${p.id}" style="display:inline-flex;transition:transform 180ms ease;transform:rotate(${autoOpen ? 180 : 0}deg);" aria-hidden="true">▼</span>
+          </div>
+        </button>
+        <div id="pbody-${p.id}" class="pathology-body ${autoOpen ? `open` : ``}">
+          <div class="dossier-grid">
+            ${p.blocks.map(b => `
+              <div class="dossier-block">
+                <h4>${b.h}</h4>
+                ${b.p ? `<p>${b.p}</p>` : ``}
+                ${b.ul ? `<ul>${b.ul.map(li => `<li>${li}</li>`).join(``)}</ul>` : ``}
+              </div>
+            `).join(``)}
+          </div>
+        </div>
+      </article>
+    `;
+  }).join(``);
+}
+
+// Algorithms
+function switchAlgo(tab, btn) {
+  document.querySelectorAll(`.algo-pane`).forEach(el => el.style.display = `none`);
+  const pane = document.getElementById(`algo-${tab}`);
+  if (pane) pane.style.display = `block`;
+  if (btn && btn.parentElement) {
+    btn.parentElement.querySelectorAll(`.subtab-btn`).forEach(b => b.classList.remove(`active`));
+    btn.classList.add(`active`);
+  }
+}
+
+function updateEpocAlgo() {
+  const gEl = document.getElementById(`epoc-gravedad`);
+  const eEl = document.getElementById(`epoc-esputo`);
+  const pEl = document.getElementById(`epoc-pseudo`);
+  const out = document.getElementById(`epoc-algo-output`);
+  if (!gEl || !eEl || !pEl || !out) return;
+
+  const g = gEl.value, e = eEl.value, p = pEl.value;
+  let nivel = `Manejo ambulatorio con control en 48–72 horas.`;
+  let status = `ok`;
+  if (g === `grave`) { nivel = `Derivar a valoración hospitalaria (criterios Tabla 5 SEPAR). Valorar Hospitalización a Domicilio solo si no hay acidosis ni alteración mental.`; status = `info`; }
+  if (g === `uci`) { nivel = `INGRESO EN UCI INMEDIATO (Tabla 6 SEPAR): valorar VMNI o ventilación mecánica invasiva.`; status = `alert`; }
+
+  let cort = g === `leve` ? `Optimizar SABA (± SAMA). Corticoides solo si no responde al tratamiento inicial.` :
+    (g === `moderada` ? `Prednisona máx 40 mg/día v.o. 7–10 días (REDUCE: 5 días).` : `Metilprednisolona / corticoide i.v. 0,5 mg/kg/6 h los primeros 3 días y pasar a v.o. <15 días.`);
+
+  let atb = e === `mucoso` ? `Sin indicación clara de antibiótico por ausencia de purulencia del esputo.` :
+    (p === `si` ? `Riesgo Pseudomonas: tomar muestra esputo (cultivo/antibiograma). Levofloxacino o ciprofloxacino dosis altas; si grave, betalactámico antipseudomónico parenteral ± aminoglucósido 3–5 días.` : `Indicado antibiótico (penicilinas, cefalosporinas, quinolonas o macrólidos según resistencias locales).`);
+
+  let o2 = (g === `grave` || g === `uci`) ? `Oxigenoterapia controlada (Venturi 24–28% o gafas 2–4 L/min) para SpO2 88–92% + GSA a los 30–60 min + HBPM profiláctica.` : `Mantener tratamiento broncodilatador basal y comprobar SpO2.`;
+
+  out.setAttribute(`data-status`, status);
+  out.innerHTML = `<strong>Nivel asistencial:</strong> ${nivel}<br><strong>Broncodilatadores y Corticoides:</strong> ${cort}<br><strong>Antibioterapia:</strong> ${atb}<br><strong>Soporte:</strong> ${o2}`;
+}
+
+function updateAsmaAlgo() {
+  const pEl = document.getElementById(`asma-pefr`);
+  const iEl = document.getElementById(`asma-inf`);
+  const out = document.getElementById(`asma-algo-output`);
+  if (!pEl || !iEl || !out) return;
+
+  const v = pEl.value, inf = iEl.value;
+  let msg = ``, st = `ok`;
+  if (v === `pefr60`) {
+    msg = `<strong>Respuesta favorable (PEFR &gt;60%):</strong> suele responder a β2-agonistas inhalados/nebulizados. Mantener O2 si hipoxemia y ajustar terapia de control (CSI).`;
+  } else if (v === `noresp`) {
+    st = `info`;
+    msg = `<strong>Falta de respuesta 1–2 h / Ingreso si persiste 4–6 h:</strong> administrar corticoides intravenosos, O2 suplementario, anticolinérgicos nebulizados, valorar magnesio/LTRA, nebulización continua, VMNI por agotamiento o heliox.`;
+  } else {
+    st = `alert`;
+    msg = `<strong>ALERTA CRÍTICA (PaCO2 normal o casi normal en distrés):</strong> fallo respiratorio inminente. Preparar ventilación mecánica con FR baja / volumen bajo (hipercapnia permisiva) y bicarbonato solo si acidosis crítica.`;
+  }
+  const atb = inf === `si` ? `Antibióticos indicados por signos de infección.` : `NO administrar antibióticos (no hay signos de infección).`;
+  out.setAttribute(`data-status`, st);
+  out.innerHTML = `${msg}<br><strong>Antibióticos:</strong> ${atb}`;
+}
+
+function updateNacAlgo() {
+  const sel = document.getElementById(`nac-ambito`);
+  const out = document.getElementById(`nac-algo-output`);
+  if (!sel || !out) return;
+
+  const map = {
+    'nac-amb': `<strong>NAC Ambulatoria (SEPAR):</strong> Moxifloxacino o levofloxacino (5–7 d v.o.) O Amoxicilina / amox-clavulánico / cefditoren (7 d v.o.) + Azitromicina (3 d v.o.) o claritromicina (7 d v.o.). No precisa microbiología rutinaria.`,
+    'nac-sala': `<strong>NAC Sala Hospitalización (SEPAR):</strong> Cefotaxima o ceftriaxona o amox-clavulánico + Macrólido (7–10 d i.v.) O Levofloxacino monoterapia (puede iniciarse v.o.). Tomar hemocultivos, esputo y antígenos en orina.`,
+    'nac-uci': `<strong>NAC UCI (SEPAR):</strong> Ceftriaxona 2 g/24 h o cefotaxima 2 g/6–8 h + Azitromicina 500 mg/día o claritromicina 500 mg/12 h (alternativa: levofloxacino 500 mg/12 h), 7–14 d i.v. Añadir profilaxis HBPM.`,
+    'nac-asp': `<strong>NAC Sospecha Aspiración:</strong> Amoxicilina-clavulánico (amoxicilina 2 g/8 h), moxifloxacino, ertapenem o clindamicina (14 d i.v.).`,
+    'nac-pseudo': `<strong>NAC Sospecha P. aeruginosa:</strong> Piperacilina-tazobactam, cefepime o carbapenem (meropenem preferible sobre imipenem) + 2º fármaco antipseudomónico (14 d i.v.).`,
+    'nn-precoz': `<strong>NN Precoz sin FR GMR:</strong> Monoterapia con amoxicilina-clavulánico, cefalosporina 3ª generación o levofloxacino (alternativa: ertapenem).`,
+    'nn-tardia': `<strong>NN/NAV Tardía o riesgo GMR:</strong> Biterapia antipseudomónica (betalactámico activo + aminoglucósido o fluoroquinolona) + Linezolid o vancomicina si probable SAOR. Desescalar según cultivos.`
+  };
+  out.setAttribute(`data-status`, sel.value.includes(`uci`) || sel.value.includes(`tardia`) ? `alert` : `info`);
+  out.innerHTML = map[sel.value] || ``;
+}
+
+// Gasometría
+function loadGsaPreset(type) {
+  if (type === `carbonarcosis`) {
+    document.getElementById(`gsa-ph`).value = `7.24`;
+    document.getElementById(`gsa-paco2`).value = `76`;
+    document.getElementById(`gsa-pao2`).value = `82`;
+    document.getElementById(`gsa-fio2`).value = `0.50`;
+    document.getElementById(`gsa-contexto`).value = `epoc`;
+  }
+  interpretGsa();
+}
+
+function interpretGsa() {
+  const ph = parseFloat(document.getElementById(`gsa-ph`).value);
+  const paco2 = parseFloat(document.getElementById(`gsa-paco2`).value);
+  const pao2 = parseFloat(document.getElementById(`gsa-pao2`).value);
+  const fio2 = parseFloat(document.getElementById(`gsa-fio2`).value);
+  const ctx = document.getElementById(`gsa-contexto`).value;
+  const out = document.getElementById(`gsa-result`);
+  if (!out || isNaN(ph) || isNaN(paco2) || isNaN(pao2) || isNaN(fio2) || fio2 <= 0) return;
+
+  const pafi = Math.round(pao2 / fio2);
+  let acidBase = `Equilibrio ventilatorio sin retención aguda significativa.`;
+  if (paco2 > 45 && ph < 7.35) acidBase = `<strong>Acidosis respiratoria</strong> (retención de CO2 / ↑ H2CO3 por hipoventilación).`;
+  else if (paco2 < 35 && ph > 7.45) acidBase = `<strong>Alcalosis respiratoria</strong> (hipocapnia por hiperventilación).`;
+  else if (paco2 > 45) acidBase = `<strong>Hipercapnia</strong> (vigilar compensación y evolución del pH).`;
+
+  let alertMsg = `PaO2/FiO2 = <strong>${pafi} mmHg</strong>.`;
+  let status = `info`;
+
+  if (ctx === `epoc`) {
+    if (ph < 7.25) { status = `alert`; alertMsg += ` Criterio crítico de UCI si persiste pese a VMNI (pH &lt;7,25).`; }
+    else if (ph < 7.30) { status = `alert`; alertMsg += ` Criterio de ingreso en UCI (pH &lt;7,30).`; }
+    if (pao2 < 40) { status = `alert`; alertMsg += ` Hipoxemia grave (&lt;40 mmHg) → UCI.`; }
+    else if (pao2 < 60) { alertMsg += ` Insuficiencia respiratoria (PaO2 &lt;60 mmHg) → derivar/ingresar y mantener SpO2 88–92%.`; }
+  } else if (ctx === `asma`) {
+    if (paco2 >= 38) { status = `alert`; alertMsg += ` ¡ALARMA! PaCO2 normal o elevada en crisis asmática anuncia fallo ventilatorio inminente.`; }
+  } else if (ctx === `sdra`) {
+    if (pao2 < 60 && paco2 > 50) { status = `alert`; alertMsg += ` Cumple umbral general de SDRA a nivel del mar (PaO2 &lt;60 y PaCO2 &gt;50).`; }
+  } else if (ctx === `bogota`) {
+    if (pao2 <= 45 && paco2 > 45) { status = `alert`; alertMsg += ` Cumple umbral de SDRA ajustado a altitud de Bogotá (PaO2 ≤45 y PaCO2 &gt;45).`; }
+  }
+
+  out.setAttribute(`data-status`, status);
+  out.innerHTML = `${acidBase}<br>${alertMsg}`;
+}
+
+// VM Waveforms (Figs IV-5 & IV-6)
+function setVmMode(mode, btn) {
+  document.querySelectorAll(`#btn-vm-pcv, #btn-vm-ac`).forEach(b => b.classList.remove(`active`));
+  if (btn) btn.classList.add(`active`);
+  const svg = document.getElementById(`vm-svg`);
+  const cap = document.getElementById(`vm-caption`);
+  if (!svg || !cap) return;
+
+  if (mode === `pcv`) {
+    svg.innerHTML = `
+      <text x="20" y="24" font-family="Figtree,sans-serif" font-weight="700" font-size="13" fill="var(--on-primary-container)">Presión (cmH2O) — Constante en ambas respiraciones</text>
+      <path d="M20,75 L80,75 L85,38 L220,38 L225,75 L380,75 L385,38 L520,38 L525,75 L720,75" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
+      <text x="20" y="118" font-family="Figtree,sans-serif" font-weight="700" font-size="13" fill="var(--tertiary)">Volumen (ml) — Cae en la 2ª respiración al disminuir la distensibilidad</text>
+      <path d="M20,190 L80,190 Q150,122 220,132 L245,190 L380,190 Q450,152 520,158 L545,190 L720,190" fill="none" stroke="var(--tertiary)" stroke-width="2.5"/>
+      <text x="150" y="122" font-family="Atkinson Hyperlegible,sans-serif" font-size="11.5" fill="var(--secondary)">Distensibilidad normal</text>
+      <text x="430" y="148" font-family="Atkinson Hyperlegible,sans-serif" font-size="11.5" fill="var(--error)">↓ Distensibilidad → ↓ Volumen</text>
+    `;
+    cap.textContent = `Fig. IV-5 (Ventilación controlada por presión): se prefija una presión positiva constante durante el ciclo. Si disminuye la distensibilidad pulmonar en la segunda respiración, el volumen alcanzado cae.`;
+  } else {
+    svg.innerHTML = `
+      <text x="20" y="24" font-family="Figtree,sans-serif" font-weight="700" font-size="13" fill="var(--on-primary-container)">Presión (cmH2O) — El esfuerzo del paciente genera descenso negativo que dispara el ciclo</text>
+      <path d="M20,75 L80,75 L90,34 L220,34 L230,75 L370,75 L376,92 L386,34 L515,34 L525,75 L720,75" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
+      <circle cx="376" cy="92" r="5" fill="var(--error)"/>
+      <text x="390" y="96" font-family="Figtree,sans-serif" font-weight="700" font-size="11.5" fill="var(--error)">Esfuerzo inspiratorio (trigger)</text>
+      <text x="20" y="130" font-family="Figtree,sans-serif" font-weight="700" font-size="13" fill="var(--tertiary)">Volumen (ml) — Volumen prefijado garantizado en cada respiración</text>
+      <path d="M20,190 L80,190 Q150,136 220,136 L245,190 L386,190 Q450,136 515,136 L540,190 L720,190" fill="none" stroke="var(--tertiary)" stroke-width="2.5"/>
+    `;
+    cap.textContent = `Fig. IV-6 (Ventilación asistida/controlada): tras una respiración controlada, el esfuerzo del paciente produce un descenso de presión detectado por el ventilador, que responde entregando el volumen prefijado.`;
+  }
+}
+
+// Calculators
+function calcCurb() {
+  const ids = [`curb-c`, `curb-u`, `curb-r`, `curb-b`, `curb-65`];
+  const score = ids.reduce((acc, id) => acc + (document.getElementById(id)?.checked ? 1 : 0), 0);
+  const out = document.getElementById(`curb-output`);
+  if (!out) return;
+  let st = `ok`, rec = `Puntuación baja (0–1): valorar tratamiento ambulatorio según valoración clínica global.`;
+  if (score === 2) { st = `info`; rec = `Puntuación intermedia (2): considerar ingreso hospitalario u observación estrecha.`; }
+  if (score >= 3) { st = `alert`; rec = `Neumonía grave (≥3): ingreso hospitalario y valoración de UCI.`; }
+  out.setAttribute(`data-status`, st);
+  out.innerHTML = `<strong>CURB-65 = ${score} / 5</strong><br>${rec}`;
+}
+
+function calcRespScore() {
+  const pao2 = parseFloat(document.getElementById(`calc-pao2`).value);
+  const fio2 = parseFloat(document.getElementById(`calc-fio2`).value);
+  const fr = parseFloat(document.getElementById(`calc-fr`).value);
+  const paco2 = parseFloat(document.getElementById(`calc-paco2`).value);
+  const lis = parseFloat(document.getElementById(`calc-lis`).value);
+  const out = document.getElementById(`resp-score-output`);
+  if (!out || isNaN(pao2) || isNaN(fio2) || fio2 <= 0) return;
+
+  const pafi = Math.round(pao2 / fio2);
+  const demlingFlags = [];
+  if (fr > 35) demlingFlags.push(`FR &gt;35 rpm`);
+  if (pao2 < 70) demlingFlags.push(`PaO2 &lt;70 mmHg`);
+  if (paco2 > 55) demlingFlags.push(`PaCO2 &gt;55 mmHg`);
+
+  let lisTxt = lis === 0 ? `Sin lesión pulmonar` : (lis <= 2.5 ? `Lesión pulmonar leve-moderada (0,1–2,5)` : `Lesión grave / SDRA (&gt;2,5)`);
+  out.setAttribute(`data-status`, lis > 2.5 || demlingFlags.length >= 2 ? `alert` : `info`);
+  out.innerHTML = `<strong>PaO2/FiO2:</strong> ${pafi} mmHg · <strong>Puntaje ampliado:</strong> ${lisTxt}<br><strong>Criterios Demling activos:</strong> ${demlingFlags.length ? demlingFlags.join(`, `) : `Ninguno de estos 3 parámetros en rango crítico`}.`;
+}
+
+// Oxygen Guide
+function updateOxygenGuide() {
+  const val = document.getElementById(`o2-scenario`)?.value;
+  const out = document.getElementById(`o2-guide-output`);
+  if (!out || !val) return;
+  const data = {
+    epoc: [
+      { h: `Dispositivo y Flujo (GOLD)`, p: `Mascarilla Venturi al 24–28% (preferible por control de FiO2) o gafas nasales a 2–4 L/min.` },
+      { h: `Objetivo y Control Gasométrico`, p: `Mantener SpO2 88–92%. Realizar gasometría arterial a los 30–60 minutos para descartar hipercapnia y carbonarcosis.` },
+      { h: `VMNI / UCI`, p: `Indicar VMNI/UCI si acidosis respiratoria grave (pH <7,30), hipercapnia o pH <7,25 pese a VMNI, o PaO2 <40 mmHg.` }
+    ],
+    asma: [
+      { h: `Oxigenoterapia`, p: `Oxígeno suplementario para corregir la hipoxemia mientras actúan SABA nebulizados y corticoides.` },
+      { h: `VMNI y Mezclas Helio-Oxígeno`, p: `VMNI (presión positiva no invasiva) útil en agotamiento respiratorio para evitar intubación; heliox disminuye trabajo respiratorio.` },
+      { h: `Ventilación Invasiva`, p: `Indicación si PaCO2 normal/alta o fallo respiratorio: FR baja, volumen corriente bajo, hipercapnia permisiva.` }
+    ],
+    sdra: [
+      { h: `Oxigenación Segura`, p: `Evitar FiO2 >0,50 (50%) de forma prolongada por toxicidad alveolar. En NAC con SDRA, la VMNI reduce intubación en 54% (serie citada).` },
+      { h: `Ventilación Protectora`, p: `Volúmenes corrientes bajos (ARDS Network) y PEEP óptimo; vigilar neumotórax (>25% si PEEP >15–20 cmH2O).` },
+      { h: `Cuidados Asociados`, p: `Restringir sobrecarga hídrica y coloides, evitar hipocapnia/alcalosis prolongadas, soporte nutricional precoz.` }
+    ],
+    sho: [
+      { h: `Terapia de Presión Positiva`, p: `CPAP o ventilación no invasiva (NIPPV) corrige la hipoventilación y los trastornos respiratorios del sueño.` },
+      { h: `Efecto Fisiológico`, p: `Mejora los defectos en la respuesta ventilatoria central a la hipoxemia e hipercapnia sin requerir pérdida ponderal previa.` }
+    ],
+    inmuno: [
+      { h: `VMNI Precoz`, p: `En insuficiencia respiratoria progresiva (TOS/THCM), valorar precozmente VMNI: disminuye la necesidad de VM invasiva (asociada a peor pronóstico).` },
+      { h: `Diagnóstico Paralelo`, p: `Realizar broncoscopia precoz con LBA para descartar P. jirovecii, CMV, hongos o micobacterias.` }
+    ]
+  };
+  out.innerHTML = (data[val] || []).map(b => `<div class="dossier-block"><h4>${b.h}</h4><p>${b.p}</p></div>`).join(``);
+}
+
+// Vademecum
+function renderVademecum() {
+  const tbody = document.getElementById(`vademecum-tbody`);
+  const q = (document.getElementById(`vad-search`)?.value || ``).trim().toLowerCase();
+  const grp = document.getElementById(`vad-group`)?.value || `all`;
+  if (!tbody) return;
+
+  const rows = VADEMECUM.filter(v => {
+    const grpOk = grp === `all` || v.group === grp;
+    if (!grpOk) return false;
+    if (!q) return true;
+    return `${v.name} ${v.ind} ${v.dose} ${v.warn}`.toLowerCase().includes(q);
+  });
+
+  if (rows.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4">Sin resultados en el vademécum para "${q}".</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = rows.map(v => `
+    <tr>
+      <td><strong>${v.name}</strong></td>
+      <td>${v.ind}</td>
+      <td>${v.dose}</td>
+      <td>${v.warn}</td>
+    </tr>
+  `).join(``);
+}
+
+// Practice: Cases, Quiz, Flashcards
+function switchPractice(tab, btn) {
+  [`casos`, `quiz`, `flash`].forEach(t => {
+    const el = document.getElementById(`practice-${t}`);
+    if (el) el.style.display = t === tab ? `block` : `none`;
+  });
+  if (btn && btn.parentElement) {
+    btn.parentElement.querySelectorAll(`.subtab-btn`).forEach(b => b.classList.remove(`active`));
+    btn.classList.add(`active`);
+  }
+}
+
+function renderCases() {
+  const sel = document.getElementById(`case-selector`);
+  const view = document.getElementById(`case-viewer`);
+  if (!sel || !view) return;
+
+  sel.innerHTML = CASES.map((c, i) => `
+    <button type="button" class="btn ${i === appState.activeCase ? `btn-primary` : `btn-ghost`}" onclick="selectCase(${i})">
+      Caso ${i + 1} ${appState.caseAnswers[i] !== undefined ? `✓` : ``}
+    </button>
+  `).join(``);
+
+  const c = CASES[appState.activeCase];
+  const chosen = appState.caseAnswers[appState.activeCase];
+  view.innerHTML = `
+    <div class="status-card" data-status="info">
+      <h4 style="margin:0 0 var(--space-xs) 0;font-family:var(--font-headline);">${c.title}</h4>
+      <p style="margin:0 0 var(--space-md) 0;">${c.stem}</p>
+      <div style="display:flex;flex-direction:column;gap:var(--space-sm);">
+        ${c.options.map((opt, idx) => {
+          let cls = `quiz-option`;
+          if (chosen !== undefined) {
+            if (idx === c.correct) cls += ` selected-ok`;
+            else if (idx === chosen) cls += ` selected-err`;
+          }
+          return `<button type="button" class="${cls}" onclick="answerCase(${appState.activeCase}, ${idx})">${opt}</button>`;
+        }).join(``)}
+      </div>
+      ${chosen !== undefined ? `
+        <div class="callout" data-status="${chosen === c.correct ? `ok` : `alert`}" style="margin-top:var(--space-md);">
+          <strong>${chosen === c.correct ? `Respuesta correcta` : `Revisa el criterio clínico`}:</strong> ${c.feedback}
+        </div>
+      ` : ``}
+    </div>
+  `;
+}
+
+function selectCase(idx) {
+  appState.activeCase = idx;
+  renderCases();
+  saveState();
+}
+
+function answerCase(caseIdx, optIdx) {
+  appState.caseAnswers[caseIdx] = optIdx;
+  renderCases();
+  saveState();
+}
+
+function renderQuiz() {
+  const cont = document.getElementById(`quiz-container`);
+  const scoreChip = document.getElementById(`quiz-score-chip`);
+  const progLabel = document.getElementById(`quiz-progress-label`);
+  if (!cont) return;
+
+  let correctCount = 0;
+  const answeredCount = Object.keys(appState.quizAnswers).length;
+  QUIZ.forEach((item, i) => {
+    if (appState.quizAnswers[i] === item.ans) correctCount++;
+  });
+  if (scoreChip) scoreChip.textContent = `Puntuación: ${correctCount} / ${QUIZ.length}`;
+  if (progLabel) progLabel.textContent = `${answeredCount} de ${QUIZ.length} respondidas`;
+
+  cont.innerHTML = QUIZ.map((item, i) => {
+    const chosen = appState.quizAnswers[i];
+    return `
+      <div class="status-card" data-status="${chosen === undefined ? `info` : (chosen === item.ans ? `ok` : `alert`)}">
+        <p style="margin:0 0 var(--space-sm) 0;"><strong>${i + 1}. ${item.q}</strong></p>
+        <div style="display:flex;flex-direction:column;gap:var(--space-xs);">
+          ${item.opts.map((opt, oi) => {
+            let cls = `quiz-option`;
+            if (chosen !== undefined) {
+              if (oi === item.ans) cls += ` selected-ok`;
+              else if (oi === chosen) cls += ` selected-err`;
+            }
+            return `<button type="button" class="${cls}" onclick="answerQuiz(${i}, ${oi})">${opt}</button>`;
+          }).join(``)}
+        </div>
+        ${chosen !== undefined ? `<p style="margin:var(--space-sm) 0 0 0;font-size:0.9rem;color:var(--on-surface-variant);"><strong>Explicación:</strong> ${item.exp}</p>` : ``}
+      </div>
+    `;
+  }).join(``);
+}
+
+function answerQuiz(qIdx, oIdx) {
+  appState.quizAnswers[qIdx] = oIdx;
+  renderQuiz();
+  saveState();
+}
+
+function renderFlashcard() {
+  const box = document.getElementById(`flashcard-box`);
+  const cnt = document.getElementById(`flash-counter`);
+  const mast = document.getElementById(`flash-mastered-chip`);
+  if (!box) return;
+
+  const idx = appState.flashIndex;
+  const card = FLASHCARDS[idx];
+  const isMast = Boolean(appState.flashMastered[idx]);
+  const mastTotal = Object.values(appState.flashMastered).filter(Boolean).length;
+
+  if (cnt) cnt.textContent = `Tarjeta ${idx + 1} de ${FLASHCARDS.length}`;
+  if (mast) mast.textContent = `${mastTotal} dominadas`;
+
+  box.setAttribute(`data-status`, isMast ? `ok` : `info`);
+  box.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <span class="kicker">${flashFlipped ? `Respuesta / Dato clave` : `Pregunta de repaso`}</span>
+      ${isMast ? `<span class="chip" data-status="ok">Dominada</span>` : `<span class="chip" data-status="neutral">En repaso</span>`}
+    </div>
+    <div style="font-family:var(--font-headline);font-size:1.25rem;font-weight:700;color:var(--on-surface);">
+      ${flashFlipped ? card.b : card.f}
+    </div>
+    <div style="font-size:0.85rem;color:var(--on-surface-variant);">Pulsa "Voltear tarjeta" para comprobar el dato verificado de las fuentes.</div>
+  `;
+}
+
+function flipFlash() { flashFlipped = !flashFlipped; renderFlashcard(); }
+function nextFlash() { appState.flashIndex = (appState.flashIndex + 1) % FLASHCARDS.length; flashFlipped = false; renderFlashcard(); saveState(); }
+function prevFlash() { appState.flashIndex = (appState.flashIndex - 1 + FLASHCARDS.length) % FLASHCARDS.length; flashFlipped = false; renderFlashcard(); saveState(); }
+function toggleFlashMastered() {
+  appState.flashMastered[appState.flashIndex] = !appState.flashMastered[appState.flashIndex];
+  renderFlashcard();
+  saveState();
+}
+
+function handleResetProgress(btn) {
+  if (btn.dataset.armed !== `true`) {
+    btn.dataset.armed = `true`;
+    btn.textContent = `Pulsa otra vez para reiniciar`;
+    return;
+  }
+  btn.dataset.armed = `false`;
+  btn.textContent = `Reiniciar progreso`;
+  appState = { abcde: {}, caseAnswers: {}, quizAnswers: {}, flashMastered: {}, flashIndex: 0, activeCase: 0 };
+  restoreAbcde();
+  renderCases();
+  renderQuiz();
+  renderFlashcard();
+  saveState();
+}
+
+async function initApp() {
+  if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+    try {
+      const saved = await window.notebookAppApi.getAppState();
+      if (saved && typeof saved === `object`) {
+        appState = {
+          abcde: saved.abcde || {},
+          caseAnswers: saved.caseAnswers || {},
+          quizAnswers: saved.quizAnswers || {},
+          flashMastered: saved.flashMastered || {},
+          flashIndex: typeof saved.flashIndex === `number` ? saved.flashIndex : 0,
+          activeCase: typeof saved.activeCase === `number` ? saved.activeCase : 0
+        };
+      }
+    } catch (e) {}
+  }
+
+  restoreAbcde();
+  renderPathologies();
+  updateEpocAlgo();
+  updateAsmaAlgo();
+  updateNacAlgo();
+  interpretGsa();
+  setVmMode(`pcv`, document.getElementById(`btn-vm-pcv`));
+  calcCurb();
+  calcRespScore();
+  updateOxygenGuide();
+  renderVademecum();
+  renderCases();
+  renderQuiz();
+  renderFlashcard();
+  updateProgressUI();
+
+  if (window.lucide && typeof window.lucide.createIcons === `function`) {
+    window.lucide.createIcons();
+  }
+  if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+    window.notebookAppApi.notifyAppReady();
+  }
+}
+
+document.addEventListener(`DOMContentLoaded`, initApp);
+</script>
+</body>
+</html>

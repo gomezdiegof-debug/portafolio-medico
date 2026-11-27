@@ -1,0 +1,2616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="vitals">
+  <title>Guía Clínica Integral de Urgencias en Endocrinología</title>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@300..900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --background: #ffffff;
+      --surface-container-low: #f1f7f8;
+      --surface-container: #e3f1f3;
+      --surface-container-high: #d5e9ec;
+      --on-surface: #1b2b33;
+      --on-surface-variant: #46585f;
+      --outline: #7b9198;
+      --outline-variant: #d5e3e5;
+      --primary: #0f7c8a;
+      --on-primary: #ffffff;
+      --primary-container: #e3f1f3;
+      --on-primary-container: #0a5560;
+      --secondary: #1d5e3a;
+      --tertiary: #2e7d4f;
+      --error: #b3261e;
+      --on-error: #ffffff;
+      --data-1: #0f7c8a;
+      --data-2: #2e7d4f;
+      --data-3: #b86e00;
+      --data-4: #5c5fb0;
+      --data-context: #b8c7ca;
+      --positive: #2e7d4f;
+      --warning: #b86e00;
+      --focus: #0f7c8a;
+      --font-headline: 'Figtree', sans-serif;
+      --font-body: 'Atkinson Hyperlegible', sans-serif;
+      --font-label: 'Figtree', sans-serif;
+      --rounded: 0.625rem;
+      --rounded-lg: 0.875rem;
+      --rounded-full: 9999px;
+      --top-bar: 6px solid var(--primary);
+      --status-bar-width: 4px;
+      --card-border: 1px solid var(--outline-variant);
+      --card-lift: 0 1px 2px color-mix(in srgb, var(--on-surface) 5%, transparent), 0 6px 16px color-mix(in srgb, var(--on-surface) 5%, transparent);
+      --ok-tint: color-mix(in srgb, var(--tertiary) 14%, var(--background));
+      --alert-tint: color-mix(in srgb, var(--error) 10%, var(--background));
+      --warn-tint: color-mix(in srgb, var(--warning) 12%, var(--background));
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { overflow-x: clip; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      color: var(--on-surface);
+      background: var(--surface-container-low);
+      border-top: var(--top-bar);
+    }
+    header { position: static !important; }
+    button, input, select, textarea { font-family: inherit; }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .app-header {
+      background: var(--background);
+      border-bottom: var(--card-border);
+      padding: var(--space-lg) var(--space-xl);
+    }
+    .header-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: end;
+    }
+    .kicker {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: var(--on-primary-container);
+      margin-bottom: var(--space-xs);
+    }
+    .title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--display-size);
+      letter-spacing: -0.015em;
+      line-height: 1.08;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .lede {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      max-width: 62ch;
+      margin: var(--space-sm) 0 0 0;
+    }
+    .header-controls {
+      display: grid;
+      gap: var(--space-sm);
+    }
+    .search-row {
+      display: flex;
+      gap: var(--space-sm);
+      align-items: end;
+    }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      flex: 1;
+      min-width: 0;
+    }
+    .field-label {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      color: var(--on-surface);
+    }
+    .input, .select {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--background);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      font-size: var(--body-size);
+      transition: border-color var(--dur-micro) var(--ease-out);
+    }
+    .select { padding-right: var(--space-xl); }
+    .input:focus, .select:focus { border-color: var(--primary); }
+
+    .btn {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--body-size);
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+      white-space: nowrap;
+    }
+    .btn-primary { background: var(--primary); color: var(--on-primary); }
+    .btn-primary:hover { background: var(--on-primary-container); }
+    .btn-secondary { background: var(--background); border-color: var(--primary); color: var(--primary); }
+    .btn-secondary:hover { background: var(--surface-container-low); }
+    .btn-ghost { background: transparent; color: var(--on-primary-container); border-color: var(--outline-variant); }
+    .btn-ghost:hover { background: var(--surface-container); }
+
+    .header-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded-full);
+      background: var(--ok-tint);
+      color: var(--secondary);
+    }
+    .chip[data-status="info"] { background: var(--primary-container); color: var(--on-primary-container); }
+    .chip[data-status="alert"] { background: var(--alert-tint); color: var(--error); }
+    .chip[data-status="warn"] { background: var(--warn-tint); color: var(--on-surface); }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: var(--space-lg);
+      padding: var(--space-lg) var(--space-xl);
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+    .page-grid * { min-width: 0; }
+
+    .sidebar {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      align-self: start;
+      position: sticky;
+      top: var(--space-md);
+      max-height: calc(100vh - 2rem);
+      overflow-y: auto;
+    }
+    .nav-section-title {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      margin: var(--space-md) 0 var(--space-xs) 0;
+      padding-bottom: var(--space-xs);
+      border-bottom: var(--card-border);
+    }
+    .nav-section-title:first-child { margin-top: 0; }
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .nav-btn {
+      width: 100%;
+      min-height: 44px;
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .nav-btn:hover { background: var(--surface-container-low); }
+    .nav-btn.is-active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      font-weight: 700;
+      border-left: var(--status-bar-width) solid var(--primary);
+    }
+    .nav-badge {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .mobile-nav-bar {
+      display: none;
+      background: var(--background);
+      border-bottom: var(--card-border);
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .main-stack {
+      display: grid;
+      gap: var(--space-lg);
+      align-content: start;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .status-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .status-card[data-status="ok"] { border-left-color: var(--tertiary); }
+    .status-card[data-status="alert"] { border-left-color: var(--error); }
+    .status-card[data-status="warn"] { border-left-color: var(--warning); }
+
+    .kpi-label {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+    .kpi-val {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.65rem;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+      margin-top: var(--space-xs);
+    }
+    .kpi-sub {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      margin-top: var(--space-xs);
+    }
+
+    .panel {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+    }
+    .panel-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: start;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-md);
+      border-bottom: var(--card-border);
+    }
+    .section-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--headline-size);
+      letter-spacing: -0.015em;
+      line-height: 1.15;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .sub-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--subhead-size);
+      color: var(--on-surface);
+      margin: 0 0 var(--space-sm) 0;
+    }
+
+    .tabs-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      border-bottom: var(--card-border);
+      margin-bottom: var(--space-lg);
+    }
+    .tab-btn {
+      min-height: 44px;
+      padding: var(--space-sm) var(--space-md);
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--body-size);
+      color: var(--on-surface-variant);
+      cursor: pointer;
+    }
+    .tab-btn:hover { color: var(--on-surface); }
+    .tab-btn.is-active {
+      color: var(--on-primary-container);
+      border-bottom-color: var(--primary);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .card-wrapper { container-type: inline-size; }
+    .card-inner { display: grid; gap: var(--space-md); }
+    @container (min-width: 560px) {
+      .card-inner-2 { grid-template-columns: 1fr 1fr; }
+    }
+
+    .callout {
+      background: var(--primary-container);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      color: var(--on-primary-container);
+    }
+    .callout-alert {
+      background: var(--alert-tint);
+      border-left: var(--status-bar-width) solid var(--error);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      color: var(--on-surface);
+    }
+    .callout-ok {
+      background: var(--ok-tint);
+      border-left: var(--status-bar-width) solid var(--tertiary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      color: var(--on-surface);
+    }
+
+    .dossier-grid {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .dossier-item {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .dossier-num {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-primary-container);
+      margin-bottom: var(--space-xs);
+    }
+    .dossier-text { margin: 0; max-width: 72ch; }
+
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--background);
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: var(--space-sm) var(--space-md);
+      text-align: left;
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+    }
+    th {
+      background: var(--surface-container-low);
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface);
+      position: sticky;
+      top: 0;
+    }
+    td.num, th.num { font-variant-numeric: tabular-nums; }
+
+    .algo-flow {
+      display: grid;
+      gap: var(--space-md);
+    }
+    .algo-node {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .algo-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+    .algo-history {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      align-items: center;
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+      align-items: end;
+    }
+
+    .quiz-option {
+      width: 100%;
+      min-height: 44px;
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      background: var(--background);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .quiz-option:hover { background: var(--surface-container-low); }
+    .quiz-option.is-correct {
+      background: var(--ok-tint);
+      border-color: var(--tertiary);
+      font-weight: 700;
+    }
+    .quiz-option.is-wrong {
+      background: var(--alert-tint);
+      border-color: var(--error);
+    }
+
+    .flashcard {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      cursor: pointer;
+      min-height: 220px;
+      display: grid;
+      align-content: center;
+      gap: var(--space-md);
+    }
+
+    .range-band-svg { width: 100%; height: auto; display: block; }
+    .range-band { fill: var(--tertiary); fill-opacity: 0.14; }
+    .svg-axis { stroke: var(--outline); stroke-width: 1; }
+    .svg-grid { stroke: var(--outline-variant); stroke-width: 1; }
+    .svg-line { fill: none; stroke: var(--data-1); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .svg-line-2 { fill: none; stroke: var(--data-2); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .svg-text { font-family: var(--font-label); font-size: 11px; fill: var(--on-surface-variant); }
+    .svg-title { font-family: var(--font-headline); font-size: 13px; font-weight: 700; fill: var(--on-surface); }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    .source-footer {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: var(--space-lg) var(--space-xl) var(--space-2xl);
+      color: var(--on-surface-variant);
+      font-size: 0.875rem;
+    }
+
+    @media (max-width: 960px) {
+      .header-inner { grid-template-columns: 1fr; }
+      .page-grid { grid-template-columns: 1fr; padding: var(--space-md); }
+      .sidebar { display: none; position: static; max-height: none; }
+      .sidebar.is-open { display: block; }
+      .mobile-nav-bar { display: flex; justify-content: space-between; align-items: center; gap: var(--space-sm); }
+    }
+
+    @media (max-width: 640px) {
+      .app-header { padding: var(--space-md); }
+      .panel { padding: var(--space-md); }
+      .search-row { flex-direction: column; align-items: stretch; }
+      .source-footer { padding: var(--space-md); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  
+    .portfolio-back-bar {
+      width: 100%;
+      flex: 0 0 100%;
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .portfolio-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      color: var(--on-primary-container);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .portfolio-back-link:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .portfolio-author-tag {
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+        <div class="portfolio-back-bar">
+          <a class="portfolio-back-link" href="index.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Volver al Portafolio
+          </a>
+          <span class="portfolio-author-tag">DIEGO GOMEZ | Médico de Familia &amp; SST</span>
+        </div>
+      <div>
+        <div class="kicker">Compendio Clínico Basado en Fuentes · Urgencias · Endocrinología · UCI</div>
+        <h1 class="title">Guía Clínica Integral de Urgencias en Endocrinología</h1>
+        <p class="lede">Toma de decisiones diagnósticas y terapéuticas basada exclusivamente en las guías y textos de referencia del cuaderno (Harrison 22.ª ed., ADA Standards 2026, ADA/EASD 2026, AACE 2022, ATA 2025, Endocrine Society, SNS DM1).</p>
+      </div>
+      <div class="header-controls">
+        <div class="search-row">
+          <div class="field-group">
+            <label class="field-label" for="global-search">Buscador clínico (patología, fármaco, umbral, signo)</label>
+            <input id="global-search" class="input" type="search" placeholder="Ej.: hidrocortisona, beta-hidroxibutirato, copeptina, lenvatinib…" oninput="handleSearch(this.value)">
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="clearSearch()">Limpiar</button>
+        </div>
+        <div class="header-meta-row">
+          <span id="progress-chip" class="chip" data-status="info">0/18 patologías revisadas · 0 aciertos</span>
+          <button type="button" class="btn btn-ghost" id="reset-progress-btn" onclick="resetProgress(this)">Reiniciar progreso</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-nav-bar">
+    <span class="kicker" style="margin:0;">Navegación clínica</span>
+    <button type="button" class="btn btn-secondary" onclick="toggleMobileNav()">Mostrar / Ocultar menú</button>
+  </div>
+
+  <div class="page-grid">
+    <aside class="sidebar" id="sidebar-nav" aria-label="Menú principal de navegación">
+      <div class="nav-section-title">Vista General y Transversal</div>
+      <div class="nav-list" id="nav-transversal"></div>
+
+      <div class="nav-section-title">Patologías Urgentes (18)</div>
+      <div class="nav-list" id="nav-pathologies"></div>
+
+      <div class="nav-section-title">Algoritmos y Calculadoras</div>
+      <div class="nav-list" id="nav-algorithms"></div>
+
+      <div class="nav-section-title">Pedagogía y Simulación</div>
+      <div class="nav-list" id="nav-pedagogy"></div>
+    </aside>
+
+    <main class="main-stack card-wrapper" id="main-content">
+      <section class="kpi-grid" aria-label="Indicadores clínicos clave de las fuentes">
+        <article class="status-card" data-status="alert">
+          <div class="kpi-label">Criterios CAD (ADA 2026)</div>
+          <div class="kpi-val">pH &lt; 7,3 · β-HB ≥ 3,0</div>
+          <div class="kpi-sub">HCO₃⁻ &lt; 18 mmol/L; glucemia ≥ 200 mg/dL (o &lt; 200 en CAD euglucémica)</div>
+        </article>
+        <article class="status-card" data-status="warn">
+          <div class="kpi-label">Criterios EHH (ADA 2026)</div>
+          <div class="kpi-val">Glucosa ≥ 600 · Osm &gt; 300</div>
+          <div class="kpi-sub">pH ≥ 7,3 · HCO₃⁻ ≥ 15 mmol/L · β-HB &lt; 3,0 mmol/L</div>
+        </article>
+        <article class="status-card" data-status="alert">
+          <div class="kpi-label">Crisis Adrenal Aguda</div>
+          <div class="kpi-val">HC 100 mg IV + 1 L/h SF</div>
+          <div class="kpi-sub">No retrasar tratamiento por pruebas; 200 mg/24 h tras bolo inicial</div>
+        </article>
+        <article class="status-card" data-status="ok">
+          <div class="kpi-label">Objetivo Hospitalario</div>
+          <div class="kpi-val">140–180 mg/dL</div>
+          <div class="kpi-sub">Preprandial &lt; 140 y aleatoria &lt; 180 mg/dL (AACE); evitar &lt; 70 mg/dL</div>
+        </article>
+      </section>
+
+      <section id="search-results-panel" class="panel" style="display:none;" aria-live="polite"></section>
+      <section id="workspace-panel" class="panel"></section>
+    </main>
+  </div>
+
+  <footer class="source-footer">
+    <strong>Fuentes utilizadas exclusivamente:</strong> Harrison's Principles of Internal Medicine (22.ª ed., Endocrinología y Metabolismo); ADA Standards of Care in Diabetes—2026; ADA/EASD Consensus Report Management of Type 2 Diabetes 2026; AACE Clinical Practice Guideline Developing a Diabetes Mellitus Comprehensive Care Plan 2022 Update &amp; Consensus Statement; 2025 American Thyroid Association (ATA) Guidelines for Differentiated Thyroid Cancer; Guía de Práctica Clínica sobre Diabetes Mellitus Tipo 1 del SNS (España); Endocrine Society Clinical Practice Guidelines (Turner Syndrome; Male Hypogonadism); Endotext NAFLD in T2DM; Síndrome Metabólico (Cabrera 2015); Síntesis Internacional de Guías Endocrinológicas. En los apartados donde las fuentes del cuaderno no recogen un dato concreto, se indica expresamente.
+  </footer>
+
+  <api-shim></api-shim>
+  <script>
+    const PATHOLOGY_LABELS = [
+      `1. Definición`,
+      `2. Epidemiología`,
+      `3. Etiología y factores precipitantes`,
+      `4. Factores de riesgo`,
+      `5. Fisiopatología`,
+      `6. Manifestaciones clínicas`,
+      `7. Diagnóstico diferencial`,
+      `8. Exploración física`,
+      `9. Pruebas diagnósticas`,
+      `10. Interpretación de laboratorio`,
+      `11. Algoritmo diagnóstico`,
+      `12. Tratamiento inicial`,
+      `13. Tratamiento definitivo`,
+      `14. Manejo según gravedad`,
+      `15. Medicación (dosis, vía, frecuencia, duración)`,
+      `16. Indicaciones y contraindicaciones`,
+      `17. Complicaciones`,
+      `18. Criterios de ingreso`,
+      `19. Criterios de UCI`,
+      `20. Seguimiento y pronóstico`,
+      `21. Perlas clínicas`,
+      `22. Errores frecuentes`,
+      `23. Puntos clave para exámenes y práctica`
+    ];
+
+    const PATHOLOGIES = [
+      {
+        id: `cad`,
+        group: `Glucemia`,
+        name: `Cetoacidosis diabética (CAD)`,
+        tag: `Emergencia · ADA 2026 / Harrison`,
+        severity: `alert`,
+        summary: `Emergencia hiperglucémica definida por cetonemia (β-hidroxibutirato ≥ 3,0 mmol/L o cetonuria ≥ 2+), acidosis metabólica (pH < 7,3 y/o HCO₃⁻ < 18 mmol/L) e hiperglucemia ≥ 200 mg/dL (o < 200 mg/dL en CAD euglucémica).`,
+        sections: [
+          `Emergencia hiperglucémica aguda con tríada de hiperglucemia (≥ 200 mg/dL en ADA 2026; 250–600 mg/dL en Tabla 416-7 de Harrison; < 200 mg/dL o 100–250 mg/dL en CAD euglucémica), cetosis (β-hidroxibutirato ≥ 3,0 mmol/L o tira urinaria ≥ 2+) y acidosis metabólica (pH < 7,3 y/o HCO₃⁻ < 18 mmol/L).`,
+          `Las tasas de CAD y EHH han aumentado mundialmente en DM1 y DM2 en la última década. Tras el alta por CAD, la mortalidad ajustada por edad a 1 año es 13 veces superior a la población general (ADA 2026).`,
+          `Precipitantes documentados: incumplimiento terapéutico, omisión de insulina, desconexión/obstrucción de bomba de insulina (CSII/AID con análogos ultrarrápidos de semivida corta), infección, traumatismo, embarazo, infarto, cocaína y enfermedades intercurrentes agudas.`,
+          `DM1, tratamiento con insulina intensiva o bomba de insulina, episodios previos de CAD, trastornos de la conducta alimentaria, uso de inhibidores SGLT2 (en relación con CAD euglucémica según contexto de manejo en enfermedad aguda), estrés agudo y falta de acceso a tiras de cetonemia.`,
+          `Déficit absoluto o relativo de insulina junto con hormonas contrarreguladoras durante estrés agudo; lipólisis acelerada con producción hepática de cuerpos cetónicos (β-hidroxibutirato, acetoacetato, acetona) y acidosis metabólica con brecha aniónica elevada.`,
+          `Poliuria, polidipsia, pérdida de peso, náuseas, vómitos, dolor abdominal, deshidratación, respiraciones de Kussmaul y alteración del estado mental/cognitivo.`,
+          `Estado hiperglucémico hiperosmolar (EHH), acidosis láctica, cetosis de ayuno, CAD euglucémica y otros trastornos con acidosis metabólica con brecha aniónica aumentada.`,
+          `Evaluar estabilidad clínica, estado mental, grado de deshidratación, patrón respiratorio (Kussmaul), signos de infección o evento precipitante (infarto, abdomen agudo).`,
+          `Glucemia plasmática, β-hidroxibutirato sérico (preferido sobre nitroprusiato urinario), gasometría arterial/venosa (pH, HCO₃⁻, PCO₂), electrolitos (Na⁺, K⁺, Mg²⁺, Cl⁻, fosfato), creatinina, osmolaridad, hemocultivos/urocultivos, Rx tórax y ECG.`,
+          `Tabla 416-7 / ADA Table 16.1: Glucemia 250–600 mg/dL (≥ 200 mg/dL ADA; 100–250 mg/dL en euglucémica); Na⁺ 125–135 mEq/L; K⁺ normal o ↑ (déficit corporal total); β-HB ≥ 3,0 mmol/L; HCO₃⁻ < 18 mEq/L; pH 6,8–7,3; PCO₂ 20–30 mmHg; brecha aniónica ↑.`,
+          `1) Confirmar hiperglucemia + β-HB ≥ 3,0 + pH < 7,3 / HCO₃⁻ < 18. 2) Clasificar gravedad (leve-moderada vs grave) y descartar K⁺ < 3,3 mmol/L antes de insulina. 3) Identificar precipitante.`,
+          `Rehidratación inmediata: 2–3 L de NaCl 0,9% o Ringer lactato en las primeras 1–3 h (10–20 mL/kg/h). Comprobar K⁺ antes de iniciar insulina; si K⁺ < 3,3 mmol/L, reponer potasio antes de administrar insulina.`,
+          `Perfusión continua de insulina regular IV (0,1 U/kg bolo, luego 0,1 U/kg/h; duplicar o triplicar si no responde en 2–4 h) hasta resolución (glucemia objetivo 150–200 mg/dL, cetonas y pH normales, HCO₃⁻ ≥ 18 mmol/L; en euglucémica guiar por corrección de bicarbonato). Transición a insulina SC basal con solapamiento de 2–4 h antes de suspender perfusión IV.`,
+          `CAD leve-moderada sin compromiso hemodinámico ni vómitos incoercibles: insulina subcutánea rápida (0,1 U/kg cada 1 h o 0,2 U/kg cada 2 h) con monitorización estrecha (AACE 2022 / Harrison). CAD grave: UCI e insulina IV continua.`,
+          `NaCl 0,9% 10–20 mL/kg/h (1–3 h), luego NaCl 0,45% 250–500 mL/h; cambiar a dextrosa 5–10% + NaCl 0,45% a 150–250 mL/h al alcanzar glucemia 250 mg/dL (en CAD euglucémica iniciar dextrosa 5–10% desde el principio). Insulina regular IV 0,1 U/kg/h. K⁺: si < 3,5 mmol/L dar 10–20 mmol/h hasta > 3,5; si 3,5–5,0 dar 10–20 mmol/L por litro de fluido para mantener 4–5 mmol/L; si > 5,0 suspender K⁺ y reevaluar cada 2 h.`,
+          `Contraindicado iniciar insulina si K⁺ inicial < 3,3 mmol/L. En enfermedad aguda ambulatoria o baja ingesta nunca suspender la insulina basal; considerar suspender metformina e iSGLT2 si no hay tolerancia oral o hay riesgo de FRA (ADA 2026).`,
+          `Hipopotasemia grave, hipoglucemia durante perfusión, recurrencia de CAD por retirada precoz de perfusión sin solapamiento de 2–4 h, insuficiencia renal aguda prerrenal, morbimortalidad elevada.`,
+          `Todo paciente con CAD moderada-grave, intolerancia oral, vómitos persistentes, alteración del nivel de conciencia o ausencia de mejoría de glucemia/cetonemia con insulina ambulatoria.`,
+          `CAD grave (pH muy bajo, inestabilidad hemodinámica, alteración del nivel de conciencia o necesidad de monitorización horaria estrecha) requiere ingreso en UCI o unidad de cuidados intermedios en formas leves-moderadas (Tabla 416-9).`,
+          `Control de glucemia cada 1–2 h; electrolitos (K⁺, HCO₃⁻, fosfato) y brecha aniónica cada 4 h las primeras 24 h. Educación obligatoria al alta sobre días de enfermedad y tiras de cetonemia en sangre (reducen ~50% hospitalizaciones/urgencias frente a cetonuria; Recomendación ADA 16.17 [B] y GPC SNS).`,
+          `El test capilar de 3-hidroxibutirato detecta antes la cetosis y su resolución que la tira de orina (que solo mide acetoacetato/acetona). En bomba de insulina, una desconexión induce déficit insulínico rápido por el uso exclusivo de análogos rápidos.`,
+          `Iniciar insulina con K⁺ < 3,3 mmol/L; suspender perfusión IV sin esperar 2–4 h tras la insulina basal SC; suspender la insulina basal en un paciente con DM1 que está en ayunas; valorar resolución de CAD euglucémica por la glucemia en lugar del bicarbonato.`,
+          `Tríada ADA 2026: Glucosa ≥ 200 mg/dL + β-HB ≥ 3,0 mmol/L + pH < 7,3 / HCO₃⁻ < 18. Solapamiento IV-SC: 2–4 horas. Educación al alta obligatoria (Grado B).`
+        ]
+      },
+      {
+        id: `ehh`,
+        group: `Glucemia`,
+        name: `Estado hiperglucémico hiperosmolar (EHH)`,
+        tag: `Emergencia · ADA 2026 / Harrison`,
+        severity: `alert`,
+        summary: `Emergencia hiperglucémica típica de ancianos con DM2: glucemia ≥ 600 mg/dL (hasta > 1000 mg/dL), osmolaridad efectiva > 300 mOsm/kg, deshidratación profunda y ausencia de cetosis/acidosis significativas.`,
+        sections: [
+          `Síndrome de hiperglucemia extrema (≥ 600 mg/dL o 33,3 mmol/L; 600–1200 mg/dL en Harrison), hiperosmolaridad sérica (> 300 mOsm/kg efectiva o > 320 mOsm/kg total) y deshidratación grave en ausencia de cetonemia relevante (β-HB < 3,0 mmol/L; < 1,0 en Harrison) ni acidosis (pH ≥ 7,3 y HCO₃⁻ ≥ 15–18 mmol/L).`,
+          `Afecta característicamente a adultos mayores con DM2; su incidencia global ha aumentado en la última década y conlleva mortalidad sustancial.`,
+          `Suele desencadenarse por una enfermedad aguda concurrente grave: infarto de miocardio, ictus, sepsis o neumonía, junto con ingesta hídrica insuficiente durante semanas.`,
+          `Edad avanzada, DM2 conocida o no diagnosticada, deterioro de la ingesta oral de líquidos, infecciones, eventos cardiovasculares agudos y comorbilidades.`,
+          `Déficit relativo de insulina suficiente para frenar la cetogénesis masiva pero insuficiente para controlar la glucemia; diuresis osmótica prolongada con pérdida extrema de agua libre, hipovolemia y azoemia prerrenal.`,
+          `Evolución subaguda (semanas) de poliuria, pérdida de peso y disminución de ingesta oral que culmina en confusión mental, letargo o coma. Ausencia típica de náuseas, vómitos, dolor abdominal y respiración de Kussmaul.`,
+          `Cetoacidosis diabética (CAD), acidosis láctica aislada, sepsis con delirium sin hiperosmolaridad, encefalopatía metabólica o ictus.`,
+          `Deshidratación profunda, hipotensión, taquicardia, alteración del nivel de conciencia y búsqueda activa de foco infeccioso o evento vascular desencadenante.`,
+          `Glucemia, osmolaridad sérica efectiva [2×Na⁺ + glucosa(mmol/L)], sodio medido y corregido, K⁺, creatinina/urea, β-hidroxibutirato, gasometría, ECG, Rx tórax y cultivos.`,
+          `Tabla 16.1 / 416-7: Glucosa ≥ 600 mg/dL; Na⁺ medido 135–145 mEq/L (puede ser normal o bajo por efecto osmótico; corregir sumando 1,6 mEq/L por cada 100 mg/dL de glucosa por encima de lo basal); osmolaridad > 300 mOsm/kg; β-HB < 3,0 mmol/L (< 1,0); pH ≥ 7,3; HCO₃⁻ ≥ 15 (> 18). Puede existir acidosis láctica leve.`,
+          `1) Glucemia ≥ 600 mg/dL + osmolaridad efectiva > 300 mOsm/kg + ausencia de acidosis/cetosis marcada. 2) Calcular Na⁺ corregido. 3) Identificar precipitante (sepsis, IAM, ictus).`,
+          `Evaluación y tratamiento hospitalario inmediato (ADA 2026): reposición agresiva de volumen intravenoso, corrección electrolítica e insulinoterapia IV bajo protocolo estricto (AACE 2022 / ADA 16.16 [A]).`,
+          `Reposición hídrica cuidadosa, insulina IV, corrección de potasio, tratamiento del precipitante y transición gradual a insulina subcutánea cuando esté estabilizado.`,
+          `Requiere manejo hospitalario inmediato desde la sospecha clínica; no es candidato a manejo ambulatorio debido a la depleción de volumen severa y el desencadenante agudo.`,
+          `Las fuentes detallan protocolos equivalentes de fluidoterapia intravenosa, insulina y electrolitos según protocolo hospitalario (ADA 16.16 [A]; AACE 2022), sin especificar una pauta numérica distinta de la Tabla 416-9 para EHH puro.`,
+          `Evitar descenso brusco de osmolaridad o corrección rápida sin control electrolítico; no demorar hospitalización ni despistaje de sepsis/IAM/ictus.`,
+          `Shock hipovolémico, insuficiencia renal aguda prerrenal, eventos tromboembólicos/vasculares, alteración neurológica progresiva, coma y muerte.`,
+          `100% de los pacientes con sospecha de EHH deben ser evaluados y tratados inmediatamente en ámbito hospitalario (ADA 2026).`,
+          `Alteración del nivel de conciencia (estupor/coma), hipotensión, hiperosmolaridad extrema, necesidad de monitorización horaria o precipitante crítico (sepsis, IAM, ictus).`,
+          `Mortalidad elevada si no se corrige el precipitante y la deshidratación; planificación obligatoria al alta (educación de prevención, ADA 16.17 [B]).`,
+          `Calcular siempre el sodio corregido (+1,6 mEq/L por cada 100 mg/dL de glucosa). La ausencia de Kussmaul y dolor abdominal orienta hacia EHH frente a CAD.`,
+          `Confiar en un sodio medido "normal" sin corregir por la hiperglucemia; intentar manejo ambulatorio; omitir ECG/búsqueda de sepsis en un anciano con EHH.`,
+          `EHH = anciano DM2 + glucemia ≥ 600 + osmolaridad > 300 + pH ≥ 7,3 + β-HB < 3,0. Ingreso hospitalario inmediato siempre.`
+        ]
+      },
+      {
+        id: `hipoglucemia`,
+        group: `Glucemia`,
+        name: `Hipoglucemia grave`,
+        tag: `Emergencia · ADA 2026 / Harrison`,
+        severity: `alert`,
+        summary: `Nivel 3 (ADA): evento grave con alteración mental y/o física que requiere asistencia de otra persona para la recuperación. Nivel 2 (< 54 mg/dL) o Nivel 3 obligan a reevaluar el tratamiento.`,
+        sections: [
+          `ADA 2026: Hipoglucemia nivel 2 (< 54 mg/dL) clínicamente importante; nivel 3 definida como evento grave caracterizado por alteración del funcionamiento mental y/o físico que requiere asistencia de otra persona para su recuperación. En ámbito hospitalario AACE alerta ante BG < 70 mg/dL y especialmente < 54 mg/dL.`,
+          `Uno o más episodios de hipoglucemia nivel 2 o 3 son el predictor más potente de recurrencia (ADA 2026).`,
+          `Exceso de insulina (especialmente NPH nocturna o dosis excesivas), sulfonilureas, ingesta insuficiente/ayuno, ejercicio, enfermedad intercurrente, deterioro renal o consumo de alcohol (depleción de glucógeno).`,
+          `Episodios previos nivel 2/3, hipoglucemia inadvertida, hipoglucemia nocturna, edad avanzada, deterioro cognitivo, polifarmacia y control glucémico estricto.`,
+          `Descenso crítico del aporte de glucosa al sistema nervioso central (neuroglucopenia) con respuesta adrenérgica contrarreguladora que puede atenuarse en hipoglucemia inadvertida.`,
+          `Síntomas autonómicos o neuroglucopénicos (alteración mental, confusión, incapacidad para autoingesta, convulsiones o coma); algunos pacientes toleran valores bajos sin síntomas por hipoglucemia inadvertida.`,
+          `Accidente cerebrovascular, intoxicación etílica, crisis comicial primaria, sepsis o coma mixedematoso (que puede cursar con hipoglucemia asociada).`,
+          `Nivel de conciencia, capacidad de deglución segura, signos neurológicos focales y revisión de sitios de inyección o bomba/MCG.`,
+          `Glucemia capilar inmediata o venosa confirmatoria (si MCG marca < 70 o < 54 mg/dL en hospital, confirmar con glucómetro calibrado hospitalario según AACE 2022). Correlacionar siempre lecturas con síntomas.`,
+          `BG < 70 mg/dL (umbral de alerta/evitación hospitalaria), < 54 mg/dL (nivel 2 / alerta crítica en hospital) y necesidad de asistencia externa independientemente de la cifra (nivel 3).`,
+          `1) Confirmar glucemia capilar/venosa. 2) Valorar si el paciente está consciente y capaz de ingerir vía oral. 3) Si incapaz o neuroglucopenia: vía parenteral (glucosa IV) o glucagón/octreótido según causa.`,
+          `Si el paciente está consciente y colaborador: 15–20 g de glucosa oral (tabletas, líquidos azucarados, caramelos o comida). Si no puede o no quiere ingerir por neuroglucopenia: 25 g de glucosa IV.`,
+          `Tras la corrección inicial, mantener perfusión de glucosa guiada por glucemias seriadas y estimular la ingesta oral en cuanto sea segura para reponer los depósitos de glucógeno hepático. Reevaluar y desintensificar el régimen antidiabético (ADA 6.19 [B]).`,
+          `Leve/moderada con vía oral segura: 15–20 g glucosa VO. Grave (nivel 3 / incapacidad oral): 25 g glucosa IV o glucagón 1,0 mg SC/IM si no hay acceso IV.`,
+          `Glucosa VO: 15–20 g dosis inicial. Glucosa IV: 25 g seguidos de perfusión continua según controles seriados. Glucagón: 1,0 mg SC o IM en adultos (útil en DM1; poco eficaz si glucógeno agotado por alcohol y menos útil en DM2 porque estimula insulina). Octreótido (análogo de somatostatina) para suprimir secreción de insulina en hipoglucemia por sulfonilureas.`,
+          `Contraindicado administrar vía oral si existe alteración de conciencia/riesgo de aspiración. Glucagón ineficaz en hipoglucemia alcohólica (depleción de glucógeno) y menos útil en DM2. La prueba de hipoglucemia insulínica (ITT) está contraindicada en diabetes, cardiopatía o epilepsia.`,
+          `Recurrencia precoz (especialmente por sulfonilureas o insulinas prolongadas), convulsiones, deterioro cognitivo, arritmias o muerte.`,
+          `Hipoglucemia grave persistente, secundaria a sulfonilureas (requiere observación prolongada/octreótido), ausencia de recuperación neurológica o falta de soporte.`,
+          `Inestabilidad neurológica persistente, convulsiones, coma o necesidad de perfusión continua de glucosa con monitorización horaria.`,
+          `La MCG (CGM) en pacientes con insulina basal o múltiples dosis reduce hipoglucemias totales, nocturnas y graves (AACE Consensus Statement). Evaluar función cognitiva periódicamente (ADA 6.20) y relajar objetivos temporalmente si hay hipoglucemia inadvertida.`,
+          `En hipoglucemia por sulfonilureas, la glucosa IV aislada puede provocar rebote insulínico; el octreótido frena la liberación de insulina (Harrison).`,
+          `Dar alimento oral a un paciente obnubilado; confiar en glucagón en paciente alcohólico; no desintensificar el tratamiento tras un episodio nivel 2 o 3; no confirmar lecturas bajas de MCG en el hospital con glucómetro calibrado.`,
+          `Nivel 3 = requiere ayuda de terceros. Tratamiento oral = 15–20 g; IV = 25 g; glucagón = 1 mg SC/IM; sulfonilureas = octreótido.`
+        ]
+      },
+      {
+        id: `hiperglucemia_aguda`,
+        group: `Glucemia`,
+        name: `Hiperglucemia aguda e intrahospitalaria`,
+        tag: `AACE 2022 / ADA 2026 / SNS`,
+        severity: `warn`,
+        summary: `Descompensación glucémica aguda ambulatoria o en paciente hospitalizado (objetivo general 140–180 mg/dL; en AACE preprandial < 140 y aleatoria < 180 mg/dL) que exige descartar CAD/EHH y ajustar insulina basal/prandial.`,
+        sections: [
+          `Elevación aguda de la glucemia en ámbito ambulatorio (> 200 mg/dL con riesgo de cetosis o A1C > 10% / BG ≥ 300 mg/dL) o hiperglucemia en paciente hospitalizado (con o sin diabetes previa conocida).`,
+          `Las enfermedades intercurrentes, cirugía, traumatismos y polifarmacia hospitalaria elevan frecuentemente la glucemia y pueden progresar a crisis hiperglucémicas.`,
+          `Infecciones, cirugía mayor, dosis altas de glucocorticoides, tratamiento con inotrópicos, nutrición enteral/parenteral alterada, omisión de insulina o errores de conciliación al ingreso.`,
+          `Hospitalización aguda, sepsis, uso de corticoides, DM1 con riesgo de omisión inadvertida de insulina al ingreso y polifarmacia.`,
+          `Aumento de hormonas contrarreguladoras e insulinorresistencia aguda inducida por estrés, inflamación o fármacos (p. ej., corticoides).`,
+          `Desde asintomática detectada en control capilar/MCG hasta poliuria, polidipsia, pérdida de peso o signos de deshidratación si progresa a CAD/EHH.`,
+          `CAD, CAD euglucémica, EHH e hiperglucemia de estrés transitoria.`,
+          `Valorar estado de hidratación, nivel de conciencia, tolerancia oral y signos de infección o estrés agudo.`,
+          `Glucemia capilar frecuente (cada 3–4 h o cada 1–2 h en enfermedad intercurrente), cetonemia (β-hidroxibutirato capilar si BG > 200 mg/dL o > 250 mg/dL en DM1), electrolitos y conciliación terapéutica.`,
+          `Objetivos hospitalarios: AACE 2022 recomienda preprandial < 140 mg/dL y aleatoria < 180 mg/dL evitando < 70 mg/dL. GPC SNS DM1 sugiere 90–180 mg/dL en hospitalizados y 140–180 mg/dL en postoperatorio.`,
+          `1) Valorar estabilidad, hidratación y descartar cetosis/acidosis. 2) Definir si puede ingerir alimentos o está en ayunas/crítico. 3) Elegir perfusión IV continua vs pauta subcutánea basal-bolo.`,
+          `Si hay enfermedad aguda ambulatoria: mantener siempre insulina basal (nunca suspender aunque haya ayuno), hidratación oral con agua y electrolitos y control glucémico/cetónico estrecho.`,
+          `En hospitalizados no críticos que comen: régimen subcutáneo con insulina basal (mantener basal previa o bomba) + análogo rápido preprandial. En críticos, ayuno prolongado (> 1 comida omitida), cirugía mayor, sepsis o corticoides a dosis altas: insulina IV en perfusión continua (GPC SNS).`,
+          `Objetivos más estrictos si se mantienen sin hipoglucemia; objetivos más laxos en enfermedad terminal, expectativa de vida limitada o alto riesgo de hipoglucemia (AACE 2022).`,
+          `Insulina IV continua en situaciones impredecibles; en hiperglucemia inducida por corticoides considerar NPH matutina (ADA 2026); si A1C > 10% o BG ≥ 300 mg/dL con síntomas, considerar insulina como primer inyectable.`,
+          `En enfermedad intercurrente con intolerancia oral o riesgo de FRA suspender metformina e iSGLT2; suspender GLP-1 RA si hay clínica digestiva significativa (ADA 2026). En hospital, confirmar lecturas extremas de MCG con glucómetro calibrado; recordar interferencia del paracetamol con ciertos sensores (GPC SNS).`,
+          `Progresión a CAD/EHH, deshidratación, hipoglucemia iatrogénica por pautas agresivas o retraso en curación/infecciones.`,
+          `Incapacidad para hidratación oral, vómitos persistentes, cetonemia creciente o ausencia de respuesta a correcciones ambulatorias.`,
+          `Inestabilidad hemodinámica, sepsis, cirugía mayor o necesidad de perfusión IV continua con control horario.`,
+          `Añadir alerta en historia clínica electrónica en DM1 para evitar omisión inadvertida de insulina al ingreso y realizar conciliación medicamentosa con el paciente/familia (GPC SNS).`,
+          `En adultos con DM1 hospitalizados capacitados y clínicamente seguros se sugiere permitir la autoadministración de insulina subcutánea (GPC SNS).`,
+          `Suspender la insulina basal en paciente con DM1 por estar en dieta absoluta; utilizar solo pautas correctoras sin basal; olvidar la interferencia del paracetamol en MCG o no confirmar alertas con glucómetro hospitalario.`,
+          `Objetivo hospitalario estándar: < 140 preprandial / < 180 aleatoria (AACE); postoperatorio 140–180 mg/dL (SNS). Nunca suspender basal en DM1.`
+        ]
+      },
+      {
+        id: `crisis_adrenal`,
+        group: `Suprarrenal y Catecolaminas`,
+        name: `Crisis adrenal e insuficiencia suprarrenal aguda`,
+        tag: `Emergencia · Harrison Cap. 398`,
+        severity: `alert`,
+        summary: `Urgencia vital por déficit agudo de glucocorticoides (y mineralocorticoides en la forma primaria) con hipotensión postural/shock, dolor abdominal y vómitos; exige 100 mg IV de hidrocortisona y SF 1 L/h sin esperar pruebas.`,
+        sections: [
+          `Descompensación aguda potencialmente mortal de la insuficiencia suprarrenal (más frecuente en la insuficiencia suprarrenal primaria por pérdida conjunta de glucocorticoides y mineralocorticoides).`,
+          `Datos prospectivos indican una incidencia de 8,3 crisis suprarrenales y 0,5 muertes relacionadas por cada 100 pacientes-año (Harrison Cap. 398).`,
+          `Enfermedad intercurrente, cirugía o trauma sin ajuste de dosis de estrés, retirada brusca de glucocorticoides exógenos (insuficiencia iatrogénica del eje HHA), incremento del metabolismo del cortisol (p. ej., hipertiroidismo o inicio de LT4 en hipotiroidismo no cribado en síndrome poliglandular autoinmune), adrenalitis autoinmune (APS-1/APS-2), hemorragia adrenal (sepsis meningocócica/Waterhouse-Friderichsen, SAF), infecciones (TB, VIH, CMV), infiltración o fármacos (mitotano, etomidato, inhibidores de checkpoint inmunitario).`,
+          `Insuficiencia suprarrenal primaria previa, diagnóstico retrasado, ausencia de kit de autoinyección o tarjeta de emergencia, terapia corticoidea crónica suspendida bruscamente, síndrome poliglandular autoinmune.`,
+          `Déficit de cortisol (pérdida del tono vascular mediado por catecolaminas, incapacidad de inhibir ADH produciendo hiponatremia) y, en la forma primaria, déficit de aldosterona (pérdida renal de sodio, depleción de volumen, hiperpotasemia y acidosis).`,
+          `Tras un pródromo inespecífico (fatiga, pérdida de peso, anorexia), aparecen hipotensión postural progresiva a shock hipovolémico, dolor abdominal con defensa que simula abdomen agudo, náuseas, vómitos, fiebre o clínica neurológica (estupor/coma). En forma crónica previa: hiperpigmentación en pliegues palmares, mucosa oral, areolas y zonas de fricción (primaria) frente a palidez alabastrina (secundaria).`,
+          `Abdomen agudo quirúrgico, shock séptico, meningitis/encefalitis, cetoacidosis diabética, SIAD (en hiponatremia euvolémica debe excluirse insuficiencia suprarrenal secundaria antes de diagnosticar SIAD).`,
+          `Presión arterial en decúbito y ortostatismo, signos de shock/hipovolemia, exploración abdominal y búsqueda de hiperpigmentación mucosa/cutánea o fenotipo cushingoide previo si es iatrogénica.`,
+          `Extraer cortisol basal y ACTH plasmática, Na⁺, K⁺, creatinina, urea, TSH, renina y aldosterona (Fig. 398-16), pero NUNCA retrasar el tratamiento para realizar pruebas de estimulación. Tras estabilizar: test de cosintropina 250 µg IM/IV (cortisol a los 30–60 min < 450–500 nmol/L confirma insuficiencia).`,
+          `Hiponatremia en el 80% al debut y hiperpotasemia en el 40% en primaria; elevación de creatinina por hipovolemia; TSH discretamente elevada por déficit de cortisol (normaliza tras reemplazo). Primaria: ACTH alta, renina alta, aldosterona baja. Secundaria: ACTH baja/normal, renina y aldosterona normales.`,
+          `Sospecha clínica (shock, vómitos, dolor abdominal, hiponatremia) → extraer muestra basal si es factible → iniciar inmediatamente SF + hidrocortisona 100 mg IV → diferir test de cosintropina hasta estabilización (Fig. 398-16).`,
+          `Rehidratación inmediata con suero salino fisiológico a ritmo inicial de 1 L/h bajo monitorización cardiaca continua + bolo de 100 mg de hidrocortisona IV.`,
+          `Continuar con 200 mg de hidrocortisona en 24 h (preferiblemente perfusión IV continua o bolos IV/IM fraccionados) y tratar el desencadenante. Iniciar fludrocortisona solo cuando la dosis diaria de hidrocortisona baje de 50 mg/día.`,
+          `En enfermedad intercurrente leve con fiebre y reposo en cama: duplicar la dosis oral habitual. En vómitos prolongados, cirugía o trauma: 100 mg IV/IM inmediatos seguidos de 200 mg/24 h IV.`,
+          `Hidrocortisona: 100 mg bolo IV/IM inicial, luego 200 mg/24 h IV continua o dividida. Suero salino 0,9%: inicio 1 L/h. Mineralocorticoide (primaria): iniciar al bajar hidrocortisona < 50 mg/día (porque dosis ≥ 50 mg ya cubren receptor MR).`,
+          `Contraindicado esperar confirmación bioquímica en crisis aguda. En pacientes con hipotiroidismo y sospecha de síndrome poliglandular autoinmune (APS), descartar insuficiencia suprarrenal antes de iniciar LT4 porque la levotiroxina acelera el aclaramiento de cortisol y precipita crisis adrenal.`,
+          `Shock refractario a vasopresores, lesión renal aguda, coma y muerte (0,5 muertes/100 pacientes-año).`,
+          `Toda crisis adrenal o intolerancia digestiva/vómitos que impidan terapia oral en paciente con insuficiencia suprarrenal.`,
+          `Shock hipovolémico, necesidad de monitorización cardiaca continua, alteración del nivel de conciencia o sepsis asociada.`,
+          `Educación en reglas de días de enfermedad, tarjeta/brazalete de emergencia y kit de autoinyección de hidrocortisona; en insuficiencia primaria aislada vigilar tiroidopatía autoinmune y fallo ovárico prematuro; densitometría si dosis equivalentes ≥ 30 mg/día de hidrocortisona.`,
+          `El cortisol basal aleatorio tiene valor diagnóstico limitado fuera de crisis por el ritmo circadiano, pero durante el shock extraer tubo basal antes del bolo ayuda al diagnóstico posterior sin retrasar la terapia.`,
+          `Esperar al test de ACTH antes de dar hidrocortisona; iniciar levotiroxina antes que hidrocortisona en un panhipopituitarismo o APS; añadir fludrocortisona innecesariamente cuando ya recibe 200 mg/día de hidrocortisona.`,
+          `100 mg hidrocortisona IV + 1 L/h SF + 200 mg/24 h. Na⁺ bajo (80%) + K⁺ alto (40%) en primaria. Nunca demorar el corticoide.`
+        ]
+      },
+      {
+        id: `feocromocitoma`,
+        group: `Suprarrenal y Catecolaminas`,
+        name: `Feocromocitoma y crisis catecolaminérgica`,
+        tag: `Emergencia · Harrison Cap. 399–400`,
+        severity: `alert`,
+        summary: `Tumor secretor de noradrenalina y adrenalina (25–33% hereditario; presente en > 50% de MEN 2A/2B por mutación RET). Exige diagnóstico bioquímico con metanefrinas fraccionadas y exclusión obligatoria antes de cualquier cirugía en portadores RET.`,
+        sections: [
+          `Paraganglioma/feocromocitoma (PPGL) secretor de catecolaminas (noradrenalina y adrenalina); entidad de alto riesgo cardiovascular y causa relevante de morbimortalidad aguda si se manipula o somete a cirugía sin bloqueo previo.`,
+          `Aproximadamente el 25–33% de los pacientes con PPGL presentan un síndrome hereditario (diagnosticados ~15 años más jóvenes que los esporádicos). En MEN 2 (2A y 2B), el feocromocitoma ocurre en ~50% (> 50% en texto de Cap. 400) y suele ser suprarrenal, benigno y a menudo bilateral.`,
+          `Liberación paroxística de catecolaminas por tumor suprarrenal o paraganglioma, mutaciones en RET (MEN 2A/2B), procedimientos quirúrgicos no preparados (p. ej., tiroidectomía profiláctica sin descartar feocromocitoma).`,
+          `Portadores de mutaciones RET (MEN 2A: CMT + feocromocitoma + hiperparatiroidismo; MEN 2B: CMT más agresivo + feocromocitoma + neuromas mucosos + hábito marfanoide), historia familiar de PPGL o CMT.`,
+          `Exceso agudo o paroxístico de noradrenalina y adrenalina con descarga adrenérgica intensa sobre receptores alfa y beta vasculares y miocárdicos.`,
+          `Cefalea, palpitaciones, sudoración e hipertensión mal controlada (crisis adrenérgicas paroxísticas), aunque también puede ser asintomático y detectarse por cribado familiar.`,
+          `Tirotoxicosis / tormenta tiroidea (que puede simular crisis adrenérgica o feocromocitoma), ataques de pánico, manía e hipertensión esencial maligna.`,
+          `Evaluación de presión arterial, frecuencia cardiaca, búsqueda de estigmas de MEN 2B (neuromas mucosos, hábito marfanoide) o masa cervical (CMT).`,
+          `Medición de metanefrinas libres fraccionadas en plasma (obtenidas en decúbito supino) y en orina (normetanefrina y metanefrina por separado); TC o RM; gammagrafía con MIBG (¹²³I o ¹³¹I) y PET con ¹⁸F-fluorodopamina o ¹⁸F-FDG.`,
+          `Elevación de metanefrinas/normetanefrinas fraccionadas. En MEN 2 los tumores extraadrenales y malignos son mucho menos frecuentes que en esporádicos.`,
+          `Sospecha clínica o cribado familiar MEN 2 → metanefrinas libres fraccionadas (plasma en supino / orina) → localización por TC/RM ± MIBG/PET → exclusión obligatoria antes de cualquier cirugía (tiroidectomía u otra).`,
+          `Las fuentes del cuaderno recogen el abordaje diagnóstico y la obligación crítica de excluir el feocromocitoma antes de cualquier intervención quirúrgica en portadores RET/MEN 2; no especifican pautas posológicas concretas de alfabloqueo preoperatorio en los fragmentos incluidos.`,
+          `Resección quirúrgica tras confirmación diagnóstica y preparación médica adecuada; en MEN 2 debe excluirse y tratarse antes de la tiroidectomía profiláctica o terapéutica por CMT.`,
+          `Cribado bioquímico obligatorio incluso en pacientes asintomáticos con antecedente familiar de MEN 2A, MEN 2B o carcinoma medular de tiroides.`,
+          `Las fuentes proporcionadas no detallan posología farmacológica específica del bloqueo adrenérgico en crisis catecolaminérgica.`,
+          `Contraindicado someter a cirugía (especialmente tiroidectomía en MEN 2) sin haber excluido previamente un feocromocitoma (riesgo de crisis catecolaminérgica intraoperatoria mortal).`,
+          `Crisis hipertensiva grave, arritmias, complicaciones cardiovasculares y muerte perioperatoria si pasa inadvertido.`,
+          `Crisis hipertensiva sintomática con sospecha de feocromocitoma o estudio preoperatorio complejo.`,
+          `Crisis catecolaminérgica con hipertensión grave refractaria, edema pulmonar o inestabilidad arrítmica.`,
+          `Seguimiento genético y bioquímico de por vida en síndromes hereditarios; vigilancia de bilateralidad suprarrenal y calcitonina/CMT en MEN 2.`,
+          `En pacientes con MEN 2, el feocromocitoma puede hacerse sintomático antes del diagnóstico de carcinoma medular de tiroides; las metanefrinas plasmáticas deben extraerse en decúbito supino.`,
+          `Operar un nódulo tiroideo o realizar tiroidectomía profiláctica en un paciente con MEN 2 sin descartar antes feocromocitoma; confundir tirotoxicosis con feocromocitoma sin pedir TSH ni metanefrinas.`,
+          `Excluir SIEMPRE feocromocitoma antes de cualquier cirugía en MEN 2. Diagnóstico: metanefrinas libres fraccionadas en plasma (supino) y orina.`
+        ]
+      },
+      {
+        id: `tormenta_tiroidea`,
+        group: `Tiroides`,
+        name: `Crisis tirotóxica (tormenta tiroidea)`,
+        tag: `Emergencia · Harrison Cap. 396`,
+        severity: `alert`,
+        summary: `Exacerbación potencialmente mortal del hipertiroidismo (mortalidad 4–17% pese a tratamiento) con fiebre, delirio, diarrea e ictericia. Orden estricto: PTU primero, yoduro 1 hora después, propranolol e hidrocortisona.`,
+        sections: [
+          `Exacerbación aguda y potencialmente mortal del estado tirotóxico acompañada de disfunción multiorgánica (fiebre, delirio, convulsiones, coma, vómitos, diarrea e ictericia).`,
+          `Es una entidad rara pero presenta una mortalidad elevada del 4–17% incluso con tratamiento intensivo (debida a insuficiencia cardiaca, arritmia o hipertermia).`,
+          `Enfermedad aguda precipitante (ictus, infección, traumatismo, cetoacidosis diabética), cirugía (especialmente tiroidea) o tratamiento con radioyodo (¹³¹I) en pacientes con hipertiroidismo parcial o no tratado.`,
+          `Enfermedad de Graves no tratada o mal controlada, bocio multinodular tóxico, exposición a yodo o suspensión de antitiroideos.`,
+          `Descarga masiva o efecto tisular descontrolado de hormonas tiroideas con hiperactividad adrenérgica intensa, conversión periférica T4 → T3 e insuficiencia cardiaca de alto gasto.`,
+          `Fiebre elevada, taquicardia marcada, delirio, agitación, convulsiones o coma, vómitos, diarrea, ictericia y signos de insuficiencia cardiaca de alto gasto o arritmias.`,
+          `Sepsis grave, feocromocitoma, ataque de pánico, manía, síndrome neuroléptico maligno e hipertermia maligna.`,
+          `Temperatura, frecuencia cardiaca y ritmo, estado mental, signos de insuficiencia cardiaca de alto gasto, ictericia y exploración cervical (bocio/cicatriz).`,
+          `TSH, T4 libre y T3 libre (para confirmar tirotoxicosis; TSH normal excluye tirotoxicosis y Graves), pruebas hepáticas, hemograma, cultivos y ECG para identificar precipitante.`,
+          `TSH suprimida con T4 libre y T3 elevadas (si TSH, T4L y T3L son normales se excluye tirotoxicosis). Vigilar transaminasas/bilirrubina (por la propia tormenta y antes/durante PTU).`,
+          `Sospecha clínica de tormenta tiroidea (hipertiroidismo + fiebre/delirio/IC/ictericia) → iniciar inmediatamente bloqueo de síntesis y conversión (PTU) → esperar 1 h y administrar yoduro (SSKI) → betabloqueante + hidrocortisona + soporte en UCI.`,
+          `Monitorización intensiva, soporte con oxígeno, enfriamiento y fluidos IV, identificación y tratamiento inmediato del desencadenante (antibióticos si infección), y frenado urgente de la síntesis y acción hormonal.`,
+          `Una vez superada la crisis aguda, valorar tratamiento definitivo del hipertiroidismo subyacente (antitiroideos de mantenimiento con metimazol/carbimazol, cirugía o radioyodo una vez eutiroideo).`,
+          `Toda crisis tirotóxica es una emergencia crítica de gravedad máxima; formas menos graves de tirotoxicosis se tratan con régimen de titulación de metimazol/carbimazol (10–20 mg/12 h).`,
+          `Propiltiouracilo (PTU): carga 500–1000 mg y luego 250 mg cada 4 h (VO, SNG o vía rectal; de elección en tormenta por inhibir T4 → T3). Si no disponible: metimazol 20 mg cada 6 h. Yoduro estable (SSKI): 5 gotas cada 6 h administrado 1 HORA DESPUÉS de la primera dosis de PTU/metimazol (efecto Wolff-Chaikoff). Propranolol: 60–80 mg VO cada 4 h o 2 mg IV cada 4 h (inhibe T4 → T3 a dosis altas) o esmolol IV de acción corta monitorizando insuficiencia cardiaca. Hidrocortisona: 300 mg bolo IV, luego 100 mg cada 8 h. Colestiramina para secuestrar hormonas.`,
+          `Nunca administrar SSKI antes del antitiroideo (el retraso de 1 hora evita que el exceso de yodo se incorpore a nueva hormona tiroidea). Precaución con el efecto inotrópico negativo agudo de los betabloqueantes si hay insuficiencia cardiaca; en ese caso usar esmolol IV vigilando signos de fallo cardiaco. Evitar PTU en niños salvo tormenta por hepatotoxicidad; monitorizar función hepática.`,
+          `Insuficiencia cardiaca de alto gasto, arritmias graves, hipertermia maligna, coma y muerte (4–17%).`,
+          `El 100% de los pacientes con sospecha de tormenta tiroidea requieren ingreso hospitalario urgente.`,
+          `Todos los pacientes con tormenta tiroidea requieren monitorización y cuidados intensivos (UCI).`,
+          `El 15% de los pacientes con enfermedad de Graves en remisión pueden desarrollar hipotiroidismo a los 10–15 años; el posparto es periodo de alto riesgo de recaída.`,
+          `La secuencia temporal es clave: 1.º PTU (bloquea síntesis y T4→T3), 2.º esperar 1 hora y dar SSKI (bloquea liberación), 3.º betabloqueante + hidrocortisona + colestiramina.`,
+          `Dar yoduro (SSKI) antes que el antitiroideo (empeora el hipertiroidismo por efecto Jod-Basedow); administrar propranolol en bolo sin vigilar fallo cardiaco agudo; olvidar buscar sepsis o CAD como precipitante.`,
+          `Mortalidad 4–17%. PTU 500–1000 mg carga → 250 mg/4 h; SSKI 5 gotas/6 h (1 h después); propranolol 60–80 mg/4 h o 2 mg IV/4 h; hidrocortisona 300 mg IV → 100 mg/8 h.`
+        ]
+      },
+      {
+        id: `coma_mixedematoso`,
+        group: `Tiroides`,
+        name: `Coma mixedematoso`,
+        tag: `Emergencia · Harrison Cap. 396`,
+        severity: `alert`,
+        summary: `Hipotiroidismo extremo descompensado casi siempre en ancianos con mortalidad del 20–40%. Cursa con hipotermia (hasta 23 °C), hipoventilación, hiponatremia e hipoglucemia. Requiere LT4 IV (200–400 µg), hidrocortisona empírica y soporte ventilatorio.`,
+        sections: [
+          `Forma extrema y descompensada de hipotiroidismo que cursa con disminución del nivel de conciencia, hipotermia e insuficiencia multiorgánica.`,
+          `Conserva una mortalidad del 20–40% pese a tratamiento intensivo; el pronóstico es independiente de los niveles iniciales de T4 y TSH. Ocurre casi siempre en ancianos.`,
+          `Fármacos depresores respiratorios (sedantes, anestésicos, antidepresivos), neumonía, insuficiencia cardiaca congestiva, infarto de miocardio, hemorragia digestiva, ictus, sepsis, exposición al frío e incumplimiento de LT4.`,
+          `Edad avanzada, hipotiroidismo tratado con mal cumplimiento o no diagnosticado, invierno/exposición al frío y prescripción de sedantes.`,
+          `La hipoventilación con hipoxia e hipercapnia desempeña un papel patogénico central; se suman hipoglucemia, hiponatremia dilucional (retención de agua por menor perfusión renal y secreción inadecuada de AVP) y reducción de reserva suprarrenal.`,
+          `Disminución del nivel de conciencia hasta coma, en ocasiones convulsiones, hipotermia grave (puede alcanzar 23 °C / 74 °F), bradicardia, hipoventilación y rasgos de hipotiroidismo grave.`,
+          `Sepsis aislada, hipotermia accidental primaria, intoxicación por sedantes, ictus, hiponatremia grave por SIAD o crisis suprarrenal primaria.`,
+          `Temperatura central, frecuencia respiratoria, nivel de conciencia, signos de insuficiencia cardiaca/sepsis y estado hemodinámico.`,
+          `Gasometría arterial seriada (hipoxia/hipercapnia), TSH y T4 libre, cortisol basal (antes de hidrocortisona si no retrasa), Na⁺, glucemia, hemograma, cultivos, Rx tórax y ECG.`,
+          `Hiponatremia dilucional, hipoglucemia, hipercapnia e hipoxemia; TSH elevada (en primario) con T4 libre muy baja (aunque el pronóstico no depende del grado de alteración de T4/TSH).`,
+          `Anciano con bajo nivel de conciencia + hipotermia + hipoventilación → soporte ventilatorio + extracción analítica → administrar hidrocortisona 50 mg/6 h + bolo IV de LT4 200–400 µg (± T3) + antibióticos empíricos.`,
+          `Soporte ventilatorio con gasometrías seriadas durante las primeras 48 h, corrección metabólica (glucosa IV/salino hipertónico si hiponatremia grave), hidrocortisona parenteral y carga IV de levotiroxina.`,
+          `Mantenimiento con LT4 1,6 µg/kg/día VO (reducida en 25% si se mantiene IV) una vez estabilizado y tratado el evento precipitante (antibioterapia de amplio espectro precoz hasta excluir infección).`,
+          `En pacientes pequeños, ancianos o con alto riesgo cardiovascular, elegir las dosis inferiores del rango de liotironina (T3) si se añade.`,
+          `LT4: bolo único IV de 200–400 µg (o SNG si no hay IV, aunque la absorción está alterada), seguido de 1,6 µg/kg/día VO (−25% si IV). Liotironina (T3, racional por alteración de conversión T4→T3): carga 5–20 µg IV/SNG, seguida de 2,5–10 µg cada 8 h (dosis bajas en ancianos/cardiópatas). Hidrocortisona parenteral: 50 mg cada 6 h (por reserva suprarrenal alterada).`,
+          `Evitar fluidos IV hipotónicos (agravan la retención hídrica e hiponatremia). Evitar recalentamiento externo activo salvo temperatura < 30 °C (riesgo de colapso cardiovascular; usar mantas térmicas pasivas para evitar mayor pérdida de calor). Evitar sedantes o reducir dosis por metabolismo farmacológico enlentecido.`,
+          `Insuficiencia respiratoria hipercápnica, arritmias (riesgo aumentado con exceso de T3), colapso vascular por recalentamiento rápido, sepsis no tratada y muerte (20–40%).`,
+          `El 100% de los pacientes con sospecha de coma mixedematoso requieren hospitalización urgente.`,
+          `Todos los casos requieren ingreso en UCI por necesidad habitual de ventilación mecánica y monitorización gasométrica y hemodinámica las primeras 48 h.`,
+          `Monitorizar niveles sanguíneos de fármacos concomitantes cuando sea posible; tratar de por vida el hipotiroidismo y revisar adherencia.`,
+          `Administrar SIEMPRE hidrocortisona junto con LT4 por deterioro de la reserva suprarrenal en el hipotiroidismo profundo; no recalentar activamente si Tª ≥ 30 °C.`,
+          `Usar sueros hipotónicos; recalentar agresivamente a un paciente con 32 °C provocando colapso vasodilatador; pautar sedantes en UCI a dosis estándar; olvidar la hidrocortisona o los antibióticos empíricos.`,
+          `Mortalidad 20–40%. LT4 200–400 µg IV + hidrocortisona 50 mg/6 h + ventilación 48 h. Calentamiento externo solo si Tª < 30 °C. Evitar líquidos hipotónicos.`
+        ]
+      },
+      {
+        id: `hipercalcemia`,
+        group: `Calcio y Medio Interno`,
+        name: `Hipercalcemia grave`,
+        tag: `Emergencia · Harrison Cap. 422`,
+        severity: `alert`,
+        summary: `Calcemia > 2,9–3,0 mmol/L (11,6–12,0 mg/dL) sintomática o grave (> 3,7–4,5 mmol/L; 14,8–18,0 mg/dL) con riesgo de coma y parada cardiaca. Pilares agudos: rehidratación IV con NaCl 0,9%, calcitonina (inicio en horas) y bisfosfonatos/denosumab.`,
+        sections: [
+          `Elevación patológica del calcio sérico; los síntomas aparecen típicamente > 2,9–3,0 mmol/L (11,6–12,0 mg/dL), calcificación tisular > 3,2 mmol/L (12,8 mg/dL) y la hipercalcemia grave (3,7–4,5 mmol/L; 14,8–18,0 mg/dL) constituye una emergencia médica.`,
+          `El hiperparatiroidismo primario es típico de mujeres posmenopáusicas (a menudo asintomático, aunque puede debutar en crisis paratiroidea hipercalcémica). La inmovilización causa hipercalcemia sobre todo en niños/adolescentes tras lesión medular.`,
+          `PTH elevada: hiperparatiroidismo primario, síndromes MEN, hipercalcemia hipocalciúrica familiar (FHH). PTH baja: neoplasia (PTHrP, mieloma múltiple/metástasis), intoxicación por vitamina D (25(OH)D > 100 ng/mL) o vitamina A, enfermedades granulomatosas (sarcoidosis), síndrome leche-alcalinos, fármacos (litio, tiazidas), inmovilización, insuficiencia suprarrenal e hipertiroidismo.`,
+          `Neoplasias avanzadas, deshidratación por vómitos, suplementación excesiva de vitamina D/calcio, inmovilización prolongada y edad avanzada.`,
+          `Reabsorción ósea osteoclástica excesiva (mediada por PTH, PTHrP o citoquinas tumorales), aumento de absorción intestinal (1,25(OH)₂D) y deterioro de la capacidad renal de concentrar orina con caída del FG y menor aclaramiento tubular de calcio.`,
+          `Fatiga, depresión, confusión mental, anorexia, náuseas, vómitos, estreñimiento, poliuria, calcificación renal/vascular/gástrica (> 3,2 mmol/L), insuficiencia renal, coma y parada cardiaca en casos graves.`,
+          `Diferenciar hipercalcemia PTH-dependiente (hiperparatiroidismo primario, MEN, FHH) de PTH-independiente (malignidad/PTHrP, granulomatosis, intoxicación vit D/A, hipertiroidismo, insuficiencia suprarrenal).`,
+          `Estado de hidratación, nivel de conciencia, exploración abdominal/cervical y búsqueda de masas tumorales o signos de tirotoxicosis/sarcoidosis.`,
+          `Calcio sérico total (y relación con albúmina) e ionizado, PTH intacta interpretada junto al calcio, fosfato, función renal, PTHrP, 25(OH)D (> 100 ng/mL en intoxicación), calcio urinario 24 h (> 300 mg/24 h hipercalciuria) y ECG.`,
+          `ECG: intervalo QT corto y arritmias. Algoritmo Fig. 422-6: Duración aguda o desconocida con PTH alta → hiperparatiroidismo/MEN; PTH baja → descartar malignidad (PTHrP), fármacos (litio, tiazidas), leche-alcalinos, vit D/A, inmovilización, insuficiencia suprarrenal o hipertiroidismo. Crónica con PTH baja → granulomatosis/mieloma oculto.`,
+          `Confirmar hipercalcemia → evaluar gravedad/síntomas y duración → medir PTH (alta vs baja) → si grave (> 3,2–3,7 mmol/L o clínica neurológica/cardiaca), iniciar rehidratación IV sin esperar etiología.`,
+          `Primer principio terapéutico: restaurar la hidratación con NaCl 0,9% IV (inicio de acción en horas; solo la rehidratación aumenta calciuria 100–300 mg/día y puede bajar calcio 1–3 mg/dL en 24 h si se combina con diuresis salina).`,
+          `Añadir tratamiento antirresortivo potente (zoledronato, pamidronato o denosumab) cuando hay resorción ósea aumentada, y tratar la causa (cirugía paratiroidea, corticoides en vit D/sarcoidosis/linfomas, terapia antitumoral o tratamiento del hipertiroidismo).`,
+          `Leve/asintomática: hidratación oral y estudio etiológico. Grave o sintomática: NaCl 0,9% IV + calcitonina (acción rápida en horas, taquifilaxia en 1–2 días) + zoledronato/pamidronato o denosumab (inicio 1–2 días, duración semanas).`,
+          `Tabla 422-4: NaCl 0,9% IV (inicio horas). Diuresis forzada con furosemida solo TRAS rehidratación completa (riesgo de deshidratación y desequilibrios). Calcitonina (inicio horas, dura 1–2 días; adyuvante en crisis grave). Pamidronato (inicio 1–2 días, dura 10–14 días). Zoledronato (inicio 1–2 días, dura > 3 semanas). Denosumab (inicio 1–2 días, dura > 3 semanas; el antirresortivo más potente). Glucocorticoides (prednisona 40–100 mg/día en intoxicación por vit D, sarcoidosis y ciertas neoplasias). Fosfato oral (solo si hipofosfatemia y P < 4 mg/dL). Diálisis en insuficiencia renal o hipercalcemia potencialmente mortal.`,
+          `No administrar diuréticos de asa (furosemida) antes de restaurar el volumen extracelular. Evitar fosfato IV/oral si P ≥ 4 mg/dL o fallo renal. En hipofosfatasia evitar calcio y vitamina D.`,
+          `Insuficiencia renal aguda, nefrocalcinosis/litiasis, hipopotasemia e hipomagnesemia por diuresis forzada, fiebre (20% con bisfosfonatos), hipocalcemia/hipofosfatemia, osteonecrosis mandibular (rara), sobrecarga hídrica y arritmias/parada cardiaca.`,
+          `Hipercalcemia sintomática (> 2,9–3,0 mmol/L), calcemia > 3,2 mmol/L, insuficiencia renal o imposibilidad de hidratación oral.`,
+          `Hipercalcemia grave (> 3,7–4,5 mmol/L), coma, arritmias, QT muy acortado o necesidad de diálisis urgente / diuresis forzada intensiva.`,
+          `En intoxicación por vitamina D los depósitos en tejido adiposo pueden prolongar la hipercalcemia semanas tras suspender la ingesta. Vigilar calcio, K⁺, Mg²⁺ y fosfato tras bisfosfonatos/denosumab.`,
+          `La combinación de hidratación IV + calcitonina cubre las primeras 24–48 h mientras inicia el efecto del zoledronato o denosumab.`,
+          `Administrar furosemida a un paciente hipercalcémico aún deshidratado; interpretar una PTH "normal" sin relacionarla con un calcio alto (inapropiadamente alta); olvidar el denosumab o diálisis en insuficiencia renal avanzada.`,
+          `QT corto. Primero SIEMPRE suero salino 0,9% IV. Calcitonina actúa en horas (taquifilaxia 48 h); zoledronato/denosumab tardan 1–2 días y duran > 3 semanas.`
+        ]
+      },
+      {
+        id: `hipocalcemia`,
+        group: `Calcio y Medio Interno`,
+        name: `Hipocalcemia aguda y tetania`,
+        tag: `Emergencia · Harrison Cap. 422`,
+        severity: `alert`,
+        summary: `Descenso agudo del calcio ionizado con irritabilidad neuromuscular (Chvostek, Trousseau, tetania, laringoespasmo). Requiere calcio IV (0,5–2 mg/kg/h) y descartar hipomagnesemia grave (< 0,4 mmol/L), que bloquea la secreción y acción de PTH.`,
+        sections: [
+          `Disminución verdadera del calcio sérico ionizado (< 2,1 mmol/L u 8,5 mg/dL de calcio total requiere confirmar albúmina/calcio ionizado); forma aguda sintomática cursa con hiperexcitabilidad neuromuscular.`,
+          `Hasta la mitad de los pacientes críticos en UCI presentan calcio total < 8,5 mg/dL, pero en la mayoría se debe a hipoalbuminemia sin descenso del calcio ionizado (salvo sepsis grave).`,
+          `Hipoparatiroidismo posquirúrgico (transitorio o permanente si PTH a las 12–24 h poscirugía es ≤ 15 pg/mL), enfermedad renal crónica, déficit de vitamina D, resistencia a PTH (pseudohipoparatiroidismo 1A con osteodistrofia hereditaria de Albright y 1B), hipomagnesemia grave (< 0,4 mmol/L / < 0,8 mEq/L), sepsis grave, quemaduras, transfusiones masivas con sangre citratada, pancreatitis aguda y fármacos (protamina, heparina, glucagón).`,
+          `Tiroidectomía/paratiroidectomía reciente, pancreatitis aguda, politransfusión con citrato, malabsorción o alcoholismo/pérdidas digestivas (hipomagnesemia) y UCI.`,
+          `Menor calcio ionizado en hendiduras neuromusculares reduce el umbral de despolarización axonal. En hipomagnesemia grave coexisten dos mecanismos: inhibición de la secreción de PTH y resistencia periférica a la PTH.`,
+          `Parestesias, fasciculaciones musculares, ansiedad, tetania, signos de Chvostek y Trousseau positivos, convulsiones o compromiso respiratorio/arrítmico.`,
+          `Seudohipocalcemia por hipoalbuminemia, alcalosis respiratoria aguda (aumenta la unión de calcio a proteínas sin cambiar calcio total), hipomagnesemia pura y pseudohipoparatiroidismo (PTH elevada con hipocalcemia e hiperfosfatemia).`,
+          `Provocación de signos de Chvostek y Trousseau, revisión de cicatriz cervical reciente, valoración de fenotipo de Albright (PHP1A) y estado respiratorio.`,
+          `Calcio total e ionizado, albúmina, magnesio, fosfato, PTH intacta, creatinina y ECG.`,
+          `Si PTH a las 12–24 h posoperatorias es > 15 pg/mL es improbable hipoparatiroidismo permanente. En hipomagnesemia grave la PTH está indetectable o inapropiadamente baja y el fosfato no suele estar elevado (a diferencia del hipoparatiroidismo). En PHP: calcio bajo + fosfato alto + PTH alta.`,
+          `Confirmar hipocalcemia verdadera (calcio ionizado) → si hay tetania/síntomas agudos, iniciar calcio IV → medir magnesio y PTH → si Mg²⁺ < 0,4 mmol/L, reponer magnesio para restaurar respuesta de PTH.`,
+          `En hipocalcemia grave o tetania: iniciar infusión parenteral de calcio inmediatamente.`,
+          `Si el calcio parenteral se precisa > 2–3 días o empeoran síntomas, añadir calcio oral (2–4 g/día) y un análogo de vitamina D como calcitriol (0,5–1 µg/día por su rápido inicio y cese de acción). Si hay hipomagnesemia, la reposición de magnesio revierte rápidamente la hipocalcemia.`,
+          `Asintomática/leve o transitoria por citrato: suele resolver espontáneamente o con calcio oral ± calcitriol bajo. Sintomática grave/tetania: calcio IV continuo.`,
+          `Calcio parenteral: infusión de 0,5–2 mg/kg/hora (o 30–100 mL/h de solución a 1 mg/mL) hasta aliviar síntomas; suele requerirse solo unos días. Mantenimiento: calcio oral 2–4 g/día + calcitriol 0,5–1 µg/día.`,
+          `En hipocalcemia transitoria por hipoalbuminemia en críticos sin descenso del calcio ionizado no requiere tratamiento cálcico específico. Evitar hipercalcemia iatrogénica durante recuperación paratiroidea.`,
+          `Tetania grave, laringoespasmo, convulsiones, arritmias e hipercalciuria/nefrocalcinosis en tratamiento crónico excesivo.`,
+          `Hipocalcemia aguda sintomática, posquirúrgica progresiva o imposibilidad de mantener calcemia con vía oral.`,
+          `Tetania grave refractaria, convulsiones, arritmias o sepsis grave asociada en paciente crítico.`,
+          `El hipoparatiroidismo posquirúrgico transitorio suele resolver en días o meses; monitorizar calcio y PTH seriada (un ascenso de calcio tras meses de terapia sugiere recuperación glandular).`,
+          `El calcitriol (0,5–1 µg/día) es coste-efectivo en el manejo agudo-subagudo frente a otras formas de vitamina D por su inicio rápido y cese pronto si aparece hipercalcemia.`,
+          `Tratar con calcio IV una hipocalcemia "total" en un paciente crítico con hipoalbuminemia y calcio ionizado normal; intentar corregir una hipocalcemia refractaria sin medir ni reponer el magnesio.`,
+          `Infusión calcio IV: 0,5–2 mg/kg/h. Hipomagnesemia (< 0,4 mmol/L) bloquea secreción Y acción de PTH. PTH > 15 pg/mL a las 12–24 h poscirugía predice no permanencia.`
+        ]
+      },
+      {
+        id: `hiponatremia`,
+        group: `Calcio y Medio Interno`,
+        name: `Hiponatremia aguda y sintomática`,
+        tag: `Emergencia · Harrison Cap. 393`,
+        severity: `alert`,
+        summary: `Descenso de Na⁺ plasmático con hipoosmolalidad verdadera (descartar pseudohiponatremia e hiperglucemia). Si hay síntomas neurológicos graves: bolo urgente de 100 mL de NaCl hipertónico al 3% en ~15 min buscando ascenso de 4–6 mmol/L.`,
+        sections: [
+          `Disminución de la concentración sérica de sodio (< 135 mmol/L); la forma hipotónica verdadera refleja un exceso relativo de agua respecto al soluto corporal y se acompaña de hipoosmolalidad.`,
+          `La hiponatremia está presente en el 80% de los pacientes con insuficiencia suprarrenal primaria al debut; incluso la hiponatremia crónica leve aumenta caídas, fracturas y morbimortalidad.`,
+          `SIAD (secreción inadecuada de AVP), polidipsia primaria (beben hasta inducir hiponatremia), insuficiencia suprarrenal primaria y secundaria (falta de inhibición de AVP por cortisol), coma mixedematoso (dilucional), insuficiencia cardiaca/cirrosis (hipervolémica), vómitos/diarrea/diuréticos (hipovolémica) y desmopresina excesiva.`,
+          `Uso de desmopresina sin "escape" periódico, edad avanzada, fármacos asociados a SIAD, déficit de glucocorticoides no diagnosticado y fluidos hipotónicos IV.`,
+          `Paso osmótico de agua al interior neuronal cuando el descenso es agudo o grave, generando edema cerebral; en hiponatremia crónica existe adaptación osmótica cerebral (riesgo de desmielinización si se corrige demasiado rápido).`,
+          `Forma aguda/grave: cefalea, confusión, anorexia, náuseas, vómitos, convulsiones y coma. Forma crónica aparentemente asintomática: mayor tasa de caídas, fracturas y síntomas neurocognitivos/neuromusculares.`,
+          `1) Pseudohiponatremia (hiperlipidemia/hiperproteinemia con osmolalidad normal); 2) Hiponatremia translocacional (hiperglucemia o manitol); 3) Hipotónica: polidipsia primaria vs SIAD vs hipo/hipervolemia vs insuficiencia suprarrenal secundaria.`,
+          `Evaluar situación neurológica aguda y estimar volumen extracelular (edemas, ascitis, ortostatismo, hiperpigmentación adrenal), aunque la exploración física aislada tiene baja precisión para clasificar volemia.`,
+          `Osmolaridad sérica, osmolaridad urinaria, sodio urinario, glucemia, función renal, cortisol basal/ACTH (para excluir insuficiencia suprarrenal secundaria) y TSH/T4L.`,
+          `Osmolaridad urinaria < 100–200 mOsm/L orienta a polidipsia primaria. Sodio urinario < 30 mmol/L indica volumen arterial efectivo bajo (hipo o hipervolémica); en SIAD existe pérdida renal continua de Na⁺ (> 30 mmol/L). Medir AVP o copeptina NO tiene valor diagnóstico en SIAD (Harrison).`,
+          `Excluir no hipotónica (osm sérica) → medir osmolaridad urinaria (< 100–200 = polidipsia) → medir Na⁺ urinario (< 30 = bajo volumen arterial efectivo) → si euvolémica, descartar SIEMPRE insuficiencia suprarrenal secundaria y valorar tiroides antes de diagnosticar SIAD.`,
+          `En presencia de síntomas neurológicos graves (convulsiones, coma, vómitos graves): bolo de 100 mL de NaCl hipertónico al 3% IV en ~15 min buscando un ascenso inicial de 4–6 mmol/L; reevaluar clínicamente y repetir bolo si no hay respuesta hasta alcanzar ese incremento.`,
+          `Tratar la causa subyacente: en SIAD crónica restricción hídrica (500–1000 mL/día incluyendo todos los líquidos) y, si es refractaria, urea (30–60 g) o tolvaptán a dosis bajas (7,5 mg); en insuficiencia suprarrenal reemplazar hidrocortisona; en uso de DDAVP aplicar "escape de desmopresina".`,
+          `Síntomas graves/agudos: NaCl 3% en bolos de 100 mL. Crónica asintomática o leve: restricción hídrica o tratamiento causal gradual evitando corrección excesiva.`,
+          `NaCl 3%: 100 mL en ~15 min (objetivo +4 a +6 mmol/L). Restricción hídrica en SIAD: 500–1000 mL/día (ineficaz a menudo si OsmU > 500 mOsm/L). Urea: 30–60 g/día. Tolvaptán: dosis baja de 7,5 mg (riesgo de sobrecorrección rápida y hepatotoxicidad a dosis altas crónicas).`,
+          `Evitar fluidos IV hipotónicos. Evitar sobrecorrección rápida con tolvaptán. No diagnosticar SIAD sin excluir insuficiencia suprarrenal secundaria.`,
+          `Edema cerebral/enclavamiento por hiponatremia aguda no tratada; sobrecorrección osmótica rápida (mielinólisis) por tolvaptán o reposición excesiva; hepatotoxicidad con tolvaptán sostenido a dosis altas.`,
+          `Hiponatremia sintomática, Na⁺ < 130 mmol/L o sospecha de causa aguda/adrenal.`,
+          `Síntomas neurológicos graves (convulsiones, coma, alteración de conciencia) que requieran bolos de NaCl al 3% y control analítico frecuente de natremia.`,
+          `Monitorización estrecha del Na⁺ sérico durante la corrección; educación sobre restricción total de líquidos (no solo agua) o retraso programado de desmopresina si está en tratamiento.`,
+          `La medición de AVP plasmática o copeptina NO sirve para diagnosticar SIAD. Si la osmolaridad urinaria supera 500 mOsm/L, la restricción hídrica suele fracasar (considerar urea o tolvaptán 7,5 mg).`,
+          `Diagnosticar SIAD sin excluir insuficiencia suprarrenal secundaria; dar restricción hídrica solo de agua sin contar sopas/zumos/otros líquidos; corregir con tolvaptán sin vigilar el ritmo de ascenso del Na⁺.`,
+          `Síntomas graves = 100 mL NaCl 3% en ~15 min (objetivo +4–6 mmol/L). Na⁺U < 30 mmol/L = bajo volumen efectivo. Copeptina NO sirve en SIAD.`
+        ]
+      },
+      {
+        id: `hipernatremia`,
+        group: `Calcio y Medio Interno`,
+        name: `Hipernatremia grave e hipodípsica/adípsica`,
+        tag: `Emergencia · Harrison Cap. 393`,
+        severity: `alert`,
+        summary: `Hipernatremia hipertónica (> 147 mmol/L) por déficit de agua libre o ausencia de sed (hipernatremia adípsica, frecuentemente asociada a deficiencia de AVP). Corregir déficit de agua en 24–48 h vigilando estrechamente Na⁺ y descartando rabdomiólisis/FRA.`,
+        sections: [
+          `Aumento de la osmolaridad plasmática y del sodio por encima del rango normal (> 147 mmol/L en Fig. 393-4) debido a pérdida de agua libre no repuesta o ausencia del mecanismo de la sed (hipodipsia/adipsia).`,
+          `La hipernatremia hipodípsica/adípsica es un síndrome raro caracterizado por deshidratación hipertónica crónica o recurrente que coexiste muy frecuentemente con deficiencia de AVP (diabetes insípida adípsica).`,
+          `Privación de acceso al agua (ancianos, pacientes graves/obnubilados), falta de sed por lesión hipotalámica (hipodipsia/adipsia) asociada habitualmente a deficiencia de AVP, pérdidas urinarias de agua libre no compensadas.`,
+          `Disfunción hipotalámica estructural, déficit de AVP sin sed intacta, incapacidad para beber por edad o deterioro neurológico, aumento de pérdidas por calor/sudoración.`,
+          `Balance negativo de agua libre con contracción del volumen intracelular y extracelular, hipovolemia, hiperuricemia, alcalosis/hipopotasemia por hiperaldosteronismo secundario y daño muscular/renal.`,
+          `Taquicardia, hipotensión postural, debilidad muscular, dolor muscular, rabdomiólisis, hiperglucemia, hiperlipidemia, enfermedad tromboembólica, insuficiencia renal aguda y obnubilación.`,
+          `Diabetes insípida central o nefrogénica con sed intacta (compensada mientras tengan acceso al agua) frente a forma adípsica o privación de agua; ganancia neta de sodio hipertónico.`,
+          `Signos de hipovolemia (taquicardia, hipotensión ortostática), nivel de conciencia, sensibilidad muscular (rabdomiólisis) y exploración neurológica.`,
+          `Sodio plasmático, osmolaridad sérica y urinaria, urea, creatinina, potasio, CK (por rabdomiólisis), glucemia y, tras rehidratar, RM cerebral y pruebas de función adenohipofisaria.`,
+          `Hipernatremia (> 147 mmol/L), azoemia, hiperuricemia, hipopotasemia (hiperaldosteronismo secundario) y elevación de urea/creatinina.`,
+          `Confirmar hipernatremia hipertónica → valorar estado de alerta y capacidad oral → calcular déficit de agua libre por peso y Na⁺ → reponer en 24–48 h → tras rehidratar, RM cerebral + estudio hipofisario.`,
+          `Si el paciente está alerta y colaborador: administrar agua por vía oral. Si no lo está: fluidos hipotónicos IV (salino al 0,45% o dextrosa al 5%).`,
+          `Plan a largo plazo en forma adípsica (Tabla 393-2): reemplazar AVP con DDAVP, monitorizar balance hídrico hospitalario hasta eunatremia, registrar peso eunatrémico, pautar ingesta fija de 1,5–2 L/día, pesarse diariamente (si pesa menos del peso eunatrémico, reponer volumen equivalente de líquido) y aumentar líquidos con calor/sudoración.`,
+          `Leve/alerta: reposición oral guiada por balance. Grave/obnubilado o rabdomiólisis/FRA: reposición IV hipotónica en 24–48 h con control estricto de Na⁺ y función renal.`,
+          `Fluidos hipotónicos: NaCl 0,45% o dextrosa 5% IV calculando déficit de agua libre + pérdidas continuas insensibles/urinarias a pasar en 24–48 h. En adipsia crónica: DDAVP + 1,5–2 L agua/día + reposición equivalente a la pérdida ponderal diaria respecto al peso eunatrémico.`,
+          `Nunca corregir el sodio demasiado rápido (monitorización seriada obligatoria durante las 24–48 h). Vigilar hiperhidratación o hiponatremia al pautar DDAVP con ingesta fija en pacientes sin sed.`,
+          `Rabdomiólisis, insuficiencia renal aguda, tromboembolismo, hemorragia cerebral o edema cerebral por corrección excesivamente rápida.`,
+          `Hipernatremia moderada-grave, obnubilación, imposibilidad de ingesta oral, hipovolemia o sospecha de adipsia para establecer peso eunatrémico inicial.`,
+          `Obnubilación/coma, inestabilidad hemodinámica, insuficiencia renal aguda, rabdomiólisis o necesidad de control estrecho horario de la natremia.`,
+          `Mediciones regulares de sodio plasmático (analizadores domiciliarios si disponibles), peso diario frente al peso eunatrémico y búsqueda de otros déficits hipotalámicos asociados en la RM.`,
+          `El peso eunatrémico diario actúa como "termómetro de agua" en la deficiencia de AVP adípsica: cada kilo perdido respecto al peso objetivo equivale a déficit hídrico a reponer.`,
+          `Corregir el sodio en pocas horas en lugar de 24–48 h; olvidar descartar rabdomiólisis e insuficiencia renal aguda; omitir la RM cerebral y evaluación adenohipofisaria tras rehidratar.`,
+          `Reposición en 24–48 h (NaCl 0,45% o SG 5%). En adípsica: DDAVP + 1,5–2 L/día + peso eunatrémico diario + RM cerebral y eje hipofisario.`
+        ]
+      },
+      {
+        id: `siadh`,
+        group: `Calcio y Medio Interno`,
+        name: `Síndrome de secreción inadecuada de ADH (SIAD)`,
+        tag: `Harrison Cap. 393`,
+        severity: `warn`,
+        summary: `Secreción no suprimida de AVP pese a hipoosmolalidad plasmática. Exige excluir pseudohiponatremia, hiperglucemia, hipovolemia e insuficiencia suprarrenal secundaria. Primera línea crónica: restricción hídrica 500–1000 mL/día; segunda línea: urea o tolvaptán 7,5 mg.`,
+        sections: [
+          `Síndrome de secreción inadecuada de antidiuresis (SIAD): elevación persistente de AVP plasmática en momentos en que fisiológicamente debería estar osmóticamente suprimida, generando hipoosmolalidad corporal.`,
+          `Es la causa más característica de hiponatremia euvolémica hipotónica una vez excluidos los trastornos suprarrenales y tiroideos.`,
+          `Múltiples etiologías médicas/farmacológicas; además, la insuficiencia suprarrenal secundaria puede mimetizar un SIAD leve por falta de inhibición de ADH por cortisol (Harrison).`,
+          `Fármacos, enfermedades pulmonares/SNC, neoplasias, postoperatorio, edad avanzada.`,
+          `Exceso no osmótico de AVP que impide la excreción renal de agua libre, causando dilución plasmática mientras la eliminación urinaria de sodio se mantiene intacta (> 30 mmol/L).`,
+          `Síntomas dependientes de rapidez y magnitud del descenso de Na⁺: aguda/grave (cefalea, confusión, vómitos, convulsiones, coma) o crónica aparentemente asintomática (caídas, fracturas, déficit neurocognitivo).`,
+          `Polidipsia primaria (osmolaridad urinaria < 100–200 mOsm/L), hiponatremia hipovolémica o hipervolémica (Na⁺ urinario < 30 mmol/L), insuficiencia suprarrenal secundaria (exclusión obligatoria) y pseudohiponatremia/translocacional.`,
+          `Valorar estado neurológico y signos de volemia clínica (ausencia de edemas o signos claros de hipovolemia).`,
+          `Osmolaridad sérica (confirmar hipotonicidad), osmolaridad urinaria, sodio urinario, cortisol/estimulación adrenal y función tiroidea.`,
+          `Hipoosmolalidad sérica + osmolaridad urinaria inadecuadamente concentrada (> 100–200 mOsm/L, frecuentemente > 500) + Na⁺ urinario elevado (> 30 mmol/L) en paciente euvolémico sin insuficiencia suprarrenal. AVP y copeptina carecen de valor diagnóstico.`,
+          `Hiponatremia hipotónica + euvolémica + Na⁺U > 30 mmol/L + exclusión de insuficiencia suprarrenal secundaria y evaluación tiroidea → diagnóstico de SIAD.`,
+          `Si síntomas neurológicos graves: bolo de 100 mL de NaCl 3% en ~15 min (objetivo +4 a +6 mmol/L), repetible tras reevaluación clínica.`,
+          `Si crónica sin síntomas graves: restricción hídrica de primera línea (500–1000 mL/día incluyendo todos los líquidos). Segunda línea: urea (30–60 g) o tolvaptán (7,5 mg).`,
+          `Gravedad marcada por clínica neurológica (bolos NaCl 3%) más que por cifra aislada; respuesta a restricción hídrica condicionada por OsmU (si > 500 mOsm/L suele ser insuficiente).`,
+          `NaCl 3%: 100 mL en 15 min si grave. Restricción de líquidos: 500–1000 mL/día total. Urea oral: 30–60 g/día (efecto osmótico excretor de agua libre). Tolvaptán oral (antagonista V2): 7,5 mg (dosis baja preferida para evitar ascenso brusco de Na⁺).`,
+          `Contraindicado diagnosticar SIAD sin excluir insuficiencia suprarrenal secundaria. Precaución con tolvaptán por riesgo de sobrecorrección rápida, coste y alteración hepática con dosis altas mantenidas.`,
+          `Edema cerebral agudo, caídas/fracturas crónicas, mielinólisis pontina por corrección excesiva y disfunción hepática con tolvaptán a dosis altas crónicas.`,
+          `Síntomas neurológicos, Na⁺ < 125–130 mmol/L de instauración aguda o fracaso de manejo ambulatorio.`,
+          `Convulsiones, coma o necesidad de perfusión/bolos de NaCl al 3%.`,
+          `Control seriado de sodio plasmático y función hepática si recibe tolvaptán prolongado; identificar y tratar la causa subyacente del SIAD.`,
+          `La restricción hídrica abarca TODOS los líquidos (caldos, leche, fruta acuosa, infusiones), no solo el agua. Si OsmU > 500 mOsm/L, preparar pronto segunda línea (urea o tolvaptán 7,5 mg).`,
+          `Solicitar copeptina para diagnosticar SIAD (inútil); indicar restricción de líquidos en un paciente hipovolémico; olvidar descartar insuficiencia suprarrenal secundaria.`,
+          `1.ª línea crónica = restricción 500–1000 mL/d (falla si OsmU > 500). 2.ª línea = urea 30–60 g o tolvaptán 7,5 mg. Excluir siempre insuficiencia suprarrenal secundaria.`
+        ]
+      },
+      {
+        id: `diabetes_insipida`,
+        group: `Calcio y Medio Interno`,
+        name: `Diabetes insípida central y nefrogénica (AVP)`,
+        tag: `Harrison Cap. 393 · Fig. 393-4`,
+        severity: `warn`,
+        summary: `Poliuria hipotónica (> 40–50 mL/kg/24 h con OsmU < 800 mOsm/kg) por deficiencia de AVP (central) o resistencia renal a AVP (nefrogénica). Diagnóstico moderno con sodio sérico y copeptina basal (> 21,4 pmol/L = resistencia) o tras suero salino hipertónico (> 4,9 pmol/L excluye déficit completo/parcial).`,
+        sections: [
+          `Síndrome de poliuria hipotónica (> 40–50 mL/kg/24 h y osmolaridad urinaria < 800 mOsm/kg en ausencia de glucosuria) por deficiencia de arginina vasopresina (AVP, antes DI central) o resistencia renal a AVP (antes DI nefrogénica).`,
+          `En la mayoría de pacientes que acuden por poliuria-polidipsia con acceso libre a agua el sodio basal es normal (136–146 mmol/L), requiriendo pruebas dinámicas o copeptina para diferenciar de polidipsia primaria.`,
+          `Deficiencia de AVP: lesiones hipotalámico-hipofisarias (forma adípsica requiere RM cerebral y estudio adenohipofisario). Resistencia a AVP: adquirida por fármacos (muy frecuentemente litio) o hereditaria/metabólica.`,
+          `Tratamiento con litio, cirugía/patología hipotalámica-hipofisaria, trastornos electrolíticos/renales.`,
+          `Incapacidad para concentrar la orina por ausencia de síntesis/secreción de AVP o falta de respuesta del túbulo colector renal (canales de acuaporina-2) a la AVP.`,
+          `Poliuria, nicturia y sed persistente; riesgo de hipernatremia grave si el paciente no tiene acceso al agua o padece adipsia.`,
+          `Polidipsia primaria (Na⁺ < 135 mmol/L si bebe en exceso; OsmU > 800 mOsm/kg tras deprivación o copeptina estimulada > 4,9 pmol/L) y diuresis osmótica (glucosuria).`,
+          `Estado de hidratación, signos de hipovolemia o hipernatremia, exploración neurológica/visual si sospecha lesión hipotalámica-hipofisaria.`,
+          `Recolección de orina 24 h con ingesta libre (> 50 mL/kg/día y OsmU < 800 mOsm/kg), Na⁺ sérico, osmolaridad plasmática, copeptina basal o prueba de suero salino hipertónico (hasta Na⁺ ≥ 150 mmol/L), o prueba clásica de deprivación hídrica + desmopresina (2 µg).`,
+          `Algoritmo Fig. 393-4: Na⁺ < 135 → polidipsia primaria. Na⁺ > 147 → deficiencia o resistencia a AVP (test con desmopresina 2 µg distingue central vs nefrogénica). Na⁺ 136–146 → copeptina basal > 21,4 pmol/L identifica resistencia a AVP (nefrogénica); si < 21,4, prueba con salino hipertónico (Na⁺ ≥ 150): copeptina > 4,9 pmol/L = polidipsia primaria, ≤ 4,9 pmol/L = deficiencia AVP (97% precisión diagnóstica).`,
+          `Confirmar poliuria hipotónica (> 50 mL/kg/24 h, OsmU < 800) → medir Na⁺ → si normal (136–146), usar algoritmo de copeptina (basal > 21,4 = resistencia; estimulada con Na⁺ ≥ 150: > 4,9 = polidipsia vs ≤ 4,9 = déficit AVP) o test de deprivación + desmopresina 2 µg.`,
+          `Asegurar reposición hídrica si hay deshidratación/hipernatremia; si hay poliuria invalidante con hipernatremia en deficiencia de AVP, iniciar desmopresina (DDAVP).`,
+          `Deficiencia de AVP: DDAVP con "escape de desmopresina" (retrasar intermitentemente algunas horas para permitir acuaresis transitoria y prevenir hiponatremia < 130 mmol/L). Polidipsia primaria: reducción graduada de ingesta líquida, medidas para xerostomía (hielo, caramelos sin azúcar); análogos GLP-1 muestran reducción de ingesta/sed en estudio reciente. Resistencia a AVP: suspender fármaco causal (litio) si es posible; tiazida y/o amilorida + dieta hiposódica + AINEs (vigilar nefrotoxicidad).`,
+          `Resistencia parcial puede responder a dosis altas de DDAVP; en resistencia inducida por litio persistente usar hidroclorotiazida + amilorida.`,
+          `Prueba diagnóstica: desmopresina 2 µg (en deprivación: incremento OsmU > 50% = central completa; 9–50% o > 9% en zona intermedia = parcial vs nefrogénica según Fig. 393-4). Tratamiento: DDAVP con escape periódico; en nefrogénica tiazida + amilorida + dieta baja en sodio ± AINE.`,
+          `Cuidado extremo al combinar tiazidas con litio: la contracción de volumen disminuye la excreción renal de litio y predispone a toxicidad por litio. La combinación tiazida + AINE es nefrotóxica (vigilar función renal).`,
+          `Hiponatremia grave (< 130 mmol/L) por sobredosificación continua de DDAVP; deshidratación hipernatrémica grave si pierde acceso al agua; nefrotoxicidad o intoxicación por litio.`,
+          `Hipernatremia asociada, incapacidad para mantener hidratación oral o necesidad de prueba supervisada con suero salino hipertónico.`,
+          `Hipernatremia grave sintomática o complicaciones neurológicas/renales.`,
+          `Educación sobre el "escape de desmopresina" para evitar intoxicación acuosa; vigilancia renal periódica en tratamiento de resistencia a AVP.`,
+          `La copeptina basal > 21,4 pmol/L evita la molesta prueba de deprivación hídrica para diagnosticar resistencia a AVP; la prueba de salino hipertónico alcanza 97% de precisión diagnóstica (Harrison).`,
+          `Iniciar tiazida en un paciente que sigue tomando litio sin ajustar/vigilar litemia; olvidar el "escape de desmopresina"; confundir polidipsia primaria con diabetes insípida sin medir Na⁺ ni copeptina.`,
+          `Copeptina basal > 21,4 pmol/L = resistencia AVP. Copeptina con Na⁺ ≥ 150: ≤ 4,9 pmol/L = déficit AVP (97% precisión). Escape de DDAVP evita hiponatremia.`
+        ]
+      },
+      {
+        id: `hipofisis_apoplejia`,
+        group: `Hipófisis y Poblaciones Especiales`,
+        name: `Emergencias hipofisarias y apoplejía hipofisaria`,
+        tag: `Harrison Cap. 393 / 398 · Límites de fuente`,
+        severity: `alert`,
+        summary: `Urgencia endocrina por fallo agudo adeno/neurohipofisario (insuficiencia suprarrenal secundaria aguda, diabetes insípida o lesión hipotalámica-hipofisaria). Nota de rigor: las fuentes del cuaderno detallan el manejo de la insuficiencia suprarrenal secundaria aguda y la deficiencia de AVP con RM cerebral y estudio adenohipofisario, pero no contienen capítulo específico dedicado a apoplejía hipofisaria hemorrágica ni protocolos neuroquirúrgicos transesfenoidales.`,
+        sections: [
+          `Disfunción hipotalámico-hipofisaria aguda que puede manifestarse como insuficiencia suprarrenal secundaria aguda (déficit de ACTH), deficiencia aguda de AVP (diabetes insípida central) o disfunción hipotalámica adípsica. (Nota: el cuaderno no incluye el capítulo específico de apoplejía hipofisaria ni sus criterios neuroquirúrgicos).`,
+          `Las fuentes no aportan datos epidemiológicos específicos de apoplejía hipofisaria; la insuficiencia suprarrenal secundaria es menos propensa a crisis que la primaria pero conlleva riesgo vital si no se trata.`,
+          `Lesiones hipotalámico-hipofisarias estructurales, déficit de ACTH/POMC, déficit de AVP coexistente con disfunción hipotalámica de la sed y descompensación por estrés agudo.`,
+          `Patología hipotalámico-hipofisaria subyacente, ausencia de cobertura corticoidea durante estrés agudo y retirada de esteroides.`,
+          `Déficit agudo de ACTH → hipocortisolismo grave (sin déficit primario de aldosterona, pero con hiponatremia por incapacidad del cortisol para frenar AVP); déficit asociado de hormonas hipotalámicas/neurohipofisarias altera el balance hídrico.`,
+          `Hipotensión, náuseas, vómitos, estupor/coma, hiponatremia y palidez alabastrina característica (por déficit de péptidos derivados de POMC, a diferencia de la hiperpigmentación primaria); posible poliuria hipotónica o hipernatremia adípsica si afecta neurohipófisis/hipotálamo.`,
+          `Insuficiencia suprarrenal primaria, SIAD (debe excluirse siempre insuficiencia suprarrenal secundaria antes de diagnosticar SIAD), sepsis o evento neurológico agudo.`,
+          `Valoración hemodinámica, estado neurológico, coloración cutánea (palidez alabastrina vs hiperpigmentación) y diuresis/balance hídrico.`,
+          `RM cerebral y pruebas de función adenohipofisaria (específicamente indicadas tras rehidratación en disfunción hipotalámica/adípsica, Harrison Cap. 393), cortisol basal, ACTH, TSH/T4L, prolactina, LH/FSH, Na⁺ y osmolaridad.`,
+          `En insuficiencia suprarrenal secundaria: ACTH baja o inapropiadamente normal, renina y aldosterona normales, posible hiponatremia dilucional y respuesta insuficiente al test de cosintropina 250 µg (< 450–500 nmol/L a los 30–60 min; puede ser falsamente normal en déficit muy agudo de ACTH, donde ITT es alternativa salvo contraindicaciones).`,
+          `Sospecha de insuficiencia hipofisaria aguda → extraer cortisol/ACTH/TSH/T4L/Na⁺ → hidrocortisona 100 mg IV inmediata + SF 1 L/h si shock → tras estabilización, RM cerebral y estudio completo de función adenohipofisaria.`,
+          `Reemplazo glucocorticoideo inmediato con hidrocortisona 100 mg IV en bolo + hidratación salina si hay inestabilidad hemodinámica; corregir equilibrio hídrico si coexiste deficiencia de AVP.`,
+          `Mantenimiento hormonal sustitutivo (hidrocortisona y posteriormente levotiroxina si hay hipotiroidismo central, SIEMPRE después de asegurar cobertura corticoidea).`,
+          `Priorizar siempre el eje corticotropo (hidrocortisona) en urgencias antes que otros ejes hipofisarios; vigilancia de balance hídrico si aparece poliuria tras iniciar corticoides.`,
+          `Hidrocortisona: 100 mg bolo IV/IM inicial, luego 200 mg/24 h IV continua o dividida (Harrison Cap. 398). DDAVP si coexiste deficiencia de AVP.`,
+          `Contraindicada la prueba de hipoglucemia insulínica (ITT) en pacientes con diabetes, enfermedad cardiovascular o antecedentes de convulsiones. Contraindicado iniciar levotiroxina antes que hidrocortisona (puede desencadenar crisis adrenal).`,
+          `Crisis suprarrenal mortal, hiponatremia grave, hipernatremia adípsica por lesión hipotalámica o desenmascaramiento de diabetes insípida al sustituir cortisol.`,
+          `Toda sospecha de descompensación hipofisaria aguda con hipotensión, vómitos o alteración hidroelectrolítica.`,
+          `Shock, alteración del nivel de conciencia o desequilibrio rápido del sodio/diuresis.`,
+          `RM cerebral y reevaluación periódica de todos los ejes adenohipofisarios; tarjeta de emergencia y pautas de estrés corticoideo.`,
+          `El inicio de hidrocortisona en un panhipopituitarismo puede desenmascarar una diabetes insípida central previamente enmascarada (el déficit de cortisol frenaba la excreción de agua libre).`,
+          `Iniciar LT4 antes de descartar o tratar el déficit de ACTH; realizar prueba de ITT en un paciente con cardiopatía o epilepsia; diagnosticar SIAD sin descartar hipocortisolismo secundario.`,
+          `1.º Hidrocortisona 100 mg IV antes que LT4. Palidez alabastrina = déficit ACTH/POMC. RM cerebral + estudio adenohipofisario completo tras estabilización.`
+        ]
+      },
+      {
+        id: `embarazo`,
+        group: `Hipófisis y Poblaciones Especiales`,
+        name: `Emergencias endocrinas en el embarazo`,
+        tag: `ADA 2026 / Harrison / Síntesis Guías`,
+        severity: `alert`,
+        summary: `Embarazo con diabetes preexistente (mayor riesgo de CAD —incluso con glucemias más bajas—, hipoglucemia materna en 1.º trimestre y parto planificado < 39 semanas), tirotoxicosis/Graves con riesgo de recaída posparto y tiroiditis silente posparto.`,
+        sections: [
+          `Situaciones endocrinas agudas o de alto riesgo durante la gestación y el posparto recogidas en las fuentes: descompensación hiperglucémica/CAD e hipoglucemia en diabetes preexistente, síndrome de Turner gestacional (alto riesgo maternofetal) y descompensación tiroidea gestacional/posparto.`,
+          `Los cuidados preconcepcionales en DM1 aumentan la tasa de hipoglucemia materna en el 1.º trimestre (RR 1,38; IC95% 1,07–1,70; GPC SNS). La tiroiditis silente es tres veces más frecuente en mujeres con DM1 (Harrison).`,
+          `Embarazo como factor precipitante de CAD (Tabla 416-9), náuseas/vómitos gestacionales o enfermedades intercurrentes, alteración en el aclaramiento/unión de proteínas (CBG aumentada en embarazo altera interpretación de cortisol total) y posparto como momento de alto riesgo de recaída de Graves.`,
+          `Diabetes preexistente sin optimización preconcepcional, DM1 (triple riesgo de tiroiditis silente), enfermedad de Graves previa y gestación en síndrome de Turner (mayor riesgo de complicaciones maternas y fetales, incluida patología aórtica).`,
+          `Cambios hormonales gestacionales modifican la sensibilidad a la insulina, elevan la globulina fijadora de cortisol (CBG, produciendo falsas elevaciones de cortisol total) y modulan la autoinmunidad tiroidea (rebote inmunológico posparto).`,
+          `En CAD gestacional: náuseas, vómitos, poliuria, deshidratación, cetosis y acidosis. En hipoglucemia del 1.º trimestre: episodios recurrentes. En tiroiditis silente posparto: bocio indoloro con fase tirotóxica breve seguida de fase hipotiroidea.`,
+          `Hiperemesis gravídica frente a CAD (incluso con glucemia < 200–250 mg/dL); enfermedad de Graves frente a tiroiditis silente posparto (baja captación, VSG normal, anticuerpos TPO positivos).`,
+          `Hidratación, cetonemia/glucemia, presión arterial, evaluación obstétrica y exploración tiroidea.`,
+          `Glucemia capilar/MCG (objetivos gestacionales estrictos y acceso precoz a MCG/AID según Síntesis Guías), β-hidroxibutirato sérico si sospecha CAD, TSH/T4L/anticuerpos TPO y TSH-R. En estudio adrenal recordar que los estrógenos/embarazo elevan falsamente el cortisol total por aumento de CBG.`,
+          `Cetonemia ≥ 3,0 mmol/L con acidosis confirma CAD incluso sin hiperglucemia extrema. En tiroiditis silente: captación de radioyodo/⁹⁹ᵐTc suprimida (no usar en embarazo/lactancia), VSG normal y anti-TPO positivos.`,
+          `Sospecha de CAD en gestante → valorar inmediatamente β-hidroxibutirato y gasometría → ingreso urgente para fluidos IV e insulina IV. Sospecha de tirotoxicosis → distinguir Graves vs tiroiditis silente.`,
+          `En CAD gestacional: fluidoterapia IV, insulina regular IV y reposición electrolítica inmediata según protocolo de CAD (Tabla 416-9) con monitorización materno-fetal.`,
+          `En diabetes preexistente: optimización glucémica preconcepcional, acceso temprano a MCG/sistemas AID y parto planificado < 39 semanas (Síntesis Guías). En tiroiditis silente: propranolol 20–40 mg 3–4 veces/día en fase tirotóxica si síntomas graves; si requiere LT4 en fase hipotiroidea, retirar a los 6–9 meses por recuperación habitual.`,
+          `Los cuidados intensivos en 1.º trimestre exigen vigilancia extrema frente a hipoglucemia materna (RR 1,38) sin afectar las tasas de hipoglucemia neonatal (RR 0,93).`,
+          `Propranolol (tiroiditis silente fase tirotóxica): 20–40 mg cada 6–8 h curso corto (no corticoides ni antitiroideos). En Graves en lactancia: dosis bajas de antitiroideos son seguras según Harrison Cap. 396.`,
+          `Contraindicados los antitiroideos y glucocorticoides en la tiroiditis silente (Harrison). Recordar que el embarazo eleva falsamente los niveles de cortisol sérico total por incremento de CBG.`,
+          `CAD gestacional con morbimortalidad materno-fetal, hipoglucemia materna severa en 1.º trimestre, recaída de Graves posparto, hipotiroidismo permanente tras tiroiditis silente y complicaciones cardiovasculares maternas en síndrome de Turner.`,
+          `Toda sospecha de CAD, deshidratación incoercible o inestabilidad glucémica/tiroidea grave en gestación.`,
+          `CAD moderada-grave en embarazo, tormenta tiroidea o descompensación cardiovascular en gestante con síndrome de Turner.`,
+          `Seguimiento anual tras tiroiditis silente por riesgo de hipotiroidismo permanente y riesgo de recurrencia en embarazos posteriores (Harrison).`,
+          `En mujeres con DM1 el riesgo de tiroiditis silente posparto se triplica; el periodo posparto es el momento de máximo riesgo de recaída de la enfermedad de Graves.`,
+          `Interpretar cortisol total sin tener en cuenta la elevación fisiológica de CBG en el embarazo; dar antitiroideos en una tiroiditis silente posparto; omitir cribado de embarazo como precipitante de CAD.`,
+          `Diabetes preexistente: MCG/AID temprano y parto < 39 semanas. Tiroiditis silente: 3× más común en DM1, VSG normal, anti-TPO+, propranolol (no antitiroideos).`
+        ]
+      },
+      {
+        id: `criticos`,
+        group: `Hipófisis y Poblaciones Especiales`,
+        name: `Emergencias endocrinas en pacientes críticos`,
+        tag: `AACE 2022 / Harrison / GPC SNS`,
+        severity: `warn`,
+        summary: `Manejo en UCI/hospital: hiperglucemia de estrés y sepsis (perfusión IV continua de insulina), enfermedad no tiroidea (NTI: no tratar con T4/T3 de rutina), pseudohipocalcemia por hipoalbuminemia frente a hipocalcemia real en sepsis, y uso hospitalario de MCG.`,
+        sections: [
+          `Alteraciones metabólicas y endocrinas agudas en pacientes ingresados en áreas críticas o con enfermedad médica/quirúrgica grave: hiperglucemia de estrés, CAD/EHH, síndrome de enfermedad no tiroidea (NTI), hipocalcemia de UCI y crisis suprarrenal en shock séptico.`,
+          `Hasta la mitad de los pacientes en UCI presentan calcio total < 2,1 mmol/L (8,5 mg/dL), aunque la mayoría no tiene descenso del calcio ionizado (salvo sepsis grave).`,
+          `Sepsis, quemaduras, lesión renal aguda, transfusiones masivas con sangre citratada, cirugía mayor, dosis altas de esteroides, inotrópicos y nutrición variable.`,
+          `Enfermedad crítica, shock séptico, politraumatismo, posoperatorio mayor y polifarmacia.`,
+          `Respuesta neuroendocrina al estrés (aumento de hormonas contrarreguladoras e insulinorresistencia), alteración de la desyodación periférica tiroidea en NTI (elevación de rT3) y descenso de albúmina o quelación por citrato en UCI.`,
+          `Hiperglucemia lábil, disfunción orgánica múltiple, hipocalcemia bioquímica o clínica en sepsis grave, y alteración del nivel de conciencia.`,
+          `Hipotiroidismo verdadero frente a síndrome de enfermedad no tiroidea (NTI); hipoalbuminemia frente a hipocalcemia ionizada verdadera (sepsis grave/pancreatitis); shock séptico frente a crisis suprarrenal.`,
+          `Evaluación hemodinámica continua, balance hídrico, signos de infección/sepsis y confirmación de vía venosa segura.`,
+          `Glucemia horaria/frecuente con glucómetro calibrado hospitalario, gasometría arterial/venosa, calcio ionizado (obligatorio en UCI), albúmina, magnesio, TSH/T4L/rT3 solo si alta sospecha de enfermedad tiroidea previa.`,
+          `En NTI: rT3 elevada con alteraciones variables de TSH y hormonas libres que solo se aclaran con la recuperación clínica. En UCI: calcio total bajo con calcio ionizado normal = hipoalbuminemia; calcio ionizado bajo = sepsis grave o pancreatitis.`,
+          `Paciente crítico con hiperglucemia → perfusión IV continua de insulina. Paciente crítico con calcio total bajo → medir calcio ionizado y magnesio antes de reponer. Sospecha de NTI → revisar historia previa y evitar T4/T3 empírica.`,
+          `Insulina IV en perfusión continua si hay cirugía mayor, sepsis, esteroides a dosis altas, inotrópicos, ayuno o absorción SC impredecible por compromiso circulatorio (GPC SNS).`,
+          `Transición a régimen subcutáneo basal-bolo al estabilizarse y tolerar vía oral. En NTI: monitorizar pruebas tiroideas durante la recuperación clínica sin administrar T4 ni T3 salvo evidencia histórica/clínica de hipotiroidismo real (Harrison).`,
+          `En hospitalizados no críticos: preprandial < 140 y aleatoria < 180 mg/dL (AACE 2022). En postoperatorio de DM1: 140–180 mg/dL para evitar hipoglucemias (GPC SNS).`,
+          `Insulina regular o análogo en perfusión IV continua ajustada por protocolo hospitalario; calcio IV (0,5–2 mg/kg/h) solo si hipocalcemia ionizada sintomática/grave.`,
+          `Si el paciente continúa usando su MCG personal en hospitalización (permitido con protocolos locales según AACE 2022), los ajustes terapéuticos y la confirmación de valores < 70 o < 54 mg/dL deben realizarse con glucómetros calibrados del hospital. No tratar la NTI con hormona tiroidea de rutina.`,
+          `Hipoglucemia iatrogénica en UCI, fracaso de terapia subcutánea por mala perfusión periférica, sobrecarga o calcificación si se repone calcio innecesariamente.`,
+          `Todo paciente en esta categoría ya requiere hospitalización aguda.`,
+          `Inestabilidad hemodinámica, sepsis, cirugía mayor, necesidad de inotrópicos, perfusión IV continua de insulina o ventilación mecánica.`,
+          `Reevaluar eje tiroideo tras la recuperación clínica completa para confirmar resolución del NTI; revisar interacciones de sistemas híbridos AID en planta/UCI (AACE 2022).`,
+          `En compromiso circulatorio (shock/inotrópicos), la absorción de insulina subcutánea es impredecible, por lo que es obligatoria la perfusión intravenosa continua.`,
+          `Tratar un síndrome de enfermedad no tiroidea con levotiroxina sin historia de hipotiroidismo; ajustar dosis de insulina en UCI basándose solo en el sensor MCG del paciente sin glucómetro calibrado; reponer calcio por hipoalbuminemia sin medir calcio ionizado.`,
+          `UCI: insulina IV continua en shock/sepsis/esteroides/inotrópicos. NTI: observar sin T4/T3. Calcio total bajo en UCI = medir SIEMPRE calcio ionizado.`
+        ]
+      },
+      {
+        id: `ancianos_onco`,
+        group: `Hipófisis y Poblaciones Especiales`,
+        name: `Urgencias en ancianos, inmunodeprimidos y oncológicos`,
+        tag: `ATA 2025 / Harrison / ADA 2026`,
+        severity: `alert`,
+        summary: `Poblaciones vulnerables con presentaciones atípicas o emergencias específicas: EHH y coma mixedematoso en ancianos, hipertiroidismo oculto, crisis adrenal por inhibidores de checkpoint, hipercalcemia tumoral (PTHrP/metástasis), osteomalacia tumoral (TIO) y metástasis cerebrales/medulares/SVC de cáncer tiroideo antes de ¹³¹I.`,
+        sections: [
+          `Conjunto de emergencias endocrinas de alta letalidad en tres grupos vulnerables: ancianos (EHH, coma mixedematoso, tirotoxicosis apática/oculta, objetivos laxos si fragilidad), inmunodeprimidos/inmunoterapia (infecciones precipitantes graves, adrenalitis por inhibidores de checkpoint, infecciones adrenales oportunistas) y oncológicos (hipercalcemia maligna, síndrome de vena cava/compresión medular por metástasis tiroideas tras TSH alta, TIO).`,
+          `El coma mixedematoso ocurre casi siempre en ancianos (mortalidad 20–40%); el EHH afecta clásicamente a ancianos con DM2; el cáncer diferenciado de tiroides (CDT) refractario a radioyodo presenta supervivencia variable (algunos mueren en 3–5 años).`,
+          `Ancianos: sepsis, neumonía, IAM, ictus, sedantes, incumplimiento terapéutico. Inmunodeprimidos: CMV, histoplasmosis, criptococosis, coccidioidomicosis, TB adrenal, inhibidores de checkpoint inmunitario (insuficiencia adrenal). Oncológicos: PTHrP tumoral, metástasis óseas/mieloma, tumor productor de FGF23 (osteomalacia inducida por tumor, TIO), elevación brusca de TSH que provoca tumefacción aguda de metástasis tiroideas cerebrales/medulares/SVC.`,
+          `Edad avanzada, fragilidad o esperanza de vida limitada, tratamiento oncológico con inhibidores de checkpoint o inhibidores multiquinasa (lenvatinib/sorafenib en CDT refractario a RAI), metástasis óseas o del SNC.`,
+          `Menor reserva fisiológica y percepción alterada de sed/síntomas en ancianos; destrucción autoinmune o infecciosa de glándulas suprarrenales en inmunodeprimidos; estimulación tumoral aguda por TSH elevada en metástasis cerebrales, espinales o próximas a vena cava superior antes de ¹³¹I (edema compresivo).`,
+          `Ancianos: confusión/coma por EHH o coma mixedematoso, hipertiroidismo oculto debutando como hipercalcemia o arritmia/insuficiencia cardiaca. Oncológicos: compromiso neurológico agudo o síndrome de vena cava superior por edema tumoral tras estimulación con TSH; hipercalcemia sintomática.`,
+          `Metástasis cerebrales sintomáticas frente a coma metabólico; infección oportunista diseminada frente a insuficiencia suprarrenal; hiperparatiroidismo primario frente a hipercalcemia humoral de malignidad (PTH baja, PTHrP alta).`,
+          `Valoración neurológica focal (compresión medular/cerebral), signos de síndrome de vena cava superior, deshidratación, temperatura y signos de infección oportunista.`,
+          `En CDT metastásico: RM/imagen antes de ¹³¹I si sospecha SNC/médula, TSH objetivo 30–50 mU/L si retirada de LT4. En hipercalcemia oncológica: PTH, PTHrP, calcio ionizado. En inmunodeprimidos/checkpoint: cortisol, ACTH, imagen adrenal si sospecha infiltración/hemorragia. En TIO: gammagrafía/sestamibi/octreótido marcado.`,
+          `Hipercalcemia maligna: calcio alto + PTH suprimida + PTHrP elevada. CDT refractario a radioyodo (RAIR-DTC): progresión RECIST sin respuesta a ¹³¹I. Inmunocomprometido con hiponatremia e hipotensión: descartar infección adrenal (TB/CMV/hongos) o adrenalitis por checkpoint.`,
+          `Anciano confuso → glucemia/osmolaridad/Tª/Na⁺ (EHH vs coma mixedematoso vs hiponatremia). Paciente con metástasis cerebrales/espinales de CDT candidato a ¹³¹I → RTE previa + dexametasona profiláctica antes de elevar TSH. Oncología con hipercalcemia → NaCl 0,9% + calcitonina + zoledronato/denosumab.`,
+          `En metástasis cerebrales o del canal espinal de CDT que vayan a recibir ¹³¹I (ATA 2025, Rec. 79): radioterapia externa (EBRT) previa al RAI y corticoides a dosis altas para limitar el edema tumoral agudo por TSH. En ancianos con EHH/coma mixedematoso: resucitación IV y cobertura antibiótica precoz.`,
+          `En CDT refractario a RAI progresivo sin diana accionable: lenvatinib (MKI preferido en 1.ª línea) o sorafenib (Recomendación fuerte, certeza alta; ensayo DECISION). En TIO irresecable: burosumab u octreótido; si localizable, resección quirúrgica. En ancianos frágiles/terminales con diabetes: relajar objetivos glucémicos hospitalarios (AACE 2022) y evitar hipoglucemias (< 70 mg/dL); vacunación anual gripe (reduce mortalidad 33–68% en DM > 65 años) y herpes zóster ≥ 50 años.`,
+          `Individualizar objetivos glucémicos y tiroideos según fragilidad y esperanza de vida (AACE 2022); en retirada de LT4 para RAI en pacientes complejos, atenuar duración de TSH elevada reiniciando LT4 inmediatamente tras administrar ¹³¹I (ATA 2025).`,
+          `Dexametasona en metástasis SNC/espinales/SVC de CDT pre-RAI (ATA 2025): 2–4 mg cada 8 h iniciando 6–12 h antes de rhTSH+RAI (o tras 10–12 días de retirada de LT4), reduciendo en 1 semana post-terapia, o 48–72 h tras rhTSH, o 72 h tras reiniciar tiroxina. Lenvatinib o sorafenib en RAIR-DTC. Burosumab en TIO no resecable.`,
+          `Contraindicado administrar TSH recombinante o retirada prolongada de LT4 sin EBRT previa ni dexametasona si hay metástasis cerebrales/espinales/SVC (riesgo de herniación, paraplejía o síndrome de VCS). En > 75 años con diabetes sin estatinas previas valorar riesgo/beneficio; si ya las toman, es razonable continuar (ADA 2026).`,
+          `Compresión medular o síndrome de vena cava superior por edema tumoral inducido por TSH; mortalidad elevada (20–40% coma mixedematoso); infecciones graves por neumococo/gripe en diabéticos ancianos.`,
+          `Toda sospecha de coma mixedematoso, EHH, crisis adrenal por checkpoint/infección oportunista, hipercalcemia maligna sintomática o focalidad neurológica metastásica.`,
+          `Compromiso neurológico/VCS agudo, coma, hipoventilación o inestabilidad hemodinámica.`,
+          `En CDT tratado con tiroidectomía total ± RAI, una tiroglobulina basal < 0,5–1 ng/mL sin anticuerpos se asocia a altísimo VPN a 10 años (ATA 2025). En RAIR-DTC monitorizar respuesta RECIST bajo MKI.`,
+          `En metástasis cerebrales/espinales de cáncer tiroideo, elevar la TSH estimula el crecimiento y volumen tumoral agudo: la secuencia es EBRT + dexametasona 2–4 mg/8 h ANTES de rhTSH/RAI (ATA 2025).`,
+          `Administrar rhTSH sin neuroimagen ni corticoides ante sospecha de metástasis cerebrales/medulares; fijar objetivos glucémicos intensivos (< 140) en un anciano frágil terminal aumentando el riesgo de hipoglucemia; olvidar la etiología infecciosa/fúngica o checkpoint en insuficiencia suprarrenal de inmunodeprimidos.`,
+          `ATA 2025 Rec. 79: metástasis cerebrales/espinales → EBRT + dexametasona 2–4 mg/8 h antes de RAI; RAIR-DTC → lenvatinib (preferido) o sorafenib. Vacuna gripe en DM > 65 a reduce mortalidad 33–68%.`
+        ]
+      }
+    ];
+
+    const TRANSVERSAL_MODULES = [
+      {
+        id: `abcde`,
+        title: `Abordaje ABCDE y evaluación inicial del paciente endocrinológico crítico`,
+        subtitle: `Estabilización inmediata simultánea a la extracción analítica basal`,
+        cards: [
+          {
+            status: `alert`,
+            badge: `A + B · Vía aérea y ventilación`,
+            heading: `Control respiratorio en coma y acidosis`,
+            body: `Evaluar permeabilidad de vía aérea en coma mixedematoso, CAD/EHH o hipoglucemia nivel 3. En coma mixedematoso la hipoventilación con hipoxia e hipercapnia es central y suele requerir soporte ventilatorio con gasometrías arteriales seriadas durante las primeras 48 h (Harrison Cap. 396). En CAD valorar respiración de Kussmaul compensadora.`
+          },
+          {
+            status: `alert`,
+            badge: `C · Circulación y volumen`,
+            heading: `Reanimación hídrica y shock endocrino`,
+            body: `Crisis adrenal: suero salino 0,9% a 1 L/h inicial con monitorización cardiaca continua + hidrocortisona 100 mg IV inmediata (Harrison Cap. 398). CAD: 2–3 L de NaCl 0,9% o Ringer lactato en 1–3 h (10–20 mL/kg/h). Hipercalcemia grave: NaCl 0,9% IV como primer paso antes de cualquier diurético. Tormenta tiroidea: vigilar insuficiencia cardiaca de alto gasto antes de betabloqueo.`
+          },
+          {
+            status: `warn`,
+            badge: `D · Glucemia y déficit neurológico`,
+            heading: `Descartar neuroglucopenia y edema`,
+            body: `Medir glucemia capilar inmediata en todo paciente con alteración del nivel de conciencia. Si hipoglucemia con incapacidad oral: 25 g glucosa IV (o 1 mg glucagón SC/IM). En hiponatremia con convulsiones/coma: bolo de 100 mL de NaCl 3% en ~15 min (objetivo +4 a +6 mmol/L). En CDT con metástasis SNC/médula: descartar compresión aguda antes de elevar TSH.`
+          },
+          {
+            status: `info`,
+            badge: `E · Exposición y temperatura`,
+            heading: `Fiebre vs hipotermia y signos guía`,
+            body: `Hipotermia (hasta 23 °C) sugiere coma mixedematoso (recalentamiento externo activo SOLO si Tª < 30 °C; mantas térmicas pasivas en ≥ 30 °C). Fiebre alta + taquicardia/delirio orienta a tormenta tiroidea o sepsis precipitante. Inspeccionar pliegues/mucosas (hiperpigmentación = insuficiencia adrenal primaria) frente a palidez alabastrina (secundaria).`
+          }
+        ]
+      },
+      {
+        id: `hidro_gaso`,
+        title: `Equilibrio hidroelectrolítico, ácido-base e interpretación práctica de gasometrías`,
+        subtitle: `Reglas operativas y fórmulas de cabecera verificadas en las fuentes`,
+        cards: [
+          {
+            status: `alert`,
+            badge: `Ácido-Base · CAD vs EHH vs CAD Euglucémica`,
+            heading: `Gasometría y brecha aniónica (Na⁺ - [Cl⁻ + HCO₃⁻])`,
+            body: `CAD clásica: pH 6,8–7,3, HCO₃⁻ < 18 mEq/L, PCO₂ 20–30 mmHg, brecha aniónica aumentada y β-hidroxibutirato ≥ 3,0 mmol/L. CAD euglucémica: pH < 7,3, HCO₃⁻ < 18, β-HB > 3,0 con glucemia 100–250 mg/dL (< 200 mg/dL ADA) y osmolaridad normal (su resolución se guía por corrección de bicarbonato, no de glucemia). EHH: pH ≥ 7,3, HCO₃⁻ ≥ 15–18, β-HB < 3,0 (< 1,0) y osmolaridad > 300 mOsm/kg.`
+          },
+          {
+            status: `warn`,
+            badge: `Potasio en CAD`,
+            heading: `Umbral de seguridad de 3,3 mmol/L antes de insulina`,
+            body: `Aunque el K⁺ sérico inicial sea normal o alto por acidosis, existe déficit corporal total. Si K⁺ inicial < 3,3 mmol/L: NO administrar insulina hasta reponer K⁺. Si K⁺ < 3,5: 10–20 mmol/h hasta > 3,5. Si K⁺ 3,5–5,0: 10–20 mmol/L por litro de fluido (objetivo 4–5 mmol/L). Si K⁺ > 5,0: iniciar insulina y suspender K⁺ reevaluando cada 2 h.`
+          },
+          {
+            status: `info`,
+            badge: `Sodio y Osmolaridad`,
+            heading: `Corrección en hiperglucemia y diagnóstico por Na⁺U / OsmU`,
+            body: `En hiperglucemia marcada, corregir el Na⁺ sumando 1,6 mEq/L por cada 100 mg/dL (5,6 mmol/L) de ascenso de glucemia. Osmolaridad efectiva = 2×Na⁺(mmol/L) + glucosa(mmol/L). En hiponatremia: Osm sérica descarta pseudo/translocacional; OsmU < 100–200 = polidipsia primaria; Na⁺U < 30 mmol/L = volumen arterial efectivo bajo; Na⁺U > 30 mmol/L euvolémico = SIAD tras excluir insuficiencia suprarrenal secundaria.`
+          },
+          {
+            status: `ok`,
+            badge: `Calcio y Magnesio`,
+            heading: `Calcio ionizado e interacción PTH-Magnesio`,
+            body: `En UCI hasta 50% tienen calcio total < 8,5 mg/dL por hipoalbuminemia (la alcalosis aumenta además unión a proteínas); confirmar siempre calcio ionizado antes de tratar. En hipomagnesemia grave (< 0,4 mmol/L / < 0,8 mEq/L) la PTH cae y hay resistencia periférica a PTH: reponer magnesio revierte la hipocalcemia refractaria.`
+          }
+        ]
+      },
+      {
+        id: `hormonas_sindromes`,
+        title: `Interpretación práctica de alteraciones hormonales y diagnóstico sindrómico`,
+        subtitle: `Cómo leer ejes hormonales en urgencias sin caer en trampas analíticas`,
+        cards: [
+          {
+            status: `info`,
+            badge: `Eje Corticotropo`,
+            heading: `Cortisol basal, ACTH y test de cosintropina`,
+            body: `El cortisol aleatorio tiene valor limitado por su ritmo circadiano y elevación falsa de cortisol total con estrógenos/embarazo (aumento de CBG). En crisis adrenal sospechada: extraer basal y tratar sin esperar estimulación. Tras estabilizar: cosintropina 250 µg IM/IV (cortisol 30–60 min < 450–500 nmol/L confirma déficit). ACTH alta + renina alta + aldosterona baja = primaria; ACTH baja/normal + renina/aldosterona normales = secundaria.`
+          },
+          {
+            status: `warn`,
+            badge: `Eje Tiroideo en Agudos`,
+            heading: `TSH, T4L, T3L y síndrome de enfermedad no tiroidea (NTI)`,
+            body: `TSH, T4L y T3L normales excluyen tirotoxicosis y enfermedad de Graves. En pacientes críticos con enfermedad aguda, un patrón alterado con rT3 elevada puede corresponder a NTI: solo la recuperación clínica confirma el diagnóstico y no debe tratarse con T4/T3 sin antecedentes claros de hipotiroidismo. En insuficiencia suprarrenal no tratada la TSH puede estar levemente elevada y normaliza con hidrocortisona.`
+          },
+          {
+            status: `ok`,
+            badge: `Eje Paratiroideo y AVP/Copeptina`,
+            heading: `PTH contextualizada y algoritmo de copeptina`,
+            body: `Interpretar la PTH siempre junto al calcio sérico: hipercalcemia con PTH alta o inapropiadamente normal = hiperparatiroidismo/MEN/FHH; hipercalcemia con PTH suprimida = malignidad (PTHrP), vit D (> 100 ng/mL), sarcoidosis o hipertiroidismo. En poliuria hipotónica con Na⁺ normal: copeptina basal > 21,4 pmol/L = resistencia a AVP; estimulada tras salino hipertónico (Na⁺ ≥ 150) ≤ 4,9 pmol/L = déficit AVP (97% precisión). En SIAD, AVP/copeptina NO tienen utilidad.`
+          },
+          {
+            status: `alert`,
+            badge: `Diagnóstico Sindrómico Rápido`,
+            heading: `Síndromes guía en Urgencias Endocrinológicas`,
+            body: `Shock + vómitos + dolor abdominal + Na⁺ bajo/K⁺ alto = Crisis adrenal. Coma + hipotermia + hipoventilación + Na⁺ bajo = Coma mixedematoso. Fiebre + delirio + taquicardia + ictericia = Tormenta tiroidea. Anciano + glucosa ≥ 600 + estupor sin Kussmaul = EHH. Hipercalcemia + QT corto + confusión = Crisis hipercalcémica. Hipotensión + cefalea/sudoración/palpitaciones + MEN2 = Feocromocitoma.`
+          }
+        ]
+      }
+    ];
+
+    const ALGORITHMS = [
+      {
+        id: `alg_cad`,
+        name: `Cetoacidosis diabética (CAD)`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Confirmación diagnóstica (ADA 2026 / Tabla 416-7)`,
+            text: `¿Presenta glucemia ≥ 200 mg/dL (o 100–250 mg/dL en uso de iSGLT2/euglucémica) + β-hidroxibutirato sérico ≥ 3,0 mmol/L (o cetonuria ≥ 2+) + pH < 7,3 y/o HCO₃⁻ < 18 mmol/L?`,
+            options: [
+              { label: `Sí, cumple criterios de CAD`, next: `s2` },
+              { label: `Glucemia ≥ 600 mg/dL pero pH ≥ 7,3 y β-HB < 3,0`, next: `ehh_ref` }
+            ]
+          },
+          ehh_ref: {
+            title: `Reclasificar hacia EHH`,
+            text: `Ausencia de cetonemia/acidosis significativas con hiperglucemia ≥ 600 mg/dL y osmolaridad > 300 mOsm/kg corresponde a Estado Hiperglucémico Hiperosmolar (EHH): ingreso hospitalario inmediato y reposición agresiva de volumen.`,
+            options: []
+          },
+          s2: {
+            title: `Paso 2 · Fluidoterapia inicial y evaluación del K⁺ sérico`,
+            text: `Iniciar 2–3 L de NaCl 0,9% o Ringer lactato en 1–3 h (10–20 mL/kg/h). ¿Cuál es el potasio sérico inicial antes de iniciar insulina?`,
+            options: [
+              { label: `K⁺ < 3,3 mmol/L`, next: `k_low` },
+              { label: `K⁺ 3,5–5,0 mmol/L`, next: `k_mid` },
+              { label: `K⁺ > 5,0 mmol/L`, next: `k_high` }
+            ]
+          },
+          k_low: {
+            title: `¡ALERTA! Retrasar insulina y reponer K⁺`,
+            text: `Si K⁺ < 3,3 mmol/L NO administrar insulina aún. Administrar 10–20 mmol/h de K⁺ IV hasta superar 3,3–3,5 mmol/L para evitar arritmia mortal por hipopotasemia.`,
+            options: [{ label: `K⁺ corregido > 3,5 mmol/L → continuar`, next: `s3` }]
+          },
+          k_mid: {
+            title: `Añadir K⁺ 10–20 mmol/L por cada litro IV e iniciar insulina`,
+            text: `Mantener K⁺ sérico entre 4 y 5 mmol/L verificando diuresis y creatinina normales.`,
+            options: [{ label: `Ir a pauta de insulina y dextrosa`, next: `s3` }]
+          },
+          k_high: {
+            title: `Iniciar insulina sin potasio y reevaluar K⁺ cada 2 h`,
+            text: `Comenzar perfusión de insulina manteniendo K⁺ retenido hasta que descienda < 5,0 mmol/L.`,
+            options: [{ label: `Ir a pauta de insulina y dextrosa`, next: `s3` }]
+          },
+          s3: {
+            title: `Paso 3 · Insulinoterapia, dextrosa al 5–10% y transición`,
+            text: `CAD grave: insulina regular IV 0,1 U/kg bolo + 0,1 U/kg/h (CAD leve-moderada puede usar análogo rápido SC 0,1 U/kg/h o 0,2 U/kg/2 h). Al alcanzar glucemia 250 mg/dL (o desde el inicio en CAD euglucémica) añadir dextrosa 5–10% + NaCl 0,45%. Criterios de resolución: glucemia 150–200 mg/dL, cetonas normales, pH normal y HCO₃⁻ ≥ 18 mmol/L. Mantener solapamiento de 2–4 h entre insulina basal SC y suspensión de perfusión IV.`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_ehh`,
+        name: `Estado hiperglucémico hiperosmolar (EHH)`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Confirmación diagnóstica (ADA 2026 / Harrison)`,
+            text: `Glucemia ≥ 600 mg/dL (33,3 mmol/L), osmolaridad sérica efectiva > 300 mOsm/kg, pH ≥ 7,3, HCO₃⁻ ≥ 15 mmol/L y β-hidroxibutirato < 3,0 mmol/L. Calcular sodio corregido (+1,6 mEq/L por cada 100 mg/dL de glucosa).`,
+            options: [
+              { label: `Confirmado EHH → evaluar precipitante y volemia`, next: `s2` }
+            ]
+          },
+          s2: {
+            title: `Paso 2 · Ingreso inmediato y búsqueda de evento agudo`,
+            text: `Hospitalización obligatoria (UCI si coma, estupor o shock). Descartar infarto de miocardio, ictus, sepsis o neumonía. Iniciar reposición hídrica IV intensiva, corrección electrolítica e insulina IV por protocolo (ADA 16.16 [A]), seguido de educación al alta (16.17 [B]).`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_hipo`,
+        name: `Hipoglucemia grave (Nivel 2 y 3)`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Confirmar y valorar nivel de conciencia`,
+            text: `En ámbito hospitalario confirmar valores MCG < 70 o < 54 mg/dL con glucómetro calibrado. ¿El paciente está alerta y puede tragar con seguridad?`,
+            options: [
+              { label: `Sí, consciente y con deglución segura`, next: `oral` },
+              { label: `No, neuroglucopenia grave / inconsciente (Nivel 3)`, next: `parenteral` }
+            ]
+          },
+          oral: {
+            title: `Reposición oral (15–20 g de glucosa)`,
+            text: `Administrar 15–20 g de glucosa oral (tabletas, líquidos con glucosa o alimento), reevaluar glucemia y estimular ingesta posterior para reponer glucógeno. Reevaluar pauta de tratamiento para evitar recurrencia (ADA 6.19 [B]).`,
+            options: []
+          },
+          parenteral: {
+            title: `Vía parenteral urgente: ¿hay acceso IV disponible?`,
+            text: `Evaluar disponibilidad de vía venosa y causa (insulina vs sulfonilurea vs alcohol).`,
+            options: [
+              { label: `Acceso IV disponible`, next: `iv` },
+              { label: `Sin acceso IV inmediato`, next: `glucagon` }
+            ]
+          },
+          iv: {
+            title: `Glucosa IV 25 g + perfusión según glucemias seriadas`,
+            text: `Administrar 25 g de glucosa IV seguidos de perfusión de glucosa guiada por mediciones seriadas. Si la hipoglucemia se debe a sulfonilurea, añadir octreótido para suprimir la secreción de insulina.`,
+            options: []
+          },
+          glucagon: {
+            title: `Glucagón 1,0 mg SC o IM`,
+            text: `Útil especialmente en DM1. ¡Precaución!: ineficaz si depleción de glucógeno (hipoglucemia por alcohol) y menos útil en DM2 porque estimula secreción de insulina.`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_hiper_aguda`,
+        name: `Hiperglucemia aguda e intrahospitalaria`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Descartar crisis hiperglucémica y evaluar entorno`,
+            text: `Si BG > 200–250 mg/dL en paciente con síntomas o enfermedad aguda, medir cetonemia (β-HB preferido). ¿El paciente está hospitalizado en situación crítica/cirugía mayor/ayuno?`,
+            options: [
+              { label: `Sí: ayuno > 1 comida, cirugía mayor, sepsis, corticoides altos o mala perfusión`, next: `iv` },
+              { label: `No: paciente estable en planta que ingiere alimentos`, next: `sc` },
+              { label: `Ambulatorio con enfermedad intercurrente`, next: `amb` }
+            ]
+          },
+          iv: {
+            title: `Perfusión continua de insulina IV`,
+            text: `Utilizar perfusión intravenosa continua en lugar de vía subcutánea cuando la absorción sea impredecible o haya estrés mayor (GPC SNS). Objetivo general: < 140 preprandial / < 180 aleatoria (AACE) o 140–180 mg/dL en postoperatorio (SNS).`,
+            options: []
+          },
+          sc: {
+            title: `Régimen subcutáneo basal + prandial`,
+            text: `Mantener insulina basal previa (o tasa basal de bomba si está capacitado) más insulina de acción rápida preprandial (GPC SNS). En hiperglucemia por corticoides valorar NPH matutina (ADA 2026).`,
+            options: []
+          },
+          amb: {
+            title: `Manejo de días de enfermedad`,
+            text: `NUNCA suspender insulina basal incluso en ayuno; glucemia capilar cada 1–4 h; medir 3-hidroxibutirato capilar; hidratación con agua y electrolitos; suspender metformina/iSGLT2 si intolerancia oral o riesgo de FRA.`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_hipona`,
+        name: `Hiponatremia aguda y sintomática`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Gravedad neurológica inmediata`,
+            text: `¿Presenta síntomas neurológicos graves (convulsiones, coma, vómitos graves, confusión aguda)?`,
+            options: [
+              { label: `Sí: emergencia neurológica`, next: `grave` },
+              { label: `No: estudio diferencial sistemático`, next: `estudio` }
+            ]
+          },
+          grave: {
+            title: `Bolo urgente de NaCl hipertónico al 3%`,
+            text: `Administrar 100 mL de NaCl al 3% en ~15 min buscando un incremento inicial de 4–6 mmol/L; reevaluar clínicamente y repetir bolo si persisten síntomas hasta alcanzar esa meta (Harrison Cap. 393).`,
+            options: []
+          },
+          estudio: {
+            title: `Paso 2 · Osmolaridad sérica y urinaria`,
+            text: `Excluir pseudohiponatremia e hiperglucemia (osmolaridad sérica). Luego valorar osmolaridad urinaria y Na⁺ urinario:`,
+            options: [
+              { label: `OsmU < 100–200 mOsm/L`, next: `poli` },
+              { label: `Na⁺U < 30 mmol/L`, next: `bajo_vol` },
+              { label: `Euvolémico con Na⁺U > 30 mmol/L`, next: `siad_check` }
+            ]
+          },
+          poli: {
+            title: `Polidipsia primaria`,
+            text: `Reducción gradual de ingesta líquida y medidas de humedad bucal (hielo, caramelos).`,
+            options: []
+          },
+          bajo_vol: {
+            title: `Bajo volumen arterial efectivo`,
+            text: `Hiponatremia hipovolémica (pérdidas GI, diuréticos, adrenal primaria) o hipervolémica (ICC, cirrosis). Tratar volemia y causa.`,
+            options: []
+          },
+          siad_check: {
+            title: `Descartar insuficiencia suprarrenal secundaria → SIAD`,
+            text: `Excluir insuficiencia suprarrenal secundaria y valorar tiroides antes de diagnosticar SIAD. En SIAD crónica: restricción hídrica 500–1000 mL/día (todos los líquidos); si OsmU > 500 o refractaria: urea 30–60 g o tolvaptán 7,5 mg.`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_hiperna`,
+        name: `Hipernatremia grave e hipodípsica`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Confirmar Na⁺ > 147 mmol/L y valorar conciencia`,
+            text: `Evaluar signos de hipovolemia, rabdomiólisis e insuficiencia renal aguda. ¿Paciente alerta y capaz de beber?`,
+            options: [
+              { label: `Sí: vía oral segura`, next: `oral` },
+              { label: `No: obnubilación o intolerancia oral`, next: `iv` }
+            ]
+          },
+          oral: {
+            title: `Reposición oral de agua libre en 24–48 h`,
+            text: `Calcular déficit de agua libre según peso y sodio + pérdidas continuas, reponiendo en 24–48 h con controles seriados de Na⁺.`,
+            options: [{ label: `Manejo tras rehidratación`, next: `post` }]
+          },
+          iv: {
+            title: `Fluidos hipotónicos IV en 24–48 h`,
+            text: `Administrar NaCl 0,45% o dextrosa 5% en 24–48 h evitando corrección rápida; vigilar urea, creatinina y CK por rabdomiólisis/FRA.`,
+            options: [{ label: `Manejo tras rehidratación`, next: `post` }]
+          },
+          post: {
+            title: `Paso 2 · Estudio etiológico y plan crónico en adipsia`,
+            text: `Una vez rehidratado: RM cerebral y pruebas adenohipofisarias. Si es deficiencia de AVP adípsica (Tabla 393-2): DDAVP + 1,5–2 L/día + peso diario frente a peso eunatrémico (reponer pérdida ponderal con igual volumen de líquido).`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_hiperca`,
+        name: `Hipercalcemia grave`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Evaluar gravedad e iniciar rehidratación`,
+            text: `Si calcio > 2,9–3,0 mmol/L sintomático o > 3,2–3,7 mmol/L grave: restaurar volumen con NaCl 0,9% IV inmediatamente (actúa en horas). ¿Cómo está la PTH?`,
+            options: [
+              { label: `PTH elevada (o inapropiadamente normal)`, next: `pth_alta` },
+              { label: `PTH suprimida`, next: `pth_baja` }
+            ]
+          },
+          pth_alta: {
+            title: `Hipercalcemia PTH-dependiente`,
+            text: `Hiperparatiroidismo primario, síndromes MEN o FHH. Si grave añadir calcitonina (acción en horas) + bisfosfonato/denosumab mientras se planifica manejo definitivo.`,
+            options: []
+          },
+          pth_baja: {
+            title: `Hipercalcemia PTH-independiente`,
+            text: `Descartar malignidad (PTHrP, mieloma), intoxicación vit D (> 100 ng/mL) o vit A, sarcoidosis, fármacos (tiazidas, litio), inmovilización, hipertiroidismo o insuficiencia suprarrenal. En crisis grave: NaCl 0,9% + calcitonina + zoledronato/pamidronato o denosumab (y corticoides si vit D/sarcoidosis/linfoma; diálisis si fallo renal extremo).`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_hipoca`,
+        name: `Hipocalcemia aguda y tetania`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Confirmar calcio ionizado y síntomas`,
+            text: `¿El calcio ionizado está bajo y existen síntomas agudos (tetania, Chvostek/Trousseau, convulsiones)?`,
+            options: [
+              { label: `Sí: hipocalcemia sintomática/grave`, next: `iv` },
+              { label: `Solo calcio total bajo en UCI por hipoalbuminemia (ionizado normal)`, next: `no_tx` }
+            ]
+          },
+          no_tx: {
+            title: `No requiere calcio IV`,
+            text: `En hasta el 50% de pacientes en UCI el calcio total bajo refleja hipoalbuminemia con calcio ionizado normal (Harrison Cap. 422).`,
+            options: []
+          },
+          iv: {
+            title: `Paso 2 · Calcio IV + descartar hipomagnesemia`,
+            text: `Iniciar infusión de calcio IV a 0,5–2 mg/kg/h (30–100 mL/h de solución 1 mg/mL). Medir Mg²⁺: si < 0,4 mmol/L reponer magnesio de inmediato (restaura secreción y respuesta a PTH). Si requiere IV > 2–3 días: añadir calcio oral 2–4 g/d + calcitriol 0,5–1 µg/d.`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_adrenal`,
+        name: `Insuficiencia suprarrenal aguda (crisis adrenal)`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Sospecha clínica urgente`,
+            text: `Hipotensión/shock, dolor abdominal, vómitos, fiebre, hiponatremia (± hiperpotasemia/hiperpigmentación). ¿Se debe esperar al test de ACTH?`,
+            options: [
+              { label: `NO esperar: extraer tubo basal y tratar de inmediato`, next: `tx` }
+            ]
+          },
+          tx: {
+            title: `Paso 2 · Bolo de hidrocortisona + SF 1 L/h`,
+            text: `1) Rehidratación IV con salino 0,9% a 1 L/h inicial con monitorización cardiaca continua. 2) Bolo inmediato de 100 mg de hidrocortisona IV seguido de 200 mg/24 h (perfusión continua preferible o bolos IV/IM). 3) Tratar desencadenante. 4) Iniciar fludrocortisona solo al bajar hidrocortisona < 50 mg/día. 5) Diferir cosintropina 250 µg hasta estabilización.`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_tormenta`,
+        name: `Tormenta tiroidea (crisis tirotóxica)`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Reconocimiento y UCI`,
+            text: `Hipertiroidismo + fiebre, delirio/convulsiones/coma, vómitos/diarrea, ictericia o taquiarritmia/IC de alto gasto (mortalidad 4–17%). Iniciar bloqueo secuencial en UCI:`,
+            options: [
+              { label: `Aplicar secuencia farmacológica estricta`, next: `seq` }
+            ]
+          },
+          seq: {
+            title: `Secuencia obligatoria de 4 pilares + soporte`,
+            text: `1) Antitiroideo PRIMERO: Propiltiouracilo carga 500–1000 mg → 250 mg/4 h (bloquea síntesis y T4→T3; alternativa metimazol 20 mg/6 h). 2) 1 HORA DESPUÉS: SSKI 5 gotas/6 h (Wolff-Chaikoff). 3) Propranolol 60–80 mg VO/4 h o 2 mg IV/4 h (o esmolol IV vigilando fallo cardiaco). 4) Hidrocortisona 300 mg bolo IV → 100 mg/8 h + colestiramina + enfriamiento + tratar precipitante.`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_mixedema`,
+        name: `Coma mixedematoso`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Sospecha en anciano con bajo nivel de conciencia e hipotermia`,
+            text: `Evaluar ventilación (hipoventilación/hipercapnia), temperatura (¿< 30 °C?), glucemia y natremia. Ingreso en UCI.`,
+            options: [
+              { label: `Temperatura < 30 °C`, next: `cold_severe` },
+              { label: `Temperatura ≥ 30 °C`, next: `cold_mild` }
+            ]
+          },
+          cold_severe: {
+            title: `Calentamiento externo permitido (< 30 °C) + soporte`,
+            text: `Indicado calentamiento externo prudente vigilando colapso cardiovascular, además de mantas térmicas.`,
+            options: [{ label: `Tratamiento hormonal y antibiótico`, next: `horm` }]
+          },
+          cold_mild: {
+            title: `Solo mantas térmicas pasivas (≥ 30 °C)`,
+            text: `NO aplicar calentamiento externo activo si Tª ≥ 30 °C por riesgo de colapso cardiovascular (Harrison Cap. 396).`,
+            options: [{ label: `Tratamiento hormonal y antibiótico`, next: `horm` }]
+          },
+          horm: {
+            title: `Paso 2 · Hidrocortisona + LT4 IV (± T3) + Ventilación`,
+            text: `Hidrocortisona 50 mg IV/6 h + bolo LT4 IV 200–400 µg (luego 1,6 µg/kg/d VO o −25% IV) ± liotironina 5–20 µg carga y 2,5–10 µg/8 h (dosis bajas en ancianos/cardiópatas) + ventilación mecánica/gasometrías 48 h + antibióticos amplio espectro. Evitar sedantes y líquidos hipotónicos.`,
+            options: []
+          }
+        }
+      },
+      {
+        id: `alg_hipofisis`,
+        name: `Emergencia hipofisaria / apoplejía (alcance de fuentes)`,
+        start: `s1`,
+        nodes: {
+          s1: {
+            title: `Paso 1 · Estabilización corticotropa prioritaria`,
+            text: `Ante hipotensión, hiponatremia, alteración neurológica o palidez alabastrina con sospecha de fallo hipofisario agudo: extraer muestra basal (cortisol, ACTH, TSH, T4L, Na⁺) y administrar hidrocortisona 100 mg IV + SF si shock (Harrison Cap. 398).`,
+            options: [
+              { label: `Estabilizado → estudio y balance hídrico`, next: `s2` }
+            ]
+          },
+          s2: {
+            title: `Paso 2 · RM cerebral, eje adenohipofisario y vigilancia de poliuria`,
+            text: `Realizar RM cerebral y pruebas de función adenohipofisaria tras estabilización/rehidratación (Harrison Cap. 393). Vigilar aparición de poliuria hipotónica (desenmascaramiento de deficiencia de AVP tras cubrir cortisol). No iniciar LT4 antes que hidrocortisona. (Nota: las fuentes no contienen criterios neuroquirúrgicos específicos de apoplejía).`,
+            options: []
+          }
+        }
+      }
+    ];
+
+    const COMPARATIVE_TABLES = [
+      {
+        title: `Tabla 1 · Emergencias Hiperglucémicas (ADA 2026 & Harrison Tabla 416-7)`,
+        headers: [`Parámetro`, `CAD`, `CAD Euglucémica`, `EHH`],
+        rows: [
+          [`Glucemia (mg/dL)`, `≥ 200 (250–600 Harrison)`, `< 200 (100–250 Harrison)`, `≥ 600 (600–1200 Harrison)`],
+          [`pH arterial`, `< 7,3 (6,8–7,3)`, `< 7,3`, `≥ 7,3 (> 7,3)`],
+          [`HCO₃⁻ sérico (mmol/L)`, `< 18`, `< 18`, `≥ 15 (> 18 Harrison)`],
+          [`β-Hidroxibutirato (mmol/L)`, `≥ 3,0`, `≥ 3,0`, `< 3,0 (< 1,0 Harrison)`],
+          [`Osmolaridad efectiva`, `> 300 posible / variable`, `Normal`, `> 300 mOsm/kg`],
+          [`Clínica distintiva`, `Náuseas, vómitos, Kussmaul`, `Acidosis sin hiperglucemia alta`, `Anciano DM2, estupor, sin Kussmaul`]
+        ]
+      },
+      {
+        title: `Tabla 2 · Emergencias Tiroideas Extremas (Harrison Cap. 396)`,
+        headers: [`Variable`, `Tormenta tiroidea`, `Coma mixedematoso`],
+        rows: [
+          [`Mortalidad reportada`, `4–17%`, `20–40%`],
+          [`Temperatura`, `Hipertermia / fiebre`, `Hipotermia (hasta 23 °C)`],
+          [`Clínica guía`, `Delirio, taquiarritmia, vómitos, diarrea, ictericia`, `Coma, hipoventilación/hipercapnia, bradicardia`],
+          [`Hormona / bloqueo urgente`, `PTU 500–1000 mg → 1 h → SSKI 5 gotas/6 h + propranolol`, `LT4 IV 200–400 µg (± T3 5–20 µg → 2,5–10 µg/8 h)`],
+          [`Corticoide obligatorio`, `Hidrocortisona 300 mg IV → 100 mg/8 h`, `Hidrocortisona 50 mg IV/6 h`],
+          [`Alerta crítica`, `Nunca dar SSKI antes que antitiroideo`, `Calentamiento externo solo si Tª < 30 °C; evitar hipotónicos`]
+        ]
+      },
+      {
+        title: `Tabla 3 · Poliuria-Polidipsia y Trastornos del Sodio (Harrison Fig. 393-4 & Cap. 393)`,
+        headers: [`Entidad`, `Na⁺ sérico`, `OsmU / Na⁺U / Copeptina`, `Manejo clave`],
+        rows: [
+          [`Polidipsia primaria`, `< 135 o 136–146`, `OsmU < 100–200; copeptina estimulada (Na⁺≥150) > 4,9 pmol/L`, `Reducción gradual de ingesta líquida`],
+          [`Deficiencia de AVP (Central)`, `136–146 o > 147`, `Copeptina estimulada ≤ 4,9 pmol/L (97% precisión)`, `DDAVP con "escape" periódico; si adípsica: peso eunatrémico`],
+          [`Resistencia a AVP (Nefrogénica)`, `136–146 o > 147`, `Copeptina basal > 21,4 pmol/L (sin deprivación)`, `Retirar litio; tiazida + amilorida + dieta hiposódica ± AINE`],
+          [`SIAD`, `< 135 (hipotónica)`, `Na⁺U > 30 mmol/L; copeptina NO útil; excluir déficit adrenal 2.º`, `NaCl 3% 100 mL si grave; restricción 500–1000 mL/d; urea/tolvaptán 7,5 mg`]
+        ]
+      }
+    ];
+
+    const CASES = [
+      {
+        id: `c1`,
+        title: `Caso 1 · Anciano diabético con obnubilación sin Kussmaul`,
+        stem: `Varón de 78 años con DM2, 2 semanas de poliuria e ingesta escasa tras neumonía. TA 88/54 mmHg, FC 112 lpm, estuporoso, sin dolor abdominal ni respiración de Kussmaul. Glucemia 840 mg/dL, Na⁺ medido 134 mmol/L, pH 7,36, HCO₃⁻ 21 mmol/L, β-hidroxibutirato 0,7 mmol/L.`,
+        q: `¿Cuál es el diagnóstico, el sodio corregido aproximado y la conducta inicial?`,
+        options: [
+          `CAD moderada; Na⁺ corregido 134 mmol/L; alta con insulina subcutánea tras hidratación oral.`,
+          `EHH; Na⁺ corregido ~146 mmol/L (sumar 1,6 mEq/L por cada 100 mg/dL de glucosa sobre 100); ingreso hospitalario inmediato (UCI/críticos), fluidoterapia IV intensiva, insulina IV y tratamiento de la neumonía.`,
+          `SIAD paraneoplásico; restricción hídrica de 500 mL/día.`
+        ],
+        correct: 1,
+        rationale: `Cumple criterios de EHH (ADA 2026 / Harrison): glucosa ≥ 600 mg/dL, pH ≥ 7,3, HCO₃⁻ ≥ 15–18, β-HB < 3,0 y deshidratación con estupor en anciano. Con 840 mg/dL (7,4 tramos de 100 mg/dL sobre 100), el Na⁺ corregido sube ~12 mmol/L (≈ 146 mmol/L). Todo EHH requiere ingreso hospitalario inmediato.`
+      },
+      {
+        id: `c2`,
+        title: `Caso 2 · Dolor abdominal, hipotensión e hiponatremia en paciente con vitíligo`,
+        stem: `Mujer de 39 años con vitíligo e hipotiroidismo en espera de ajuste. Acude por vómitos, dolor abdominal difuso, TA 76/48 mmHg, hiperpigmentación en pliegues palmares y mucosa oral. Na⁺ 124 mmol/L, K⁺ 5,6 mmol/L.`,
+        q: `¿Qué secuencia diagnóstica y terapéutica es obligatoria?`,
+        options: [
+          `Realizar primero test de cosintropina 250 µg y esperar el resultado antes de dar corticoides.`,
+          `Extraer tubo basal si es rápido, administrar inmediatamente 100 mg IV de hidrocortisona + SF 0,9% a 1 L/h (luego 200 mg/24 h) y diferir el test de estimulación hasta estabilizar; además descartar APS-2 antes de subir LT4.`,
+          `Administrar levotiroxina IV 400 µg primero y restricción hídrica.`
+        ],
+        correct: 1,
+        rationale: `Crisis suprarrenal primaria (80% hiponatremia, 40% hiperpotasemia, hiperpigmentación; contexto de APS-2 con vitíligo/tiroidopatía). Harrison Cap. 398 ordena no retrasar jamás el tratamiento por pruebas diagnósticas y recuerda que iniciar LT4 sin cubrir déficit adrenal precipita crisis adrenal.`
+      },
+      {
+        id: `c3`,
+        title: `Caso 3 · CAD en tratamiento con iSGLT2 y potasio bajo`,
+        stem: `Mujer de 54 años con DM2 en tratamiento con iSGLT2 que tras gastroenteritis presenta vómitos, glucemia 178 mg/dL, pH 7,18, HCO₃⁻ 12 mmol/L, β-hidroxibutirato 4,8 mmol/L y K⁺ sérico 3,0 mmol/L.`,
+        q: `¿Cuál es el manejo correcto inmediato?`,
+        options: [
+          `Iniciar bolo de insulina regular 0,1 U/kg/h de inmediato y dextrosa cuando baje de 250 mg/dL.`,
+          `CAD euglucémica: iniciar NaCl 0,9% y reponer K⁺ (10–20 mmol/h hasta > 3,3–3,5 mmol/L) ANTES de iniciar insulina; empezar dextrosa 5–10% junto con la insulina y evaluar resolución por bicarbonato (≥ 18 mmol/L), no por glucemia.`,
+          `Descartar CAD porque la glucemia es < 200 mg/dL.`
+        ],
+        correct: 1,
+        rationale: `Cumple definición ADA 2026 / Tabla 416-7 de CAD euglucémica (< 200 mg/dL con β-HB ≥ 3,0 y acidosis). Con K⁺ < 3,3 mmol/L está contraindicado iniciar insulina hasta reponer potasio; además en CAD euglucémica la dextrosa 5–10% se inicia desde el principio con el salino e insulina y la resolución se basa en bicarbonato.`
+      },
+      {
+        id: `c4`,
+        title: `Caso 4 · Cáncer diferenciado de tiroides con metástasis cerebrales`,
+        stem: `Varón de 62 años con CDT metastásico con lesiones cerebrales y próximas al canal espinal, candidato a radioyodo (¹³¹I).`,
+        q: `Según las guías ATA 2025 (Rec. 79), ¿qué precaución crítica exige el ascenso de TSH previo al RAI?`,
+        options: [
+          `Administrar rhTSH directamente sin corticoides para maximizar la captación de ¹³¹I.`,
+          `Radioterapia externa (EBRT) previa al RAI y dexametasona a dosis altas (2–4 mg/8 h iniciada 6–12 h antes de rhTSH/RAI o tras 10–12 días de retirada de LT4) para prevenir tumefacción tumoral aguda y compresión neurológica.`,
+          `Iniciar sorafenib antes de confirmar si es refractario a radioyodo.`
+        ],
+        correct: 1,
+        rationale: `ATA 2025 (Rec. 79): la elevación prolongada o extrema de TSH estimula agudamente el volumen de metástasis cerebrales, espinales o próximas a VCS, pudiendo provocar compromiso neurológico o síndrome de VCS; exige EBRT previa al RAI + dexametasona 2–4 mg cada 8 h.`
+      }
+    ];
+
+    const QUIZ = [
+      {
+        q: `1. Según ADA 2026 (Table 16.1), ¿cuál es el punto de corte de β-hidroxibutirato sérico y bicarbonato para definir CAD?`,
+        opts: [`β-HB ≥ 3,0 mmol/L y HCO₃⁻ < 18 mmol/L`, `β-HB ≥ 1,5 mmol/L y HCO₃⁻ < 22 mmol/L`, `β-HB < 3,0 mmol/L y HCO₃⁻ ≥ 15 mmol/L`],
+        ans: 0,
+        exp: `Table 16.1 (ADA 2026): CAD requiere β-hidroxibutirato ≥ 3,0 mmol/L (o cetonuria ≥ 2+) y pH < 7,3 y/o HCO₃⁻ < 18 mmol/L.`
+      },
+      {
+        q: `2. En la tormenta tiroidea (Harrison Cap. 396), ¿cuánto tiempo debe transcurrir entre la primera dosis de PTU y el yoduro estable (SSKI)?`,
+        opts: [`Se administran simultáneamente`, `1 hora después del PTU/metimazol`, `24 horas después de normalizar la temperatura`],
+        ans: 1,
+        exp: `El retraso de 1 hora permite que el antitiroideo bloquee la organificación y evite que el exceso de yodo del SSKI se incorpore a nueva hormona tiroidea.`
+      },
+      {
+        q: `3. En un paciente con coma mixedematoso y temperatura central de 31,8 °C, ¿está indicado el calentamiento externo activo?`,
+        opts: [`Sí, agresivamente hasta 37 °C`, `No; el calentamiento externo solo se indica si Tª < 30 °C por riesgo de colapso cardiovascular`, `Solo tras suspender la hidrocortisona`],
+        ans: 1,
+        exp: `Harrison Cap. 396: el calentamiento externo solo se indica si la temperatura es < 30 °C; en ≥ 30 °C usar mantas térmicas pasivas para evitar colapso cardiovascular por vasodilatación.`
+      },
+      {
+        q: `4. En el diagnóstico diferencial de poliuria hipotónica con Na⁺ sérico normal (Fig. 393-4), una copeptina basal > 21,4 pmol/L identifica:`,
+        opts: [`Polidipsia primaria`, `Resistencia a AVP (diabetes insípida nefrogénica)`, `SIAD`],
+        ans: 1,
+        exp: `Fig. 393-4 (Harrison): una copeptina basal > 21,4 pmol/L sin deprivación previa identifica resistencia a AVP (completa o parcial).`
+      },
+      {
+        q: `5. ¿Cuál es el primer paso en el tratamiento urgente de la hipercalcemia grave según Harrison Cap. 422?`,
+        opts: [`Furosemida en bolo IV inmediato`, `Rehidratación con suero salino isotónico IV`, `Fosfato IV en perfusión rápida`],
+        ans: 1,
+        exp: `El primer principio terapéutico en hipercalcemia es restaurar la hidratación con NaCl 0,9% IV; la furosemida solo se considera tras lograr una rehidratación adecuada.`
+      },
+      {
+        q: `6. En un paciente con insuficiencia suprarrenal primaria aguda tratado con hidrocortisona 200 mg/24 h IV, ¿cuándo debe añadirse fludrocortisona?`,
+        opts: [`Desde el primer minuto junto al bolo de 100 mg`, `Cuando la dosis diaria de hidrocortisona descienda por debajo de 50 mg/día`, `Nunca es necesaria en la forma primaria`],
+        ans: 1,
+        exp: `Harrison Cap. 398: a dosis ≥ 50 mg/día la hidrocortisona aporta suficiente estimulación mineralocorticoide; la fludrocortisona se inicia al bajar de 50 mg/día.`
+      }
+    ];
+
+    const FLASHCARDS = [
+      { front: `Criterios de resolución de CAD (Tabla 416-9)`, back: `Glucemia 150–200 mg/dL, cetonas plasmáticas normales, pH normal y bicarbonato ≥ 18 mmol/L. Solapar 2–4 h de perfusión IV tras iniciar insulina basal SC. En CAD euglucémica guiar por corrección de bicarbonato.` },
+      { front: `Regla de K⁺ antes de insulina en CAD`, back: `Si K⁺ inicial < 3,3 mmol/L, NO administrar insulina hasta reponer potasio (10–20 mmol/h). Objetivo durante tratamiento: 4–5 mmol/L.` },
+      { front: `Bolo urgente en hiponatremia con síntomas neurológicos graves`, back: `100 mL de NaCl hipertónico al 3% en ~15 min buscando un ascenso de 4–6 mmol/L (repetible tras reevaluación clínica).` },
+      { front: `Diferencia cutánea clave: I. Suprarrenal Primaria vs Secundaria`, back: `Primaria: hiperpigmentación (fricción, pliegues palmares, mucosa oral, areolas) por exceso de ACTH/POMC. Secundaria: palidez alabastrina por déficit de POMC.` },
+      { front: `Hipomagnesemia e hipocalcemia refractaria`, back: `Con Mg²⁺ < 0,4 mmol/L (< 0,8 mEq/L) coexisten secreción alterada de PTH y resistencia periférica a PTH. Reponer magnesio revierte la hipocalcemia.` },
+      { front: `Metanefrinas y MEN 2 antes de cirugía`, back: `Feocromocitoma presente en > 50% de MEN 2A/2B. Medir metanefrinas libres fraccionadas en plasma (en decúbito supino) y orina; excluir SIEMPRE antes de cualquier cirugía.` },
+      { front: `Objetivos glucémicos hospitalarios (AACE 2022 vs SNS)`, back: `AACE no críticos: preprandial < 140 mg/dL, aleatoria < 180 mg/dL, evitar < 70 mg/dL. SNS DM1: general 90–180 mg/dL; postoperatorio 140–180 mg/dL.` },
+      { front: `MKI de primera línea en CDT refractario a radioyodo (ATA 2025)`, back: `Lenvatinib (preferido en la mayoría) o sorafenib (estudio DECISION) cuando hay progresión RECIST sin diana biomarcadora accionable (Recomendación fuerte, evidencia alta).` }
+    ];
+
+    let appState = {
+      viewType: `transversal`,
+      viewId: `abcde`,
+      pathologyTab: 0,
+      algoStates: {},
+      reviewedIds: [],
+      quizAnswers: {},
+      caseAnswers: {},
+      flashcardIndex: 0,
+      flashcardFlipped: false,
+      flashcardMastered: [],
+      searchQuery: ``,
+      calc: { na: 134, glu: 840, k: 4.5, cl: 98, hco3: 21, peso: 70, naHyper: 158 }
+    };
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, `&amp;`)
+        .replace(/</g, `&lt;`)
+        .replace(/>/g, `&gt;`)
+        .replace(/"/g, `&quot;`);
+    }
+
+    async function persistState() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+          await window.notebookAppApi.setAppState(appState);
+        }
+      } catch (e) {
+        console.warn(`No se pudo persistir estado:`, e);
+      }
+      updateProgressChip();
+    }
+
+    function updateProgressChip() {
+      const chip = document.getElementById(`progress-chip`);
+      if (!chip) return;
+      const rev = appState.reviewedIds.length;
+      let correct = 0;
+      QUIZ.forEach((q, idx) => {
+        if (appState.quizAnswers[idx] === q.ans) correct++;
+      });
+      chip.textContent = `${rev}/${PATHOLOGIES.length} patologías revisadas · ${correct}/${QUIZ.length} aciertos`;
+    }
+
+    function renderNavigation() {
+      const transEl = document.getElementById(`nav-transversal`);
+      const pathEl = document.getElementById(`nav-pathologies`);
+      const algEl = document.getElementById(`nav-algorithms`);
+      const pedEl = document.getElementById(`nav-pedagogy`);
+      if (!transEl || !pathEl || !algEl || !pedEl) return;
+
+      transEl.innerHTML = TRANSVERSAL_MODULES.map(m => `
+        <button type="button" class="nav-btn ${appState.viewType === `transversal` && appState.viewId === m.id ? `is-active` : ``}" onclick="selectView('transversal', '${m.id}')">
+          <span>${escapeHtml(m.title.split(` y `)[0])}</span>
+        </button>
+      `).join(``);
+
+      pathEl.innerHTML = PATHOLOGIES.map((p, idx) => {
+        const done = appState.reviewedIds.includes(p.id);
+        return `
+          <button type="button" class="nav-btn ${appState.viewType === `pathology` && appState.viewId === p.id ? `is-active` : ``}" onclick="selectView('pathology', '${p.id}')">
+            <span>${idx + 1}. ${escapeHtml(p.name)}</span>
+            <span class="nav-badge">${done ? `✓` : ``}</span>
+          </button>
+        `;
+      }).join(``);
+
+      algEl.innerHTML = `
+        <button type="button" class="nav-btn ${appState.viewType === `algorithms` && appState.viewId === `all` ? `is-active` : ``}" onclick="selectView('algorithms', 'all')">
+          <span>12 Algoritmos Interactivos</span>
+        </button>
+        <button type="button" class="nav-btn ${appState.viewType === `calculator` ? `is-active` : ``}" onclick="selectView('calculator', 'calc')">
+          <span>Calculadora Clínica (Na⁺, Osm, BA, H₂O)</span>
+        </button>
+      `;
+
+      const pedItems = [
+        { id: `tables`, label: `Tablas Comparativas Maestras` },
+        { id: `cases`, label: `Casos y Simulación Clínica` },
+        { id: `quiz`, label: `Autoevaluación Razonada` },
+        { id: `flashcards`, label: `Flashcards de Repaso` }
+      ];
+      pedEl.innerHTML = pedItems.map(item => `
+        <button type="button" class="nav-btn ${appState.viewType === `pedagogy` && appState.viewId === item.id ? `is-active` : ``}" onclick="selectView('pedagogy', '${item.id}')">
+          <span>${escapeHtml(item.label)}</span>
+        </button>
+      `).join(``);
+    }
+
+    function selectView(type, id) {
+      appState.viewType = type;
+      appState.viewId = id;
+      if (type === `pathology` && !appState.reviewedIds.includes(id)) {
+        appState.reviewedIds.push(id);
+      }
+      renderNavigation();
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function toggleMobileNav() {
+      const sb = document.getElementById(`sidebar-nav`);
+      if (sb) sb.classList.toggle(`is-open`);
+    }
+
+    function setPathologyTab(tabIdx) {
+      appState.pathologyTab = tabIdx;
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function renderTransversal(mod) {
+      return `
+        <div class="panel-head">
+          <div>
+            <div class="kicker">Módulo Transversal de Soporte Vital Endocrino</div>
+            <h2 class="section-title">${escapeHtml(mod.title)}</h2>
+            <p class="lede">${escapeHtml(mod.subtitle)}</p>
+          </div>
+          <span class="chip" data-status="info">Aplicación transversal UCI / Urgencias</span>
+        </div>
+        <div class="card-grid">
+          ${mod.cards.map(c => `
+            <article class="status-card" data-status="${c.status}">
+              <div class="kpi-label">${escapeHtml(c.badge)}</div>
+              <h3 class="sub-title" style="margin-top: var(--space-xs);">${escapeHtml(c.heading)}</h3>
+              <p class="dossier-text">${escapeHtml(c.body)}</p>
+            </article>
+          `).join(``)}
+        </div>
+        ${mod.id === `hidro_gaso` ? renderRangeSvg() : ``}
+      `;
+    }
+
+    function renderRangeSvg() {
+      return `
+        <div class="dossier-item" style="margin-top: var(--space-lg);">
+          <div class="dossier-num">Bandas de referencia clínica · Objetivo glucémico hospitalario vs umbrales críticos (AACE 2022 / ADA 2026)</div>
+          <svg class="range-band-svg" viewBox="0 0 760 155" role="img" aria-label="Banda de rango objetivo glucémico hospitalario entre 140 y 180 mg/dL frente a hipoglucemia menor de 70 y 54 mg/dL">
+            <rect class="range-band" x="280" y="25" width="120" height="90"></rect>
+            <line class="svg-grid" x1="60" y1="25" x2="720" y2="25"></line>
+            <line class="svg-grid" x1="60" y1="70" x2="720" y2="70"></line>
+            <line class="svg-axis" x1="60" y1="115" x2="720" y2="115"></line>
+            <text class="svg-title" x="60" y="16">Zona terapéutica hospitalaria segura (140–180 mg/dL) y umbrales de alerta</text>
+            <line x1="120" y1="25" x2="120" y2="115" stroke="var(--error)" stroke-width="2" stroke-dasharray="4 3"></line>
+            <text class="svg-text" x="85" y="135">54 mg/dL (Nivel 2)</text>
+            <line x1="170" y1="25" x2="170" y2="115" stroke="var(--warning)" stroke-width="2" stroke-dasharray="4 3"></line>
+            <text class="svg-text" x="155" y="148">70 mg/dL</text>
+            <text class="svg-text" x="285" y="42">Rango objetivo: 140–180 mg/dL</text>
+            <text class="svg-text" x="285" y="135">Preprandial &lt;140 · Aleatoria &lt;180</text>
+            <line x1="480" y1="25" x2="480" y2="115" stroke="var(--primary)" stroke-width="2" stroke-dasharray="4 3"></line>
+            <text class="svg-text" x="455" y="135">200 mg/dL (CAD ADA)</text>
+            <line x1="660" y1="25" x2="660" y2="115" stroke="var(--error)" stroke-width="2" stroke-dasharray="4 3"></line>
+            <text class="svg-text" x="620" y="135">≥600 mg/dL (EHH)</text>
+          </svg>
+        </div>
+      `;
+    }
+
+    function renderPathology(p) {
+      const tabGroups = [
+        { label: `1–6 · Bases y Clínica`, indices: [0, 1, 2, 3, 4, 5] },
+        { label: `7–11 · Diagnóstico y Lab`, indices: [6, 7, 8, 9, 10] },
+        { label: `12–17 · Tratamiento y Fármacos`, indices: [11, 12, 13, 14, 15, 16] },
+        { label: `18–23 · Ingreso, UCI, Perlas y Examen`, indices: [17, 18, 19, 20, 21, 22] }
+      ];
+      const activeGroup = tabGroups[appState.pathologyTab] || tabGroups[0];
+      const linkedAlgo = ALGORITHMS.find(a =>
+        (p.id === `cad` && a.id === `alg_cad`) ||
+        (p.id === `ehh` && a.id === `alg_ehh`) ||
+        (p.id === `hipoglucemia` && a.id === `alg_hipo`) ||
+        (p.id === `hiperglucemia_aguda` && a.id === `alg_hiper_aguda`) ||
+        ((p.id === `hiponatremia` || p.id === `siadh`) && a.id === `alg_hipona`) ||
+        (p.id === `hipernatremia` && a.id === `alg_hiperna`) ||
+        (p.id === `hipercalcemia` && a.id === `alg_hiperca`) ||
+        (p.id === `hipocalcemia` && a.id === `alg_hipoca`) ||
+        (p.id === `crisis_adrenal` && a.id === `alg_adrenal`) ||
+        (p.id === `tormenta_tiroidea` && a.id === `alg_tormenta`) ||
+        (p.id === `coma_mixedematoso` && a.id === `alg_mixedema`) ||
+        (p.id === `hipofisis_apoplejia` && a.id === `alg_hipofisis`)
+      );
+
+      return `
+        <div class="panel-head">
+          <div>
+            <div class="kicker">${escapeHtml(p.group)} · ${escapeHtml(p.tag)}</div>
+            <h2 class="section-title">${escapeHtml(p.name)}</h2>
+            <p class="lede">${escapeHtml(p.summary)}</p>
+          </div>
+          <div style="display:flex; flex-wrap:wrap; gap: var(--space-sm); align-items:center;">
+            <span class="chip" data-status="${p.severity === `alert` ? `alert` : `warn`}">${p.severity === `alert` ? `Prioridad Crítica` : `Atención Urgente`}</span>
+            ${linkedAlgo ? `<button type="button" class="btn btn-primary" onclick="jumpToAlgo('${linkedAlgo.id}')">Abrir algoritmo interactivo</button>` : ``}
+          </div>
+        </div>
+
+        <div class="callout-alert" style="margin-bottom: var(--space-lg);">
+          <strong>Alerta de seguridad · Error frecuente crítico:</strong> ${escapeHtml(p.sections[21])}
+        </div>
+
+        <div class="tabs-bar" role="tablist" aria-label="Bloques clínicos de la patología">
+          ${tabGroups.map((g, idx) => `
+            <button type="button" role="tab" aria-selected="${appState.pathologyTab === idx}" class="tab-btn ${appState.pathologyTab === idx ? `is-active` : ``}" onclick="setPathologyTab(${idx})">${escapeHtml(g.label)}</button>
+          `).join(``)}
+        </div>
+
+        <div class="dossier-grid">
+          ${activeGroup.indices.map(i => `
+            <article class="dossier-item">
+              <div class="dossier-num">${escapeHtml(PATHOLOGY_LABELS[i])}</div>
+              <p class="dossier-text">${escapeHtml(p.sections[i])}</p>
+            </article>
+          `).join(``)}
+        </div>
+      `;
+    }
+
+    function jumpToAlgo(algoId) {
+      appState.viewType = `algorithms`;
+      appState.viewId = algoId;
+      renderNavigation();
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function renderAlgorithms() {
+      const selectedId = ALGORITHMS.some(a => a.id === appState.viewId) ? appState.viewId : ALGORITHMS[0].id;
+      const alg = ALGORITHMS.find(a => a.id === selectedId) || ALGORITHMS[0];
+      if (!appState.algoStates[alg.id]) {
+        appState.algoStates[alg.id] = { current: alg.start, history: [alg.start] };
+      }
+      const st = appState.algoStates[alg.id];
+      const node = alg.nodes[st.current] || alg.nodes[alg.start];
+
+      return `
+        <div class="panel-head">
+          <div>
+            <div class="kicker">Árboles de Decisión Clínica en Tiempo Real (12 Protocolos)</div>
+            <h2 class="section-title">Algoritmos Interactivos Diagnósticos y Terapéuticos</h2>
+            <p class="lede">Selecciona un síndrome de urgencias y avanza por las bifurcaciones clínicas basadas en las guías ADA 2026, Harrison 22.ª ed., AACE 2022, ATA 2025 y GPC SNS.</p>
+          </div>
+          <div class="field-group" style="max-width: 340px;">
+            <label class="field-label" for="algo-select">Elegir algoritmo clínico</label>
+            <select id="algo-select" class="select" onchange="selectAlgorithm(this.value)">
+              ${ALGORITHMS.map(a => `<option value="${a.id}" ${a.id === alg.id ? `selected` : ``}>${escapeHtml(a.name)}</option>`).join(``)}
+            </select>
+          </div>
+        </div>
+
+        <div class="algo-history" style="margin-bottom: var(--space-md);">
+          <span class="chip" data-status="info">Paso ${st.history.length}</span>
+          <button type="button" class="btn btn-secondary" onclick="resetAlgorithm('${alg.id}')">Reiniciar algoritmo</button>
+          ${st.history.length > 1 ? `<button type="button" class="btn btn-ghost" onclick="stepBackAlgorithm('${alg.id}')">Paso anterior</button>` : ``}
+        </div>
+
+        <div class="algo-flow">
+          <article class="algo-node">
+            <h3 class="sub-title">${escapeHtml(node.title)}</h3>
+            <p class="dossier-text">${escapeHtml(node.text)}</p>
+            ${node.options.length > 0 ? `
+              <div class="algo-options">
+                ${node.options.map(opt => `
+                  <button type="button" class="btn btn-primary" onclick="advanceAlgorithm('${alg.id}', '${opt.next}')">${escapeHtml(opt.label)}</button>
+                `).join(``)}
+              </div>
+            ` : `
+              <div class="callout-ok" style="margin-top: var(--space-md);">
+                <strong>Conducta final alcanzada.</strong> Puedes reiniciar el algoritmo o explorar otra bifurcación arriba.
+              </div>
+            `}
+          </article>
+        </div>
+      `;
+    }
+
+    function selectAlgorithm(algoId) {
+      appState.viewId = algoId;
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function advanceAlgorithm(algoId, nextNode) {
+      const alg = ALGORITHMS.find(a => a.id === algoId);
+      if (!alg || !alg.nodes[nextNode]) return;
+      if (!appState.algoStates[algoId]) appState.algoStates[algoId] = { current: alg.start, history: [alg.start] };
+      appState.algoStates[algoId].current = nextNode;
+      appState.algoStates[algoId].history.push(nextNode);
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function stepBackAlgorithm(algoId) {
+      const st = appState.algoStates[algoId];
+      if (!st || st.history.length <= 1) return;
+      st.history.pop();
+      st.current = st.history[st.history.length - 1];
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function resetAlgorithm(algoId) {
+      const alg = ALGORITHMS.find(a => a.id === algoId);
+      if (!alg) return;
+      appState.algoStates[algoId] = { current: alg.start, history: [alg.start] };
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function renderCalcResultsHtml() {
+      const c = appState.calc;
+      const naCorr = c.na + 1.6 * Math.max(0, (c.glu - 100) / 100);
+      const gluMmol = c.glu / 18;
+      const osmEff = 2 * c.na + gluMmol;
+      const anionGap = c.na - (c.cl + c.hco3);
+      const waterDeficit = 0.6 * c.peso * Math.max(0, (c.naHyper / 140) - 1);
+
+      return `
+        <article class="status-card" data-status="${naCorr >= 146 ? `warn` : `info`}">
+          <div class="kpi-label">Sodio corregido</div>
+          <div class="kpi-val">${naCorr.toFixed(1)} mmol/L</div>
+          <div class="kpi-sub">+1,6 mEq/L por cada 100 mg/dL glucosa &gt; 100</div>
+        </article>
+        <article class="status-card" data-status="${osmEff > 300 ? `alert` : `ok`}">
+          <div class="kpi-label">Osmolaridad efectiva</div>
+          <div class="kpi-val">${osmEff.toFixed(1)} mOsm/kg</div>
+          <div class="kpi-sub">${osmEff > 300 ? `Hiperosmolaridad (> 300)` : `En rango normal / no EHH`}</div>
+        </article>
+        <article class="status-card" data-status="${anionGap > 12 ? `alert` : `ok`}">
+          <div class="kpi-label">Brecha aniónica</div>
+          <div class="kpi-val">${anionGap.toFixed(1)} mEq/L</div>
+          <div class="kpi-sub">Na⁺ − (Cl⁻ + HCO₃⁻)</div>
+        </article>
+        <article class="status-card" data-status="${waterDeficit > 2 ? `warn` : `info`}">
+          <div class="kpi-label">Déficit orientativo agua libre</div>
+          <div class="kpi-val">${waterDeficit.toFixed(2)} L</div>
+          <div class="kpi-sub">Reponer en 24–48 h (hipernatremia)</div>
+        </article>
+      `;
+    }
+
+    function renderCalculator() {
+      const c = appState.calc;
+
+      return `
+        <div class="panel-head">
+          <div>
+            <div class="kicker">Herramienta de Cabecera · Fórmulas de las Fuentes (Harrison Cap. 393 / 416 &amp; ADA Table 16.1)</div>
+            <h2 class="section-title">Calculadora de Na⁺ Corregido, Osmolaridad Efectiva, Brecha Aniónica y Déficit Hídrico</h2>
+            <p class="lede">Introduce los valores bioquímicos del paciente para verificar criterios cuantitativos en tiempo real.</p>
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="loadCalcPreset('ehh')">Cargar preset EHH</button>
+        </div>
+
+        <div class="kpi-grid" id="calc-results" style="margin-bottom: var(--space-lg);">
+          ${renderCalcResultsHtml()}
+        </div>
+
+        <div class="calc-grid">
+          <div class="field-group">
+            <label class="field-label" for="calc-na">Na⁺ medido (mmol/L)</label>
+            <input id="calc-na" class="input" type="number" step="1" value="${c.na}" oninput="updateCalc('na', this.value)">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="calc-glu">Glucemia (mg/dL)</label>
+            <input id="calc-glu" class="input" type="number" step="5" value="${c.glu}" oninput="updateCalc('glu', this.value)">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="calc-cl">Cl⁻ (mmol/L)</label>
+            <input id="calc-cl" class="input" type="number" step="1" value="${c.cl}" oninput="updateCalc('cl', this.value)">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="calc-hco3">HCO₃⁻ (mmol/L)</label>
+            <input id="calc-hco3" class="input" type="number" step="1" value="${c.hco3}" oninput="updateCalc('hco3', this.value)">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="calc-peso">Peso (kg)</label>
+            <input id="calc-peso" class="input" type="number" step="1" value="${c.peso}" oninput="updateCalc('peso', this.value)">
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="calc-nahyper">Na⁺ en hipernatremia (mmol/L)</label>
+            <input id="calc-nahyper" class="input" type="number" step="1" value="${c.naHyper}" oninput="updateCalc('naHyper', this.value)">
+          </div>
+        </div>
+      `;
+    }
+
+    function updateCalc(field, val) {
+      const num = parseFloat(val);
+      if (!isNaN(num)) {
+        appState.calc[field] = num;
+        const resEl = document.getElementById(`calc-results`);
+        if (resEl) {
+          resEl.innerHTML = renderCalcResultsHtml();
+        } else {
+          renderMainWorkspace();
+        }
+        persistState();
+      }
+    }
+
+    function loadCalcPreset(type) {
+      if (type === `ehh`) {
+        appState.calc = { na: 134, glu: 840, k: 4.5, cl: 98, hco3: 21, peso: 70, naHyper: 158 };
+      }
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function renderPedagogy() {
+      if (appState.viewId === `tables`) {
+        return `
+          <div class="panel-head">
+            <div>
+              <div class="kicker">Síntesis Comparativa de Alta Densidad</div>
+              <h2 class="section-title">Tablas Comparativas Maestras</h2>
+            </div>
+          </div>
+          <div class="dossier-grid">
+            ${COMPARATIVE_TABLES.map(t => `
+              <article class="dossier-item">
+                <h3 class="sub-title">${escapeHtml(t.title)}</h3>
+                <div class="table-wrap">
+                  <table>
+                    <thead><tr>${t.headers.map(h => `<th>${escapeHtml(h)}</th>`).join(``)}</tr></thead>
+                    <tbody>
+                      ${t.rows.map(r => `<tr>${r.map((cell, i) => `<td class="${i > 0 ? `num` : ``}">${escapeHtml(cell)}</td>`).join(``)}</tr>`).join(``)}
+                    </tbody>
+                  </table>
+                </div>
+              </article>
+            `).join(``)}
+          </div>
+        `;
+      }
+
+      if (appState.viewId === `cases`) {
+        return `
+          <div class="panel-head">
+            <div>
+              <div class="kicker">Entrenamiento en Escenarios Reales</div>
+              <h2 class="section-title">Casos Clínicos Interactivos y Retos Diagnósticos</h2>
+            </div>
+          </div>
+          <div class="dossier-grid">
+            ${CASES.map((c, idx) => {
+              const chosen = appState.caseAnswers[idx];
+              return `
+                <article class="dossier-item">
+                  <div class="dossier-num">${escapeHtml(c.title)}</div>
+                  <p class="dossier-text" style="margin-bottom: var(--space-sm);">${escapeHtml(c.stem)}</p>
+                  <p><strong>${escapeHtml(c.q)}</strong></p>
+                  <div style="display:grid; gap: var(--space-xs); margin-top: var(--space-sm);">
+                    ${c.options.map((opt, oi) => {
+                      let cls = `quiz-option`;
+                      if (chosen !== undefined) {
+                        if (oi === c.correct) cls += ` is-correct`;
+                        else if (oi === chosen) cls += ` is-wrong`;
+                      }
+                      return `<button type="button" class="${cls}" onclick="answerCase(${idx}, ${oi})">${escapeHtml(opt)}</button>`;
+                    }).join(``)}
+                  </div>
+                  ${chosen !== undefined ? `
+                    <div class="callout" style="margin-top: var(--space-md);">
+                      <strong>Razonamiento clínico:</strong> ${escapeHtml(c.rationale)}
+                    </div>
+                  ` : ``}
+                </article>
+              `;
+            }).join(``)}
+          </div>
+        `;
+      }
+
+      if (appState.viewId === `quiz`) {
+        return `
+          <div class="panel-head">
+            <div>
+              <div class="kicker">Evaluación Formativa</div>
+              <h2 class="section-title">Preguntas de Autoevaluación con Justificación</h2>
+            </div>
+          </div>
+          <div class="dossier-grid">
+            ${QUIZ.map((q, qi) => {
+              const chosen = appState.quizAnswers[qi];
+              return `
+                <article class="dossier-item">
+                  <p><strong>${escapeHtml(q.q)}</strong></p>
+                  <div style="display:grid; gap: var(--space-xs); margin-top: var(--space-sm);">
+                    ${q.opts.map((opt, oi) => {
+                      let cls = `quiz-option`;
+                      if (chosen !== undefined) {
+                        if (oi === q.ans) cls += ` is-correct`;
+                        else if (oi === chosen) cls += ` is-wrong`;
+                      }
+                      return `<button type="button" class="${cls}" onclick="answerQuiz(${qi}, ${oi})">${escapeHtml(opt)}</button>`;
+                    }).join(``)}
+                  </div>
+                  ${chosen !== undefined ? `
+                    <div class="callout-ok" style="margin-top: var(--space-md);">
+                      <strong>Explicación:</strong> ${escapeHtml(q.exp)}
+                    </div>
+                  ` : ``}
+                </article>
+              `;
+            }).join(``)}
+          </div>
+        `;
+      }
+
+      const idx = appState.flashcardIndex % FLASHCARDS.length;
+      const fc = FLASHCARDS[idx];
+      const mastered = appState.flashcardMastered.includes(idx);
+      return `
+        <div class="panel-head">
+          <div>
+            <div class="kicker">Repaso Activo para Guardias y Exámenes</div>
+            <h2 class="section-title">Flashcards de Alta Rentabilidad (${idx + 1}/${FLASHCARDS.length})</h2>
+          </div>
+          <span class="chip" data-status="${mastered ? `ok` : `info`}">${mastered ? `Dominada` : `En repaso`}</span>
+        </div>
+        <div class="flashcard" tabindex="0" role="button" aria-pressed="${appState.flashcardFlipped}" onclick="flipFlashcard()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();flipFlashcard();}">
+          <div class="kpi-label">${appState.flashcardFlipped ? `Respuesta clave de guía` : `Concepto / Pregunta (haz clic para voltear)`}</div>
+          <div class="sub-title" style="margin:0;">${escapeHtml(appState.flashcardFlipped ? fc.back : fc.front)}</div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap: var(--space-sm); margin-top: var(--space-md);">
+          <button type="button" class="btn btn-secondary" onclick="prevFlashcard()">Anterior</button>
+          <button type="button" class="btn btn-primary" onclick="nextFlashcard()">Siguiente</button>
+          <button type="button" class="btn btn-ghost" onclick="toggleMastered(${idx})">${mastered ? `Desmarcar dominada` : `Marcar como dominada`}</button>
+        </div>
+      `;
+    }
+
+    function answerCase(idx, oi) {
+      appState.caseAnswers[idx] = oi;
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function answerQuiz(qi, oi) {
+      appState.quizAnswers[qi] = oi;
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function flipFlashcard() {
+      appState.flashcardFlipped = !appState.flashcardFlipped;
+      renderMainWorkspace();
+    }
+
+    function nextFlashcard() {
+      appState.flashcardIndex = (appState.flashcardIndex + 1) % FLASHCARDS.length;
+      appState.flashcardFlipped = false;
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function prevFlashcard() {
+      appState.flashcardIndex = (appState.flashcardIndex - 1 + FLASHCARDS.length) % FLASHCARDS.length;
+      appState.flashcardFlipped = false;
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function toggleMastered(idx) {
+      if (appState.flashcardMastered.includes(idx)) {
+        appState.flashcardMastered = appState.flashcardMastered.filter(x => x !== idx);
+      } else {
+        appState.flashcardMastered.push(idx);
+      }
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function handleSearch(query) {
+      appState.searchQuery = query.trim().toLowerCase();
+      const resPanel = document.getElementById(`search-results-panel`);
+      if (!resPanel) return;
+      if (!appState.searchQuery || appState.searchQuery.length < 2) {
+        resPanel.style.display = `none`;
+        resPanel.innerHTML = ``;
+        return;
+      }
+      const matches = [];
+      PATHOLOGIES.forEach(p => {
+        const hay = `${p.name} ${p.summary} ${p.sections.join(` `)}`.toLowerCase();
+        if (hay.includes(appState.searchQuery)) {
+          const matchedSectionIdx = p.sections.findIndex(s => s.toLowerCase().includes(appState.searchQuery));
+          matches.push({
+            type: `pathology`,
+            id: p.id,
+            title: p.name,
+            snippet: matchedSectionIdx >= 0 ? `${PATHOLOGY_LABELS[matchedSectionIdx]}: ${p.sections[matchedSectionIdx]}` : p.summary
+          });
+        }
+      });
+      TRANSVERSAL_MODULES.forEach(m => {
+        const hay = `${m.title} ${m.cards.map(c => c.body).join(` `)}`.toLowerCase();
+        if (hay.includes(appState.searchQuery)) {
+          matches.push({ type: `transversal`, id: m.id, title: m.title, snippet: m.subtitle });
+        }
+      });
+
+      resPanel.style.display = `block`;
+      if (matches.length === 0) {
+        resPanel.innerHTML = `<p>No se encontraron coincidencias para <strong>"${escapeHtml(query)}"</strong> en las fuentes del cuaderno.</p>`;
+        return;
+      }
+      resPanel.innerHTML = `
+        <div class="panel-head" style="margin-bottom: var(--space-sm);">
+          <h3 class="sub-title" style="margin:0;">Resultados de búsqueda (${matches.length})</h3>
+          <button type="button" class="btn btn-ghost" onclick="clearSearch()">Cerrar resultados</button>
+        </div>
+        <div class="card-grid">
+          ${matches.slice(0, 8).map(m => `
+            <article class="status-card" data-status="info">
+              <div class="kpi-label">${m.type === `pathology` ? `Patología` : `Módulo Transversal`}</div>
+              <h4 class="sub-title" style="margin: var(--space-xs) 0;">${escapeHtml(m.title)}</h4>
+              <p class="dossier-text" style="font-size:0.875rem;">${escapeHtml(m.snippet.slice(0, 180))}…</p>
+              <button type="button" class="btn btn-secondary" style="margin-top: var(--space-sm);" onclick="selectView('${m.type}', '${m.id}')">Abrir ficha</button>
+            </article>
+          `).join(``)}
+        </div>
+      `;
+    }
+
+    function clearSearch() {
+      const inp = document.getElementById(`global-search`);
+      if (inp) inp.value = ``;
+      handleSearch(``);
+    }
+
+    function resetProgress(btn) {
+      if (btn.dataset.armed !== `true`) {
+        btn.dataset.armed = `true`;
+        btn.textContent = `Confirmar reinicio`;
+        return;
+      }
+      btn.dataset.armed = `false`;
+      btn.textContent = `Reiniciar progreso`;
+      appState.reviewedIds = [];
+      appState.quizAnswers = {};
+      appState.caseAnswers = {};
+      appState.flashcardMastered = [];
+      appState.algoStates = {};
+      renderNavigation();
+      renderMainWorkspace();
+      persistState();
+    }
+
+    function renderMainWorkspace() {
+      const ws = document.getElementById(`workspace-panel`);
+      if (!ws) return;
+      if (appState.viewType === `transversal`) {
+        const mod = TRANSVERSAL_MODULES.find(m => m.id === appState.viewId) || TRANSVERSAL_MODULES[0];
+        ws.innerHTML = renderTransversal(mod);
+      } else if (appState.viewType === `pathology`) {
+        const p = PATHOLOGIES.find(x => x.id === appState.viewId) || PATHOLOGIES[0];
+        ws.innerHTML = renderPathology(p);
+      } else if (appState.viewType === `algorithms`) {
+        ws.innerHTML = renderAlgorithms();
+      } else if (appState.viewType === `calculator`) {
+        ws.innerHTML = renderCalculator();
+      } else if (appState.viewType === `pedagogy`) {
+        ws.innerHTML = renderPedagogy();
+      }
+    }
+
+    async function initApp() {
+      try {
+        if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === `object`) {
+            appState = Object.assign({}, appState, saved);
+          }
+        }
+      } catch (e) {
+        console.warn(`No se pudo cargar estado inicial:`, e);
+      }
+      renderNavigation();
+      renderMainWorkspace();
+      updateProgressChip();
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    initApp();
+  </script>
+</body>
+</html>

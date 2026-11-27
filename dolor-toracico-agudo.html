@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="vitals">
+  <title>Guía Clínica Integral: Dolor Torácico Agudo y Urgencias Cardiovasculares</title>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* 1. Vitals style tokens */
+      --background: #ffffff;
+      --surface-container-low: #f1f7f8;
+      --surface-container: #e3f1f3;
+      --surface-container-high: #d5e9ec;
+
+      --on-surface: #1b2b33;
+      --on-surface-variant: #46585f;
+
+      --outline: #7b9198;
+      --outline-variant: #d5e3e5;
+
+      --primary: #0f7c8a;
+      --primary-hover: #0a5f6a;
+      --on-primary: #ffffff;
+      --primary-container: #e3f1f3;
+      --on-primary-container: #0a5560;
+      --secondary: #1d5e3a;
+      --tertiary: #2e7d4f;
+      --error: #b3261e;
+      --on-error: #ffffff;
+
+      --data-1: #0f7c8a;
+      --data-2: #2e7d4f;
+      --data-3: #b86e00;
+      --data-4: #5c5fb0;
+      --data-context: #b8c7ca;
+
+      --font-headline: 'Figtree', sans-serif;
+      --font-body: 'Atkinson Hyperlegible', sans-serif;
+      --font-label: 'Figtree', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      --rounded: 0.625rem;
+      --rounded-lg: 0.875rem;
+      --rounded-full: 9999px;
+
+      --top-bar: 6px solid var(--primary);
+      --status-bar-width: 4px;
+      --card-border: 1px solid var(--outline-variant);
+      --card-lift: 0 1px 2px rgba(27, 43, 51, 0.05), 0 6px 16px rgba(27, 43, 51, 0.05);
+
+      /* 2. Shared semantic & tinted surface tokens */
+      --positive: #2e7d4f;
+      --positive-tint: #eaf5ee;
+      --warning: #b86e00;
+      --warning-tint: #fef5e7;
+      --warning-ink: #6e4100;
+      --error-tint: #fbeeed;
+      --error-border: #e6b8b5;
+      --focus: #0f7c8a;
+
+      /* 3. Narrative type scale (balanced for clinical readability) */
+      --display-size: clamp(2rem, 1.4rem + 2.4vw, 3.125rem);
+      --headline-size: clamp(1.5rem, 1.2rem + 1.1vw, 2rem);
+      --subhead-size: clamp(1.125rem, 1.04rem + 0.4vw, 1.3125rem);
+      --body-size: clamp(1rem, 0.96rem + 0.18vw, 1.0625rem);
+      --label-size: clamp(0.75rem, 0.72rem + 0.12vw, 0.8125rem);
+
+      /* Spacing scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { overflow-x: clip; margin: 0; padding: 0; scroll-behavior: smooth; }
+    header { position: static !important; }
+
+    body {
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      color: var(--on-surface);
+      background: var(--surface-container-low);
+      border-top: var(--top-bar);
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    /* Layout shell */
+    .page-grid {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: var(--space-xl);
+      padding: var(--space-lg);
+      max-width: 1380px;
+      margin: 0 auto;
+      align-items: start;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Sidebar Navigation */
+    aside.sidebar {
+      position: sticky;
+      top: var(--space-lg);
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--card-lift);
+      max-height: calc(100vh - 2.5rem);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .sidebar-brand {
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-md);
+    }
+
+    .sidebar-kicker {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      display: block;
+      margin-bottom: var(--space-xs);
+    }
+
+    .sidebar-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.0625rem;
+      line-height: 1.2;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .sidebar-search-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .input-label {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      color: var(--on-surface);
+      display: block;
+    }
+
+    .field-input, .field-select {
+      width: 100%;
+      background: var(--background);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      padding: 0.55rem 0.75rem;
+      font-size: 0.9375rem;
+      color: var(--on-surface);
+      transition: border-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out);
+    }
+
+    .field-select {
+      padding-right: 2rem;
+    }
+
+    .field-input:focus-visible, .field-select:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+      border-color: var(--primary);
+    }
+
+    .quick-action-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xs);
+    }
+
+    .quick-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 40px;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      text-decoration: none;
+      cursor: pointer;
+      border: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+
+    .quick-btn--alert {
+      background: var(--error-tint);
+      border-color: var(--error-border);
+      color: var(--error);
+    }
+
+    .quick-btn:hover { background: var(--surface-container); }
+    .quick-btn--alert:hover { background: var(--error); color: var(--on-error); }
+
+    .toc-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .toc-link {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-sm);
+      padding: 0.45rem 0.6rem;
+      border-radius: var(--rounded);
+      text-decoration: none;
+      color: var(--on-surface-variant);
+      font-family: var(--font-label);
+      font-size: 0.875rem;
+      font-weight: 600;
+      line-height: 1.3;
+      border-left: 3px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .toc-link:hover {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+
+    .toc-link.is-active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-left-color: var(--primary);
+    }
+
+    .toc-num {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .toc-link.is-hidden { display: none; }
+
+    /* Mobile navigation bar (hidden on desktop, visible <= 640px) */
+    .mobile-nav-bar {
+      display: none;
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .mobile-nav-row {
+      display: flex;
+      gap: var(--space-sm);
+      align-items: end;
+      flex-wrap: wrap;
+    }
+
+    .mobile-nav-row > div { flex: 1 1 200px; }
+
+    /* Main Content Column */
+    main.main-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+      min-width: 0;
+    }
+
+    /* Hero / Header */
+    .hero-panel {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      box-shadow: var(--card-lift);
+    }
+
+    .hero-meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+      margin-bottom: var(--space-md);
+    }
+
+    .title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--display-size);
+      letter-spacing: -0.015em;
+      line-height: 1.08;
+      color: var(--on-surface);
+      margin: 0;
+    }
+
+    .lede {
+      font-size: 1.1em;
+      line-height: 1.6;
+      color: var(--on-surface-variant);
+      max-width: 68ch;
+      margin-top: var(--space-md);
+      margin-bottom: 0;
+    }
+
+    .hero-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-lg);
+    }
+
+    /* Section Containers */
+    section.guide-section {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      box-shadow: var(--card-lift);
+      scroll-margin-top: var(--space-lg);
+    }
+
+    .section-header {
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .section-kicker {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--primary);
+      display: inline-block;
+      margin-bottom: var(--space-xs);
+    }
+
+    h2.section-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--headline-size);
+      letter-spacing: -0.015em;
+      line-height: 1.12;
+      color: var(--on-surface);
+      margin: 0;
+    }
+
+    .section-subtitle {
+      color: var(--on-surface-variant);
+      margin-top: var(--space-sm);
+      margin-bottom: 0;
+      max-width: 68ch;
+    }
+
+    h3.subhead {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--subhead-size);
+      line-height: 1.2;
+      color: var(--on-surface);
+      margin: var(--space-lg) 0 var(--space-sm) 0;
+    }
+
+    p { max-width: 72ch; margin-top: 0; margin-bottom: var(--space-md); }
+    ul, ol { max-width: 72ch; padding-left: 1.25rem; margin-top: 0; margin-bottom: var(--space-md); }
+    li { margin-bottom: var(--space-xs); }
+
+    /* Vitals Status Cards & Chips */
+    .status-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .status-card[data-status="ok"] { border-left-color: var(--tertiary); }
+    .status-card[data-status="alert"] { border-left-color: var(--error); background: var(--error-tint); }
+    .status-card[data-status="warn"] { border-left-color: var(--warning); background: var(--warning-tint); }
+    .status-card[data-status="wash"] { background: var(--surface-container-low); }
+
+    .kpi-label {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      display: block;
+    }
+
+    .kpi-value {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.75rem;
+      line-height: 1.15;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+      margin: var(--space-xs) 0;
+      display: block;
+    }
+
+    .kpi-caption {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded-full);
+      background: var(--positive-tint);
+      color: var(--secondary);
+      line-height: 1.3;
+    }
+    .chip[data-status="info"] { background: var(--primary-container); color: var(--on-primary-container); }
+    .chip[data-status="alert"] { background: var(--error-tint); color: var(--error); border: 1px solid var(--error-border); }
+    .chip[data-status="warn"] { background: var(--warning-tint); color: var(--warning-ink); }
+
+    /* Callouts */
+    .callout {
+      background: var(--primary-container);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      color: var(--on-primary-container);
+      margin: var(--space-md) 0;
+    }
+
+    .callout--alert {
+      background: var(--error-tint);
+      border-left-color: var(--error);
+      color: var(--on-surface);
+    }
+
+    .callout--warn {
+      background: var(--warning-tint);
+      border-left-color: var(--warning);
+      color: var(--on-surface);
+    }
+
+    .callout-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 0 0 var(--space-xs) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    /* Card Grids */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(270px, 100%), 1fr));
+      gap: var(--space-md);
+      margin: var(--space-md) 0;
+    }
+
+    .card-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+      gap: var(--space-lg);
+      margin: var(--space-md) 0;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: 0.6rem 1.15rem;
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.9375rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+
+    .btn--primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn--primary:hover { background: var(--primary-hover); }
+
+    .btn--secondary {
+      background: var(--background);
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .btn--secondary:hover { background: var(--surface-container-low); }
+
+    .btn--chip {
+      min-height: 40px;
+      padding: 0.4rem 0.9rem;
+      border-radius: var(--rounded-full);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      border: 1px solid var(--outline-variant);
+      font-size: 0.875rem;
+    }
+    .btn--chip:hover { background: var(--surface-container); }
+    .btn--chip.is-selected {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    .btn:focus-visible, a:focus-visible, summary:focus-visible, input:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      margin: var(--space-md) 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--background);
+      font-size: 0.9375rem;
+    }
+
+    th {
+      background: var(--surface-container-low);
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface-variant);
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+    /* Interactive Tool Panels */
+    .tool-box {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      margin: var(--space-lg) 0;
+    }
+
+    .tool-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .tool-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.15rem;
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    .check-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+    }
+
+    .check-tile {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      background: var(--background);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      padding: 0.75rem;
+      cursor: pointer;
+      min-height: 44px;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .check-tile:hover { background: var(--surface-container); }
+    .check-tile input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: end;
+      margin-bottom: var(--space-md);
+    }
+
+    /* Accordion / Details */
+    details.clinical-drawer {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      margin: var(--space-md) 0;
+      overflow: hidden;
+    }
+
+    details.clinical-drawer summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 0.9rem 1.25rem;
+      font-family: var(--font-headline);
+      font-weight: 700;
+      color: var(--on-surface);
+      background: var(--surface-container-low);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      min-height: 48px;
+    }
+
+    details.clinical-drawer summary::-webkit-details-marker { display: none; }
+    details.clinical-drawer[open] summary {
+      border-bottom: 1px solid var(--outline-variant);
+      background: var(--surface-container);
+    }
+
+    .drawer-body {
+      padding: var(--space-lg);
+    }
+
+    /* SVG Schematics & Charts */
+    .viz-frame {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      margin: var(--space-md) 0;
+      min-height: 240px;
+    }
+
+    .svg-responsive {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Interactive Lead Grid */
+    .lead-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-xs);
+      margin-bottom: var(--space-md);
+    }
+
+    .lead-cell {
+      background: var(--background);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      padding: 0.55rem 0.65rem;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .lead-cell.is-st-up {
+      background: var(--error-tint);
+      border-color: var(--error);
+      color: var(--error);
+    }
+
+    .lead-cell.is-st-down {
+      background: var(--warning-tint);
+      border-color: var(--warning);
+      color: var(--warning-ink);
+    }
+
+    .lead-cell.is-t-neg {
+      background: var(--primary-container);
+      border-color: var(--primary);
+      color: var(--on-primary-container);
+    }
+
+    /* Pathway Stepper */
+    .pathway-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+      margin: var(--space-md) 0;
+    }
+
+    .pathway-step {
+      background: var(--background);
+      border: var(--card-border);
+      border-top: 4px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .pathway-step--alert { border-top-color: var(--error); }
+    .pathway-step--ok { border-top-color: var(--tertiary); }
+
+    .step-number {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: var(--label-size);
+      color: var(--primary);
+    }
+
+    /* Source Citation Bar */
+    .source-bar {
+      margin-top: var(--space-lg);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--outline-variant);
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+    }
+
+    .source-bar strong { color: var(--on-surface); }
+
+    /* Highlight on search jump */
+    .search-match {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 980px) {
+      .page-grid {
+        grid-template-columns: 1fr;
+      }
+      aside.sidebar {
+        position: static;
+        max-height: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        grid-template-columns: 1fr;
+        padding: var(--space-sm);
+        gap: var(--space-md);
+      }
+      aside { display: none !important; }
+      .mobile-nav-bar { display: block; }
+      .hero-panel, section.guide-section { padding: var(--space-md); }
+      .lead-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  
+    .portfolio-back-bar {
+      width: 100%;
+      flex: 0 0 100%;
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .portfolio-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      color: var(--on-primary-container);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .portfolio-back-link:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .portfolio-author-tag {
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+  </style>
+</head>
+<body>
+  <div class="page-grid">
+    <!-- INTERACTIVE SIDEBAR NAVIGATION -->
+    <aside class="sidebar" aria-label="Índice interactivo de la guía clínica">
+      <div class="sidebar-brand">
+        <span class="sidebar-kicker">Medicina de Urgencias y Cardiología</span>
+        <h2 class="sidebar-title">Dolor Torácico Agudo y Arritmias Críticas</h2>
+      </div>
+
+      <div class="sidebar-search-group">
+        <label class="input-label" for="sidebar-search">Filtrar secciones o temas</label>
+        <input id="sidebar-search" class="field-input" type="search" placeholder="Ej. IAMCEST, Brugada, atropina, TEP..." oninput="filterSidebarTOC(this.value)">
+      </div>
+
+      <div class="quick-action-strip">
+        <a href="#sec-12" class="quick-btn">Resumen Rápido</a>
+        <a href="#sec-11" class="quick-btn quick-btn--alert">Errores Mortales</a>
+      </div>
+
+      <nav aria-label="Secciones de la guía">
+        <ul class="toc-list" id="toc-list">
+          <li><a class="toc-link is-active" href="#sec-1" data-keywords="conceptos definicion epidemiologia muerte subita fisiopatologia isquemia"><span class="toc-num">01</span><span>Conceptos Fundamentales</span></a></li>
+          <li><a class="toc-link" href="#sec-2" data-keywords="evaluacion inicial abcde inestabilidad hemodinamica shock triaje"><span class="toc-num">02</span><span>Evaluación Inicial y ABCDE</span></a></li>
+          <li><a class="toc-link" href="#sec-3" data-keywords="historia clinica exploracion fisica soplos diastolicos pulsos riesgo"><span class="toc-num">03</span><span>Historia y Exploración Física</span></a></li>
+          <li><a class="toc-link" href="#sec-4" data-keywords="diagnostico diferencial iamcest aorta tep pericarditis pulmonares digestivas"><span class="toc-num">04</span><span>Diagnóstico Diferencial</span></a></li>
+          <li><a class="toc-link" href="#sec-5" data-keywords="estudios ecg 14 parametros biomarcadores troponina ecocardiografia tc rmc pet"><span class="toc-num">05</span><span>Estudios Complementarios</span></a></li>
+          <li><a class="toc-link" href="#sec-6" data-keywords="estratificacion riesgo cha2ds2-va cha2ds2-vasc anderson wilkins selvester brugada"><span class="toc-num">06</span><span>Estratificación de Riesgo</span></a></li>
+          <li><a class="toc-link" href="#sec-7" data-keywords="algoritmo diagnostico integral llegada paciente reperfusion"><span class="toc-num">07</span><span>Algoritmo Diagnóstico Integral</span></a></li>
+          <li><a class="toc-link" href="#sec-8" data-keywords="tratamiento icp fibrinolisis anticoagulantes fa cardioversion atropina magnesio ic-fer"><span class="toc-num">08</span><span>Tratamiento y Farmacología</span></a></li>
+          <li><a class="toc-link" href="#sec-9" data-keywords="situaciones especiales ancianos mujeres embarazo protesis congenitas inmunodeprimidos"><span class="toc-num">09</span><span>Situaciones Especiales</span></a></li>
+          <li><a class="toc-link" href="#sec-10" data-keywords="disposicion final alta observacion ingreso uci derivacion"><span class="toc-num">10</span><span>Disposición Final</span></a></li>
+          <li><a class="toc-link" href="#sec-11" data-keywords="errores mortales peligro aines atropina cardioversion acod"><span class="toc-num">11</span><span>Errores que Cuestan una Vida</span></a></li>
+          <li><a class="toc-link" href="#sec-12" data-keywords="resumen ejecutivo red flags dosis rapidas discrepancias decalogo"><span class="toc-num">12</span><span>Resumen Ejecutivo Rápido</span></a></li>
+        </ul>
+      </nav>
+
+      <div class="status-card" data-status="info" style="padding: var(--space-sm) var(--space-md);">
+        <span class="kpi-label">Trazabilidad</span>
+        <p class="kpi-caption" style="margin-top: var(--space-xs);">Elaborada exclusivamente con las fuentes clínicas del cuaderno. Las discrepancias y vacíos documentales se señalan en cada bloque.</p>
+      </div>
+    </aside>
+
+    <!-- MAIN CLINICAL CONTENT -->
+    <main class="main-content" id="main-content">
+      <!-- Mobile Quick Navigation -->
+      <nav class="mobile-nav-bar" aria-label="Navegación rápida móvil">
+        <div class="mobile-nav-row">
+          <div>
+            <label class="input-label" for="mobile-sec-select">Ir a sección de la guía</label>
+            <select id="mobile-sec-select" class="field-select" onchange="jumpToSection(this.value)">
+              <option value="#sec-1">01. Conceptos Fundamentales</option>
+              <option value="#sec-2">02. Evaluación Inicial y ABCDE</option>
+              <option value="#sec-3">03. Historia Clínica y Exploración</option>
+              <option value="#sec-4">04. Diagnóstico Diferencial</option>
+              <option value="#sec-5">05. Estudios Complementarios</option>
+              <option value="#sec-6">06. Estratificación de Riesgo</option>
+              <option value="#sec-7">07. Algoritmo Diagnóstico Integral</option>
+              <option value="#sec-8">08. Tratamiento y Farmacología</option>
+              <option value="#sec-9">09. Situaciones Especiales</option>
+              <option value="#sec-10">10. Disposición Final</option>
+              <option value="#sec-11">11. Errores que Cuestan una Vida</option>
+              <option value="#sec-12">12. Resumen Ejecutivo de Consulta Rápida</option>
+            </select>
+          </div>
+          <a href="#sec-12" class="btn btn--primary">Resumen Rápido</a>
+        </div>
+      </nav>
+
+      <!-- HERO HEADER -->
+      <header class="hero-panel">
+        <div class="portfolio-back-bar">
+          <a class="portfolio-back-link" href="index.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Volver al Portafolio
+          </a>
+          <span class="portfolio-author-tag">DIEGO GOMEZ | Médico de Familia &amp; SST</span>
+        </div>
+        <div class="hero-meta-row">
+          <span class="chip" data-status="info">Guía Clínica de Urgencias</span>
+          <span class="chip" data-status="alert">Protocolo Tiempo-Dependiente</span>
+          <span class="chip">Basada Exclusivamente en Fuentes del Cuaderno</span>
+        </div>
+        <h1 class="title">Dolor Torácico Agudo y Trastornos Cardiovasculares Críticos en Urgencias</h1>
+        <p class="lede">Referencia clínica interactiva para la toma rápida de decisiones ante el paciente con dolor torácico agudo, isquemia miocárdica, patología aórtica, tromboembolismo pulmonar, insuficiencia cardíaca y arritmias de alto riesgo, integrando criterios electrocardiográficos, hemodinámicos y terapéuticos.</p>
+
+        <div class="hero-kpi-grid">
+          <div class="status-card" data-status="alert">
+            <span class="kpi-label">Ventana de Reperfusión IAMCEST</span>
+            <span class="kpi-value">&lt; 120 min</span>
+            <p class="kpi-caption">ICP primaria preferida sobre fibrinólisis si demora esperada a primer dispositivo &le; 120 min (Harrison EVC).</p>
+          </div>
+          <div class="status-card" data-status="info">
+            <span class="kpi-label">Oxigenoterapia en Urgencias</span>
+            <span class="kpi-value">SpO&#8322; &lt; 94%</span>
+            <p class="kpi-caption">Administrar oxígeno suplementario solo si saturación inferior al 94% en evaluación B (Tratado Arritmias).</p>
+          </div>
+          <div class="status-card" data-status="warn">
+            <span class="kpi-label">Umbral de Hipotensión Crítica</span>
+            <span class="kpi-value">PAS &lt; 90 mmHg</span>
+            <p class="kpi-caption">Criterio mayor de inestabilidad ERC 2021 / ESC: exige cardioversión o marcapasos inmediato en arritmias.</p>
+          </div>
+          <div class="status-card" data-status="ok">
+            <span class="kpi-label">Mortalidad Cardiovascular Global</span>
+            <span class="kpi-value">10–20% MSC</span>
+            <p class="kpi-caption">La muerte súbita cardíaca representa 10–20% de todas las muertes a nivel mundial (Spotlight ESC 2022).</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- SECCIÓN 1: CONCEPTOS FUNDAMENTALES -->
+      <section class="guide-section" id="sec-1">
+        <div class="section-header">
+          <span class="section-kicker">Sección 01</span>
+          <h2 class="section-title">Conceptos Fundamentales: Definición, Epidemiología y Relevancia en Urgencias</h2>
+          <p class="section-subtitle">Bases fisiopatológicas de la isquemia miocárdica, la inestabilidad eléctrica y el impacto asistencial de las emergencias cardiovasculares en el Servicio de Urgencias Hospitalario (SUH).</p>
+        </div>
+
+        <h3 class="subhead">1.1 Definición Operativa y Espectro Clínico en Urgencias</h3>
+        <p>En el entorno de Urgencias y Unidades de Cuidados Críticos, el abordaje del paciente con dolor torácico agudo y trastornos cardiovasculares o del ritmo asociados abarca un espectro clínico continuo: desde síntomas episódicos benignos en ausencia de cardiopatía estructural hasta cuadros de colapso hemodinámico grave, shock cardiogénico, síncope de alto riesgo, síndrome coronario agudo (IAMCEST e IAMSEST), patología aórtica aguda, tromboembolismo pulmonar y parada cardíaca intrahospitalaria o extrahospitalaria.</p>
+        <p>La prioridad asistencial consiste en tomar decisiones en cuestión de minutos: determinar si el proceso eléctrico o isquémico es la causa primaria del compromiso vital, evaluar la estabilidad hemodinámica, establecer un diagnóstico electrocardiográfico preciso mediante el ECG de 12 derivaciones e instaurar la intervención terapéutica (eléctrica, de reperfusión o farmacológica) más eficaz y segura.</p>
+
+        <h3 class="subhead">1.2 Epidemiología y Carga de Mortalidad</h3>
+        <div class="card-grid">
+          <div class="status-card" data-status="info">
+            <span class="kpi-label">Carga Global de Enfermedad</span>
+            <p style="margin-top: var(--space-xs); margin-bottom: 0;">Las enfermedades cardiovasculares continúan siendo la principal causa de mortalidad mundial. La muerte súbita cardíaca (MSC) es responsable de aproximadamente el <strong>10–20% de todas las muertes</strong>, con la fibrilación auricular, las arritmias ventriculares y la enfermedad coronaria como determinantes mayores de hospitalización y mortalidad.</p>
+          </div>
+          <div class="status-card" data-status="warn">
+            <span class="kpi-label">Taquicardia de QRS Ancho</span>
+            <p style="margin-top: var(--space-xs); margin-bottom: 0;">En Urgencias, ante toda taquicardia de complejo QRS ancho (&ge; 120 ms), el <strong>80–85% de los casos corresponden a Taquicardia Ventricular (TV)</strong> y el resto a taquicardia supraventricular (TSV) con aberrancia de conducción o preexcitación.</p>
+          </div>
+          <div class="status-card" data-status="ok">
+            <span class="kpi-label">Relevancia del ECG Prehospitalario</span>
+            <p style="margin-top: var(--space-xs); margin-bottom: 0;">La interpretación rápida del ECG de 12 derivaciones permite el diagnóstico prehospitalario y en Urgencias del síndrome coronario agudo, diferenciando IAMCEST (candidato a reperfusión inmediata) de SCASEST/IAMSEST mediante el análisis de repolarización (ST-T) y despolarización (QRS).</p>
+          </div>
+        </div>
+
+        <h3 class="subhead">1.3 Fisiopatología Integrada de la Isquemia, el Vaso Vulnerable y la Arritmogénesis</h3>
+        <ul>
+          <li><strong>Desequilibrio aporte/demanda de oxígeno miocárdico:</strong> Con frecuencia coexisten dos o más mecanismos en un mismo paciente, como un incremento de la demanda de O&#8322; por hipertrofia ventricular izquierda secundaria a hipertensión arterial combinado con reducción del aporte por aterosclerosis coronaria y anemia. También la constricción anómala o el fallo de vasodilatación de los vasos de resistencia coronarios provoca isquemia (<em>angina microvascular</em>).</li>
+          <li><strong>Aterosclerosis coronaria — "Vaso vulnerable" y "Sangre vulnerable":</strong> La disfunción del endotelio vascular (inducida por LDL elevado, tabaquismo, hipertensión y diabetes mellitus) anula el control del tono vascular y la superficie antitrombótica, favoreciendo vasoconstricción inapropiada, formación de trombo luminal e interacción anómala de monocitos y plaquetas. La placa aterosclerótica ("vaso vulnerable") interactúa con alteraciones hemáticas ("sangre vulnerable": hiperglucemia, LDL alto, factor tisular, fibrinógeno, factor von Willebrand, factor VII y micropartículas plaquetarias) que promueven hipercoagulabilidad e hipofibrinólisis, especialmente en la diabetes mellitus.</li>
+          <li><strong>Corrientes de lesión y cambios celulares:</strong> La falta de flujo sanguíneo altera las propiedades eléctricas celulares generando <em>corrientes de lesión</em> entre el miocardio sano y el afectado. Durante la isquemia miocárdica transmural aguda (IMT), el vector eléctrico del QRS, del segmento ST y de la onda T apunta hacia la región isquémica (desaparición de ondas S, aumento de R, elevación del ST y ondas T altas); al evolucionar hacia necrosis/infarto, disminuye la amplitud de las ondas T (posteriormente se invierten), aparecen ondas Q patológicas y desciende el segmento ST.</li>
+          <li><strong>Variación regional de canales iónicos y mecanismos arrítmicos:</strong> En miocitos auriculares y ventriculares dominan las corrientes de Na&#8314; en la fase rápida ascendente (fase 0) permaneciendo quiescentes en fase 4; en cambio, el nodo sinusal posee automaticidad por despolarización gradual en fase 4 hasta alcanzar el umbral. Las TSV en el espectro flúter-fibrilación auricular se deben a <em>macrorreentrada</em> continua en el miocardio auricular (siendo infrecuente la microrreentrada), mientras que otras taquiarritmias responden a automatismo acelerado o reentrada de la unión AV.</li>
+        </ul>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Tratado Monográfico de Arritmias en Urgencias (Cap. 1 y 3); Harrison — Enfermedad Vascular Coronaria y Periférica (Cap. Isquemia y Aterosclerosis); Harrison — Desórdenes del Ritmo Cardíaco (Potenciales de acción); Wagner, Strauss &amp; Marriott (12.ª ed., Prefacio, Cap. 11 y 17); Electrocardiografía Clínica; Spotlight ESC 2022 sobre Arritmias Ventriculares y MSC.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2: EVALUACIÓN INICIAL -->
+      <section class="guide-section" id="sec-2">
+        <div class="section-header">
+          <span class="section-kicker">Sección 02</span>
+          <h2 class="section-title">Evaluación Inicial: ABCDE, Inestabilidad Hemodinámica, Signos de Alarma y Triaje</h2>
+          <p class="section-subtitle">Priorización clínica inmediata en los primeros minutos de llegada al box de Urgencias para identificar pacientes peri-parada y activar circuitos tiempo-dependientes.</p>
+        </div>
+
+        <h3 class="subhead">2.1 Abordaje Estandarizado ABCDE</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Paso</th>
+                <th>Parámetros de Evaluación Inmediata</th>
+                <th>Intervención Inicial Obligatoria</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>A — Airway</strong></td>
+                <td>Permeabilidad de la vía aérea, capacidad de hablar, riesgo de obstrucción por deterioro neurológico.</td>
+                <td>Asegurar vía aérea permeable antes de cualquier maniobra farmacológica o eléctrica.</td>
+              </tr>
+              <tr>
+                <td><strong>B — Breathing</strong></td>
+                <td>Esfuerzo respiratorio, frecuencia respiratoria (taquipnea), crepitantes pulmonares, oximetría de pulso continua.</td>
+                <td>Oxígeno suplementario únicamente si <span class="num">SpO&#8322; &lt; 94%</span>.</td>
+              </tr>
+              <tr>
+                <td><strong>C — Circulation</strong></td>
+                <td>Presión arterial, monitorización ECG en tiempo real, palpación simultánea de pulsos centrales y periféricos, ingurgitación yugular.</td>
+                <td>Acceso venoso periférico de grueso calibre; obtener ECG de 12 derivaciones de inmediato como herramienta primaria de triaje.</td>
+              </tr>
+              <tr>
+                <td><strong>D — Disability</strong></td>
+                <td>Nivel de conciencia, letargia o síncope por hipoperfusión cerebral aguda; Escala de Coma de Glasgow (GCS).</td>
+                <td>Si existe alteración del estado mental atribuible al trastorno del ritmo/perfusión, clasificar como <strong>INESTABLE</strong>.</td>
+              </tr>
+              <tr>
+                <td><strong>E — Exposure</strong></td>
+                <td>Desvestido completo para inspección sistemática del tórax y extremidades.</td>
+                <td>Buscar frialdad acra, diaforesis, mala perfusión distal, palidez/cianosis o estigmas de venopunción/procedimientos recientes.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="subhead">2.2 Criterios Mayores de Inestabilidad Hemodinámica (Signos de Alarma Peri-Parada — ERC 2021 / ESC)</h3>
+        <div class="callout callout--alert">
+          <div class="callout-title"><i data-lucide="alert-triangle" aria-hidden="true"></i> Regla Crítica de Priorización</div>
+          <p style="margin: 0;">La presencia de <strong>CUALQUIERA</strong> de los cuatro criterios siguientes clasifica al paciente como <strong>INESTABLE</strong> y exige <strong>cardioversión eléctrica sincronizada o marcapasos de inmediato</strong> (o desfibrilación precoz si FV/TV sin pulso), sin demorar la intervención por pruebas diagnósticas adicionales.</p>
+        </div>
+
+        <div class="card-grid">
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Criterio Mayor 1</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Shock / Hipotensión Arterial</h4>
+            <p style="margin: 0;">Presión arterial sistólica <span class="num">PAS &lt; 90 mmHg</span> acompañada de signos de hipoperfusión: oliguria, diaforesis y frialdad acra.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Criterio Mayor 2</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Síncope o Alteración Mental</h4>
+            <p style="margin: 0;">Pérdida transitoria del conocimiento o letargia resultante de hipoperfusión cerebral aguda.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Criterio Mayor 3</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Isquemia Miocárdica Aguda</h4>
+            <p style="margin: 0;">Dolor torácico opresivo típico o cambios isquémicos agudos del segmento ST en el ECG de 12 derivaciones.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Criterio Mayor 4</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Insuficiencia Cardíaca Aguda</h4>
+            <p style="margin: 0;">Edema agudo de pulmón (crepitantes pulmonares, taquipnea) o ingurgitación yugular severa.</p>
+          </div>
+        </div>
+
+        <!-- INTERACTIVE TOOL 1: TRIAGE EVALUATOR -->
+        <div class="tool-box" id="triage-tool">
+          <div class="tool-header">
+            <div>
+              <h3 class="tool-title">Evaluador Interactivo de Estabilidad Hemodinámica y Triaje ECG</h3>
+              <p class="kpi-caption">Marque los hallazgos presentes en la valoración ABCDE inicial para determinar la prioridad clínica.</p>
+            </div>
+            <button type="button" class="btn btn--secondary" onclick="resetTriageTool()">Reiniciar valoración</button>
+          </div>
+
+          <div class="check-grid">
+            <label class="check-tile"><input type="checkbox" class="triage-chk" data-role="instab" onchange="updateTriageTool()"><span><strong>Shock / Hipotensión:</strong> PAS &lt; 90 mmHg, oliguria, diaforesis o frialdad acra</span></label>
+            <label class="check-tile"><input type="checkbox" class="triage-chk" data-role="instab" onchange="updateTriageTool()"><span><strong>Síncope / Deterioro neurológico:</strong> Letargia o pérdida de conciencia</span></label>
+            <label class="check-tile"><input type="checkbox" class="triage-chk" data-role="instab" onchange="updateTriageTool()"><span><strong>Isquemia miocárdica aguda:</strong> Dolor torácico opresivo típico o cambios agudos del ST</span></label>
+            <label class="check-tile"><input type="checkbox" class="triage-chk" data-role="instab" onchange="updateTriageTool()"><span><strong>IC congestiva aguda:</strong> Edema agudo de pulmón (crepitantes, taquipnea) o IY severa</span></label>
+            <label class="check-tile"><input type="checkbox" id="triage-spo2" onchange="updateTriageTool()"><span><strong>Hipoxemia:</strong> SpO&#8322; &lt; 94% en oximetría de pulso</span></label>
+            <label class="check-tile"><input type="checkbox" id="triage-stemi" onchange="updateTriageTool()"><span><strong>ECG con elevación ST</strong> (en &ge; 2 derivaciones contiguas o equivalente posterior V1–V3)</span></label>
+          </div>
+
+          <div class="filter-bar">
+            <div style="flex: 1 1 220px;">
+              <label class="input-label" for="triage-rhythm">Perfil del ritmo en ECG (Triaje tripartito)</label>
+              <select id="triage-rhythm" class="field-select" onchange="updateTriageTool()">
+                <option value="sinusal">Ritmo sinusal o sin taqui/bradiarritmia crítica</option>
+                <option value="taqui-estrecho-reg">Taquiarritmia (&gt;100 lpm) · QRS estrecho (&lt;120 ms) · Regular</option>
+                <option value="taqui-estrecho-irreg">Taquiarritmia (&gt;100 lpm) · QRS estrecho (&lt;120 ms) · Irregular (FA/Flúter var./TAM)</option>
+                <option value="taqui-ancho">Taquiarritmia (&gt;100 lpm) · QRS ancho (&ge;120 ms) — Asumir TV</option>
+                <option value="bradi">Bradiarritmia (&lt;60 lpm) / Bloqueo AV</option>
+                <option value="parada">FV / TV sin pulso</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="triage-output" class="status-card" data-status="info" aria-live="polite">
+            <span class="kpi-label">Dictamen de Triaje Inmediato</span>
+            <p style="margin: var(--space-xs) 0 0 0;">Seleccione los hallazgos del paciente para calcular la conducta inmediata.</p>
+          </div>
+        </div>
+
+        <h3 class="subhead">2.3 Triaje Electrocardiográfico Tripartito (En Arritmias Asociadas)</h3>
+        <p>Una vez descartada o tratada la inestabilidad crítica, la interpretación inicial del ritmo en el ECG de 12 derivaciones se articula en tres preguntas secuenciales:</p>
+        <ol>
+          <li><strong>Frecuencia cardíaca:</strong> ¿Es una taquiarritmia (<span class="num">&gt; 100 lpm</span>) o una bradiarritmia (<span class="num">&lt; 60 lpm</span>)?</li>
+          <li><strong>Anchura del complejo QRS:</strong> ¿QRS estrecho (<span class="num">&lt; 120 ms / &lt; 3 mm</span>, origen supraventricular por encima de la bifurcación del Haz de His) o QRS ancho (<span class="num">&ge; 120 ms / &ge; 3 mm</span>, Taquicardia Ventricular en el 80–85% o TSV con aberrancia/preexcitación)?</li>
+          <li><strong>Regularidad del intervalo R-R:</strong> ¿Regular (intervalos R-R idénticos) o irregular (intervalos R-R desordenados, frecuente en Fibrilación Auricular, Flúter auricular con bloqueo variable o Taquicardia Auricular Multifocal)?</li>
+        </ol>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Tratado Monográfico de Arritmias en Urgencias (Cap. 3.1, 3.2 y 3.3); Harrison — Enfermedad Vascular Coronaria y Periférica (Estrategias de manejo STEMI); Guía ESC/EACTS 2024 de Fibrilación Auricular.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: HISTORIA CLÍNICA Y EXPLORACIÓN FÍSICA -->
+      <section class="guide-section" id="sec-3">
+        <div class="section-header">
+          <span class="section-kicker">Sección 03</span>
+          <h2 class="section-title">Historia Clínica y Exploración Física Orientadora</h2>
+          <p class="section-subtitle">Elementos anamnésicos, perfil de riesgo cardiovascular y signos exploratorios cardiovasculares y vasculares periféricos documentados en las fuentes.</p>
+        </div>
+
+        <div class="card-grid-2">
+          <div class="status-card" data-status="info">
+            <span class="chip" data-status="info">Anamnesis Dirigida</span>
+            <h3 class="subhead" style="margin-top: var(--space-sm);">Características del Dolor y Síntomas Asociados</h3>
+            <ul>
+              <li><strong>Dolor coronario isquémico:</strong> Dolor precordial agudo de presentación súbita (oclusión coronaria aguda) o dolor torácico opresivo típico (isquemia miocárdica aguda), así como malestar isquémico sin elevación del ST.</li>
+              <li><strong>Angina vasoespástica y microvascular:</strong> Episodios anginosos por vasoespasmo epicárdico o fallo vasodilatador de vasos de resistencia coronarios.</li>
+              <li><strong>Síntomas compresivos de aneurisma aórtico torácico:</strong> Aunque la mayoría son asintomáticos, la compresión o erosión de tejidos adyacentes produce <strong>dolor torácico, disnea, tos, disfonía y disfagia</strong>; la dilatación de aorta ascendente puede desencadenar insuficiencia cardíaca por regurgitación aórtica.</li>
+              <li><strong>Síntomas de arritmias y bajo gasto:</strong> Palpitaciones episódicas, síncope, letargia, disnea o empeoramiento funcional por taquimiocardiopatía o bradicardia.</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="warn">
+            <span class="chip" data-status="warn">Factores de Riesgo y Antecedentes</span>
+            <h3 class="subhead" style="margin-top: var(--space-sm);">Historia Médica, Familiar y Tóxicos</h3>
+            <ul>
+              <li><strong>Factores ateroscleróticos mayores:</strong> LDL plasmático elevado, tabaquismo, hipertensión arterial y diabetes mellitus (estado de hipercoagulabilidad e hipofibrinólisis).</li>
+              <li><strong>Comorbilidades AF-CARE:</strong> Insuficiencia cardíaca, sobrepeso/obesidad, apnea obstructiva del sueño (SAOS — no evaluar solo con cuestionarios de síntomas, Clase III), consumo excesivo de alcohol, disfunción renal/hepática y patología tiroidea (hipertiroidismo).</li>
+              <li><strong>Antecedentes familiares y genéticos:</strong> Historia familiar de muerte súbita o arritmias, síndrome de Marfan, síndrome de Loeys-Dietz (variantes <em>TGFBR1</em> / <em>TGFBR2</em> con alto riesgo de rotura aórtica a diámetros menores), laminopatías, QT largo y miocardiopatía hipertrófica.</li>
+              <li><strong>Fármacos desencadenantes:</strong> Fármacos prolongadores del QT (antiarrítmicos IA, IC, III, neurolépticos, macrólidos, fluoroquinolonas), intoxicación por betabloqueantes o calcioantagonistas, AINE/glucocorticoides recientes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="subhead">3.1 Exploración Física Cardiovascular y Vascular Periférica</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Hallazgo Exploratorio</th>
+                <th>Mecanismo y Significado Clínico</th>
+                <th>Implicación Diagnóstica en Urgencias</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Soplo diastólico (regla general)</strong></td>
+                <td>A diferencia de ciertos soplos sistólicos, los soplos diastólicos <strong>siempre indican cardiopatía estructural</strong>.</td>
+                <td>Obliga a realizar estudio ecocardiográfico y descartar patología valvular o aórtica grave.</td>
+              </tr>
+              <tr>
+                <td><strong>Insuficiencia aórtica (IA) aguda grave</strong></td>
+                <td>Soplo diastólico <strong>relativamente suave y de corta duración</strong> por elevación rápida de la presión diastólica del VI y caída rápida del gradiente aorta-VI. Ausencia frecuente de signos periféricos de escurrimiento diastólico.</td>
+                <td><em>Trampa clínica crítica:</em> una IA aguda grave (p. ej., complicando patología aguda de aorta ascendente) puede tener un soplo discreto pese a su gravedad hemodinámica.</td>
+              </tr>
+              <tr>
+                <td><strong>Insuficiencia aórtica crónica grave</strong></td>
+                <td>Soplo diastólico aspirativo <em>decrescendo</em> en borde esternal izquierdo (valvulopatía primaria) o derecho (patología de raíz aórtica). Mejora al auscultar en espiración con el paciente inclinado hacia adelante. Presión de pulso amplia y pulsos saltones.</td>
+                <td>Si el jet se dirige posteriormente a lo largo del velo anterior mitral, el soplo puede atenuarse y subestimarse la gravedad.</td>
+              </tr>
+              <tr>
+                <td><strong>Insuficiencia pulmonar y sobrecarga derecha</strong></td>
+                <td>Soplo diastólico en borde esternal izquierdo; S2 único, fuerte y palpable; levantamiento paraesternal derecho por sobrecarga crónica de presión del VD.</td>
+                <td>Sugiere hipertensión pulmonar significativa o secuela posreparación (Tetralogía de Fallot / atresia pulmonar).</td>
+              </tr>
+              <tr>
+                <td><strong>Pulso venoso yugular (ondas <em>cv</em> y IY)</strong></td>
+                <td>Ondas <em>cv</em> visibles (regurgitación tricuspídea) o ingurgitación yugular severa.</td>
+                <td>La IY severa es signo de insuficiencia cardíaca congestiva aguda / criterio de inestabilidad.</td>
+              </tr>
+              <tr>
+                <td><strong>Exploración vascular periférica</strong></td>
+                <td>Palpación de pulsos femorales, poplíteos, pedios y tibiales posteriores; auscultación abdominal e inguinal (soplos); inspección de extremidades (edema unilateral en TVP, palidez, frialdad, rubor dependiente).</td>
+                <td>Imprescindible para detectar isquemia arterial periférica, asimetría de pulsos o signos de TVP asociada a TEP.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Harrison — Diagnóstico de Desórdenes Cardiovasculares (Cap. 246 Soplos diastólicos y pulso venoso); Harrison — Enfermedad Vascular Coronaria y Periférica (Aneurisma de aorta torácica, EAP, aterosclerosis); Tratado Monográfico de Arritmias en Urgencias; Guía ESC/EACTS 2024 de Fibrilación Auricular; Spotlight ESC 2022.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 4: DIAGNÓSTICO DIFERENCIAL -->
+      <section class="guide-section" id="sec-4">
+        <div class="section-header">
+          <span class="section-kicker">Sección 04</span>
+          <h2 class="section-title">Diagnóstico Diferencial Clasificado</h2>
+          <p class="section-subtitle">Clasificación estructurada en las seis categorías clínicas solicitadas, integrando las entidades documentadas en las fuentes y señalando de forma transparente las áreas sin cobertura en el cuaderno.</p>
+        </div>
+
+        <div class="tool-box" id="ddx-explorer">
+          <div class="tool-header">
+            <div>
+              <h3 class="tool-title">Explorador Interactivo de Diagnóstico Diferencial</h3>
+              <p class="kpi-caption">Filtre por categoría etiológica o busque por síntoma, hallazgo ECG o prueba de imagen.</p>
+            </div>
+          </div>
+
+          <div class="filter-bar">
+            <div style="flex: 1 1 240px;">
+              <label class="input-label" for="ddx-search">Buscar entidad o hallazgo</label>
+              <input id="ddx-search" class="field-input" type="search" placeholder="Ej. V3R, aVR, disfagia, Brugada, pericarditis..." oninput="filterDDX()">
+            </div>
+          </div>
+
+          <div class="filter-bar" role="group" aria-label="Filtrar diagnóstico diferencial por categoría">
+            <button type="button" class="btn btn--chip is-selected" data-cat="all" onclick="setDDXCategory('all', this)">Todas</button>
+            <button type="button" class="btn btn--chip" data-cat="vital" onclick="setDDXCategory('vital', this)">Amenazas Vitales Inmediatas</button>
+            <button type="button" class="btn btn--chip" data-cat="cardio" onclick="setDDXCategory('cardio', this)">Cardiovasculares</button>
+            <button type="button" class="btn btn--chip" data-cat="pulm" onclick="setDDXCategory('pulm', this)">Pulmonares</button>
+            <button type="button" class="btn btn--chip" data-cat="digest" onclick="setDDXCategory('digest', this)">Digestivas</button>
+            <button type="button" class="btn btn--chip" data-cat="musc" onclick="setDDXCategory('musc', this)">Musculoesqueléticas</button>
+            <button type="button" class="btn btn--chip" data-cat="psiq" onclick="setDDXCategory('psiq', this)">Psiquiátricas / Sistémicas</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="ddx-table">
+              <thead>
+                <tr>
+                  <th>Categoría</th>
+                  <th>Entidad Clínica</th>
+                  <th>Presentación y Hallazgos Clave en Fuentes</th>
+                  <th>Pruebas Diagnósticas de Confirmación</th>
+                </tr>
+              </thead>
+              <tbody id="ddx-tbody">
+                <tr data-cat="vital">
+                  <td><span class="chip" data-status="alert">Amenaza Vital</span></td>
+                  <td><strong>IAMCEST (STEMI) y Oclusión Coronaria Aguda (incl. IAM de VD)</strong></td>
+                  <td>Dolor precordial agudo súbito u opresivo típico. Elevación del ST en &ge;2 derivaciones contiguas; en IAM de VD (ACD proximal), elevación ST mayor en V1 que en V2 y aún mayor en V3R/V4R; en IAM posterior, descenso recíproco ST en V1–V3. Evolución a T invertidas y ondas Q.</td>
+                  <td>ECG 12 derivaciones (+ V3R/V4R) de triaje inmediato; coronariografía / ICP primaria (&lt;120 min); biomarcadores y ETT complementarios (no retrasar reperfusión).</td>
+                </tr>
+                <tr data-cat="vital">
+                  <td><span class="chip" data-status="alert">Amenaza Vital</span></td>
+                  <td><strong>SCASEST / IAMSEST e Isquemia Subendocárdica Extensa</strong></td>
+                  <td>Malestar isquémico sin elevación ST. Descenso ST horizontal o descendente con ondas T invertidas en múltiples derivaciones + elevación del ST y T positiva en aVR.</td>
+                  <td>ECG seriado de 12 derivaciones, biomarcadores cardíacos sanguíneos de necrosis (troponina), imagen de isquemia / coronariografía.</td>
+                </tr>
+                <tr data-cat="vital">
+                  <td><span class="chip" data-status="alert">Amenaza Vital</span></td>
+                  <td><strong>Aneurisma / Patología Aguda de Aorta Torácica</strong></td>
+                  <td>Raíz/ascendente &ge;4.5 cm (dilatación 4.0–4.4 cm); descendente &ge;50%. Riesgo de rotura 2–3%/año (&lt;4 cm) a 7%/año (&gt;6 cm), mayor en Marfan y Loeys-Dietz (<em>TGFBR1/2</em>). Causa dolor torácico, disnea, tos, disfonía, disfagia, IA aguda (soplo diastólico suave/corto) e IC.</td>
+                  <td>Evaluación vascular y de pulsos periféricos, ecocardiografía (ETT/ETE) para raíz aórtica/IA, TC/angioimagen torácica.</td>
+                </tr>
+                <tr data-cat="vital">
+                  <td><span class="chip" data-status="alert">Amenaza Vital</span></td>
+                  <td><strong>Tromboembolismo Pulmonar (TEP) Agudo</strong></td>
+                  <td>Asociado a TVP (edema unilateral de MMII). En ECG puede mostrar ondas T negativas en derivaciones precordiales. Puede cursar con sobrecarga aguda de VD y shock obstructivo.</td>
+                  <td>Algoritmo diagnóstico integrado (Harrison Fig. 290-14): TC, Ecocardiografía, RM; valoración de VD.</td>
+                </tr>
+                <tr data-cat="vital">
+                  <td><span class="chip" data-status="alert">Amenaza Vital</span></td>
+                  <td><strong>Arritmias Malignas, Tormenta Eléctrica y BAV Completo</strong></td>
+                  <td>TV sostenida (80–85% de QRS ancho), FV, Tormenta Eléctrica (&ge;3 episodios TV/FV en 24h), Torsades de Pointes (QT prolongado), BAV Mobitz II / 3.º grado con bajo gasto o síncope.</td>
+                  <td>Monitorización continua + ECG 12 derivaciones (Algoritmo de Brugada), electrolitos (K&#8314;, Mg&#178;&#8314;, Ca&#178;&#8314;), RMC y genética según ESC 2022.</td>
+                </tr>
+                <tr data-cat="vital">
+                  <td><span class="chip" data-status="alert">Amenaza Vital</span></td>
+                  <td><strong>Derrame Pericárdico Grave</strong></td>
+                  <td>Alternancia eléctrica en el ECG y complejos QRS de bajo voltaje (&lt;0,70 mV en extremidades y &lt;1,0 mV en precordiales).</td>
+                  <td>Ecocardiograma transtorácico (detección inmediata de líquido pericárdico y compromiso hemodinámico).</td>
+                </tr>
+                <tr data-cat="cardio">
+                  <td><span class="chip" data-status="info">Cardiovascular</span></td>
+                  <td><strong>Pericarditis Aguda</strong></td>
+                  <td>Alteraciones difusas de repolarización que deben diferenciarse en el ECG de la repolarización precoz normal y de la HVI con repolarización precoz (Wagner).</td>
+                  <td>ECG de 12 derivaciones comparativo, ETT para valorar líquido/enfermedad pericárdica, biomarcadores.</td>
+                </tr>
+                <tr data-cat="cardio">
+                  <td><span class="chip" data-status="info">Cardiovascular</span></td>
+                  <td><strong>Insuficiencia Cardíaca Aguda / Descompensada (IC-FEr, IC-FElr, IC-FEc)</strong></td>
+                  <td>Edema agudo de pulmón (crepitantes, taquipnea), ingurgitación yugular, congestión sistémica/pulmonar, taquimiocardiopatía o descompensación por FA/isquemia.</td>
+                  <td>NT-proBNP, ETT (FEVI, índices diastólicos, motilidad, función VD), analítica completa.</td>
+                </tr>
+                <tr data-cat="cardio">
+                  <td><span class="chip" data-status="info">Cardiovascular</span></td>
+                  <td><strong>Taquiarritmias Supraventriculares (FA, Flúter, TSV)</strong></td>
+                  <td>FA: ausencia de ondas P, ondas <em>f</em> desordenadas (350–600 lpm auriculares), R-R irregular. Flúter auricular por macrorreentrada. TSV ortodrómica o por reentrada nodal. Posible aberrancia ventricular (rsR' en V1, qRs en V6; ciclo corto tras ciclo largo).</td>
+                  <td>ECG 12 derivaciones, TSH/función renal/electrolitos/hemograma, ETT (y ETE si cardioversión &ge;24h sin ACO previa).</td>
+                </tr>
+                <tr data-cat="cardio">
+                  <td><span class="chip" data-status="info">Cardiovascular</span></td>
+                  <td><strong>Angina Vasoespástica, Angina Microvascular, MCH y Amiloidosis Cardíaca</strong></td>
+                  <td>Dolor anginoso sin obstrucción epicárdica fija (microvascular/vasoespasmo); MCH con riesgo de MSC; amiloidosis cardíaca con bajo voltaje ECG y alto riesgo tromboembólico en FA.</td>
+                  <td>RMC con perfusión de estrés y LGE, PET con reserva de flujo coronario, ETT, evaluación genética (ESC 2022).</td>
+                </tr>
+                <tr data-cat="pulm">
+                  <td><span class="chip" data-status="warn">Pulmonar</span></td>
+                  <td><strong>Hipertensión Arterial Pulmonar (HAP) y <em>Cor Pulmonale</em></strong></td>
+                  <td>Disnea, dolor torácico, fatiga; soplo diastólico de insuficiencia pulmonar, S2 único y palpable, elevación paraesternal derecha. Criterios hemodinámicos HAP: mPAP &gt; 20 mmHg, RVP &gt; 2.0 UW, PAWP &le; 15 mmHg.</td>
+                  <td>Ecocardiografía transtorácica y cateterismo cardíaco derecho (RHC) para criterios hemodinámicos.</td>
+                </tr>
+                <tr data-cat="pulm">
+                  <td><span class="chip" data-status="warn">Pulmonar</span></td>
+                  <td><strong>Enfisema Pulmonar / EPOC</strong></td>
+                  <td>Pentalogía electrocardiográfica de Wasserburger en enfisema pulmonar y criterios de Selvester para enfisema/cor pulmonale (bajo voltaje y alteración de eje/transición).</td>
+                  <td>ECG de 12 derivaciones; <em>nota: los extractos no detallan radiografía torácica ni espirometría.</em></td>
+                </tr>
+                <tr data-cat="digest">
+                  <td><span class="chip">Digestiva</span></td>
+                  <td><strong>Disfagia por Compresión Aórtica Torácica</strong></td>
+                  <td>La compresión extrínseca del esófago por un aneurisma de aorta torácica provoca disfagia junto a dolor torácico, tos o disfonía (Harrison EVC).</td>
+                  <td>Imagen torácica vascular (TC/ETT) para descartar patología aórtica antes de asumir origen digestivo benigno.</td>
+                </tr>
+                <tr data-cat="digest">
+                  <td><span class="chip">Digestiva (Nota)</span></td>
+                  <td><strong>Otras causas digestivas primarias (ERGE, espasmo/rotura esofágica, úlcera, biliar)</strong></td>
+                  <td><em>Vacío documental en fuentes:</em> los extractos seleccionados del cuaderno no incluyen protocolos diagnósticos ni criterios clínicos de patología digestiva primaria.</td>
+                  <td>Evaluación clínica externa a este compendio tras descartar patología cardiovascular/aórtica aguda.</td>
+                </tr>
+                <tr data-cat="musc">
+                  <td><span class="chip">Musculoesquelética (Nota)</span></td>
+                  <td><strong>Patología de pared torácica (costocondritis, fractura costal, mialgia)</strong></td>
+                  <td><em>Vacío documental en fuentes:</em> las fuentes seleccionadas se centran en cardiología, electrofisiología y patología vascular; no aportan criterios diagnósticos musculoesqueléticos.</td>
+                  <td>Diagnóstico de exclusión tras descartar amenazas vitales cardiovasculares y pulmonares.</td>
+                </tr>
+                <tr data-cat="psiq">
+                  <td><span class="chip" data-status="warn">Sistémica / Neuro</span></td>
+                  <td><strong>ACV / Hemorragia Subaracnoidea (Simulación Isquémica ECG)</strong></td>
+                  <td>Eventos cerebrovasculares agudos pueden provocar alteraciones marcadas de la onda T, segmento ST y anomalías de motilidad de la pared ventricular izquierda simulando SCA (Wagner, bibliografía cap. 14).</td>
+                  <td>Neuroimagen cerebral urgente si clínica neurológica, evaluación ECG y ETT seriada.</td>
+                </tr>
+                <tr data-cat="psiq">
+                  <td><span class="chip" data-status="warn">Sistémica / Endocrina</span></td>
+                  <td><strong>Hipertiroidismo e Hiperpotasemia Grave</strong></td>
+                  <td>Hipertiroidismo: aumento del metabolismo, sudoración, exoftalmos y desencadenante de FA/taquiarritmias. Hiperpotasemia: cambios ECG graves con riesgo de parada.</td>
+                  <td>Pruebas tiroideas y electrolitos séricos urgentes en todo paciente con arritmia o FA de novo.</td>
+                </tr>
+                <tr data-cat="psiq">
+                  <td><span class="chip">Psiquiátrica (Nota)</span></td>
+                  <td><strong>Trastornos de ansiedad / Crisis de pánico</strong></td>
+                  <td><em>Vacío documental en fuentes:</em> no se describen criterios psiquiátricos de dolor torácico en los textos del cuaderno; las palpitaciones benignas sin cardiopatía estructural obligan siempre a descartar antes arritmia/isquemia.</td>
+                  <td>ECG normal, valoración clínica y ausencia de criterios de riesgo cardiovascular.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Harrison — Enfermedad Vascular Coronaria y Periférica; Harrison — Diagnóstico de Desórdenes Cardiovasculares; Wagner, Strauss &amp; Marriott (12.ª ed., Cap. 9, 11, 14, 17, 20); Tratado Monográfico de Arritmias en Urgencias; Guía ESC/EACTS 2024; Guía Clínica Fisterra IC-FEr; Spotlight ESC 2022.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 5: ESTUDIOS COMPLEMENTARIOS -->
+      <section class="guide-section" id="sec-5">
+        <div class="section-header">
+          <span class="section-kicker">Sección 05</span>
+          <h2 class="section-title">Estudios Complementarios en Urgencias</h2>
+          <p class="section-subtitle">Interpretación sistemática del ECG de 12 derivaciones, biomarcadores cardíacos, ecocardiografía transtorácica y transesofágica, TC, RMC y medicina nuclear/PET según las fuentes.</p>
+        </div>
+
+        <h3 class="subhead">5.1 Electrocardiograma (ECG) de 12 Derivaciones: Secuencia de 14 Parámetros y Localización</h3>
+        <p>El ECG de 12 derivaciones (6 del plano frontal hexaxial y 6 precordiales V1–V6 del plano transversal con el terminal central de Wilson como polo negativo) debe analizarse de forma sistemática y compararse siempre con trazados previos. Además de la presentación clásica (I–III / aVR–aVF / V1–V6), la presentación panorámica ordenada espacialmente mejora la detección de elevación del ST en dos o más derivaciones contiguas.</p>
+
+        <details class="clinical-drawer" open>
+          <summary>
+            <span>Secuencia Sistemática de 14 Parámetros para la Lectura del ECG (Fundamentos del ECG)</span>
+            <span class="chip" data-status="info">Lectura Obligatoria</span>
+          </summary>
+          <div class="drawer-body">
+            <ol style="columns: 2; column-gap: var(--space-xl);">
+              <li><strong>Estandarización y calibración:</strong> Verificar voltaje, velocidad del papel y correcta colocación de electrodos (evitar intercambios precordiales/extremidades).</li>
+              <li><strong>Ritmo:</strong> Identificar si es sinusal o no (auricular ectópico, unión, escape, FA/flúter, ventricular).</li>
+              <li><strong>Frecuencia cardíaca:</strong> <span class="num">300 / cuadros grandes (0,20 s)</span> entre ondas R, o <span class="num">1500 / milímetros (40 ms)</span>.</li>
+              <li><strong>Intervalo PR / Conducción AV:</strong> Evaluar prolongación (BAV 1.º grado) o disociación AV.</li>
+              <li><strong>Intervalo QRS:</strong> Estrecho (&lt;120 ms) vs ancho (&ge;120 ms; BRI o bloqueo bifascicular: BRD + BFAI o BFPI).</li>
+              <li><strong>Intervalos QT / QTc:</strong> Detectar prolongación por riesgo de Torsades de Pointes.</li>
+              <li><strong>Eje eléctrico medio del QRS:</strong> Normal en plano frontal entre <span class="num">-30° y +100°</span>.</li>
+              <li><strong>Análisis de ondas P:</strong> Morfología, polaridad (anómala en ritmo auricular no sinusal) o ausencia (ondas <em>f</em> en FA).</li>
+              <li><strong>Voltajes del QRS:</strong> Voltaje bajo si amplitud total <span class="num">&lt; 0,70 mV</span> en todas las extremidades y <span class="num">&lt; 1,0 mV</span> en todas las precordiales.</li>
+              <li><strong>Progresión precordial de la onda R:</strong> Incremento de V1 a V6; zona de transición normal (R = S) en <span class="num">V3 o V4</span>.</li>
+              <li><strong>Ondas Q anormales:</strong> Normales en III y aVR por orientación derecha; patológica su ausencia pequeña en V5–V6 o ensanchamiento/profundidad (infarto, hipertrofia, alteración conducción).</li>
+              <li><strong>Segmentos ST:</strong> Elevación transmural, descenso horizontal/descendente o elevación en aVR.</li>
+              <li><strong>Ondas T:</strong> Hiperagudas altas, inversión isquémica, T negativas precordiales en TEP o acuminadas en hiperpotasemia.</li>
+              <li><strong>Ondas U:</strong> Presencia o alteración en la repolarización tardía.</li>
+            </ol>
+          </div>
+        </details>
+
+        <!-- INTERACTIVE TOOL 3: ECG LEAD & PATTERN EXPLORER -->
+        <div class="tool-box" id="ecg-explorer">
+          <div class="tool-header">
+            <div>
+              <h3 class="tool-title">Mapa Interactivo de Patrones ECG y Territorios Coronarios</h3>
+              <p class="kpi-caption">Seleccione un escenario electrocardiográfico para visualizar las derivaciones clave y su interpretación según Harrison y Wagner.</p>
+            </div>
+          </div>
+
+          <div class="filter-bar" role="group" aria-label="Patrones electrocardiográficos">
+            <button type="button" class="btn btn--chip is-selected" onclick="selectECGPattern('anterior', this)">IAM Anterior / Lateral</button>
+            <button type="button" class="btn btn--chip" onclick="selectECGPattern('inferior-vd', this)">IAM Inferior + VD (V3R/V4R)</button>
+            <button type="button" class="btn btn--chip" onclick="selectECGPattern('posterior', this)">IAM Posterior (Recíproco)</button>
+            <button type="button" class="btn btn--chip" onclick="selectECGPattern('subendo', this)">Isquemia Subendocárdica / aVR</button>
+            <button type="button" class="btn btn--chip" onclick="selectECGPattern('tep', this)">TEP / Sobrecarga VD</button>
+            <button type="button" class="btn btn--chip" onclick="selectECGPattern('pericardio', this)">Derrame / Bajo Voltaje</button>
+          </div>
+
+          <div class="lead-grid" id="ecg-lead-grid" aria-label="Esquema de las 12 derivaciones estándar">
+            <div class="lead-cell" data-lead="I">I</div>
+            <div class="lead-cell" data-lead="aVR">aVR</div>
+            <div class="lead-cell" data-lead="V1">V1</div>
+            <div class="lead-cell" data-lead="V4">V4</div>
+            <div class="lead-cell" data-lead="II">II</div>
+            <div class="lead-cell" data-lead="aVL">aVL</div>
+            <div class="lead-cell" data-lead="V2">V2</div>
+            <div class="lead-cell" data-lead="V5">V5</div>
+            <div class="lead-cell" data-lead="III">III</div>
+            <div class="lead-cell" data-lead="aVF">aVF</div>
+            <div class="lead-cell" data-lead="V3">V3</div>
+            <div class="lead-cell" data-lead="V6">V6</div>
+          </div>
+
+          <div class="status-card" id="ecg-pattern-detail" data-status="info" aria-live="polite"></div>
+        </div>
+
+        <h3 class="subhead">5.2 Biomarcadores Sanguíneos y Laboratorio en Urgencias</h3>
+        <ul>
+          <li><strong>Biomarcadores cardíacos de necrosis miocárdica (Troponina) y NT-proBNP:</strong> En pacientes con dolor isquémico sin elevación del ST, la detección de un biomarcador sanguíneo de necrosis establece el diagnóstico de <strong>IAMSEST</strong> (Harrison EVC). En FA/arritmias seleccionadas, solicitar <strong>troponina y NT-proBNP</strong> para precisar riesgo cardiovascular y de ictus/sangrado (ESC 2024).</li>
+          <li><strong>Analítica sanguínea obligatoria en arritmias agudas / FA (ESC 2024):</strong> Hemograma completo, función renal, electrolitos séricos (K&#8314;, Mg&#178;&#8314;, Ca&#178;&#8314;), función hepática, glucosa/HbA1c y <strong>pruebas de función tiroidea</strong> para identificar causas reversibles o condicionantes de anticoagulación y sangrado.</li>
+        </ul>
+
+        <h3 class="subhead">5.3 Estudios de Imagen: Ecocardiografía (ETT/ETE), TC, RMC, Medicina Nuclear y PET</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Modalidad</th>
+                <th>Indicaciones y Hallazgos Específicos en las Fuentes</th>
+                <th>Consideración Operativa en Urgencias</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Ecocardiograma Transtorácico (ETT)</strong></td>
+                <td>Evalúa FEVI, anomalías segmentarias de motilidad, índices diastólicos, función VD, HVI, estenosis mitral moderada-grave, insuficiencia aórtica, derrame pericárdico y sospecha de amiloidosis cardíaca.</td>
+                <td>Recomendado en toda FA nueva para guiar decisiones (Clase I ESC 2024); <strong>su demora no debe retrasar el inicio de anticoagulación oral</strong> si está indicada. Integrado en algoritmo de TEP.</td>
+              </tr>
+              <tr>
+                <td><strong>Ecocardiograma Transesofágico (ETE)</strong></td>
+                <td>Descarta trombos en la orejuela izquierda (OI) / aurícula izquierda y valvulopatías previas a cardioversión.</td>
+                <td>Obligatorio si se plantea cardioversión precoz en FA de duración &ge; 24 h (ESC 2024) o &gt; 48 h (Tratado Arritmias) sin 3 semanas previas de ACO terapéutica.</td>
+              </tr>
+              <tr>
+                <td><strong>Ecocardiografía de Estrés</strong></td>
+                <td>Detecta acinesia inducible por ejercicio (p. ej., segmento septal/apical distal postestrés — Harrison Video 248-3).</td>
+                <td>Útil tras descartar SCA agudo inestable para estudio de enfermedad arterial coronaria.</td>
+              </tr>
+              <tr>
+                <td><strong>TC Torácica / Angio-TC / TC Coronaria</strong></td>
+                <td>TC en algoritmo diagnóstico integrado de TEP/TVP (Harrison Fig. 290-14); TC coronaria o angiografía si sospecha de EAC (ESC 2024); valoración anatómica de aorta torácica.</td>
+                <td>Herramienta central en sospecha de TEP o patología aórtica en paciente estabilizado.</td>
+              </tr>
+              <tr>
+                <td><strong>Resonancia Magnética Cardíaca (RMC)</strong></td>
+                <td>Perfusión de estrés con gadolinio (ribite subendocárdico oscuro = defecto de perfusión) combinada con <strong>realce tardío con gadolinio (LGE)</strong>: ausencia de LGE blanco confirma isquemia viable sin infarto (Harrison Video 248-4 / Fig. 248-14). Evalúa miocardiopatías y estratifica riesgo de MSC (ESC 2022/2024).</td>
+                <td>Ganancia mayor en estratificación de riesgo de muerte súbita en miocardiopatías (ESC 2022) y diferenciación isquemia vs escara.</td>
+              </tr>
+              <tr>
+                <td><strong>Medicina Nuclear (SPECT) vs PET</strong></td>
+                <td>Los estudios con radionúclidos relativos suelen detectar solo las estenosis más graves y son insensibles en enfermedad multivaso (<strong>"isquemia balanceada"</strong>). El <strong>PET</strong> cuantifica flujo sanguíneo miocárdico y reserva de flujo coronario (CFR), descubriendo miocardio en riesgo con alto valor predictivo negativo.</td>
+                <td>Preferir cuantificación con PET cuando se sospeche enfermedad coronaria difusa o multivaso equilibrada (Harrison Diagnóstico).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout callout--warn">
+          <div class="callout-title"><i data-lucide="info" aria-hidden="true"></i> Nota de Cobertura Documental (Radiografía de Tórax y Ecografía Pulmonar)</div>
+          <p style="margin: 0;">Los extractos proporcionados de las fuentes del cuaderno detallan extensamente ECG, biomarcadores, ETT, ETE, ecocardiografía de estrés, TC, RMC, PET/SPECT y coronariografía, pero <strong>no incluyen protocolos específicos de radiografía de tórax ni de ecografía pulmonar POCUS</strong>.</p>
+        </div>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Fundamentos del Electrocardiograma (14 parámetros); Wagner, Strauss &amp; Marriott (12.ª ed., Cap. 2, 3, 6, 9, 11, 12, 20, 23); Harrison — Diagnóstico de Desórdenes Cardiovasculares (ECG isquemia, SPECT/PET, Eco estrés, RMC); Harrison — Enfermedad Vascular Coronaria y Periférica; Guía ESC/EACTS 2024; Spotlight ESC 2022.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 6: ESTRATIFICACIÓN DE RIESGO -->
+      <section class="guide-section" id="sec-6">
+        <div class="section-header">
+          <span class="section-kicker">Sección 06</span>
+          <h2 class="section-title">Estratificación de Riesgo y Escalas Contenidas en las Fuentes</h2>
+          <p class="section-subtitle">Puntuaciones pronósticas, diagnósticas y de riesgo tromboembólico, hemorrágico e isquémico presentes en los documentos del cuaderno, incluyendo análisis de discrepancias.</p>
+        </div>
+
+        <div class="callout callout--warn">
+          <div class="callout-title"><i data-lucide="file-warning" aria-hidden="true"></i> Transparencia Documental: Escalas Presentes vs. Ausentes en el Cuaderno</div>
+          <p style="margin: 0;">En estricto cumplimiento de la regla de uso exclusivo de las fuentes del cuaderno, se advierte que las escalas <strong>HEART, TIMI, GRACE, Wells, Geneva y PERC NO están contenidas</strong> en los extractos proporcionados. A continuación se desarrollan en profundidad todas las escalas, puntuaciones y algoritmos de estratificación de riesgo <strong>sí documentados</strong> en las fuentes: <strong>CHA&#8322;DS&#8322;-VA vs CHA&#8322;DS&#8322;-VASc</strong>, <strong>Criterios de Inestabilidad ERC 2021</strong>, <strong>Puntuación de Agudeza de Anderson-Wilkins</strong>, <strong>Puntuación de Selvester del QRS (50 criterios / 31 puntos)</strong>, <strong>Algoritmo de Brugada de 4 pasos</strong>, <strong>Evaluación de Riesgo Hemorrágico Modificable (ESC 2024)</strong> y <strong>Calculadoras de Riesgo de MSC (ESC 2022)</strong>.</p>
+        </div>
+
+        <h3 class="subhead">6.1 Discrepancia Crítica: CHA&#8322;DS&#8322;-VA (ESC 2024) vs. CHA&#8322;DS&#8322;-VASc (Tratado Arritmias)</h3>
+        <p>Existe una discrepancia explícita entre dos fuentes del cuaderno respecto a la estratificación del riesgo tromboembólico en Fibrilación Auricular y Flúter Auricular:</p>
+        <ul>
+          <li><strong>Guía ESC/EACTS 2024 (fuente más reciente):</strong> Adopta la escala <strong>CHA&#8322;DS&#8322;-VA</strong> eliminando el criterio de sexo femenino ("Sc") para evitar discriminación/complejidad y promover decisiones equitativas. Indica anticoagulación oral (ACO) con <strong>Clase I si CHA&#8322;DS&#8322;-VA &ge; 2</strong> y <strong>Clase IIa si CHA&#8322;DS&#8322;-VA = 1</strong>; además indica ACO (Clase I) en toda FA con miocardiopatía hipertrófica o amiloidosis cardíaca independientemente de la puntuación.</li>
+          <li><strong>Tratado Monográfico de Arritmias en Urgencias:</strong> Cita el cálculo obligatorio del marcador clásico <strong>CHA&#8322;DS&#8322;-VASc</strong> (que incluye el sexo femenino).</li>
+        </ul>
+
+        <!-- INTERACTIVE TOOL 4: CHA2DS2-VA CALCULATOR -->
+        <div class="tool-box" id="chads-tool">
+          <div class="tool-header">
+            <div>
+              <h3 class="tool-title">Calculadora Interactiva CHA&#8322;DS&#8322;-VA (ESC 2024) y Comparativa CHA&#8322;DS&#8322;-VASc</h3>
+              <p class="kpi-caption">Calcule el riesgo tromboembólico y visualice la diferencia entre la recomendación ESC 2024 y la puntuación clásica.</p>
+            </div>
+            <button type="button" class="btn btn--secondary" onclick="resetCHADS()">Reiniciar escala</button>
+          </div>
+
+          <div class="check-grid">
+            <label class="check-tile"><input type="checkbox" class="chads-chk" data-pts="1" onchange="updateCHADS()"><span><strong>C</strong> — Insuficiencia cardíaca congestiva (+1)</span></label>
+            <label class="check-tile"><input type="checkbox" class="chads-chk" data-pts="1" onchange="updateCHADS()"><span><strong>H</strong> — Hipertensión arterial (+1)</span></label>
+            <label class="check-tile"><input type="checkbox" class="chads-chk" data-pts="2" id="chads-age75" onchange="updateCHADS('75')"><span><strong>A&#8322;</strong> — Edad &ge; 75 años (+2)</span></label>
+            <label class="check-tile"><input type="checkbox" class="chads-chk" data-pts="1" onchange="updateCHADS()"><span><strong>D</strong> — Diabetes mellitus (+1)</span></label>
+            <label class="check-tile"><input type="checkbox" class="chads-chk" data-pts="2" onchange="updateCHADS()"><span><strong>S&#8322;</strong> — ACV / AIT / Tromboembolia arterial previa (+2)</span></label>
+            <label class="check-tile"><input type="checkbox" class="chads-chk" data-pts="1" onchange="updateCHADS()"><span><strong>V</strong> — Enfermedad vascular (+1)</span></label>
+            <label class="check-tile"><input type="checkbox" class="chads-chk" data-pts="1" id="chads-age65" onchange="updateCHADS('65')"><span><strong>A</strong> — Edad 65–74 años (+1)</span></label>
+            <label class="check-tile"><input type="checkbox" id="chads-sex" onchange="updateCHADS()"><span><strong>Sc (solo CHA&#8322;DS&#8322;-VASc)</strong> — Sexo femenino (+1 en escala previa, 0 en ESC 2024)</span></label>
+            <label class="check-tile"><input type="checkbox" id="chads-mch" onchange="updateCHADS()"><span><strong>Excepción ESC 2024:</strong> Miocardiopatía hipertrófica o amiloidosis cardíaca</span></label>
+          </div>
+
+          <div class="status-card" id="chads-output" data-status="info" aria-live="polite"></div>
+        </div>
+
+        <h3 class="subhead">6.2 Puntuación de Agudeza de Anderson-Wilkins y Sistema de Selvester (Isquemia e Infarto)</h3>
+        <div class="card-grid-2">
+          <div class="status-card" data-status="info">
+            <span class="chip" data-status="info">Wagner Cap. 11 (Fig. 11-14)</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Puntuación de Agudeza de Anderson-Wilkins</h4>
+            <p>Estima en qué fase evolutiva entre la isquemia hiperaguda y el infarto completo se encuentra el paciente observando las 12 derivaciones (considerando ondas Q y T en derivaciones con T altas o elevación del ST):</p>
+            <ul>
+              <li><strong>Puntuación 4 (Hiperaguda):</strong> Ondas T altas sin ondas Q anómalas (inicio muy reciente).</li>
+              <li><strong>Puntuación 1 (Subaguda):</strong> Aparecen ondas Q anómalas sin ondas T altas.</li>
+              <li><strong>Fórmula ponderada:</strong> <span class="num">[4(n4) + 3(n3) + 2(n2) + 1(n1)] / n_derivaciones</span> (ej. anterior agudo 3,3; inferior hiperagudo 3,8 vs subagudo 1,7).</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="info">
+            <span class="chip" data-status="info">Wagner Cap. 12 (Fig. 12-13)</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Puntuación de Selvester del QRS (50 Criterios / 31 Puntos)</h4>
+            <p>Cuantifica el tamaño y extensión de un infarto mediante puntos asignados a la duración de ondas Q y cocientes R/Q o R/S en 10 derivaciones:</p>
+            <ul>
+              <li><strong>Extremidades:</strong> I (máx. 2 pts), II (máx. 2 pts), aVL (máx. 2 pts), aVF (máx. 5 pts).</li>
+              <li><strong>Precordiales anteriores/laterales:</strong> V1 (1 pt), V2 (1 pt), V3 (1 pt), V4 (3 pts), V5 (3 pts), V6 (3 pts); criterios de amplitud R, duración Q &ge; 20–50 ms y cocientes R/S o R/Q.</li>
+            </ul>
+          </div>
+        </div>
+
+        <details class="clinical-drawer">
+          <summary>
+            <span>Desglose Completo de Criterios de Puntuación de Selvester (Fig. 12-13, Wagner 12.ª ed.)</span>
+            <span class="chip" data-status="info">50 Criterios / 31 Puntos</span>
+          </summary>
+          <div class="drawer-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Derivación (Máx. Puntos)</th>
+                    <th>Criterios de Puntuación Documentados en Fig. 12-13</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td><strong>I (2)</strong></td><td>Q &ge; 30 ms (1) · R/Q &le; 1 (1) · R &le; 0,2 mV (1)</td></tr>
+                  <tr><td><strong>II (2)</strong></td><td>Q &ge; 40 ms (2) o Q &ge; 30 ms (1)</td></tr>
+                  <tr><td><strong>aVL (2)</strong></td><td>Q &ge; 30 ms (1) · R/Q &le; 1 (1)</td></tr>
+                  <tr><td><strong>aVF (5)</strong></td><td>Q &ge; 50 ms (3) o Q &ge; 40 ms (2) o Q &ge; 30 ms (1) · R/Q &le; 1 (2) o R/Q &le; 2 (1)</td></tr>
+                  <tr><td><strong>V1 Anterior (1)</strong></td><td>Cualquier Q (1)</td></tr>
+                  <tr><td><strong>V1 Lateral (4)</strong></td><td>R/S &ge; 1 (1) · R &ge; 50 ms (2) o R &ge; 40 ms (1) · R &ge; 1,0 mV (2) o R &ge; 0,6 mV (1) · Q y S &le; 0,3 mV (1)</td></tr>
+                  <tr><td><strong>V2 Anterior (1)</strong></td><td>Cualquier Q (1) · R &le; 10 ms (1) · R &le; 0,1 mV (1) · R &le; R V1 mV (1)</td></tr>
+                  <tr><td><strong>V2 Lateral (4)</strong></td><td>R/S &ge; 1,5 (1) · R &ge; 60 ms (2) o R &ge; 50 ms (1) · R &ge; 2,0 mV (2) o R &ge; 1,5 mV (1) · Q y S &le; 0,4 mV (1)</td></tr>
+                  <tr><td><strong>V3 (1)</strong></td><td>Cualquier Q (1) · R &le; 20 ms (1) · R &le; 0,2 mV (1)</td></tr>
+                  <tr><td><strong>V4 (3), V5 (3), V6 (3)</strong></td><td>Q &ge; 20 ms en V4 (1) o Q &ge; 30 ms en V5/V6 (1) · Cocientes R/S o R/Q &le; 0,5 (2), &le; 1 (1–2), &le; 2 (1), &le; 3 (1) · Amplitud R &le; 0,7 mV (V4/V5) o &le; 0,6 mV (V6) (1).</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+
+        <h3 class="subhead">6.3 Algoritmo de Brugada (4 Pasos) para Taquicardia con QRS Ancho</h3>
+        <!-- INTERACTIVE TOOL 5: BRUGADA EVALUATOR -->
+        <div class="tool-box" id="brugada-tool">
+          <div class="tool-header">
+            <div>
+              <h3 class="tool-title">Evaluador Secuencial: Algoritmo de Brugada en 4 Pasos</h3>
+              <p class="kpi-caption">Evalúe secuencialmente una taquicardia regular con QRS &ge; 120 ms. Si algún paso es positivo, confirma Taquicardia Ventricular (TV).</p>
+            </div>
+            <button type="button" class="btn btn--secondary" onclick="resetBrugada()">Reiniciar pasos</button>
+          </div>
+
+          <div class="check-grid">
+            <label class="check-tile"><input type="checkbox" id="brug-1" onchange="updateBrugada()"><span><strong>Paso 1:</strong> Ausencia de complejos RS en todas las derivaciones precordiales (V1–V6)</span></label>
+            <label class="check-tile"><input type="checkbox" id="brug-2" onchange="updateBrugada()"><span><strong>Paso 2:</strong> Intervalo RS &gt; 100 ms en alguna derivación precordial</span></label>
+            <label class="check-tile"><input type="checkbox" id="brug-3" onchange="updateBrugada()"><span><strong>Paso 3:</strong> Disociación auriculoventricular (ondas P independientes, latidos de captura o fusión)</span></label>
+            <label class="check-tile"><input type="checkbox" id="brug-4" onchange="updateBrugada()"><span><strong>Paso 4:</strong> Criterios morfológicos clásicos de TV en V1–V2 y V6 (patrón BRD o BRI aberrante)</span></label>
+          </div>
+
+          <div id="brugada-output" class="status-card" data-status="warn" aria-live="polite"></div>
+        </div>
+
+        <h3 class="subhead">6.4 Estratificación del Riesgo Hemorrágico (ESC 2024) y de Muerte Súbita (ESC 2022)</h3>
+        <ul>
+          <li><strong>Riesgo hemorrágico dinámico en FA (ESC 2024):</strong> Se deben evaluar y corregir en cada visita los <strong>factores modificables</strong> (control estricto de HTA, reducción de alcohol a &le;3 bebidas estándar/semana, evitar antiplaquetarios o AINE innecesarios, vigilar adherencia y TTR &gt; 70% en AVK). <strong>Regla Clase III:</strong> No utilizar escalas de riesgo hemorrágico para suspender o negar la anticoagulación en pacientes elegibles.</li>
+          <li><strong>Estratificación de Muerte Súbita Cardíaca (Spotlight ESC 2022):</strong> Degrada la FEVI como marcador aislado y adopta nuevos marcadores (mutaciones patogénicas, historia familiar, RMC con LGE e inducibilidad por estimulación eléctrica programada — EEF), junto con calculadoras específicas para <strong>miocardiopatía hipertrófica</strong>, <strong>laminopatías</strong> y <strong>síndrome de QT largo</strong>.</li>
+        </ul>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Guía ESC/EACTS 2024 de Fibrilación Auricular (CHA&#8322;DS&#8322;-VA y riesgo hemorrágico); Tratado Monográfico de Arritmias en Urgencias (CHA&#8322;DS&#8322;-VASc, Algoritmo de Brugada); Wagner, Strauss &amp; Marriott (12.ª ed., Cap. 11 Anderson-Wilkins y Cap. 12 Selvester); Spotlight ESC 2022.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 7: ALGORITMO DIAGNÓSTICO INTEGRAL -->
+      <section class="guide-section" id="sec-7">
+        <div class="section-header">
+          <span class="section-kicker">Sección 07</span>
+          <h2 class="section-title">Algoritmo Diagnóstico Integral: De la Llegada al Diagnóstico Definitivo</h2>
+          <p class="section-subtitle">Flujo secuencial interactivo desde el minuto cero en triaje hasta la confirmación etiológica y la activación terapéutica.</p>
+        </div>
+
+        <!-- INTERACTIVE DIAGNOSTIC FLOWCHART -->
+        <div class="tool-box" id="algo-flow">
+          <div class="tool-header">
+            <div>
+              <h3 class="tool-title">Árbol de Decisión Interactivo en Urgencias</h3>
+              <p class="kpi-caption">Seleccione la rama clínica del paciente para trazar la ruta diagnóstica y terapéutica paso a paso.</p>
+            </div>
+          </div>
+
+          <div class="filter-bar" role="group" aria-label="Rutas del algoritmo diagnóstico">
+            <button type="button" class="btn btn--chip is-selected" onclick="selectAlgoBranch('inestable', this)">1. Paciente Inestable (Peri-Parada)</button>
+            <button type="button" class="btn btn--chip" onclick="selectAlgoBranch('iamcest', this)">2. Elevación ST / IAMCEST</button>
+            <button type="button" class="btn btn--chip" onclick="selectAlgoBranch('scasest', this)">3. Dolor Isquémico sin Elevación ST</button>
+            <button type="button" class="btn btn--chip" onclick="selectAlgoBranch('arritmia', this)">4. Arritmia Dominante Estable</button>
+            <button type="button" class="btn btn--chip" onclick="selectAlgoBranch('vascular', this)">5. Sospecha TEP o Aorta Torácica</button>
+          </div>
+
+          <div id="algo-steps-container" class="pathway-steps" aria-live="polite"></div>
+        </div>
+
+        <!-- VISUAL TARGET BANDS SVG (VITALS TREATMENT #5) -->
+        <div class="viz-frame">
+          <h3 class="subhead" style="margin-top: 0;">Bandas Terapéuticas y Umbrales Clínicos Críticos en Urgencias</h3>
+          <p class="kpi-caption" style="margin-bottom: var(--space-md);">Rangos objetivo sombreados en verde y umbrales de acción inmediata documentados en las fuentes (ESC 2024, ERC 2021, Harrison EVC, Tratado Arritmias).</p>
+          <svg class="svg-responsive" viewBox="0 0 820 270" role="img" aria-label="Gráfico de rangos de referencia y umbrales críticos en Urgencias">
+            <!-- Row 1: SpO2 -->
+            <text x="12" y="32" font-family="Figtree, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">Oxigenación (SpO2)</text>
+            <rect x="230" y="16" width="560" height="22" rx="4" fill="var(--surface-container-low)" stroke="var(--outline-variant)"/>
+            <rect x="230" y="16" width="210" height="22" rx="4" fill="var(--error)" fill-opacity="0.14"/>
+            <rect x="440" y="16" width="350" height="22" rx="4" fill="var(--tertiary)" fill-opacity="0.16"/>
+            <line x1="440" y1="12" x2="440" y2="42" stroke="var(--primary)" stroke-width="2" stroke-dasharray="4 3"/>
+            <text x="335" y="31" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--error)">&lt; 94% Dar O2</text>
+            <text x="615" y="31" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">94–100% Objetivo (ABCDE)</text>
+
+            <!-- Row 2: PAS -->
+            <text x="12" y="80" font-family="Figtree, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">Presión Arterial (PAS)</text>
+            <rect x="230" y="64" width="560" height="22" rx="4" fill="var(--surface-container-low)" stroke="var(--outline-variant)"/>
+            <rect x="230" y="64" width="170" height="22" rx="4" fill="var(--error)" fill-opacity="0.16"/>
+            <rect x="400" y="64" width="230" height="22" rx="4" fill="var(--tertiary)" fill-opacity="0.16"/>
+            <rect x="630" y="64" width="160" height="22" rx="4" fill="var(--warning)" fill-opacity="0.14"/>
+            <text x="315" y="79" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--error)">&lt; 90 mmHg INESTABLE</text>
+            <text x="515" y="79" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">Meta crónica &lt; 130/80</text>
+            <text x="710" y="79" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--warning-ink)">&ge; 130 mmHg</text>
+
+            <!-- Row 3: FC en FA -->
+            <text x="12" y="128" font-family="Figtree, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">Control FC en FA (reposo)</text>
+            <rect x="230" y="112" width="560" height="22" rx="4" fill="var(--surface-container-low)" stroke="var(--outline-variant)"/>
+            <rect x="230" y="112" width="130" height="22" rx="4" fill="var(--warning)" fill-opacity="0.14"/>
+            <rect x="360" y="112" width="260" height="22" rx="4" fill="var(--tertiary)" fill-opacity="0.16"/>
+            <rect x="620" y="112" width="170" height="22" rx="4" fill="var(--error)" fill-opacity="0.14"/>
+            <text x="295" y="127" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--warning-ink)">&lt; 60 Bradiarritmia</text>
+            <text x="490" y="127" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">Control laxo &lt; 110 lpm (ESC)</text>
+            <text x="705" y="127" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--error)">&ge; 110 lpm ajustar</text>
+
+            <!-- Row 4: Reperfusion Time -->
+            <text x="12" y="176" font-family="Figtree, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">Demora a ICP Primaria</text>
+            <rect x="230" y="160" width="560" height="22" rx="4" fill="var(--surface-container-low)" stroke="var(--outline-variant)"/>
+            <rect x="230" y="160" width="340" height="22" rx="4" fill="var(--tertiary)" fill-opacity="0.16"/>
+            <rect x="570" y="160" width="220" height="22" rx="4" fill="var(--warning)" fill-opacity="0.16"/>
+            <text x="400" y="175" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">&le; 120 min: ICP Primaria preferida</text>
+            <text x="680" y="175" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--warning-ink)">&gt; 120 min: Considerar Fibrinólisis</text>
+
+            <!-- Row 5: INR -->
+            <text x="12" y="224" font-family="Figtree, sans-serif" font-size="13" font-weight="700" fill="var(--on-surface)">Anticoagulación con AVK</text>
+            <rect x="230" y="208" width="560" height="22" rx="4" fill="var(--surface-container-low)" stroke="var(--outline-variant)"/>
+            <rect x="230" y="208" width="160" height="22" rx="4" fill="var(--warning)" fill-opacity="0.14"/>
+            <rect x="390" y="208" width="220" height="22" rx="4" fill="var(--tertiary)" fill-opacity="0.16"/>
+            <rect x="610" y="208" width="180" height="22" rx="4" fill="var(--error)" fill-opacity="0.14"/>
+            <text x="310" y="223" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--warning-ink)">INR &lt; 2.0 (Subterap.)</text>
+            <text x="500" y="223" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--secondary)">INR 2.0–3.0 · TTR &gt; 70%</text>
+            <text x="700" y="223" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600" fill="var(--error)">INR &gt; 3.0 Riesgo sangrado</text>
+
+            <text x="12" y="258" font-family="Figtree, sans-serif" font-size="11" fill="var(--on-surface-variant)">Bandas verdes: zona terapéutica objetivo. Bandas rojas/ámbar: umbrales de intervención o ajuste clínico.</text>
+          </svg>
+        </div>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Tratado Monográfico de Arritmias en Urgencias (ABCDE, ERC 2021, Triaje ECG); Harrison — Enfermedad Vascular Coronaria y Periférica (STEMI, SCASEST, TEP); Guía ESC/EACTS 2024 de Fibrilación Auricular.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 8: TRATAMIENTO -->
+      <section class="guide-section" id="sec-8">
+        <div class="section-header">
+          <span class="section-kicker">Sección 08</span>
+          <h2 class="section-title">Tratamiento Integral en Urgencias: Medidas Iniciales, por Etiologías y Monitorización</h2>
+          <p class="section-subtitle">Conductas terapéuticas inmediatas, dosis exactas, indicaciones, contraindicaciones absolutas y discrepancias entre guías.</p>
+        </div>
+
+        <h3 class="subhead">8.1 Medidas Iniciales Universales y Estabilización</h3>
+        <ul>
+          <li><strong>Soporte vital básico/avanzado:</strong> En FV o TV sin pulso, priorizar la <strong>desfibrilación precoz y las compresiones torácicas ininterrumpidas</strong> por encima del acceso vascular o la intubación (Tratado Arritmias).</li>
+          <li><strong>Oxigenación y acceso vascular:</strong> Oxígeno suplementario solo si <span class="num">SpO&#8322; &lt; 94%</span>; vía venosa periférica de grueso calibre; monitorización ECG continua.</li>
+          <li><strong>Sedación para cardioversión eléctrica:</strong> En el contexto agudo y electivo, realizar cardioversión eléctrica de forma segura bajo sedación con <strong>midazolam, propofol o etomidato intravenosos</strong> (ESC 2024).</li>
+          <li><strong>Estabilización de membrana en hiperpotasemia:</strong> Ante cambios electrocardiográficos sugestivos de hiperpotasemia, administrar <strong>calcio IV de forma inmediata</strong> para estabilizar el miocardio (Tratado Arritmias).</li>
+        </ul>
+
+        <h3 class="subhead">8.2 Síndrome Coronario Agudo (IAMCEST, SCASEST y Angina)</h3>
+        <div class="card-grid-2">
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">IAMCEST (STEMI)</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Reperfusión Urgente y Contraindicaciones</h4>
+            <ul>
+              <li><strong>ICP primaria (stent sin fibrinólisis previa):</strong> Es la estrategia de elección frente a la fibrinólisis para abrir la arteria ocluida y mejorar resultados a corto y largo plazo, salvo que el tiempo previsto hasta la entrega del primer dispositivo coronario supere los <strong>120 minutos</strong>. También se prefiere siempre si el diagnóstico es dudoso, existe shock cardiogénico, alto riesgo hemorrágico o contraindicación a fibrinolíticos.</li>
+              <li><strong>Fibrinólisis:</strong> Indicada en IAMCEST cuando la ICP primaria no sea factible en &le;120 min. <strong>Contraindicada en ausencia de elevación del ST</strong> (en SCASEST no aporta beneficio y puede ser perjudicial).</li>
+              <li><strong>Fármacos prohibidos en IAMCEST:</strong> Evitar <strong>glucocorticoides y AINE (excepto aspirina)</strong>, ya que alteran la cicatrización del infarto, aumentan el riesgo de rotura miocárdica, producen una cicatriz mayor e incrementan la resistencia vascular coronaria.</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="info">
+            <span class="chip" data-status="info">SCASEST y Angina</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Anticoagulantes Parenterales y Vasodilatadores</h4>
+            <ul>
+              <li><strong>4 opciones parenterales en SCASEST (añadidas a antiagregantes):</strong>
+                1) <strong>HNF</strong> (heparina no fraccionada);
+                2) <strong>Enoxaparina</strong> (superior a HNF en reducción de eventos recurrentes, especialmente en estrategia conservadora, con modesto aumento de sangrado);
+                3) <strong>Bivalirudina</strong> (inhibidor directo de trombina usado justo antes y/o durante la ICP);
+                4) <strong>Fondaparinux</strong> (inhibidor sintético de factor Xa equivalente a enoxaparina con menor sangrado mayor; requiere HNF suplementaria durante ICP para evitar trombosis del catéter).</li>
+              <li><strong>Pacientes con ACOD previo:</strong> Si desarrollan SCASEST tomando un ACOD, <strong>suspender el ACOD</strong> al iniciar cualquiera de los cuatro anticoagulantes parenterales.</li>
+              <li><strong>Calcioantagonistas:</strong> Eficaces en angina estable y especialmente los dihidropiridínicos en <strong>angina vasoespástica</strong> (junto a nitratos). Los no dihidropiridínicos (<strong>verapamilo, diltiazem</strong>) producen trastornos de conducción, bradiarritmias e inotropismo negativo: precaución extrema o evitar en disfunción del VI y si se asocian a betabloqueantes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="subhead">8.3 Fibrilación Auricular y Flúter Auricular (Vía AF-CARE — ESC 2024 y Tratado Arritmias)</h3>
+        <div class="callout callout--warn">
+          <div class="callout-title"><i data-lucide="git-compare" aria-hidden="true"></i> Discrepancias Terapéuticas Documentadas en Fibrilación Auricular</div>
+          <ul style="margin: 0;">
+            <li><strong>Ventana temporal para cardioversión segura sin ETE previa:</strong> El <em>Tratado Monográfico de Arritmias en Urgencias</em> sitúa el límite en <strong>&lt; 48 horas</strong> sin antecedentes tromboembólicos; la <em>Guía ESC/EACTS 2024</em> restringe este umbral a <strong>&lt; 24 horas</strong> (recomendación Clase III realizar cardioversión precoz sin ACO adecuada ni ETE si FA &ge; 24 h o duración desconocida), sugiriendo esperar y observar conversión espontánea dentro de las primeras 48 h en pacientes estables (Clase IIa).</li>
+            <li><strong>Control agudo de frecuencia en FEVI &le; 40%:</strong> El <em>Tratado de Arritmias</em> agrupa digoxina y amiodarona IV como opciones en IC aguda/FEVI &lt;40%; la <em>Guía ESC 2024</em> establece <strong>betabloqueante o digoxina</strong> como primera línea (Clase I) y reserva <strong>amiodarona IV, digoxina o landiolol</strong> (betabloqueante ultracorto) para inestabilidad hemodinámica o FEVI gravemente deprimida (Clase IIb), señalando que en UCI amiodarona y betabloqueantes mostraron eficacia similar y superior a digoxina/calcioantagonistas.</li>
+          </ul>
+        </div>
+
+        <ul>
+          <li><strong>Control de frecuencia (FA estable):</strong> Objetivo inicial laxo en reposo <span class="num">FC &lt; 110 lpm</span> (más estricto si persisten síntomas, Clase IIa). Con <strong>FEVI &gt; 40%</strong>: betabloqueante (metoprolol 2,5–5 mg IV, esmolol), diltiazem (0,25 mg/kg IV), verapamilo o digoxina (Clase I). Con <strong>FEVI &le; 40%</strong>: betabloqueante o digoxina (0,25–0,5 mg IV) (Clase I).</li>
+          <li><strong>Control del ritmo y cardioversión:</strong> Si inestable -&gt; cardioversión eléctrica urgente (Clase I). Si estable y duración &ge; 24 h (o desconocida): iniciar ACOD (o AVK/HBPM/HNF) lo antes posible y realizar <strong>cardioversión guiada por ETE</strong> o completar <strong>&ge; 3 semanas de ACO terapéutica</strong> (ACOD preferidos sobre AVK, Clase I; en AVK INR 2,0–3,0). Tras toda cardioversión, mantener <strong>ACO al menos 4 semanas</strong> (opcional solo si &lt;24 h y muy bajo riesgo) y a largo plazo según CHA&#8322;DS&#8322;-VA.</li>
+          <li><strong>Fármacos antiarrítmicos (FAA) y ablación:</strong> Sin cardiopatía estructural o mínima -&gt; dronedarona, flecainida o propafenona (o ablación con catéter en FA paroxística como primera línea, Clase I). Con enfermedad coronaria/valvulopatía o ICFElr (41–49%) -&gt; amiodarona o dronedarona (Clase I) o sotalol (Clase IIb). Con ICFEr (&le;40%) -&gt; amiodarona (Clase I). Contraindicados los FAA en trastornos avanzados de la conducción sin estimulación antibradicardia (Clase III).</li>
+          <li><strong>Flúter auricular:</strong> Misma indicación de anticoagulación oral según riesgo tromboembólico que la FA (Clase I).</li>
+        </ul>
+
+        <h3 class="subhead">8.4 Taquiarritmias Supraventriculares, Ventriculares, Bradiarritmias y Otras Urgencias</h3>
+        <div class="tool-box" id="pharma-tool">
+          <div class="tool-header">
+            <div>
+              <h3 class="tool-title">Vademécum Interactivo de Urgencias Cardiovasculares (Dosis Exactas de Fuentes)</h3>
+              <p class="kpi-caption">Filtre por escenario clínico para consultar fármacos, posología, indicaciones y contraindicaciones.</p>
+            </div>
+          </div>
+
+          <div class="filter-bar" role="group" aria-label="Filtrar vademécum por escenario">
+            <button type="button" class="btn btn--chip is-selected" onclick="filterPharma('all', this)">Todos</button>
+            <button type="button" class="btn btn--chip" onclick="filterPharma('taqui-sv', this)">TSV / FA</button>
+            <button type="button" class="btn btn--chip" onclick="filterPharma('taqui-v', this)">TV / Torsades</button>
+            <button type="button" class="btn btn--chip" onclick="filterPharma('bradi', this)">Bradiarritmias</button>
+            <button type="button" class="btn btn--chip" onclick="filterPharma('ic', this)">IC-FEr / HAP</button>
+            <button type="button" class="btn btn--chip" onclick="filterPharma('elec', this)">Electrolitos / Anticoag.</button>
+          </div>
+
+          <div class="table-wrap">
+            <table id="pharma-table">
+              <thead>
+                <tr>
+                  <th>Fármaco</th>
+                  <th>Escenario</th>
+                  <th>Dosis / Pauta Documentada</th>
+                  <th>Precauciones y Contraindicaciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-group="taqui-sv"><td><strong>Maniobras vagales modificadas + Adenosina IV</strong></td><td>TSV regular estable</td><td class="num">Primera línea</td><td>No administrar en taquicardia irregular o QRS ancho sin confirmación diagnóstica.</td></tr>
+                <tr data-group="taqui-sv"><td><strong>Metoprolol IV / Esmolol / Landiolol</strong></td><td>FA (control FC)</td><td class="num">Metoprolol 2,5–5 mg IV; Landiolol perfusión ultracorta</td><td>Landiolol seguro en FEVI baja/IC descompensada con mínimo impacto en PA; vigilar bradicardia/bloqueo AV.</td></tr>
+                <tr data-group="taqui-sv"><td><strong>Diltiazem IV / Verapamilo</strong></td><td>FA / Angina (FEVI &gt; 40%)</td><td class="num">Diltiazem 0,25 mg/kg IV</td><td><strong>Evitar si FEVI &le; 40%</strong>, trastornos de conducción o en <strong>1.er trimestre de embarazo</strong> (verapamilo).</td></tr>
+                <tr data-group="taqui-sv"><td><strong>Digoxina IV</strong></td><td>FA con FEVI &le; 40% / IC-FEr</td><td class="num">0,25–0,5 mg IV</td><td>Efecto retardado en agudo; útil combinada o en IC sintomática persistente.</td></tr>
+                <tr data-group="taqui-v"><td><strong>Sulfato de Magnesio IV</strong></td><td>Torsades de Pointes</td><td class="num">Tratamiento de elección</td><td>Asociar retirada inmediata de fármacos QT-prolongadores; usar <strong>Isoproterenol 2–10 &mu;g/min</strong> o marcapasos <strong>100–110 lpm</strong> si refractario.</td></tr>
+                <tr data-group="taqui-v"><td><strong>Amiodarona + Betabloqueantes</strong></td><td>TV/FV recurrente · FA con ICFEr</td><td class="num">Amiodarona IV en agudo / oral crónica</td><td>Más eficaz combinada con BB que sotalol solo en TV/FV; puede inducir bradicardia requiriendo estimulación. En cirugía cardíaca previene FA postoperatoria (Clase I).</td></tr>
+                <tr data-group="bradi"><td><strong>Atropina IV</strong></td><td>Bradiarritmia inestable (1.ª línea)</td><td class="num">0,8–1,0 mg IV bolo c/3–5 min (máx. 3 mg)</td><td><strong>Ineficaz en bloqueos infrahisianos</strong> (Mobitz II o BAV completo).</td></tr>
+                <tr data-group="bradi"><td><strong>Isoprenalina / Adrenalina</strong></td><td>Bradiarritmia inestable (2.ª línea)</td><td class="num">Perfusión 2–10 &mu;g/min</td><td>Puente farmacológico hasta Marcapasos Transcutáneo (MPTC) / Transvenoso Temporal.</td></tr>
+                <tr data-group="bradi"><td><strong>Aminofilina IV</strong></td><td>Bradicardia en IAM inferior o trasplante cardíaco</td><td class="num">100–200 mg IV lento</td><td>Alternativa de segunda línea si falla atropina en estos contextos específicos.</td></tr>
+                <tr data-group="bradi"><td><strong>Glucagón IV</strong></td><td>Intoxicación por betabloqueantes o calcioantagonistas</td><td class="num">3–10 mg IV</td><td>Antídoto específico en bradiarritmia tóxica refractaria.</td></tr>
+                <tr data-group="elec"><td><strong>Calcio IV</strong></td><td>Hiperpotasemia con cambios ECG</td><td class="num">Administración inmediata</td><td>Obligatorio para estabilizar la membrana miocárdica antes de otras medidas.</td></tr>
+                <tr data-group="ic"><td><strong>Cuádruple Terapia IC-FEr (Fisterra)</strong></td><td>IC-FEr (inicio precoz intrahospitalario)</td><td class="num">IECA/ARNI (Sacubitrilo-valsartán 97/103 mg/12h) + BB (Bisoprolol 10 mg, Carvedilol 25 mg/12h) + ARM (50 mg/24h) + iSGLT2 (10 mg/24h)</td><td>Añadir diuréticos (furosemida/torasemida) si congestión. <strong>Evitar</strong> betamiméticos acción corta, tricíclicos, IMAO, glitazonas, sales de K&#8314; y alfabloqueantes sistémicos.</td></tr>
+                <tr data-group="ic"><td><strong>Prostanoides (Epoprostenol, Treprostinil, Iloprost)</strong></td><td>Hipertensión Arterial Pulmonar (CF III–IV)</td><td class="num">Epoprostenol IV continuo (t&#189; ~6 min); Treprostinil SC (~4 h); Iloprost/Treprostinil inhalado</td><td>Mejoran hemodinámica, capacidad de ejercicio y supervivencia en HAP.</td></tr>
+                <tr data-group="elec"><td><strong>ACOD vs AVK + Antídotos</strong></td><td>FA / Flúter / TEP</td><td class="num">AVK: INR 2,0–3,0 (TTR &gt; 70%)</td><td><strong>Contraindicados ACOD</strong> en prótesis mecánica o estenosis mitral moderada-grave. No combinar antiagregante + ACO para prevenir ictus (Clase III). Usar antídotos específicos en hemorragia crítica/mortal (Clase IIa).</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <h3 class="subhead">8.5 Monitorización Post-Intervención</h3>
+        <p>En todo paciente sometido a cardioversión eléctrica o farmacológica, fármacos antiarrítmicos, reperfusión coronaria o estimulación cardíaca, es imprescindible la <strong>evaluación clínica continua y el registro de un ECG de 12 derivaciones tras cada intervención</strong> para confirmar restauración del ritmo/resolución del ST y vigilar signos de proarritmia (prolongación del QT, ensanchamiento del QRS o pausas sinusales) (Tratado Arritmias; ESC 2022).</p>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Tratado Monográfico de Arritmias en Urgencias (Cap. 4, 5, 6 y Decálogo); Harrison — Enfermedad Vascular Coronaria y Periférica (STEMI, SCASEST, CCB, HAP); Harrison — Desórdenes del Ritmo Cardíaco; Guía ESC/EACTS 2024 de Fibrilación Auricular; Guía Clínica Fisterra IC-FEr; Spotlight ESC 2022.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 9: SITUACIONES ESPECIALES -->
+      <section class="guide-section" id="sec-9">
+        <div class="section-header">
+          <span class="section-kicker">Sección 09</span>
+          <h2 class="section-title">Situaciones Especiales en Urgencias</h2>
+          <p class="section-subtitle">Particularidades clínicas en ancianos, mujeres, embarazo, cardiopatías específicas, prótesis valvulares y cobertura documental sobre inmunodeprimidos.</p>
+        </div>
+
+        <div class="card-grid-2">
+          <div class="status-card" data-status="info">
+            <span class="chip" data-status="info">Pacientes Ancianos (&ge; 65 y &ge; 75 años)</span>
+            <ul>
+              <li><strong>Estratificación y cribado de FA:</strong> Edad 65–74 años (+1 pt) y &ge;75 años (+2 pts) en CHA&#8322;DS&#8322;-VA; considerar cribado con ECG prolongado no invasivo en &ge;75 años o &ge;65 años con factores de riesgo adicionales (Clase IIa ESC 2024).</li>
+              <li><strong>Anticoagulación en &ge;75 años polimedicados:</strong> Si están clínicamente estables con AVK, puede considerarse mantener AVK en lugar de cambiar a ACOD para prevenir sangrado excesivo (Clase IIb ESC 2024).</li>
+              <li><strong>Control tensional:</strong> En adultos &ge;65 años no institucionalizados, objetivo PAS &lt; 130 mmHg; en ancianos con alta comorbilidad y expectativa de vida limitada, individualizar intensidad según juicio clínico y preferencias (Harrison EVC).</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="info">
+            <span class="chip" data-status="info">Mujeres y Equidad Asistencial</span>
+            <ul>
+              <li><strong>Actualización ESC 2024:</strong> Eliminación del sexo femenino como criterio de puntuación en CHA&#8322;DS&#8322;-VA, garantizando acceso igualitario a la estrategia AF-CARE con independencia de género, etnia, discapacidad o nivel socioeconómico (Clase I).</li>
+              <li><strong>Asesoramiento en edad fértil:</strong> Discutir proactivamente anticoncepción y cambio oportuno a fármacos seguros antes del embarazo en mujeres con riesgo de teratogenicidad por anticoagulantes o antiarrítmicos (ESC 2024).</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Embarazo</span>
+            <ul>
+              <li><strong>Estrategia preferida:</strong> El control del ritmo es la estrategia preferida durante la gestación.</li>
+              <li><strong>Cardioversión eléctrica urgente:</strong> Recomendada si existe inestabilidad hemodinámica, riesgo considerable materno o fetal, o miocardiopatía hipertrófica concomitante; es segura sin comprometer el flujo sanguíneo fetal ni riesgo relevante de arritmia fetal o parto prematuro (ESC 2024).</li>
+              <li><strong>Contraindicación farmacológica y ablación:</strong> <strong>Evitar verapamilo en el primer trimestre</strong>; si se requiere ablación con catéter, realizar con fluoroscopia mínima o nula.</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="warn">
+            <span class="chip" data-status="warn">Inmunodeprimidos y Otras Poblaciones</span>
+            <ul>
+              <li><strong>Pacientes inmunodeprimidos (nota documental):</strong> Los extractos seleccionados no contienen protocolos específicos para dolor torácico en inmunodeprimidos, salvo dos referencias relevantes: 1) la <strong>sepsis</strong> como desencadenante agudo de FA que debe tratarse en paralelo al control de frecuencia/ritmo (ESC 2024); y 2) la <strong>sarcoidosis cardíaca</strong> tratada con inmunosupresión como causa potencialmente reversible de bloqueo AV (Harrison Ritmo).</li>
+              <li><strong>Prótesis mecánicas y estenosis mitral moderada-grave:</strong> Contraindicados los ACOD (usar AVK). En bioprótesis y cardiopatía congénita (Fontan, cianótica, VD sistémico, reparación intracardíaca), anticoagulación indicada independientemente de CHA&#8322;DS&#8322;-VA (ESC 2024).</li>
+              <li><strong>Otros contextos especiales:</strong> Marfan/Loeys-Dietz (rotura aórtica a menor diámetro); posoperatorio de cirugía cardíaca (amiodarona perioperatoria Clase I y pericardiotomía posterior Clase IIa); trasplante cardíaco (aminofilina en bradicardia); intoxicación por BB/CA (glucagón IV).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Guía ESC/EACTS 2024 de Fibrilación Auricular (Apartados 6.1, 6.2, 9.6, 9.8, 9.9); Harrison — Enfermedad Vascular Coronaria y Periférica; Harrison — Desórdenes del Ritmo Cardíaco; Tratado Monográfico de Arritmias en Urgencias.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 10: DISPOSICIÓN FINAL -->
+      <section class="guide-section" id="sec-10">
+        <div class="section-header">
+          <span class="section-kicker">Sección 10</span>
+          <h2 class="section-title">Disposición Final: Ingreso Crítico, Planta, Observación, Alta y Derivación</h2>
+          <p class="section-subtitle">Criterios clínicos estructurados según riesgo hemodinámico, tiempo-dependencia y necesidad de monitorización o seguimiento programado.</p>
+        </div>
+
+        <div class="card-grid">
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">UCI / Unidad Coronaria / Hemodinámica</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Ingreso Crítico Inmediato</h4>
+            <ul>
+              <li>Cualquier criterio de inestabilidad hemodinámica (PAS &lt; 90, síncope/alteración mental, isquemia aguda, EAP).</li>
+              <li>IAMCEST para ICP primaria (&lt; 120 min) o posfibrinólisis; shock cardiogénico.</li>
+              <li>Tormenta eléctrica (&ge; 3 TV/FV en 24h), TV sostenida, Torsades de Pointes o posparada por FV.</li>
+              <li>Bradiarritmia inestable con marcapasos transcutáneo/transvenoso o BAV Mobitz II / 3.º grado.</li>
+              <li>TEP agudo con indicación de trombólisis dirigida/quirúrgica o filtro VCI; síndrome aórtico agudo.</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="warn">
+            <span class="chip" data-status="warn">Planta de Cardiología / Monitorización</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Ingreso Hospitalario Convencional</h4>
+            <ul>
+              <li>SCASEST / IAMSEST estable tras inicio de anticoagulación parenteral y antiagregación.</li>
+              <li>IC-FEr de novo o descompensada: el inicio precoz intrahospitalario de la cuádruple terapia reduce eventos y muerte en los primeros meses (Fisterra / STRONG-HF).</li>
+              <li>FA aguda con cardiopatía estructural, necesidad de ETE previo a cardioversión o inicio de antiarrítmicos con riesgo de prolongación del QT o trastornos de conducción.</li>
+              <li>BAV adquirido Mobitz II / alto grado / completo irreversible para implante de marcapasos definitivo.</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="info">
+            <span class="chip" data-status="info">Observación de Urgencias</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Estancia Corta / Monitorización</h4>
+            <ul>
+              <li>Estrategia <strong>"esperar y observar"</strong> en FA estable de inicio &lt; 48 h para conversión espontánea a ritmo sinusal (Clase IIa ESC 2024).</li>
+              <li>Vigilancia electrocardiográfica poscardioversión eléctrica o farmacológica exitosa y corrección de desencadenantes agudos (electrolitos, sepsis, hipertiroidismo).</li>
+              <li>Descarte seriado de necrosis miocárdica en dolor torácico sin elevación del ST.</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="ok">
+            <span class="chip">Alta Segura y Derivación</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Criterios de Alta y Seguimiento</h4>
+            <ul>
+              <li>Estabilidad clínica y ECG confirmado tras intervenciones; descartadas amenazas vitales agudas.</li>
+              <li>En FA al alta: ACO instaurada si CHA&#8322;DS&#8322;-VA &ge; 2 (Clase I) o = 1 (Clase IIa) o poscardioversión (4 semanas), control de frecuencia/ritmo y educación compartida.</li>
+              <li><strong>Reevaluación obligatoria (Pilar E de AF-CARE):</strong> A los <strong>6 meses</strong> del inicio y <strong>anualmente</strong> como mínimo; no demorar ACO por espera de ETT ambulatoria.</li>
+              <li>En IC-FEr: reevaluar síntomas y FEVI a los <strong>3 meses</strong> de terapia optimizada; derivar a Electrofisiología/Cirugía si indicación de ablación, DAI o DAI-TRC.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Guía ESC/EACTS 2024 de Fibrilación Auricular (Pilar E, cardioversión y diagnóstico); Guía Clínica Fisterra IC-FEr (Algoritmo STRONG-HF y reevaluación a 3 meses); Harrison — Enfermedad Vascular Coronaria y Periférica; Harrison — Desórdenes del Ritmo Cardíaco; Tratado Monográfico de Arritmias en Urgencias.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 11: ERRORES QUE PUEDEN COSTAR UNA VIDA -->
+      <section class="guide-section" id="sec-11">
+        <div class="section-header">
+          <span class="section-kicker" style="color: var(--error);">Sección 11 · Alerta Crítica de Seguridad</span>
+          <h2 class="section-title">Errores que Pueden Costar una Vida</h2>
+          <p class="section-subtitle">Conductas iatrogénicas, errores de interpretación electrocardiográfica y omisiones terapéuticas tiempo-dependientes documentadas explícitamente en las fuentes.</p>
+        </div>
+
+        <div class="card-grid">
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 01</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Demorar la terapia eléctrica en el paciente inestable</h4>
+            <p style="margin: 0;">Intentar fármacos o pruebas complementarias antes que la cardioversión eléctrica o el marcapasos cuando existe cualquiera de los 4 criterios de inestabilidad hemodinámica.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 02</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Tratar una taquicardia de QRS ancho como TSV</h4>
+            <p style="margin: 0;">El 80–85% son Taquicardia Ventricular. Toda taquicardia de QRS ancho debe tratarse como TV hasta demostrar lo contrario.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 03</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Administrar AINE o glucocorticoides en un IAMCEST</h4>
+            <p style="margin: 0;">Salvo la aspirina, deterioran la cicatrización del infarto, aumentan la resistencia coronaria, agrandan la escara y elevan el riesgo de <strong>rotura miocárdica</strong>.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 04</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Indicar fibrinólisis sin elevación del segmento ST</h4>
+            <p style="margin: 0;">En ausencia de elevación del ST, la fibrinólisis no es útil y existe evidencia de que puede resultar perjudicial.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 05</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Confiar solo en Atropina en bloqueos infrahisianos</h4>
+            <p style="margin: 0;">La atropina es ineficaz en el Mobitz II y en el Bloqueo AV completo: preparar simultáneamente perfusión cronotropa y marcapasos transcutáneo.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 06</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Cardiovertir una FA &ge;24 h (o &gt;48 h) sin ACO/ETE</h4>
+            <p style="margin: 0;">Cardiovertir sin descartar trombo en orejuela izquierda por ETE ni cumplir &ge;3 semanas de ACO previa (ni las 4 semanas posteriores) expone a ictus cardioembólico.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 07</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Usar ACOD en prótesis mecánica o estenosis mitral</h4>
+            <p style="margin: 0;">Los ACOD están contraindicados en válvulas cardíacas mecánicas y estenosis mitral moderada-grave; asimismo, nunca suspender ACO por una escala de riesgo hemorrágico.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 08</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Omitir Calcio IV en hiperpotasemia con cambios ECG</h4>
+            <p style="margin: 0;">La estabilización inmediata de la membrana miocárdica con calcio IV es obligatoria ante alteraciones ECG sugestivas de hiperpotasemia.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 09</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Pasar por alto el IAM posterior, de VD o subendocárdico</h4>
+            <p style="margin: 0;">No reconocer el descenso recíproco del ST en V1–V3 (equivalente IAMCEST posterior), omitir V3R–V4R en IAM inferior con ST en V1 &gt; V2, o ignorar elevación ST en aVR.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 10</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Priorizar vía venosa o intubación sobre desfibrilación</h4>
+            <p style="margin: 0;">En la RCP por FV / TV sin pulso, la desfibrilación precoz y las compresiones ininterrumpidas priman sobre cualquier otro procedimiento.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 11</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">Inotropismo negativo o duplicidad anticoagulante</h4>
+            <p style="margin: 0;">Usar verapamilo/diltiazem o betamiméticos/tricíclicos/glitazonas en IC-FEr grave, o mantener el ACOD oral al iniciar heparina/bivalirudina/fondaparinux en SCASEST.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="chip" data-status="alert">Error Crítico 12</span>
+            <h4 style="margin: var(--space-sm) 0 var(--space-xs) 0;">No reevaluar la IA aguda por soplo discreto</h4>
+            <p style="margin: 0;">En la insuficiencia aórtica aguda grave, el soplo diastólico es suave y corto y faltan signos periféricos; subestimarla retrasa el diagnóstico de catástrofe aórtica o valvular.</p>
+          </div>
+        </div>
+
+        <div class="source-bar">
+          <strong>Fuentes de la sección:</strong> Tratado Monográfico de Arritmias en Urgencias (Decálogo 1–10); Harrison — Enfermedad Vascular Coronaria y Periférica; Harrison — Diagnóstico de Desórdenes Cardiovasculares; Guía ESC/EACTS 2024; Guía Clínica Fisterra IC-FEr; Wagner, Strauss &amp; Marriott.
+        </div>
+      </section>
+
+      <!-- SECCIÓN 12: RESUMEN EJECUTIVO FINAL DE CONSULTA RÁPIDA -->
+      <section class="guide-section" id="sec-12">
+        <div class="section-header">
+          <span class="section-kicker">Sección 12 · Consulta en 15 Segundos</span>
+          <h2 class="section-title">Resumen Ejecutivo Final para el Box de Urgencias</h2>
+          <p class="section-subtitle">Síntesis operativa de red flags, algoritmos resumidos, conductas inmediatas, tabla consolidada de discrepancias entre fuentes y decálogo final.</p>
+        </div>
+
+        <div class="callout callout--alert">
+          <div class="callout-title"><i data-lucide="siren" aria-hidden="true"></i> Red Flags — Activación Inmediata (Minuto 0)</div>
+          <ul style="margin: 0;">
+            <li><strong>Inestabilidad ERC 2021:</strong> PAS &lt; 90 mmHg / shock · Síncope o deterioro mental · Dolor opresivo o cambios agudos ST · Edema agudo de pulmón / IY severa &rarr; <strong>Cardioversión eléctrica / Marcapasos / Reperfusión inmediata</strong>.</li>
+            <li><strong>ECG de Alto Riesgo:</strong> Elevación ST en &ge;2 derivaciones contiguas · Descenso ST V1–V3 (IAM posterior) · V1 &gt; V2 + V3R/V4R (IAM VD) · Descenso difuso ST + elevación ST en aVR · QRS &ge; 120 ms en taquicardia (asumir TV) · QT prolongado con TdP · T negativas precordiales (TEP) · Bajo voltaje + alternancia eléctrica (derrame pericárdico).</li>
+            <li><strong>Exploración de Alarma:</strong> Soplo diastólico suave/corto (IA aguda) + dolor torácico/disfonía/disfagia (aneurisma/patología aórtica torácica) + déficit de pulsos periféricos.</li>
+          </ul>
+        </div>
+
+        <h3 class="subhead">12.1 Algoritmo Resumido en 4 Pasos (0 a 120 Minutos)</h3>
+        <div class="pathway-steps">
+          <div class="pathway-step pathway-step--alert">
+            <span class="step-number">PASO 1 · 0–5 MIN</span>
+            <strong>ABCDE + Estabilidad</strong>
+            <span class="kpi-caption">O&#8322; solo si SpO&#8322; &lt; 94% · Vía IV gruesa · Monitor ECG · Pulsos. Si inestable: cardioversión / MPTC / desfibrilación inmediata.</span>
+          </div>
+          <div class="pathway-step">
+            <span class="step-number">PASO 2 · &lt; 10 MIN</span>
+            <strong>ECG 12 Derivaciones (14 pasos)</strong>
+            <span class="kpi-caption">Comparar con previo. Si IAM inferior, hacer V3R/V4R. Si QRS ancho, aplicar Brugada. Si dolor sin ST elevado, extraer troponina.</span>
+          </div>
+          <div class="pathway-step pathway-step--ok">
+            <span class="step-number">PASO 3 · &le; 120 MIN</span>
+            <strong>Terapia Etiológica</strong>
+            <span class="kpi-caption">IAMCEST: ICP primaria (&le;120 min) sin AINE/corticoides. SCASEST: antiagregación + HNF/enoxaparina/bivalirudina/fondaparinux. FA: AF-CARE. TdP: MgSO&#8324; IV. Bradi: Atropina 0,8–1 mg &rarr; Isoprenalina/MPTC.</span>
+          </div>
+          <div class="pathway-step">
+            <span class="step-number">PASO 4 · DISPOSICIÓN</span>
+            <strong>Reevaluación y Destino</strong>
+            <span class="kpi-caption">Nuevo ECG tras cada intervención. UCI/Coronaria vs Planta (cuádruple terapia IC-FEr) vs Observación &lt;48h vs Alta con ACO (CHA&#8322;DS&#8322;-VA) y cita 3–6 meses.</span>
+          </div>
+        </div>
+
+        <h3 class="subhead">12.2 Tabla Consolidada de Discrepancias y Cobertura entre Fuentes</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Tema Clínico</th>
+                <th>Posición Fuente A</th>
+                <th>Posición Fuente B</th>
+                <th>Criterio Práctico Recomendado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Escala tromboembólica en FA</strong></td>
+                <td><em>ESC/EACTS 2024:</em> Usa <strong>CHA&#8322;DS&#8322;-VA</strong> (sin sexo femenino; &ge;2 Clase I, =1 Clase IIa).</td>
+                <td><em>Tratado Arritmias:</em> Cita la escala previa <strong>CHA&#8322;DS&#8322;-VASc</strong>.</td>
+                <td>Aplicar <strong>CHA&#8322;DS&#8322;-VA</strong> de la guía ESC 2024 vigente.</td>
+              </tr>
+              <tr>
+                <td><strong>Ventana cardioversión FA sin ETE</strong></td>
+                <td><em>ESC/EACTS 2024:</em> Límite estricto <strong>&lt; 24 horas</strong> (Clase III si &ge;24 h sin ACO/ETE).</td>
+                <td><em>Tratado Arritmias:</em> Límite clásico <strong>&lt; 48 horas</strong> sin riesgo embólico.</td>
+                <td>Seguir el corte conservador de <strong>&lt; 24 h (ESC 2024)</strong> para cardioversión precoz segura.</td>
+              </tr>
+              <tr>
+                <td><strong>Control agudo FC en FA con FEVI &le; 40%</strong></td>
+                <td><em>ESC/EACTS 2024:</em> Betabloqueante o digoxina Clase I; amiodarona/landiolol Clase IIb en inestables.</td>
+                <td><em>Tratado Arritmias:</em> Digoxina o amiodarona IV como opción inicial habitual en FEVI &lt; 40%.</td>
+                <td>Priorizar BB o digoxina; reservar amiodarona/landiolol para inestabilidad o FEVI gravemente deprimida.</td>
+              </tr>
+              <tr>
+                <td><strong>Escalas HEART, TIMI, GRACE, Wells, Geneva, PERC</strong></td>
+                <td colspan="2">No figuran en ninguno de los extractos proporcionados del cuaderno.</td>
+                <td>Utilizar en este entorno exclusivamente las escalas documentadas (ERC 2021, CHA&#8322;DS&#8322;-VA, Anderson-Wilkins, Selvester, Brugada, ESC 2022).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="subhead">12.3 Decálogo de Puntos Clave para Urgencias</h3>
+        <ol>
+          <li>La <strong>estabilidad hemodinámica</strong> dicta la prioridad terapéutica: los pacientes inestables requieren cardioversión eléctrica o marcapasos de inmediato.</li>
+          <li>Toda taquicardia de <strong>QRS ancho (&ge; 120 ms)</strong> debe tratarse como <strong>Taquicardia Ventricular</strong> hasta demostrar lo contrario.</li>
+          <li>En <strong>IAMCEST</strong>, la ICP primaria (&le; 120 min) es superior a la fibrinólisis; evitar absolutamente glucocorticoides y AINE (salvo aspirina).</li>
+          <li>Las <strong>maniobras vagales modificadas</strong> y la <strong>adenosina IV</strong> son primera línea en TSV regulares estables.</li>
+          <li>En FA, la anticoagulación se rige por <strong>CHA&#8322;DS&#8322;-VA</strong> (ESC 2024) y no debe suspenderse por escalas hemorrágicas ni sustituirse por antiagregantes.</li>
+          <li>La cardioversión de FA &ge; 24 h (o &gt; 48 h según Tratado) exige descartar trombo auricular por ETE o 3 semanas previas de ACO efectiva, más 4 semanas posteriores.</li>
+          <li>El <strong>sulfato de magnesio IV</strong> es el tratamiento de elección en Torsades de Pointes (junto a retirada de fármacos QT-prolongadores).</li>
+          <li>La <strong>atropina IV (0,8–1,0 mg, máx. 3 mg)</strong> es primera línea en bradiarritmias sintomáticas, pero es ineficaz en bloqueos infrahisianos (Mobitz II o BAV completo).</li>
+          <li>Ante cambios ECG de <strong>hiperpotasemia</strong>, administrar <strong>calcio IV inmediato</strong>; en RCP por FV/TV sin pulso, priorizar desfibrilación precoz y compresiones.</li>
+          <li>La evaluación continua y el <strong>ECG tras cada intervención</strong> son imprescindibles para confirmar eficacia y seguridad.</li>
+        </ol>
+
+        <div class="source-bar">
+          <strong>Fuentes totales de la guía:</strong> (1) Tratado Monográfico de Arritmias Cardíacas y su Manejo en el Servicio de Urgencias; (2) Principios de Medicina Interna de Harrison — Desórdenes del Ritmo Cardíaco; (3) Harrison — Diagnóstico de Desórdenes Cardiovasculares; (4) Harrison — Enfermedad Vascular Coronaria y Periférica; (5) Electrocardiografía Práctica ECG/EKG, 12.ª ed. (Wagner, Strauss &amp; Marriott); (6) Electrocardiografía Clínica (nota de cuaderno); (7) Fundamentos del Electrocardiograma (nota de cuaderno); (8) Guía ESC/EACTS 2024 sobre el manejo de la fibrilación auricular; (9) Guía clínica de Insuficiencia cardíaca: tratamiento y seguimiento (Fisterra); (10) Könemann et al. (2023) — Spotlight sobre la Guía ESC 2022 de arritmias ventriculares y prevención de muerte súbita cardíaca. <em>Nota: Los archivos ARRITMIA, FLUTER Y MAS.pdf y ARRITMIA.jpeg solo figuraron en el contexto como identificadores de imagen sin texto extraído.</em>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    const ECG_PATTERNS = {
+      'anterior': {
+        title: `IAM Transmural Anterior / Apical / Lateral`,
+        status: `alert`,
+        leadsUp: [`V1`, `V2`, `V3`, `V4`, `V5`, `V6`, `I`, `aVL`],
+        leadsDown: [],
+        leadsTNeg: [],
+        detail: `Elevación del segmento ST o aumento de positividad de ondas T en derivaciones precordiales (V1–V6), I y aVL (Harrison Diagnóstico). En evolución a infarto aparecen ondas Q anómalas (la puntuación de agudeza de Anderson-Wilkins permite diferenciar fase hiperaguda [puntuación 4] de subaguda [puntuación 1]).`
+      },
+      'inferior-vd': {
+        title: `IAM Inferior con Extensión al Ventrículo Derecho (ACD Proximal)`,
+        status: `alert`,
+        leadsUp: [`II`, `III`, `aVF`, `V1`],
+        leadsDown: [],
+        leadsTNeg: [],
+        detail: `Elevación del ST en II, III y aVF (isquemia inferior). La isquemia transmural del ventrículo derecho (ACD proximal) se manifiesta como elevación del ST mayor en V1 que en V2, y aún mayor en las derivaciones derechas adicionales V3R y V4R (Wagner Fig. 11-8; Harrison Diagnóstico).`
+      },
+      'posterior': {
+        title: `IAM Posterior ("Equivalente de Elevación del ST")`,
+        status: `warn`,
+        leadsUp: [],
+        leadsDown: [`V1`, `V2`, `V3`],
+        leadsTNeg: [],
+        detail: `La isquemia de pared posterior (casi siempre asociada a afectación lateral o inferior) se reconoce indirectamente por descensos RECÍPROCOS del segmento ST en V1–V3, constituyendo un síndrome coronario agudo equivalente a elevación del ST candidato a reperfusión urgente (Harrison Diagnóstico).`
+      },
+      'subendo': {
+        title: `Isquemia Subendocárdica / SCASEST`,
+        status: `warn`,
+        leadsUp: [`aVR`],
+        leadsDown: [`I`, `II`, `V3`, `V4`, `V5`, `V6`],
+        leadsTNeg: [`V2`, `V3`, `V4`, `V5`, `V6`],
+        detail: `Segmento ST horizontal o descendente con ondas T invertidas en la mayor parte de las derivaciones, con la excepción característica de aVR donde se observa elevación del ST y onda T positiva (Wagner Cap. 9).`
+      },
+      'tep': {
+        title: `Tromboembolismo Pulmonar (TEP) Agudo`,
+        status: `info`,
+        leadsUp: [],
+        leadsDown: [],
+        leadsTNeg: [`V1`, `V2`, `V3`, `V4`],
+        detail: `El ECG en la embolia pulmonar muestra característicamente ondas T negativas en las derivaciones precordiales (Wagner Cap. 14 bibliografía Ferrari et al.), reflejando sobrecarga aguda del ventrículo derecho.`
+      },
+      'pericardio': {
+        title: `Derrame Pericárdico / Amiloidosis (Bajo Voltaje)`,
+        status: `info`,
+        leadsUp: [],
+        leadsDown: [],
+        leadsTNeg: [`I`, `II`, `III`, `aVL`, `aVF`, `V1`, `V2`, `V3`, `V4`, `V5`, `V6`],
+        detail: `Voltaje bajo: amplitud total del QRS < 0,70 mV en todas las derivaciones de extremidades y < 1,0 mV en todas las precordiales (amiloidosis cardíaca, enfisema, derrame pericárdico). En derrame pericárdico grave puede observarse alternancia eléctrica (Wagner Cap. 14).`
+      }
+    };
+
+    const ALGO_BRANCHES = {
+      'inestable': [
+        { num: `PASO 1 · MIN 0`, cls: `pathway-step--alert`, title: `ABCDE Inmediato`, body: `Permeabilidad aérea, O2 solo si SpO2 < 94%, vía venosa gruesa, monitorización ECG continua y pulsos centrales/periféricos.` },
+        { num: `PASO 2 · CRITERIO MAYOR`, cls: `pathway-step--alert`, title: `Confirmar Inestabilidad`, body: `PAS < 90 mmHg/shock, síncope o alteración mental, dolor opresivo/cambios ST agudos o edema agudo de pulmón / IY severa.` },
+        { num: `PASO 3 · TERAPIA ELÉCTRICA`, cls: `pathway-step--alert`, title: `Intervención Inmediata`, body: `Taquiarritmia: cardioversión eléctrica sincronizada (o desfibrilación si FV/TVSP). Bradiarritmia: Atropina 0,8–1 mg -> Isoprenalina/Adrenalina -> Marcapasos.` },
+        { num: `PASO 4 · DESTINO`, cls: `pathway-step`, title: `UCI / Hemodinámica`, body: `Repetir ECG de 12 derivaciones post-intervención, descartar IAMCEST/aorta/TEP e ingresar en unidad crítica.` }
+      ],
+      'iamcest': [
+        { num: `PASO 1 · < 10 MIN`, cls: `pathway-step--alert`, title: `ECG 12 Derivaciones`, body: `Elevación ST >= 2 derivaciones contiguas o descenso recíproco V1–V3 (posterior). Si IAM inferior, registrar V3R–V4R.` },
+        { num: `PASO 2 · NO ESPERAR`, cls: `pathway-step--alert`, title: `Activar Reperfusión`, body: `No esperar resultados de troponina para decidir reperfusión. Evaluar tiempo esperado hasta primer dispositivo coronario.` },
+        { num: `PASO 3 · <= 120 MIN`, cls: `pathway-step--ok`, title: `ICP Primaria vs Fibrinólisis`, body: `ICP primaria preferida salvo demora > 120 min (o siempre si shock, duda o contraindicación fibrinolítica). Prohibido AINE/corticoides.` },
+        { num: `PASO 4 · SEGUIMIENTO`, cls: `pathway-step`, title: `Unidad Coronaria`, body: `Monitorización continua de arritmias de reperfusión, ETT para FEVI y prevención secundaria.` }
+      ],
+      'scasest': [
+        { num: `PASO 1 · ECG INICIAL`, cls: `pathway-step`, title: `Descartar Elevación ST`, body: `Buscar descenso ST horizontal/descendente, T invertidas o elevación ST en aVR. Comparar con ECG previos.` },
+        { num: `PASO 2 · BIOMARCADORES`, cls: `pathway-step`, title: `Troponina y Analítica`, body: `Biomarcadores de necrosis diferencian IAMSEST de angina inestable. Evitar fibrinólisis (perjudicial sin elevación ST).` },
+        { num: `PASO 3 · ANTICOAGULACIÓN`, cls: `pathway-step--ok`, title: `Tratamiento Antitrombótico`, body: `Antiagregantes + anticoagulante parenteral (HNF, enoxaparina, bivalirudina o fondaparinux). Suspender ACOD previo si lo tomaba.` },
+        { num: `PASO 4 · ESTRATEGIA`, cls: `pathway-step`, title: `Ingreso y Coronariografía`, body: `Ingreso hospitalario, ETT y decisión de estrategia invasiva precoz vs conservadora según riesgo.` }
+      ],
+      'arritmia': [
+        { num: `PASO 1 · TRIAJE ECG`, cls: `pathway-step`, title: `Triaje Tripartito`, body: `Evaluar FC (>100 vs <60 lpm), anchura QRS (<120 vs >=120 ms) y regularidad R-R.` },
+        { num: `PASO 2 · QRS ANCHO`, cls: `pathway-step--alert`, title: `Algoritmo de Brugada`, body: `Asumir TV (80–85%). Aplicar los 4 pasos de Brugada. Si Torsades de Pointes: Sulfato de Magnesio IV + retirar fármacos QT.` },
+        { num: `PASO 3 · TSV / FA`, cls: `pathway-step--ok`, title: `AF-CARE / Maniobras Vagales`, body: `TSV regular: maniobras vagales + adenosina IV. FA: control FC (<110 lpm), evaluar CHA2DS2-VA y duración (<24h ESC 2024 vs >=24h ETE/3 sem ACO).` },
+        { num: `PASO 4 · ANALÍTICA Y ETT`, cls: `pathway-step`, title: `Causas Reversibles`, body: `Electrolitos, TSH, función renal, troponina/NT-proBNP y ETT. Reevaluación 6 meses / anual.` }
+      ],
+      'vascular': [
+        { num: `PASO 1 · SOSPECHA CLÍNICA`, cls: `pathway-step--alert`, title: `TEP o Aorta Torácica`, body: `TEP: disnea, TVP, T negativas precordiales. Aorta: dolor torácico, disfonía, disfagia, IA aguda (soplo suave/corto), Marfan/Loeys-Dietz.` },
+        { num: `PASO 2 · EXPLORACIÓN`, cls: `pathway-step`, title: `Pulsos y Soplos`, body: `Palpar pulsos femorales, poplíteos, pedios y tibiales; auscultar soplo diastólico aórtico/pulmonar y signos de sobrecarga derecha.` },
+        { num: `PASO 3 · IMAGEN URGENTE`, cls: `pathway-step--ok`, title: `TC, ETT/ETE y RM`, body: `Algoritmo integrado TEP (TC/ECHO/RM) y evaluación ecocardiográfica/angio-TC de raíz y aorta torácica.` },
+        { num: `PASO 4 · TRATAMIENTO`, cls: `pathway-step`, title: `Anticoagulación vs Cirugía`, body: `TEP: anticoagulación sola vs filtro VCI + trombólisis dirigida/quirúrgica. Aorta aguda: manejo quirúrgico/intensivo urgente.` }
+      ]
+    };
+
+    let currentDDXCategory = `all`;
+    let currentECGPattern = `anterior`;
+    let currentAlgoBranch = `inestable`;
+
+    function jumpToSection(hash) {
+      if (!hash) return;
+      const target = document.querySelector(hash);
+      if (target) target.scrollIntoView({ behavior: `smooth` });
+    }
+
+    function filterSidebarTOC(query) {
+      const q = (query || ``).trim().toLowerCase();
+      const links = document.querySelectorAll(`.toc-link`);
+      links.forEach(function (link) {
+        const text = link.textContent.toLowerCase();
+        const kw = (link.getAttribute(`data-keywords`) || ``).toLowerCase();
+        if (!q || text.includes(q) || kw.includes(q)) {
+          link.classList.remove(`is-hidden`);
+        } else {
+          link.classList.add(`is-hidden`);
+        }
+      });
+    }
+
+    function updateTriageTool() {
+      const instabChecks = document.querySelectorAll(`.triage-chk[data-role="instab"]:checked`);
+      const spo2El = document.getElementById(`triage-spo2`);
+      const stemiEl = document.getElementById(`triage-stemi`);
+      const rhythmEl = document.getElementById(`triage-rhythm`);
+      const outEl = document.getElementById(`triage-output`);
+      if (!outEl || !rhythmEl) return;
+
+      const isInstable = instabChecks.length > 0;
+      const lowSpo2 = spo2El ? spo2El.checked : false;
+      const hasStemi = stemiEl ? stemiEl.checked : false;
+      const rhythm = rhythmEl.value;
+
+      let status = `info`;
+      let title = `ESTABLE — Evaluación Sistemática Dirigida`;
+      let actions = [];
+
+      if (rhythm === `parada`) {
+        status = `alert`;
+        title = `PARADA CARDÍACA (FV / TV SIN PULSO) — PRIORIDAD ABSOLUTA`;
+        actions.push(`Desfibrilación precoz y compresiones torácicas ininterrumpidas por encima del acceso vascular o intubación.`);
+      } else if (isInstable) {
+        status = `alert`;
+        title = `PACIENTE INESTABLE (ERC 2021 / ESC) — INTERVENCIÓN ELÉCTRICA INMEDIATA`;
+        if (rhythm === `bradi`) {
+          actions.push(`Bradiarritmia inestable: Atropina 0,8–1,0 mg IV (máx. 3 mg). Si falla o bloqueo infrahisiano: Isoprenalina/Adrenalina 2–10 ug/min y Marcapasos Transcutáneo inmediato.`);
+        } else if (rhythm.startsWith(`taqui`)) {
+          actions.push(`Taquiarritmia inestable: Cardioversión eléctrica sincronizada inmediata (bajo sedación con midazolam, propofol o etomidato si procede).`);
+        } else {
+          actions.push(`Estabilización hemodinámica urgente en box crítico y activación inmediata de circuito coronario/aórtico/TEP.`);
+        }
+      } else {
+        if (hasStemi || rhythm === `taqui-ancho`) {
+          status = `warn`;
+          title = `ALTO RIESGO TIEMPO-DEPENDIENTE (SIN COLAPSO PERI-PARADA AÚN)`;
+        }
+        if (rhythm === `taqui-ancho`) actions.push(`QRS >= 120 ms: tratar como Taquicardia Ventricular hasta demostrar lo contrario; aplicar Algoritmo de Brugada.`);
+        if (rhythm === `taqui-estrecho-reg`) actions.push(`TSV regular estable: maniobras vagales modificadas y adenosina IV de primera línea.`);
+        if (rhythm === `taqui-estrecho-irreg`) actions.push(`FA / Flúter variable: control de frecuencia (FEVI >40% BB/CCB/digoxina; FEVI <=40% BB/digoxina) y valorar anticoagulación CHA2DS2-VA.`);
+        if (rhythm === `bradi`) actions.push(`Bradiarritmia estable: identificar bloqueo AV (Mobitz I vs II / 3.º grado) y causas reversibles (hiperpotasemia, fármacos, isquemia).`);
+        if (rhythm === `sinusal` && !hasStemi) actions.push(`Completar ECG de 14 parámetros, anamnesis dirigida, exploración de soplos/pulsos, troponina e imagen según sospecha.`);
+      }
+
+      if (hasStemi) actions.push(`Elevación del ST: activar vía IAMCEST para ICP primaria en <= 120 min (evitar AINE y glucocorticoides).`);
+      if (lowSpo2) actions.push(`SpO2 < 94%: administrar oxígeno suplementario (evaluación B del ABCDE).`);
+
+      outEl.setAttribute(`data-status`, status);
+      outEl.innerHTML = `<span class="kpi-label">Dictamen de Triaje Inmediato</span><strong style="display:block; margin: var(--space-xs) 0;">${title}</strong><ul style="margin: 0; padding-left: 1.15rem;">${actions.map(function (a) { return `<li>${a}</li>`; }).join(``)}</ul>`;
+      saveAppStateSafe();
+    }
+
+    function resetTriageTool() {
+      document.querySelectorAll(`.triage-chk, #triage-spo2, #triage-stemi`).forEach(function (c) { c.checked = false; });
+      const sel = document.getElementById(`triage-rhythm`);
+      if (sel) sel.value = `sinusal`;
+      updateTriageTool();
+    }
+
+    function setDDXCategory(cat, btn) {
+      currentDDXCategory = cat;
+      document.querySelectorAll(`#ddx-explorer .btn--chip`).forEach(function (b) { b.classList.remove(`is-selected`); });
+      if (btn) btn.classList.add(`is-selected`);
+      filterDDX();
+    }
+
+    function filterDDX() {
+      const qEl = document.getElementById(`ddx-search`);
+      const q = qEl ? qEl.value.trim().toLowerCase() : ``;
+      const rows = document.querySelectorAll(`#ddx-tbody tr`);
+      rows.forEach(function (row) {
+        const cat = row.getAttribute(`data-cat`);
+        const matchCat = currentDDXCategory === `all` || cat === currentDDXCategory;
+        const matchText = !q || row.textContent.toLowerCase().includes(q);
+        row.style.display = (matchCat && matchText) ? `` : `none`;
+      });
+    }
+
+    function selectECGPattern(key, btn) {
+      const p = ECG_PATTERNS[key];
+      if (!p) return;
+      currentECGPattern = key;
+      if (btn) {
+        document.querySelectorAll(`#ecg-explorer .btn--chip`).forEach(function (b) { b.classList.remove(`is-selected`); });
+        btn.classList.add(`is-selected`);
+      }
+
+      document.querySelectorAll(`#ecg-lead-grid .lead-cell`).forEach(function (cell) {
+        const lead = cell.getAttribute(`data-lead`);
+        cell.classList.remove(`is-st-up`, `is-st-down`, `is-t-neg`);
+        if (p.leadsUp.includes(lead)) cell.classList.add(`is-st-up`);
+        else if (p.leadsDown.includes(lead)) cell.classList.add(`is-st-down`);
+        else if (p.leadsTNeg.includes(lead)) cell.classList.add(`is-t-neg`);
+      });
+
+      const out = document.getElementById(`ecg-pattern-detail`);
+      if (out) {
+        out.setAttribute(`data-status`, p.status);
+        out.innerHTML = `<span class="kpi-label">Interpretación Electrocardiográfica</span><strong style="display:block; margin: var(--space-xs) 0;">${p.title}</strong><p style="margin: 0;">${p.detail}</p>`;
+      }
+    }
+
+    function updateCHADS(ageTriggered) {
+      const age75 = document.getElementById(`chads-age75`);
+      const age65 = document.getElementById(`chads-age65`);
+      if (ageTriggered === `75` && age75 && age75.checked && age65) age65.checked = false;
+      if (ageTriggered === `65` && age65 && age65.checked && age75) age75.checked = false;
+
+      let vaScore = 0;
+      document.querySelectorAll(`.chads-chk:checked`).forEach(function (chk) {
+        vaScore += parseInt(chk.getAttribute(`data-pts`) || `0`, 10);
+      });
+
+      const sexEl = document.getElementById(`chads-sex`);
+      const mchEl = document.getElementById(`chads-mch`);
+      const sexPt = (sexEl && sexEl.checked) ? 1 : 0;
+      const vascScore = vaScore + sexPt;
+      const hasMch = mchEl ? mchEl.checked : false;
+
+      const out = document.getElementById(`chads-output`);
+      if (!out) return;
+
+      let status = `ok`;
+      let rec = `Bajo riesgo tromboembólico (CHA2DS2-VA = 0). No iniciar ACO crónica salvo poscardioversión (4 semanas opcional si <24h) o cardiopatía congénita específica.`;
+      if (hasMch) {
+        status = `alert`;
+        rec = `Clase I (ESC 2024): Anticoagulación oral (ACOD preferido) indicada en TODOS los pacientes con FA y miocardiopatía hipertrófica o amiloidosis cardíaca, independientemente del puntaje CHA2DS2-VA.`;
+      } else if (vaScore >= 2) {
+        status = `alert`;
+        rec = `Clase I (ESC 2024): Riesgo tromboembólico elevado (CHA2DS2-VA >= 2). Se recomienda iniciar ACO (preferir ACOD salvo prótesis mecánica o estenosis mitral moderada-grave).`;
+      } else if (vaScore === 1) {
+        status = `warn`;
+        rec = `Clase IIa (ESC 2024): Puntuación CHA2DS2-VA = 1. Se debe considerar iniciar ACO para prevenir ACV isquémico y tromboembolia.`;
+      }
+
+      const discNote = sexPt === 1
+        ? `<p style="margin: var(--space-xs) 0 0 0; color: var(--on-surface-variant);"><strong>Discrepancia aplicada:</strong> En el Tratado de Arritmias (CHA2DS2-VASc) sumaría <strong>${vascScore}</strong> pts, pero la Guía ESC 2024 elimina el sexo femenino y utiliza <strong>CHA2DS2-VA = ${vaScore}</strong>.</p>`
+        : ``;
+
+      out.setAttribute(`data-status`, status);
+      out.innerHTML = `<span class="kpi-label">Resultado Comparativo</span><div style="display:flex; gap:var(--space-lg); flex-wrap:wrap; margin:var(--space-xs) 0;"><span class="kpi-value" style="font-size:1.4rem;">CHA&#8322;DS&#8322;-VA (ESC 2024): ${vaScore}</span><span class="kpi-value" style="font-size:1.4rem; color: var(--on-surface-variant);">CHA&#8322;DS&#8322;-VASc: ${vascScore}</span></div><p style="margin:0;">${rec}</p>${discNote}`;
+      saveAppStateSafe();
+    }
+
+    function resetCHADS() {
+      document.querySelectorAll(`.chads-chk, #chads-sex, #chads-mch`).forEach(function (c) { c.checked = false; });
+      updateCHADS();
+    }
+
+    function updateBrugada() {
+      const steps = [1, 2, 3, 4].map(function (i) {
+        const el = document.getElementById(`brug-${i}`);
+        return el ? el.checked : false;
+      });
+      const out = document.getElementById(`brugada-output`);
+      if (!out) return;
+
+      const firstPositive = steps.indexOf(true);
+      if (firstPositive !== -1) {
+        out.setAttribute(`data-status`, `alert`);
+        out.innerHTML = `<span class="kpi-label">Conclusión Algoritmo de Brugada</span><strong style="display:block; margin: var(--space-xs) 0;">DIAGNÓSTICO: TAQUICARDIA VENTRICULAR (TV) — Paso ${firstPositive + 1} positivo</strong><p style="margin:0;">Cualquiera de los cuatro pasos positivos confirma TV. Manejar como taquicardia ventricular (cardioversión si inestable; amiodarona/betabloqueantes o ablación según escenario).</p>`;
+      } else {
+        out.setAttribute(`data-status`, `warn`);
+        out.innerHTML = `<span class="kpi-label">Conclusión Algoritmo de Brugada</span><strong style="display:block; margin: var(--space-xs) 0;">Ningún criterio marcado todavía — Precaución</strong><p style="margin:0;">Si los 4 pasos son estrictamente negativos, sugiere TSV con aberrancia (ej. rsR' en V1 y qRs en V6). No obstante, ante la duda en Urgencias, tratar toda taquicardia de QRS ancho como TV hasta demostrar lo contrario.</p>`;
+      }
+      saveAppStateSafe();
+    }
+
+    function resetBrugada() {
+      [1, 2, 3, 4].forEach(function (i) {
+        const el = document.getElementById(`brug-${i}`);
+        if (el) el.checked = false;
+      });
+      updateBrugada();
+    }
+
+    function selectAlgoBranch(key, btn) {
+      const steps = ALGO_BRANCHES[key];
+      const container = document.getElementById(`algo-steps-container`);
+      if (!steps || !container) return;
+      currentAlgoBranch = key;
+
+      if (btn) {
+        document.querySelectorAll(`#algo-flow .btn--chip`).forEach(function (b) { b.classList.remove(`is-selected`); });
+        btn.classList.add(`is-selected`);
+      }
+
+      container.innerHTML = steps.map(function (s) {
+        return `<div class="pathway-step ${s.cls}"><span class="step-number">${s.num}</span><strong>${s.title}</strong><span class="kpi-caption">${s.body}</span></div>`;
+      }).join(``);
+    }
+
+    function filterPharma(group, btn) {
+      if (btn) {
+        document.querySelectorAll(`#pharma-tool .btn--chip`).forEach(function (b) { b.classList.remove(`is-selected`); });
+        btn.classList.add(`is-selected`);
+      }
+      document.querySelectorAll(`#pharma-table tbody tr`).forEach(function (row) {
+        const g = row.getAttribute(`data-group`);
+        row.style.display = (group === `all` || g === group) ? `` : `none`;
+      });
+    }
+
+    function setupScrollSpy() {
+      const sections = document.querySelectorAll(`section.guide-section`);
+      const links = document.querySelectorAll(`.toc-link`);
+      if (!(`IntersectionObserver` in window) || !sections.length) return;
+
+      const observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            const id = `#` + entry.target.id;
+            links.forEach(function (l) {
+              if (l.getAttribute(`href`) === id) l.classList.add(`is-active`);
+              else l.classList.remove(`is-active`);
+            });
+          }
+        });
+      }, { rootMargin: `-15% 0px -70% 0px`, threshold: 0.01 });
+
+      sections.forEach(function (sec) { observer.observe(sec); });
+    }
+
+    async function saveAppStateSafe() {
+      if (!window.notebookAppApi || typeof window.notebookAppApi.setAppState !== `function`) return;
+      const triageChecks = Array.from(document.querySelectorAll(`.triage-chk`)).map(function (c) { return c.checked; });
+      const chadsChecks = Array.from(document.querySelectorAll(`.chads-chk`)).map(function (c) { return c.checked; });
+      const brugadaChecks = [1, 2, 3, 4].map(function (i) {
+        const el = document.getElementById(`brug-${i}`);
+        return el ? el.checked : false;
+      });
+      const rhythmEl = document.getElementById(`triage-rhythm`);
+      const spo2El = document.getElementById(`triage-spo2`);
+      const stemiEl = document.getElementById(`triage-stemi`);
+      const sexEl = document.getElementById(`chads-sex`);
+      const mchEl = document.getElementById(`chads-mch`);
+
+      try {
+        await window.notebookAppApi.setAppState({
+          triageChecks: triageChecks,
+          triageSpo2: spo2El ? spo2El.checked : false,
+          triageStemi: stemiEl ? stemiEl.checked : false,
+          triageRhythm: rhythmEl ? rhythmEl.value : `sinusal`,
+          chadsChecks: chadsChecks,
+          chadsSex: sexEl ? sexEl.checked : false,
+          chadsMch: mchEl ? mchEl.checked : false,
+          brugadaChecks: brugadaChecks
+        });
+      } catch (e) {
+        /* ignore storage errors gracefully */
+      }
+    }
+
+    async function restoreAppStateSafe() {
+      if (!window.notebookAppApi || typeof window.notebookAppApi.getAppState !== `function`) return;
+      try {
+        const state = await window.notebookAppApi.getAppState();
+        if (!state) return;
+        if (Array.isArray(state.triageChecks)) {
+          document.querySelectorAll(`.triage-chk`).forEach(function (c, idx) {
+            if (typeof state.triageChecks[idx] === `boolean`) c.checked = state.triageChecks[idx];
+          });
+        }
+        const spo2El = document.getElementById(`triage-spo2`);
+        if (spo2El && typeof state.triageSpo2 === `boolean`) spo2El.checked = state.triageSpo2;
+        const stemiEl = document.getElementById(`triage-stemi`);
+        if (stemiEl && typeof state.triageStemi === `boolean`) stemiEl.checked = state.triageStemi;
+        const rhythmEl = document.getElementById(`triage-rhythm`);
+        if (rhythmEl && typeof state.triageRhythm === `string`) rhythmEl.value = state.triageRhythm;
+
+        if (Array.isArray(state.chadsChecks)) {
+          document.querySelectorAll(`.chads-chk`).forEach(function (c, idx) {
+            if (typeof state.chadsChecks[idx] === `boolean`) c.checked = state.chadsChecks[idx];
+          });
+        }
+        const sexEl = document.getElementById(`chads-sex`);
+        if (sexEl && typeof state.chadsSex === `boolean`) sexEl.checked = state.chadsSex;
+        const mchEl = document.getElementById(`chads-mch`);
+        if (mchEl && typeof state.chadsMch === `boolean`) mchEl.checked = state.chadsMch;
+
+        if (Array.isArray(state.brugadaChecks)) {
+          [1, 2, 3, 4].forEach(function (num, idx) {
+            const el = document.getElementById(`brug-${num}`);
+            if (el && typeof state.brugadaChecks[idx] === `boolean`) el.checked = state.brugadaChecks[idx];
+          });
+        }
+      } catch (e) {
+        /* ignore restore error */
+      }
+    }
+
+    async function initClinicalGuide() {
+      if (window.lucide && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+      await restoreAppStateSafe();
+      updateTriageTool();
+      selectECGPattern(currentECGPattern, null);
+      updateCHADS();
+      updateBrugada();
+      selectAlgoBranch(currentAlgoBranch, null);
+      setupScrollSpy();
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener(`DOMContentLoaded`, initClinicalGuide);
+  </script>
+</body>
+</html>

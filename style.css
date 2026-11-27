@@ -223,7 +223,7 @@ button {
 
 .nav-menu ul {
   display: flex;
-  gap: 32px;
+  gap: 24px;
 }
 
 .nav-link {
@@ -796,21 +796,19 @@ section {
   font-size: 1.1rem;
 }
 
-.interactive-guides-block {
-  margin-top: 56px;
+/* ==========================================================================
+   GUIAS CLINICAS INTERACTIVAS SECTION
+   ========================================================================== */
+.guides-section {
+  background-color: var(--bg-body);
 }
 
-.interactive-guides-heading {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 1.5rem;
-  color: var(--secondary);
-  margin-bottom: 24px;
-}
-
-.interactive-guides-heading i {
-  color: var(--primary);
+.guides-section-lead {
+  max-width: 740px;
+  margin: 20px auto 0 auto;
+  font-size: 1.05rem;
+  color: var(--text-muted);
+  line-height: 1.65;
 }
 
 .interactive-guides-grid {
@@ -824,7 +822,7 @@ section {
   border: 1px solid var(--border-color);
   border-top: 5px solid var(--primary);
   border-radius: var(--radius-lg);
-  padding: 32px;
+  padding: 28px;
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
@@ -845,13 +843,14 @@ section {
 }
 
 .resource-info h3 {
-  font-size: 1.5rem;
+  font-size: 1.35rem;
   margin-bottom: 12px;
   color: var(--secondary);
 }
 
 .resource-info .video-desc {
   margin-bottom: 0;
+  font-size: 0.95rem;
 }
 
 .resource-action {

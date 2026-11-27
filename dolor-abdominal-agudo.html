@@ -1,0 +1,2976 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="vitals">
+  <title>Guía Clínica de Urgencias: Dolor Abdominal Agudo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@300..900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces (Vitals) */
+      --background: #ffffff;
+      --surface-container-low: #f1f7f8;
+      --surface-container: #e3f1f3;
+      --surface-container-high: #d5e9ec;
+
+      /* Text */
+      --on-surface: #1b2b33;
+      --on-surface-variant: #46585f;
+
+      /* Rules */
+      --outline: #7b9198;
+      --outline-variant: #d5e3e5;
+
+      /* Accents */
+      --primary: #0f7c8a;
+      --primary-hover: #0b636e;
+      --on-primary: #ffffff;
+      --primary-container: #e3f1f3;
+      --on-primary-container: #0a5560;
+      --secondary: #1d5e3a;
+      --tertiary: #2e7d4f;
+      --tertiary-container: #e8f4ed;
+      --error: #b3261e;
+      --error-container: #fbeae9;
+      --on-error-container: #8c1b15;
+      --on-error: #ffffff;
+
+      /* Data series */
+      --data-1: #0f7c8a;
+      --data-2: #2e7d4f;
+      --data-3: #b86e00;
+      --data-4: #5c5fb0;
+      --data-context: #b8c7ca;
+
+      /* Accessible warning & semantic tokens */
+      --positive: #2e7d4f;
+      --warning: #b86e00;
+      --warning-container: #fef5e6;
+      --on-warning: #7a4800;
+      --focus: #0f7c8a;
+
+      /* Fonts */
+      --font-headline: 'Figtree', sans-serif;
+      --font-body: 'Atkinson Hyperlegible', sans-serif;
+      --font-label: 'Figtree', sans-serif;
+
+      /* Shape */
+      --rounded: 0.625rem;
+      --rounded-lg: 0.875rem;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --top-bar: 6px solid var(--primary);
+      --status-bar-width: 4px;
+      --card-border: 1px solid var(--outline-variant);
+      --card-lift: 0 1px 2px rgb(27 43 51 / 0.05), 0 6px 16px rgb(27 43 51 / 0.05);
+
+      /* Type scale (Dashboard / Tool) */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.35rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.55rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    header { position: static !important; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .page-shell {
+      border-top: var(--top-bar);
+      min-height: 100vh;
+    }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1380px;
+      margin: 0 auto;
+      overflow: hidden;
+      align-items: start;
+    }
+    .page-grid * { min-width: 0; }
+
+    /* Sidebar Navigation */
+    .clinical-sidebar {
+      position: sticky;
+      top: var(--space-md);
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      box-shadow: var(--card-lift);
+    }
+
+    .sidebar-kicker {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--on-surface-variant);
+      margin: 0 0 var(--space-sm) 0;
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      text-decoration: none;
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.875rem;
+      border-left: 3px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .nav-link:hover {
+      background-color: var(--surface-container-low);
+    }
+
+    .nav-link.active {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border-left-color: var(--primary);
+    }
+
+    .nav-num {
+      font-variant-numeric: tabular-nums;
+      color: var(--on-primary-container);
+      background: var(--surface-container);
+      border-radius: var(--rounded);
+      padding: 2px 6px;
+      font-size: var(--label-size);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .sidebar-actions {
+      margin-top: var(--space-md);
+      padding-top: var(--space-md);
+      border-top: 1px solid var(--outline-variant);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    /* Main Column */
+    .main-column {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+    }
+
+    /* Header Block */
+    .hero-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg) var(--space-xl);
+      box-shadow: var(--card-lift);
+    }
+
+    .hero-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+    }
+
+    .kicker {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      margin: 0 0 var(--space-xs) 0;
+    }
+
+    .title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--display-size);
+      letter-spacing: -0.015em;
+      line-height: 1.08;
+      color: var(--on-surface);
+      margin: 0;
+    }
+
+    .lede {
+      font-size: 1.0625rem;
+      line-height: 1.55;
+      color: var(--on-surface-variant);
+      max-width: 65ch;
+      margin: var(--space-sm) 0 0 0;
+    }
+
+    .hero-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: var(--space-md);
+      align-items: end;
+      margin-top: var(--space-lg);
+      padding-top: var(--space-lg);
+      border-top: 1px solid var(--outline-variant);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .field-label {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.8125rem;
+      color: var(--on-surface);
+    }
+
+    .text-input, .select-input {
+      min-height: 44px;
+      padding: 0.55rem 0.875rem;
+      background: var(--background);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      color: var(--on-surface);
+      transition: box-shadow var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out);
+    }
+
+    .select-input {
+      padding-right: 2.25rem;
+    }
+
+    .text-input:focus, .select-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-container);
+      outline: none;
+    }
+
+    .search-results-panel {
+      margin-top: var(--space-md);
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: none;
+    }
+
+    .search-results-panel.visible {
+      display: block;
+    }
+
+    .search-result-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-sm);
+      margin-top: var(--space-sm);
+    }
+
+    .search-hit {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded);
+      padding: var(--space-sm) var(--space-md);
+      text-decoration: none;
+      color: var(--on-surface);
+      min-height: 44px;
+    }
+
+    .search-hit:hover {
+      background: var(--surface-container);
+    }
+
+    .search-hit-title {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .search-hit-meta {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+    }
+
+    /* Mobile Quick Nav Strip */
+    .mobile-jump-nav {
+      display: none;
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-sm);
+      gap: var(--space-xs);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: 0.5rem 1rem;
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-decoration: none;
+      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-secondary {
+      background: var(--background);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-container-low);
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: var(--on-error);
+    }
+
+    .btn-danger:hover {
+      background: var(--on-error-container);
+    }
+
+    .btn-ghost {
+      background: var(--surface-container-low);
+      border-color: var(--outline-variant);
+      color: var(--on-surface);
+    }
+
+    .btn-ghost:hover {
+      background: var(--surface-container);
+    }
+
+    .btn.active-tab {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    /* Key Figures Grid */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    /* Status Cards (Vitals Treatment 1) */
+    .status-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      box-shadow: var(--card-lift);
+    }
+
+    .status-card[data-status="ok"] { border-left-color: var(--tertiary); }
+    .status-card[data-status="warn"] { border-left-color: var(--data-3); }
+    .status-card[data-status="alert"] { border-left-color: var(--error); }
+
+    .kpi-label {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    .kpi-value {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.75rem;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+      color: var(--on-surface);
+      margin: var(--space-xs) 0;
+    }
+
+    .kpi-caption {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    /* Section Containers */
+    .clinical-section {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg) var(--space-xl);
+      box-shadow: var(--card-lift);
+      scroll-margin-top: var(--space-md);
+    }
+
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      padding-bottom: var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      margin-bottom: var(--space-lg);
+    }
+
+    .section-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--headline-size);
+      letter-spacing: -0.015em;
+      line-height: 1.12;
+      color: var(--on-surface);
+      margin: 0;
+    }
+
+    .section-sub {
+      font-size: 0.95rem;
+      color: var(--on-surface-variant);
+      margin: var(--space-xs) 0 0 0;
+      max-width: 65ch;
+    }
+
+    /* Chips (Vitals Treatment 4) */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--rounded-full);
+      background: var(--tertiary-container);
+      color: var(--secondary);
+      line-height: 1.3;
+    }
+
+    .chip[data-status="info"] {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .chip[data-status="warn"] {
+      background: var(--warning-container);
+      color: var(--on-warning);
+    }
+
+    .chip[data-status="alert"] {
+      background: var(--error-container);
+      color: var(--on-error-container);
+    }
+
+    .chip[data-status="neutral"] {
+      background: var(--surface-container-low);
+      color: var(--on-surface-variant);
+      border: 1px solid var(--outline-variant);
+    }
+
+    /* Callouts */
+    .callout {
+      background: var(--primary-container);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      color: var(--on-primary-container);
+      margin-top: var(--space-md);
+    }
+
+    .callout[data-status="alert"] {
+      background: var(--error-container);
+      border-left-color: var(--error);
+      color: var(--on-error-container);
+    }
+
+    .callout[data-status="warn"] {
+      background: var(--warning-container);
+      border-left-color: var(--data-3);
+      color: var(--on-warning);
+    }
+
+    .callout[data-status="ok"] {
+      background: var(--tertiary-container);
+      border-left-color: var(--tertiary);
+      color: var(--secondary);
+    }
+
+    .callout-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 0 0 var(--space-xs) 0;
+    }
+
+    .callout p, .callout ul {
+      margin: 0;
+      font-size: 0.9375rem;
+    }
+
+    .callout ul {
+      padding-left: 1.25rem;
+      margin-top: var(--space-xs);
+    }
+
+    /* Card Grids & Container Queries */
+    .card-wrapper { container-type: inline-size; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .card-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+
+    .card-panel {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+    }
+
+    .card-panel-white {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+    }
+
+    .subhead {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--subhead-size);
+      color: var(--on-surface);
+      margin: 0 0 var(--space-sm) 0;
+    }
+
+    .clean-list {
+      margin: 0;
+      padding-left: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      background: var(--background);
+      margin-top: var(--space-md);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    thead th {
+      background: var(--surface-container-low);
+      color: var(--on-surface-variant);
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    tbody td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+      font-variant-numeric: tabular-nums;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: var(--surface-container-low);
+    }
+
+    /* Interactive Checklist */
+    .checklist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded);
+      cursor: pointer;
+      min-height: 44px;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .check-item:hover {
+      background: var(--surface-container);
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .check-item.checked {
+      background: var(--tertiary-container);
+      border-color: var(--tertiary);
+    }
+
+    /* Quadrant Interactive Layout */
+    .quadrant-layout {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .torso-box {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .torso-svg {
+      width: 100%;
+      max-width: 270px;
+      height: auto;
+      display: block;
+    }
+
+    .region-shape {
+      fill: var(--background);
+      stroke: var(--outline);
+      stroke-width: 1.5;
+      cursor: pointer;
+      transition: fill var(--dur-micro) var(--ease-out), stroke var(--dur-micro) var(--ease-out);
+    }
+
+    .region-shape:hover {
+      fill: var(--surface-container);
+      stroke: var(--primary);
+    }
+
+    .region-shape.selected {
+      fill: var(--primary);
+      stroke: var(--on-primary-container);
+      stroke-width: 2;
+    }
+
+    .region-label {
+      font-family: var(--font-label);
+      font-size: 11px;
+      font-weight: 700;
+      fill: var(--on-surface);
+      pointer-events: none;
+      text-anchor: middle;
+    }
+
+    .region-label.selected-text {
+      fill: var(--on-primary);
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    /* Algorithm Builder */
+    .algo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+      align-items: end;
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+    }
+
+    .algo-flow {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .algo-step {
+      background: var(--background);
+      border: var(--card-border);
+      border-top: 4px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+    }
+
+    .algo-step-num {
+      font-family: var(--font-label);
+      font-weight: 700;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--primary);
+      margin-bottom: var(--space-xs);
+    }
+
+    /* Accordions / Progressive Disclosure */
+    details.clinical-details {
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      background: var(--background);
+      margin-top: var(--space-sm);
+    }
+
+    details.clinical-details summary {
+      padding: var(--space-md);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 44px;
+    }
+
+    details.clinical-details summary:hover {
+      background: var(--surface-container-low);
+    }
+
+    details.clinical-details[open] summary {
+      border-bottom: 1px solid var(--outline-variant);
+      background: var(--surface-container-low);
+    }
+
+    .details-body {
+      padding: var(--space-md);
+    }
+
+    /* Reference Range Band (Vitals Treatment 5) */
+    .evidence-bar-wrap {
+      margin-top: var(--space-md);
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 200px minmax(0, 1fr) 80px;
+      gap: var(--space-sm);
+      align-items: center;
+      margin-top: var(--space-sm);
+    }
+
+    .bar-track {
+      height: 14px;
+      background: var(--outline-variant);
+      border-radius: var(--rounded-full);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: var(--rounded-full);
+      background: var(--data-1);
+    }
+
+    .bar-fill.green { background: var(--data-2); }
+    .bar-fill.amber { background: var(--data-3); }
+
+    /* Container Queries */
+    @container (min-width: 520px) {
+      .split-2col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--space-md);
+      }
+    }
+    @container (max-width: 519px) {
+      .split-2col {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+      }
+    }
+
+    /* Mobile Breakpoint */
+    @media (max-width: 960px) {
+      .page-grid {
+        grid-template-columns: 1fr;
+        padding: var(--space-md);
+      }
+      aside.clinical-sidebar {
+        display: none;
+      }
+      .mobile-jump-nav {
+        display: flex;
+      }
+      .quadrant-layout {
+        grid-template-columns: 1fr;
+      }
+      .hero-controls {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        grid-template-columns: 1fr;
+        padding: var(--space-sm);
+      }
+      aside { display: none; }
+      .clinical-section, .hero-card {
+        padding: var(--space-md);
+      }
+      .bar-row {
+        grid-template-columns: 1fr;
+        gap: var(--space-xs);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  
+    .portfolio-back-bar {
+      width: 100%;
+      flex: 0 0 100%;
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .portfolio-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      color: var(--on-primary-container);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .portfolio-back-link:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .portfolio-author-tag {
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+  </style>
+</head>
+<body>
+<div class="page-shell">
+  <div class="page-grid">
+    <!-- Sticky Sidebar Navigation -->
+    <aside class="clinical-sidebar" aria-label="Navegación clínica">
+      <p class="sidebar-kicker">Índice de Consulta Rápida</p>
+      <ul class="nav-list" id="sidebar-nav">
+        <li><a class="nav-link active" href="#sec-1"><span class="nav-num">01</span> Evaluación Inicial</a></li>
+        <li><a class="nav-link" href="#sec-2"><span class="nav-num">02</span> Red Flags</a></li>
+        <li><a class="nav-link" href="#sec-3"><span class="nav-num">03</span> Anamnesis y EF</a></li>
+        <li><a class="nav-link" href="#sec-4"><span class="nav-num">04</span> Diferencial Topográfico</a></li>
+        <li><a class="nav-link" href="#sec-5"><span class="nav-num">05</span> Algoritmo Interactivo</a></li>
+        <li><a class="nav-link" href="#sec-6"><span class="nav-num">06</span> Pruebas e Imagen</a></li>
+        <li><a class="nav-link" href="#sec-7"><span class="nav-num">07</span> Manejo Terapéutico</a></li>
+        <li><a class="nav-link" href="#sec-8"><span class="nav-num">08</span> Patologías Críticas</a></li>
+        <li><a class="nav-link" href="#sec-9"><span class="nav-num">09</span> Escalas Clínicas</a></li>
+        <li><a class="nav-link" href="#sec-10"><span class="nav-num">10</span> Urgencias en 2 Min</a></li>
+      </ul>
+      <div class="sidebar-actions">
+        <a class="btn btn-danger" href="#sec-10">
+          <i data-lucide="zap" width="16" height="16" aria-hidden="true"></i>
+          Urgencias en 2 Min
+        </a>
+        <button type="button" class="btn btn-secondary" onclick="exportClinicalSummary()">
+          <i data-lucide="download" width="16" height="16" aria-hidden="true"></i>
+          Exportar Resumen
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Clinical Content -->
+    <main class="main-column">
+      <!-- Header -->
+      <header class="hero-card">
+        <div class="portfolio-back-bar">
+          <a class="portfolio-back-link" href="index.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Volver al Portafolio
+          </a>
+          <span class="portfolio-author-tag">DIEGO GOMEZ | Médico de Familia &amp; SST</span>
+        </div>
+        <div class="hero-top-row">
+          <div>
+            <p class="kicker">Guía Clínica de Urgencias · Toma de Decisiones en Tiempo Real</p>
+            <h1 class="title">Abordaje y Manejo del Dolor Abdominal Agudo</h1>
+            <p class="lede">
+              Síntesis operativa para Urgencias, Cirugía General, Gastroenterología, Pediatría, Medicina Interna y Radiología, elaborada exclusivamente a partir de las fuentes clínicas del cuaderno.
+            </p>
+          </div>
+          <div class="pill-row">
+            <span class="chip" data-status="info">Adultos y Pediatría</span>
+            <span class="chip" data-status="ok">Basado en Fuentes del Cuaderno</span>
+          </div>
+        </div>
+
+        <div class="hero-controls">
+          <div class="field-group">
+            <label class="field-label" for="global-search">Buscador clínico rápido (patología, signo, prueba o fármaco)</label>
+            <input type="search" id="global-search" class="text-input" placeholder="Ej. Murphy, isquemia mesentérica, metoclopramida, lactato, ectópico…" oninput="handleGlobalSearch(this.value)">
+          </div>
+          <div class="pill-row">
+            <a class="btn btn-primary" href="#sec-5">Ir al Algoritmo</a>
+            <a class="btn btn-danger" href="#sec-2">Ver Red Flags</a>
+          </div>
+        </div>
+
+        <div id="search-results-panel" class="search-results-panel" aria-live="polite">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:var(--space-sm);">
+            <strong id="search-count">Resultados</strong>
+            <button type="button" class="btn btn-ghost" onclick="clearGlobalSearch()">Limpiar búsqueda</button>
+          </div>
+          <div id="search-result-list" class="search-result-list"></div>
+        </div>
+      </header>
+
+      <!-- Mobile Quick Navigation -->
+      <nav class="mobile-jump-nav" aria-label="Navegación rápida móvil">
+        <a class="btn btn-ghost" href="#sec-1">01 Inicial</a>
+        <a class="btn btn-ghost" href="#sec-2">02 Red Flags</a>
+        <a class="btn btn-ghost" href="#sec-3">03 Semiología</a>
+        <a class="btn btn-ghost" href="#sec-4">04 Topografía</a>
+        <a class="btn btn-ghost" href="#sec-5">05 Algoritmo</a>
+        <a class="btn btn-ghost" href="#sec-6">06 Imagen/Lab</a>
+        <a class="btn btn-ghost" href="#sec-7">07 Tratamiento</a>
+        <a class="btn btn-ghost" href="#sec-8">08 Críticas</a>
+        <a class="btn btn-ghost" href="#sec-9">09 Escalas</a>
+        <a class="btn btn-danger" href="#sec-10">10 En 2 Min</a>
+      </nav>
+
+      <!-- Top-Line KPI Strip -->
+      <section class="kpi-grid" aria-label="Indicadores clínicos clave">
+        <article class="status-card" data-status="info">
+          <p class="kpi-label">Carga asistencial en urgencias</p>
+          <p class="kpi-value">10%</p>
+          <p class="kpi-caption">Del total de consultas atendidas en servicios de urgencias (10% en primaria requieren tratamiento inmediato).</p>
+        </article>
+        <article class="status-card" data-status="ok">
+          <p class="kpi-label">Rendimiento semiológico</p>
+          <p class="kpi-value">~75%</p>
+          <p class="kpi-caption">Orientación diagnóstica con anamnesis estructurada (88% sens. clínica; +20% precisión con formularios estandarizados).</p>
+        </article>
+        <article class="status-card" data-status="info">
+          <p class="kpi-label">Estrategia condicional de imagen</p>
+          <p class="kpi-value">89% vs 70%</p>
+          <p class="kpi-caption">Sensibilidad TC vs Ecografía (p&lt;0,001). Eco inicial + TC si negativa omite solo 6% urgentes y evita 51% de TC.</p>
+        </article>
+        <article class="status-card" data-status="alert">
+          <p class="kpi-label">Umbral de alerta quirúrgica</p>
+          <p class="kpi-value">&gt; 6 horas</p>
+          <p class="kpi-caption">Dolor continuo y progresivo, o transición de cólico a dolor fijo: sospechar isquemia o irritación peritoneal.</p>
+        </article>
+      </section>
+
+      <!-- SECTION 1: EVALUACIÓN INICIAL -->
+      <section id="sec-1" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 01 · Triaje y Priorización Vital</p>
+            <h2 class="section-title">Evaluación Inicial: ABCDE, Estabilidad y Criterios de Destino</h2>
+            <p class="section-sub">
+              Distinguir de forma inmediata entre <strong>Dolor Abdominal Agudo</strong> (dolor no traumático reciente, mayoritariamente médico) y <strong>Abdomen Agudo</strong> (cuadro tiempo-dependiente con signos peritoneales o shock que exige descartar cirugía urgente).
+            </p>
+          </div>
+          <span class="chip" data-status="info">Prioridad: Estabilidad antes que etiología</span>
+        </div>
+
+        <div class="card-wrapper">
+          <div class="split-2col">
+            <div class="status-card" data-status="ok">
+              <h3 class="subhead">Paciente Hemodinámicamente Estable</h3>
+              <ul class="clean-list">
+                <li>Constantes vitales normales para la edad (sin taquicardia, hipotensión ni fiebre alta).</li>
+                <li>Nivel de alerta conservado, hidratación adecuada y perfusión periférica conservada.</li>
+                <li>Permite completar anamnesis dirigida (PQRST/SOCRATES), exploración sistemática (IAPP + tacto rectal), analítica básica y estrategia escalonada de imagen (ecografía dirigida o TC según localización).</li>
+              </ul>
+            </div>
+            <div class="status-card" data-status="alert">
+              <h3 class="subhead">Paciente Inestable / Shock (Actuación Inmediata)</h3>
+              <ul class="clean-list">
+                <li><strong>Signos de shock:</strong> pulso rápido y débil, hipotensión arterial, palidez cutaneomucosa, frialdad, sudoración, taquipnea o alteración del nivel de conciencia.</li>
+                <li><strong>Sospecha obligada:</strong> peritonitis avanzada, sepsis abdominal, pancreatitis aguda grave, catástrofe vascular (isquemia mesentérica o rotura/disección de AAA) o rotura de víscera maciza / embarazo ectópico.</li>
+                <li><strong>Regla crítica:</strong> hipovolemia + anemia sin hemorragia digestiva exteriorizada = asumir <strong>hemoperitoneo</strong> hasta demostrar lo contrario.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive ABCDE / A-G Checklist -->
+        <div class="card-panel" style="margin-top: var(--space-lg);">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--space-sm); margin-bottom:var(--space-sm);">
+            <div>
+              <h3 class="subhead" style="margin:0;">Checklist Interactivo de Valoración Primaria (ABCDE / A–G)</h3>
+              <p class="section-sub" style="margin:2px 0 0 0;">Marque los pasos completados en el box de urgencias (estado guardado automáticamente).</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:var(--space-sm);">
+              <span id="abcde-progress-chip" class="chip" data-status="info">0 / 6 completados</span>
+              <button type="button" class="btn btn-ghost" id="reset-abcde-btn" onclick="resetAbcdeChecklist(this)">Reiniciar</button>
+            </div>
+          </div>
+          <div class="checklist-grid" id="abcde-checklist">
+            <label class="check-item"><input type="checkbox" data-step="A" onchange="toggleAbcdeStep(this)"><span><strong>A · Vía aérea:</strong> permeabilidad, proteger frente a vómitos/aspiración (succión o reposición si letargia).</span></label>
+            <label class="check-item"><input type="checkbox" data-step="B" onchange="toggleAbcdeStep(this)"><span><strong>B · Respiración:</strong> SatO₂, frecuencia respiratoria, O₂ suplementario si hipoxemia; descartar causa torácica.</span></label>
+            <label class="check-item"><input type="checkbox" data-step="C" onchange="toggleAbcdeStep(this)"><span><strong>C · Circulación:</strong> TA, FC, relleno capilar, ECG; 2 vías periféricas gruesas (o PICC si grave) y cristaloides si shock.</span></label>
+            <label class="check-item"><input type="checkbox" data-step="D" onchange="toggleAbcdeStep(this)"><span><strong>D · Neurológico / Dolor:</strong> glucemia capilar (descartar CAD/hipoglucemia), nivel conciencia, escala de dolor y analgesia precoz.</span></label>
+            <label class="check-item"><input type="checkbox" data-step="E" onchange="toggleAbcdeStep(this)"><span><strong>E · Exposición y Examen:</strong> temperatura, abdomen completo, escroto/ingles, piel (petequias, herpes, ictericia), E-FAST a pie de cama.</span></label>
+            <label class="check-item"><input type="checkbox" data-step="FG" onchange="toggleAbcdeStep(this)"><span><strong>F–G · Pruebas rápidas y Escalamiento:</strong> β-hCG en edad fértil, gasometría/lactato, activar CERS / Cirugía si Zona Amarilla o Roja.</span></label>
+          </div>
+        </div>
+
+        <!-- Tri-color Risk Architecture Table -->
+        <h3 class="subhead" style="margin-top: var(--space-lg);">Estratificación de Riesgo Tri-Color (NICE / BAPS / ECAT)</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Nivel de Riesgo</th>
+                <th>Marcadores Clínicos y Exploratorios</th>
+                <th>Escalamiento y Destino Obligatorio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="chip" data-status="alert">Rojo · Alto Riesgo</span></td>
+                <td>Signos peritoneales (defensa involuntaria, dolor a la percusión, rigidez), vómitos biliosos o hematemesis, inestabilidad hemodinámica/shock séptico, exantema que no blanquea, alteración del estado mental, dolor testicular agudo unilateral, heces en "jalea de grosella" o distensión abdominal progresiva.</td>
+                <td>Activación inmediata de equipo de reanimación o cirugía; doble acceso IV/IO de grueso calibre, reanimación dirigida con fluidos, analítica basal, imagen inmediata y traslado directo a cirugía aguda / UCI.</td>
+              </tr>
+              <tr>
+                <td><span class="chip" data-status="warn">Ámbar · Riesgo Intermedio</span></td>
+                <td>Dolor moderado-grave persistente sin alivio tras analgesia inicial, dolor exacerbado con el movimiento o la marcha, signos de deshidratación (lengua/conjuntivas secas), oliguria (&lt;12 h), fiebre persistente &gt;5 días o preocupación relevante de padres/cuidadores.</td>
+                <td>Evaluación clínica secundaria urgente en &lt;6 horas; analítica sanguínea, análisis de orina, diagnóstico a pie de cama (POCUS), observación hospitalaria y consulta especializada selectiva.</td>
+              </tr>
+              <tr>
+                <td><span class="chip" data-status="ok">Verde · Bajo Riesgo</span></td>
+                <td>Dolor transitorio de baja intensidad, hidratación normal, extremidades calientes, alerta y reactividad normales, constantes vitales normales para la edad y patrón conductual habitual.</td>
+                <td>Medidas de soporte, rehidratación oral, analgesia simple y alta con red de seguridad estructurada para seguimiento en Atención Primaria.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Disposition Criteria -->
+        <div class="card-grid" style="margin-top: var(--space-lg);">
+          <div class="status-card" data-status="warn">
+            <h3 class="subhead">Ingreso en Área de Observación</h3>
+            <ul class="clean-list">
+              <li>Pacientes estables en los que tras evaluación inicial (incluida valoración quirúrgica) persiste duda diagnóstica para completar estudios y realizar <strong>exploraciones físicas seriadas</strong>.</li>
+              <li><strong>Obligatorio vigilar estrechamente en:</strong> ancianos, inmunodeprimidos, tratamiento crónico con corticoides o bajo efectos de alcohol/drogas (alto riesgo de enmascaramiento).</li>
+            </ul>
+          </div>
+          <div class="status-card" data-status="alert">
+            <h3 class="subhead">Hospitalización Quirúrgica o UCI</h3>
+            <ul class="clean-list">
+              <li><strong>Servicio Quirúrgico:</strong> abdomen agudo quirúrgico confirmado (apendicitis, perforación, estrangulación, isquemia, torsión, ectópico roto, colecistitis/diverticulitis complicada).</li>
+              <li><strong>Ingreso en UCI:</strong> inestabilidad hemodinámica refractaria, sepsis abdominal grave, pancreatitis aguda con fallo orgánico persistente o disección aórtica.</li>
+            </ul>
+          </div>
+          <div class="status-card" data-status="ok">
+            <h3 class="subhead">Alta Domiciliaria y Red de Seguridad</h3>
+            <ul class="clean-list">
+              <li>Solo si constantes normales, náuseas/vómitos controlados, tolerancia oral adecuada y sin signos de alarma.</li>
+              <li><strong>Revaluación médica programada en 8–10 horas.</strong></li>
+              <li><strong>Volver de inmediato si:</strong> focalización a un cuadrante, dolor al toser/estornudar, sin mejoría en 24 h, intolerancia oral u oliguria, síncope, sangre en vómito/heces, fiebre alta o distensión progresiva.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION 2: RED FLAGS -->
+      <section id="sec-2" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 02 · Alerta Roja</p>
+            <h2 class="section-title">Red Flags: Situaciones de Riesgo Vital Inmediato</h2>
+            <p class="section-sub">
+              Indicadores clínicos e históricos que exigen prioridad máxima, monitorización continua, estabilización simultánea y activación quirúrgica o intervencionista sin demoras.
+            </p>
+          </div>
+          <span class="chip" data-status="alert">Tiempo-Dependientes</span>
+        </div>
+
+        <div class="card-grid">
+          <article class="status-card" data-status="alert">
+            <h3 class="subhead">Peritonitis y Perforación de Víscera Hueca</h3>
+            <p>Dolor súbito intolerable ("en puñalada"), paciente completamente inmóvil que evita respirar hondo, contractura involuntaria ("vientre en tabla"), dolor a la percusión/descompresión (Blumberg) o al sacudir la cama/toser, abolición de matidez hepática. Indicación directa de cirugía urgente.</p>
+          </article>
+          <article class="status-card" data-status="alert">
+            <h3 class="subhead">Dolor Desproporcionado al Examen (Isquemia Mesentérica)</h3>
+            <p>Dolor abdominal intenso, súbito y difuso con exploración física inicialmente blanda/anodina en paciente mayor con fibrilación auricular, cardiopatía o ateromatosis. Buscar vómitos, diarrea sanguinolenta, acidosis metabólica, lactato y dímero D elevados. Requiere angio-TC trifásica y cirugía/revascularización urgente.</p>
+          </article>
+          <article class="status-card" data-status="alert">
+            <h3 class="subhead">Aneurisma de Aorta Abdominal (AAA) / Disección</h3>
+            <p>Tríada clásica de rotura de AAA: dolor abdominal/lumbar brusco, hipotensión y masa abdominal pulsátil. Disminución o abolición de pulsos femorales en disección. Si inestable, traslado inmediato a quirófano/EVAR sin retrasos por imagen; ecografía a pie de cama si disponible.</p>
+          </article>
+          <article class="status-card" data-status="alert">
+            <h3 class="subhead">Shock y Sepsis Abdominal</h3>
+            <p>Taquicardia, hipotensión, palidez marcada, frialdad y sudoración. En peritonitis avanzada o sepsis sin otro foco, requiere doble vía gruesa, cristaloides en cargas, antibioterapia IV precoz y control del foco quirúrgico.</p>
+          </article>
+          <article class="status-card" data-status="alert">
+            <h3 class="subhead">Embarazo Ectópico Roto y Urgencias Pélvicas</h3>
+            <p>Toda mujer en edad fértil con dolor abdominal bajo/hipogástrico, síncope o shock: descartar embarazo ectópico ("el gran mentiroso": amenorrea + metrorragia + dolor súbito). En varones jóvenes, el dolor escrotal agudo unilateral es torsión testicular hasta demostrar lo contrario (la ecografía nunca debe retrasar la exploración).</p>
+          </article>
+          <article class="status-card" data-status="alert">
+            <h3 class="subhead">Obstrucción Complicada e Invaginación</h3>
+            <p>Vómitos biliosos (verde oscuro) sugieren obstrucción mecánica o vólvulo; detención completa de gases y heces &ge;24 h; silencio auscultatorio o paso de dolor cólico a continuo (estrangulación/isquemia). En niños, heces en "jalea de grosella" indican isquemia mucosa por invaginación intestinal.</p>
+          </article>
+        </div>
+
+        <div class="card-panel" style="margin-top: var(--space-lg);">
+          <h3 class="subhead">Red Flags Históricas y Pacientes de Riesgo (Protocolo ECAT)</h3>
+          <div class="pill-row">
+            <span class="chip" data-status="alert">Edad &gt; 50 años (o &ge; 65 años riesgo quirúrgico)</span>
+            <span class="chip" data-status="alert">Anticoagulantes o antiagregantes / Coagulopatía</span>
+            <span class="chip" data-status="alert">AAA conocido o cardiopatía previa</span>
+            <span class="chip" data-status="alert">Cirugía abdominal o ginecológica reciente</span>
+            <span class="chip" data-status="alert">Embarazo o sospecha ginecológica</span>
+            <span class="chip" data-status="warn">Traumatismo abdominal reciente</span>
+            <span class="chip" data-status="warn">Síncope o síntomas de HDA (hematemesis/melenas)</span>
+            <span class="chip" data-status="warn">Fragilidad, pluripatología o reconsulta no planificada</span>
+          </div>
+        </div>
+
+        <div class="callout" data-status="warn">
+          <p class="callout-title">Perla Clínica: Ausencia de Defensa No Descarta Abdomen Agudo</p>
+          <p>En <strong>ancianos, diabéticos, inmunodeprimidos, tratados crónicamente con corticoides, mujeres multíparas, personas con obesidad o bajo efectos de alcohol/drogas</strong>, el dolor y la contractura parietal pueden estar atenuados o ausentes. La exploración también puede ser engañosa en el infarto mesentérico inicial, hemoperitoneo, perforaciones cubiertas y apendicitis retrocecal.</p>
+        </div>
+      </section>
+
+      <!-- SECTION 3: ANAMNESIS Y EXPLORACIÓN FÍSICA -->
+      <section id="sec-3" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 03 · Semiología Clínica</p>
+            <h2 class="section-title">Anamnesis Dirigida y Exploración Física Sistemática</h2>
+            <p class="section-sub">
+              Los formularios estandarizados aumentan la precisión diagnóstica en un 20%. En la exploración abdominal, el orden es innegociable: <strong>Inspección → Auscultación → Palpación → Percusión → Tacto Rectal</strong>.
+            </p>
+          </div>
+          <span class="chip" data-status="ok">Analgesia temprana no altera sensibilidad</span>
+        </div>
+
+        <div class="card-grid-2">
+          <div class="card-panel">
+            <h3 class="subhead">Los 5 Atributos Operativos del Dolor (PQRST / SOCRATES)</h3>
+            <ul class="clean-list">
+              <li><strong>Instauración:</strong> <em>brusca</em> (segundos, "a punta de dedo" → perforación o isquemia aguda); <em>rápidamente progresiva</em> (minutos → distensión de músculo liso, cólico biliar/renal); <em>lentamente progresiva</em> (horas, impreciso → colecistitis, apendicitis, diverticulitis).</li>
+              <li><strong>Intensidad:</strong> cuantificar con escala numérica o visual basal para monitorizar respuesta analgésica.</li>
+              <li><strong>Naturaleza y evolución:</strong> continuo vs cólico/intermitente; la transición de cólico a continuo y fijo traduce isquemia o inflamación transmural.</li>
+              <li><strong>Topografía e irradiación:</strong> dorso (úlcera/cólico biliar/aorta), "en cinturón" transfixiante (pancreatitis), genitales/fosa ilíaca (cólico nefrítico), hombro por nervio frénico (neumoperitoneo/pleuropulmonar).</li>
+              <li><strong>Actitud antiálgica:</strong> inmóvil que evita respirar (peritonitis/isquemia); agitado sin postura (cólico biliar/nefrítico); posición fetal/prona (pancreatitis); flexión de cadera y rodilla derechas (apendicitis retrocecal).</li>
+            </ul>
+          </div>
+
+          <div class="card-panel">
+            <h3 class="subhead">Preguntas Clave y Hallazgos Sistémicos Críticos</h3>
+            <ul class="clean-list">
+              <li><strong>Síntomas digestivos:</strong> vómitos (biliosos, posos de café, hemáticos; ¿preceden o siguen al dolor?), diarrea/estreñimiento, ausencia de gases/heces &ge;24 h, melenas/rectorragia.</li>
+              <li><strong>Urinarios y Ginecológicos:</strong> disuria, frecuencia, hematuria; <strong>Fecha de Última Regla (FUR)</strong>, historia sexual y anticoncepción en toda mujer en edad fértil.</li>
+              <li><strong>Antecedentes y Fármacos:</strong> AINEs (ibuprofeno, aspirina, naproxeno) y corticoides sistémicos (riesgo de úlcera y HDA; el paracetamol no causa HDA), anticoagulantes, cirugías previas (riesgo de bridas/obstrucción), alcohol, HTA/FA.</li>
+              <li><strong>Pediatría:</strong> en lactantes/neonatos buscar llanto persistente, irritabilidad, rechazo de tomas, letargia, flexión de piernas o rechazo de la deambulación; realizar exploración completa incluyendo <strong>ORL y respiratoria</strong> y valoración psicosocial HEADSSS en adolescentes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- IAPP & Rectal Exam Steps -->
+        <div class="card-grid" style="margin-top: var(--space-lg);">
+          <div class="status-card" data-status="info">
+            <p class="kpi-label">Paso 1 · Inspección</p>
+            <p style="margin: var(--space-xs) 0 0 0;">Cicatrices (bridas), hernias inguinales/crurales, ictericia, petequias/exantema, vesículas metaméricas (herpes zóster), signo de <strong>Cullen</strong> (equimosis periumbilical) y <strong>Grey-Turner</strong> (flancos) en pancreatitis hemorrágica, nódulo de la hermana María José. Abombamiento central (intestino delgado) vs marco cólico (grueso) vs asimétrico (vólvulo).</p>
+          </div>
+          <div class="status-card" data-status="info">
+            <p class="kpi-label">Paso 2 · Auscultación (Antes de Palpar)</p>
+            <p style="margin: var(--space-xs) 0 0 0;">Siempre antes de palpar o percutir para no alterar el peristaltismo ni provocar defensa. Ruidos metálicos aumentados ("peristaltismo de lucha") → obstrucción mecánica inicial. Silencio abdominal completo → íleo paralítico, obstrucción estrangulada o peritonitis difusa.</p>
+          </div>
+          <div class="status-card" data-status="info">
+            <p class="kpi-label">Paso 3 y 4 · Palpación y Percusión</p>
+            <p style="margin: var(--space-xs) 0 0 0;">Palpar suave lejos del máximo dolor. Diferenciar contracción voluntaria de <strong>contractura involuntaria ("abdomen en tabla")</strong>. Percusión dolorosa es más sensible y menos molesta que la palpación profunda para detectar peritonitis. Abolición de matidez hepática → neumoperitoneo; matidez cambiante → líquido libre/hemoperitoneo.</p>
+          </div>
+          <div class="status-card" data-status="warn">
+            <p class="kpi-label">Paso 5 · Tacto Rectal Obligatorio</p>
+            <p style="margin: var(--space-xs) 0 0 0;">Evalúa el tercio inferior pélvico: fecalomas, masas, dolor/abombamiento en fondo de saco de Douglas (apendicitis pélvica, hemoperitoneo, absceso), sangre/melenas. <strong>Matiz clave:</strong> si se sospecha obstrucción intestinal, realizar <strong>DESPUÉS</strong> de la Rx simple de abdomen para no introducir aire en la ampolla rectal.</p>
+          </div>
+        </div>
+
+        <!-- Specific Signs Filterable Table -->
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:end; gap:var(--space-md); margin-top: var(--space-lg);">
+          <h3 class="subhead" style="margin:0;">Signos Exploratorios Específicos</h3>
+          <div class="field-group" style="min-width: 240px;">
+            <label class="field-label" for="sign-filter">Filtrar signo por sospecha</label>
+            <select id="sign-filter" class="select-input" onchange="filterSignsTable(this.value)">
+              <option value="all">Todos los signos</option>
+              <option value="apendicitis">Apendicitis aguda</option>
+              <option value="biliar">Patología biliar / pancreática</option>
+              <option value="pared">Pared abdominal / renal</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table id="signs-table">
+            <thead>
+              <tr>
+                <th>Signo</th>
+                <th>Técnica de Exploración</th>
+                <th>Significado Clínico e Implicación</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-cat="biliar">
+                <td><strong>Signo de Murphy</strong></td>
+                <td>Presión con los dedos bajo el reborde costal derecho durante inspiración profunda.</td>
+                <td>Detención brusca de la inspiración por dolor agudo; orienta a <strong>colecistitis aguda</strong> (o cólico biliar). Un signo negativo aislado no la excluye.</td>
+              </tr>
+              <tr data-cat="apendicitis">
+                <td><strong>Signo de Blumberg (McBurney)</strong></td>
+                <td>Compresión progresiva en fosa ilíaca derecha (punto de McBurney) seguida de descompresión súbita.</td>
+                <td>Dolor intenso a la descompresión por <strong>irritación peritoneal parietal</strong>; altamente sugestivo de apendicitis aguda.</td>
+              </tr>
+              <tr data-cat="apendicitis">
+                <td><strong>Signo de Rovsing</strong></td>
+                <td>Compresión profunda en fosa ilíaca izquierda (punto simétrico al de McBurney).</td>
+                <td>Desencadena dolor referido en fosa ilíaca derecha por desplazamiento retrógrado de gas hacia el ciego inflamado (apendicitis aguda).</td>
+              </tr>
+              <tr data-cat="apendicitis">
+                <td><strong>Signo del Psoas</strong></td>
+                <td>Elevación de la pierna derecha extendida o flexión del muslo contra resistencia.</td>
+                <td>Dolor al contraer el psoas en contacto con un foco adyacente: sugiere <strong>apendicitis retrocecal</strong> o absceso del psoas.</td>
+              </tr>
+              <tr data-cat="apendicitis">
+                <td><strong>Signo del Obturador</strong></td>
+                <td>Muslo flexionado en ángulo recto con rotación interna y externa de la cadera.</td>
+                <td>Dolor hipogástrico o en FID por contacto con el músculo obturador interno: orienta a <strong>apendicitis pélvica</strong>.</td>
+              </tr>
+              <tr data-cat="biliar">
+                <td><strong>Signo de Courvoisier-Terrier</strong></td>
+                <td>Palpación de vesícula biliar distendida y <em>no dolorosa</em> en hipocondrio derecho.</td>
+                <td>Sugiere obstrucción maligna de la vía biliar principal o <strong>neoplasia de cabeza de páncreas</strong>.</td>
+              </tr>
+              <tr data-cat="pared">
+                <td><strong>Signo de Carnett</strong></td>
+                <td>Palpación del punto doloroso mientras el paciente en supino tensa la pared abdominal elevando cabeza/hombros o piernas.</td>
+                <td>Aumento del dolor al contraer la musculatura → orienta a dolor de <strong>pared abdominal</strong> (no es suficientemente preciso por sí solo para excluir patología intraabdominal aguda).</td>
+              </tr>
+              <tr data-cat="pared">
+                <td><strong>Puño-percusión Lumbar (Giordano)</strong></td>
+                <td>Percusión suave con el borde cubital del puño sobre ambas fosas renales / ángulos costovertebrales.</td>
+                <td>Dolor agudo ipsilateral → criterio diagnóstico de <strong>cólico nefrítico</strong> o pielonefritis aguda.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 4: DIAGNÓSTICO DIFERENCIAL POR LOCALIZACIÓN -->
+      <section id="sec-4" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 04 · Mapa Topográfico</p>
+            <h2 class="section-title">Diagnóstico Diferencial por Localización Anatómica</h2>
+            <p class="section-sub">
+              Seleccione un cuadrante en el esquema anatómico o en los botones para consultar diagnósticos quirúrgicos, médicos y causas referidas.
+            </p>
+          </div>
+          <button type="button" class="btn btn-secondary" id="toggle-all-regions-btn" onclick="toggleAllRegionsTable()">Ver matriz completa</button>
+        </div>
+
+        <div class="quadrant-layout">
+          <div class="torso-box">
+            <p class="kpi-label">Esquema Abdominal Interactivo (9 Regiones)</p>
+            <svg class="torso-svg" viewBox="0 0 260 310" role="img" aria-label="Selector interactivo de cuadrantes abdominales">
+              <!-- Torso outline -->
+              <path d="M 35 28 Q 130 12 225 28 L 235 260 Q 130 298 25 260 Z" fill="none" stroke="var(--outline-variant)" stroke-width="2" />
+              <!-- Row 1: HCD, Epigastrio, HCI -->
+              <rect id="svg-hcd" class="region-shape selected" x="38" y="38" width="60" height="68" rx="6" onclick="selectQuadrant('hcd')" />
+              <text x="68" y="75" class="region-label selected-text" id="lbl-hcd">HCD</text>
+
+              <rect id="svg-epi" class="region-shape" x="100" y="38" width="60" height="68" rx="6" onclick="selectQuadrant('epi')" />
+              <text x="130" y="75" class="region-label" id="lbl-epi">Epigastrio</text>
+
+              <rect id="svg-hci" class="region-shape" x="162" y="38" width="60" height="68" rx="6" onclick="selectQuadrant('hci')" />
+              <text x="192" y="75" class="region-label" id="lbl-hci">HCI</text>
+
+              <!-- Row 2: Flanco Der, Mesogastrio, Flanco Izq -->
+              <rect id="svg-fd" class="region-shape" x="38" y="108" width="60" height="68" rx="6" onclick="selectQuadrant('flancos')" />
+              <text x="68" y="145" class="region-label" id="lbl-fd">Flanco D.</text>
+
+              <rect id="svg-umb" class="region-shape" x="100" y="108" width="60" height="68" rx="6" onclick="selectQuadrant('difuso')" />
+              <text x="130" y="141" class="region-label" id="lbl-umb">Umbilical</text>
+              <text x="130" y="155" class="region-label" id="lbl-umb2">/ Difuso</text>
+
+              <rect id="svg-fi" class="region-shape" x="162" y="108" width="60" height="68" rx="6" onclick="selectQuadrant('flancos')" />
+              <text x="192" y="145" class="region-label" id="lbl-fi">Flanco I.</text>
+
+              <!-- Row 3: FID, Hipogastrio, FII -->
+              <rect id="svg-fid" class="region-shape" x="38" y="178" width="60" height="68" rx="6" onclick="selectQuadrant('fid')" />
+              <text x="68" y="215" class="region-label" id="lbl-fid">FID</text>
+
+              <rect id="svg-hipo" class="region-shape" x="100" y="178" width="60" height="68" rx="6" onclick="selectQuadrant('hipo')" />
+              <text x="130" y="215" class="region-label" id="lbl-hipo">Hipogastrio</text>
+
+              <rect id="svg-fii" class="region-shape" x="162" y="178" width="60" height="68" rx="6" onclick="selectQuadrant('fii')" />
+              <text x="192" y="215" class="region-label" id="lbl-fii">FII</text>
+
+              <!-- Orientation hint -->
+              <text x="68" y="275" class="region-label">Derecha pac.</text>
+              <text x="192" y="275" class="region-label">Izquierda pac.</text>
+            </svg>
+            <div class="pill-row" style="justify-content:center;">
+              <button type="button" class="btn btn-ghost active-tab" data-qbtn="hcd" onclick="selectQuadrant('hcd')">HCD</button>
+              <button type="button" class="btn btn-ghost" data-qbtn="epi" onclick="selectQuadrant('epi')">Epigastrio</button>
+              <button type="button" class="btn btn-ghost" data-qbtn="hci" onclick="selectQuadrant('hci')">HCI</button>
+              <button type="button" class="btn btn-ghost" data-qbtn="flancos" onclick="selectQuadrant('flancos')">Flancos</button>
+              <button type="button" class="btn btn-ghost" data-qbtn="fid" onclick="selectQuadrant('fid')">FID</button>
+              <button type="button" class="btn btn-ghost" data-qbtn="fii" onclick="selectQuadrant('fii')">FII</button>
+              <button type="button" class="btn btn-ghost" data-qbtn="hipo" onclick="selectQuadrant('hipo')">Hipogastrio</button>
+              <button type="button" class="btn btn-ghost" data-qbtn="difuso" onclick="selectQuadrant('difuso')">Difuso / Umbilical</button>
+            </div>
+          </div>
+
+          <div id="quadrant-detail-panel" class="status-card" data-status="info">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </div>
+
+        <div id="all-regions-table-wrap" class="table-wrap" style="display:none; margin-top:var(--space-lg);">
+          <table>
+            <thead>
+              <tr>
+                <th>Localización</th>
+                <th>Causas Quirúrgicas / Urgentes</th>
+                <th>Causas Médicas / Referidas / Sistémicas</th>
+              </tr>
+            </thead>
+            <tbody id="all-regions-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 5: ALGORITMO DIAGNÓSTICO INTERACTIVO -->
+      <section id="sec-5" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 05 · Árbol de Decisión Clínica</p>
+            <h2 class="section-title">Algoritmo Diagnóstico Interactivo</h2>
+            <p class="section-sub">
+              Flujo operativo: <strong>Dolor Abdominal → Estabilidad Hemodinámica → Localización → Pruebas Complementarias → Diagnóstico Probable → Conducta Recomendada</strong>.
+            </p>
+          </div>
+          <div class="pill-row">
+            <button type="button" class="btn btn-ghost" onclick="loadAlgoPreset('ami')">Caso: FA + Dolor difuso</button>
+            <button type="button" class="btn btn-ghost" onclick="loadAlgoPreset('ectopic')">Caso: Mujer joven + Hipogastrio</button>
+            <button type="button" class="btn btn-ghost" onclick="loadAlgoPreset('chole')">Caso: HCD + Fiebre</button>
+            <button type="button" class="btn btn-ghost" onclick="loadAlgoPreset('append')">Caso: FID adulto</button>
+          </div>
+        </div>
+
+        <div class="algo-grid">
+          <div class="field-group">
+            <label class="field-label" for="algo-stability">1. Estabilidad Hemodinámica y Signos Peritoneales</label>
+            <select id="algo-stability" class="select-input" onchange="updateAlgorithm()">
+              <option value="estable">Estable sin peritonismo difuso</option>
+              <option value="peritonismo">Estable con signos peritoneales / defensa</option>
+              <option value="inestable">Inestable / Shock / Hipotensión</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="algo-profile">2. Perfil del Paciente</label>
+            <select id="algo-profile" class="select-input" onchange="updateAlgorithm()">
+              <option value="adulto">Adulto general</option>
+              <option value="mujer_fertil">Mujer en edad fértil</option>
+              <option value="gestante">Mujer gestante</option>
+              <option value="anciano">Anciano (&ge; 65 años) / FRCV / FA</option>
+              <option value="pediatrico">Paciente pediátrico (&lt; 18 años)</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="algo-location">3. Localización Principal</label>
+            <select id="algo-location" class="select-input" onchange="updateAlgorithm()">
+              <option value="hcd">Hipocondrio Derecho (HCD)</option>
+              <option value="epi">Epigastrio</option>
+              <option value="hci">Hipocondrio Izquierdo (HCI)</option>
+              <option value="flancos">Flancos / Lumboabdominal</option>
+              <option value="fid">Fosa Ilíaca Derecha (FID)</option>
+              <option value="fii">Fosa Ilíaca Izquierda (FII)</option>
+              <option value="hipo">Hipogastrio / Pélvico</option>
+              <option value="difuso">Difuso / No localizado / Periumbilical</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="algo-syndrome">4. Patrón Sindrómico Predominante</label>
+            <select id="algo-syndrome" class="select-input" onchange="updateAlgorithm()">
+              <option value="inflamatorio">Inflamatorio / Progresivo (horas)</option>
+              <option value="peritoneal">Peritoneal puro (brusco, abdomen en tabla)</option>
+              <option value="oclusivo">Oclusivo (vómitos, distensión, sin gases)</option>
+              <option value="vascular">Vascular (brusco, intenso, desproporcionado)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="algo-output" class="algo-flow" aria-live="polite">
+          <!-- Dynamically populated -->
+        </div>
+      </section>
+
+      <!-- SECTION 6: PRUEBAS COMPLEMENTARIAS -->
+      <section id="sec-6" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 06 · Laboratorio e Imagen Racional</p>
+            <h2 class="section-title">Pruebas Complementarias: Cuándo Pedir y Qué Buscar</h2>
+            <p class="section-sub">
+              Regla docente fundamental: <strong>cuanto más localizada sea la patología sospechada, mayor rentabilidad inicial de la ecografía; cuanto más difuso o complejo sea el cuadro, más indicada está la TC multicorte</strong>.
+            </p>
+          </div>
+          <span class="chip" data-status="info">ACR &amp; Laméris et al. (BMJ)</span>
+        </div>
+
+        <!-- Lab & Biomarkers -->
+        <h3 class="subhead">Laboratorio, Biomarcadores y Electrocardiograma</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Prueba</th>
+                <th>Cuándo Solicitarla</th>
+                <th>Hallazgos Clave y Umbrales de Decisión</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Hematimetría + Bioquímica</strong></td>
+                <td>En todo paciente con síntomas o signos de abdomen agudo.</td>
+                <td>Descenso Hb/Hto → descartar <strong>hemoperitoneo</strong> o pancreatitis necrosante. Leucocitosis neutrofílica → sepsis/necrosis (leucopenia en ancianos = mal pronóstico). Amilasa/lipasa &ge;3× LSN (Atlanta). Glucemia (CAD), función renal, electrolitos, perfil hepático.</td>
+              </tr>
+              <tr>
+                <td><strong>PCR y Procalcitonina</strong></td>
+                <td>Sospecha de proceso inflamatorio/infeccioso (apendicitis, pancreatitis, diverticulitis).</td>
+                <td>En apendicitis &gt;12 h, <strong>PCR &lt; 25 mg/L</strong> ayuda a descartarla; <strong>Leucocitos &gt; 10.000/µL + PCR &gt; 8 mg/L</strong> ofrece el mayor VPP. En pancreatitis aguda, <strong>PCR &ge; 210 mg/L</strong> discrimina formas graves (Sensibilidad 83%, Especificidad 85%). Procalcitonina útil en apendicitis complicada y sepsis abdominal.</td>
+              </tr>
+              <tr>
+                <td><strong>Gasometría Venosa, Lactato y Dímero D</strong></td>
+                <td>Sospecha de sepsis, shock, isquemia mesentérica o alteración metabólica.</td>
+                <td>Acidosis metabólica + <strong>lactato elevado</strong> → marcador de mal pronóstico en sepsis, shock e <strong>isquemia mesentérica aguda</strong> (donde el <strong>dímero D</strong> suele elevarse precozmente).</td>
+              </tr>
+              <tr>
+                <td><strong>Tira de Orina y Test de Gestación (β-hCG)</strong></td>
+                <td>Orina en todo abdomen agudo; <strong>β-hCG obligatoria</strong> en toda mujer en edad fértil con dolor incierto.</td>
+                <td>Microhematuria → cólico nefrítico; leucocituria/nitritos → infección urinaria (cuidado: irritación vesical adyacente por apendicitis puede dar piuria leve). <strong>β-hCG &gt; 1.000 U/L</strong> sin saco intrauterino → sospecha firme de ectópico.</td>
+              </tr>
+              <tr>
+                <td><strong>ECG Inmediato y Troponina</strong></td>
+                <td>Todo dolor en hemiabdomen superior o epigastrio de origen incierto (especialmente &gt;50 años o FRCV).</td>
+                <td>Descartar <strong>SCA de cara inferior</strong> o pericarditis aguda (elevación difusa del ST con descenso del PR). La disfunción miocárdica grave también puede precipitar isquemia intestinal.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Evidence visualization: Sensitivity comparison -->
+        <div class="evidence-bar-wrap">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--space-sm);">
+            <h3 class="subhead" style="margin:0;">Rendimiento Diagnóstico Documentado en las Fuentes</h3>
+            <span class="chip" data-status="info">Estudio multicéntrico Laméris et al. (n=1.021) y Guías Clínicas</span>
+          </div>
+          <div class="bar-row">
+            <span class="field-label">TC abdominal (condiciones urgentes)</span>
+            <div class="bar-track"><div class="bar-fill" style="width: 89%;"></div></div>
+            <strong style="font-variant-numeric:tabular-nums;">89% sens.</strong>
+          </div>
+          <div class="bar-row">
+            <span class="field-label">Ecografía (condiciones urgentes)</span>
+            <div class="bar-track"><div class="bar-fill amber" style="width: 70%;"></div></div>
+            <strong style="font-variant-numeric:tabular-nums;">70% sens.</strong>
+          </div>
+          <div class="bar-row">
+            <span class="field-label">Estrategia condicional (Eco → TC si negativa)</span>
+            <div class="bar-track"><div class="bar-fill green" style="width: 94%;"></div></div>
+            <strong style="font-variant-numeric:tabular-nums;">94% detec.</strong>
+          </div>
+          <div class="bar-row">
+            <span class="field-label">TC en trauma abdominal cerrado estable</span>
+            <div class="bar-track"><div class="bar-fill green" style="width: 95%;"></div></div>
+            <strong style="font-variant-numeric:tabular-nums;">92–97,6%</strong>
+          </div>
+          <div class="bar-row">
+            <span class="field-label">Rx simple en obstrucción intestinal</span>
+            <div class="bar-track"><div class="bar-fill amber" style="width: 60%;"></div></div>
+            <strong style="font-variant-numeric:tabular-nums;">~60% prec.</strong>
+          </div>
+          <p class="kpi-caption" style="margin-top:var(--space-sm);">La estrategia condicional (Ecografía primero y TC solo si es negativa o no concluyente) omite apenas un 6% de casos urgentes y reduce la realización de TC al 49% de los pacientes (IC 95%: 46–52%). Dosis efectiva de TC abdominal: ~10 mSv (frente a 3 mSv/año de radiación basal; riesgo estimado de cáncer inducido de 1 en 900 en persona de 25 años).</p>
+        </div>
+
+        <!-- Imaging Modalities -->
+        <h3 class="subhead" style="margin-top: var(--space-lg);">Selección de Técnica de Imagen y Hallazgos a Buscar</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Modalidad</th>
+                <th>Cuándo Solicitarla (ACR / Guías)</th>
+                <th>Hallazgos Clave a Buscar y Limitaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Ecografía (POCUS / Reglada / Transvaginal)</strong></td>
+                <td><strong>1.ª elección en HCD</strong> (patología biliar), sospecha de <strong>apendicitis en niños/embarazadas</strong>, trauma inestable (FAST/E-FAST), cribado de AAA a pie de cama y urgencias ginecológicas.</td>
+                <td><strong>Colecistitis:</strong> pared &gt; 3 mm, litiasis, líquido perivesicular, Murphy ecográfico, colédoco &gt; 6 mm. <strong>Apendicitis:</strong> asa no compresible &gt; 6 mm (6–15 mm), hiperemia Doppler, apendicolito (90% S/E en no perforadas). <strong>AAA:</strong> diámetro &gt; 3,0 cm. <strong>Limitación:</strong> gas intestinal, obesidad (limita páncreas en 25%) y operador-dependencia.</td>
+              </tr>
+              <tr>
+                <td><strong>TC Abdomen y Pelvis con Contraste IV</strong></td>
+                <td><strong>Dolor abdominal difuso/no localizado y fiebre</strong>, <strong>FID en adultos</strong>, <strong>FII (diverticulitis)</strong>, obstrucción intestinal (sospecha alta o Rx negativa), apendicitis complicada, perforación (en paciente estable).</td>
+                <td>Apéndice &gt; 6 mm, signo de la diana, grasa periapendicular/pericólica estriada, abscesos, gas extraluminal, zona de transición en obstrucción. <strong>Nota:</strong> evitar contraste oral rutinario (prolonga estancia en urgencias sin beneficio habitual frente al contraste IV). En pancreatitis, mayor rendimiento para necrosis a las <strong>48–72 h</strong>.</td>
+              </tr>
+              <tr>
+                <td><strong>TC Sin Contraste / Angio-TC Trifásica</strong></td>
+                <td><strong>Sin contraste:</strong> patrón oro en cólico nefrítico complicado y obstrucción cuando falla Rx. <strong>Angio-TC trifásica:</strong> isquemia mesentérica aguda, disección/rotura de AAA estable.</td>
+                <td><strong>Cólico nefrítico:</strong> cálculo ureteral e hidronefrosis. <strong>Isquemia mesentérica:</strong> oclusión arterial/venosa (AMS), hiporealce parietal, neumatosis intestinal o gas portal. <strong>AAA:</strong> hematoma retroperitoneal, rotura o flap intimal.</td>
+              </tr>
+              <tr>
+                <td><strong>Resonancia Magnética (RM)</strong></td>
+                <td><strong>Mujer gestante</strong> con sospecha de apendicitis tras ecografía no concluyente; alternativa en patología biliar/colédoco (CPRM) y diverticulitis.</td>
+                <td>Alta precisión en apendicitis, colecistitis y coledocolitiasis sin radiación ionizante. <strong>Precaución:</strong> evitar gadolinio en el primer trimestre; contraindicada en claustrofobia o inestabilidad clínica.</td>
+              </tr>
+              <tr>
+                <td><strong>Radiografía Simple (Tórax / Abdomen)</strong></td>
+                <td><strong>Únicamente</strong> ante sospecha inicial de <strong>perforación de víscera hueca</strong>, <strong>obstrucción intestinal</strong> o <strong>cuerpo extraño</strong> (y decúbito lateral izquierdo/supino en pediatría si se sospecha complicación). No rutinaria en apendicitis, diverticulitis o pancreatitis.</td>
+                <td><strong>Tórax PA y lateral en bipedestación (&ge;10 min):</strong> neumoperitoneo subdiafragmático, elevación hemidiafragmática, derrame pleural izquierdo (pancreatitis/BISAP) o neumonía basal. <strong>Abdomen:</strong> niveles hidroaéreos, asa centinela o signo de colon amputado (pancreatitis). Ojo: normal en hasta 40% de obstrucciones precoces/altas y 12% de disecciones aórticas.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 7: MANEJO TERAPÉUTICO INICIAL -->
+      <section id="sec-7" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 07 · Terapéutica en Urgencias</p>
+            <h2 class="section-title">Manejo Terapéutico Inicial y Soporte</h2>
+            <p class="section-sub">
+              Estabilización hemodinámica, analgesia precoz ("analgesia sin mitos"), control emético, antibióticos según foco y reposición hidroelectrolítica.
+            </p>
+          </div>
+          <span class="chip" data-status="warn">Fidelidad estricta: se indica lo ausente en fuentes</span>
+        </div>
+
+        <div class="callout" data-status="ok" style="margin-top:0; margin-bottom:var(--space-md);">
+          <p class="callout-title">Analgesia sin Mitos (Evidencia de Alta Calidad)</p>
+          <p>Las fuentes confirman que administrar <strong>analgesia adecuada no enmascara el diagnóstico quirúrgico ni reduce la sensibilidad exploratoria</strong>; al contrario, mejora el confort del paciente y facilita la exploración física. En pediatría, ajustar según la escalera analgésica de la OMS.</p>
+        </div>
+
+        <!-- Tabs for Drug Categories -->
+        <div class="pill-row" role="tablist" aria-label="Categorías terapéuticas">
+          <button type="button" class="btn btn-ghost active-tab" data-theratab="analgesicos" onclick="switchTherapyTab('analgesicos')">Analgésicos</button>
+          <button type="button" class="btn btn-ghost" data-theratab="antiemeticos" onclick="switchTherapyTab('antiemeticos')">Antieméticos</button>
+          <button type="button" class="btn btn-ghost" data-theratab="antibioticos" onclick="switchTherapyTab('antibioticos')">Antibióticos</button>
+          <button type="button" class="btn btn-ghost" data-theratab="fluidoterapia" onclick="switchTherapyTab('fluidoterapia')">Fluidoterapia y Soporte</button>
+        </div>
+
+        <div id="therapy-panel" style="margin-top:var(--space-md);">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </section>
+
+      <!-- SECTION 8: PATOLOGÍAS CRÍTICAS -->
+      <section id="sec-8" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 08 · Entidades de Alto Impacto</p>
+            <h2 class="section-title">Algoritmos por Patología Crítica</h2>
+            <p class="section-sub">
+              Seleccione una patología para consultar su perfil clínico, laboratorio, imagen ACR/WSES de elección y conducta terapéutica prioritaria.
+            </p>
+          </div>
+        </div>
+
+        <div class="pill-row" id="pathology-pills">
+          <!-- Populated by JS -->
+        </div>
+
+        <div id="pathology-detail-card" class="status-card" data-status="info" style="margin-top:var(--space-md);">
+          <!-- Populated by JS -->
+        </div>
+
+        <details class="clinical-details" style="margin-top:var(--space-md);">
+          <summary>Ver tabla comparativa rápida de las 10 patologías críticas</summary>
+          <div class="details-body">
+            <div class="table-wrap" style="margin-top:0;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patología</th>
+                    <th>Perfil Clínico / Signo Guía</th>
+                    <th>Prueba de Elección</th>
+                    <th>Conducta Urgente Prioritaria</th>
+                  </tr>
+                </thead>
+                <tbody id="pathology-summary-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <!-- SECTION 9: ESCALAS CLÍNICAS -->
+      <section id="sec-9" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 09 · Estratificación y Gravedad</p>
+            <h2 class="section-title">Escalas Clínicas y Verificador Operativo de Riesgo</h2>
+            <p class="section-sub">
+              Interpretación y utilidad clínica de los sistemas de puntuación citados en las fuentes (apendicitis, pancreatitis, colecistitis y triaje urgente).
+            </p>
+          </div>
+        </div>
+
+        <!-- Grounded Interactive Surgical & Severity Criteria Checker -->
+        <div class="card-panel">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--space-sm);">
+            <div>
+              <h3 class="subhead" style="margin:0;">Verificador Interactivo de Criterios de Abdomen Agudo Quirúrgico y Atlanta</h3>
+              <p class="section-sub" style="margin:2px 0 0 0;">Basado estrictamente en los criterios clínicos definidos en la guía de urgencias del cuaderno.</p>
+            </div>
+            <button type="button" class="btn btn-ghost" onclick="resetScoreChecker()">Limpiar criterios</button>
+          </div>
+
+          <div class="card-grid-2" style="margin-top:var(--space-md);">
+            <div class="card-panel-white">
+              <p class="kpi-label" style="margin-bottom:var(--space-xs);">Criterios Orientadores de Abdomen Agudo Quirúrgico</p>
+              <div style="display:flex; flex-direction:column; gap:var(--space-xs);">
+                <label class="check-item"><input type="checkbox" class="surg-crit" onchange="evaluateCriteria()"><span>Dolor de inicio súbito, intolerable, generalizado y refractario a analgesia</span></label>
+                <label class="check-item"><input type="checkbox" class="surg-crit" onchange="evaluateCriteria()"><span>Dolor continuo y progresivo de <strong>&gt; 6 horas</strong> de evolución</span></label>
+                <label class="check-item"><input type="checkbox" class="surg-crit" onchange="evaluateCriteria()"><span>Signos locales o generalizados de irritación peritoneal (defensa involuntaria / Blumberg)</span></label>
+                <label class="check-item"><input type="checkbox" class="surg-crit" onchange="evaluateCriteria()"><span>Detención completa de emisión de gases y heces &ge; 24 horas</span></label>
+                <label class="check-item"><input type="checkbox" class="surg-crit" onchange="evaluateCriteria()"><span>Dolor irradiado a hombro + irritación peritoneal (descartada causa torácica)</span></label>
+                <label class="check-item"><input type="checkbox" class="surg-crit" onchange="evaluateCriteria()"><span>Instauración de estado de shock o inestabilidad hemodinámica</span></label>
+              </div>
+              <div id="surg-crit-result" class="callout" data-status="info" style="margin-top:var(--space-sm);">
+                <p class="callout-title">Sin criterios quirúrgicos marcados</p>
+                <p>Mantener evaluación clínica y observación según estabilidad.</p>
+              </div>
+            </div>
+
+            <div class="card-panel-white">
+              <p class="kpi-label" style="margin-bottom:var(--space-xs);">Criterios Diagnósticos de Pancreatitis Aguda (Atlanta Revisada)</p>
+              <div style="display:flex; flex-direction:column; gap:var(--space-xs);">
+                <label class="check-item"><input type="checkbox" class="atlanta-crit" onchange="evaluateCriteria()"><span>Dolor epigástrico agudo persistente irradiado "en cinturón" que alivia al inclinarse adelante</span></label>
+                <label class="check-item"><input type="checkbox" class="atlanta-crit" onchange="evaluateCriteria()"><span>Elevación de amilasa o lipasa sérica <strong>&ge; 3 veces</strong> el límite superior de normalidad</span></label>
+                <label class="check-item"><input type="checkbox" class="atlanta-crit" onchange="evaluateCriteria()"><span>Hallazgos característicos compatibles en pruebas de imagen (TC / Eco / RM)</span></label>
+              </div>
+              <div id="atlanta-crit-result" class="callout" data-status="info" style="margin-top:var(--space-sm);">
+                <p class="callout-title">0 / 3 criterios de Atlanta marcados</p>
+                <p>Se requieren al menos <strong>2 de 3 criterios</strong> para establecer el diagnóstico.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scales Table -->
+        <div class="table-wrap" style="margin-top:var(--space-lg);">
+          <table>
+            <thead>
+              <tr>
+                <th>Escala / Sistema</th>
+                <th>Aplicación Clínica</th>
+                <th>Interpretación y Utilidad Documentada en Fuentes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Alvarado Modificada y AIR Score</strong> <br><span class="chip" data-status="info">Apendicitis</span></td>
+                <td>Estratificación de probabilidad clínica en sospecha de apendicitis aguda (junto a RIPASA, AAS y Paediatric Appendicitis Score en &lt;18 años).</td>
+                <td>Permiten clasificar la probabilidad clínica y racionalizar la solicitud de pruebas de imagen (ecografía o TC). <em>Nota: las fuentes del cuaderno nombran estas escalas y su utilidad clínica sin detallar el desglose numérico de puntos de cada ítem.</em></td>
+              </tr>
+              <tr>
+                <td><strong>Clasificación WSES de Apendicitis</strong> <br><span class="chip" data-status="info">Gravedad Quirúrgica</span></td>
+                <td>Guía de manejo operatorio vs conservador y duración antibiótica (consenso PAMAP-W / WSES).</td>
+                <td><strong>Grado 1 sin apendicolito:</strong> puede valorarse manejo no operatorio con antibióticos en casos seleccionados. <strong>Grado 2A-B sin factores de riesgo:</strong> pauta antibiótica postoperatoria corta de 24–48 h (consenso 70,2%). <strong>Grado 3A estable:</strong> apendicectomía laparoscópica urgente estándar (consenso 70,2%).</td>
+              </tr>
+              <tr>
+                <td><strong>BISAP, Ranson/Glasgow y APACHE II</strong> <br><span class="chip" data-status="warn">Pancreatitis</span></td>
+                <td>Estratificación precoz de gravedad en pancreatitis aguda.</td>
+                <td>Indican gravedad: <strong>Ranson/Glasgow &ge; 3</strong>, <strong>APACHE II &ge; 8</strong>, fallo orgánico persistente o <strong>PCR &gt; 150–210 mg/L</strong>. En el índice <strong>BISAP</strong>, la presencia de <strong>derrame pleural</strong> en Rx tórax es parámetro predictor de enfermedad grave.</td>
+              </tr>
+              <tr>
+                <td><strong>Criterios de Tokio (TG18)</strong> <br><span class="chip" data-status="info">Colecistitis</span></td>
+                <td>Diagnóstico y graduación de severidad (Grados I–III) en colecistitis aguda litiásica.</td>
+                <td>Guía el momento quirúrgico: colecistectomía laparoscópica precoz (&lt;72 h) en candidatos aptos; en <strong>Grado III con disfunción orgánica grave</strong> o alto riesgo quirúrgico, derivar a Radiología Intervencionista / HBP terciaria para <strong>colecistostomía percutánea</strong>.</td>
+              </tr>
+              <tr>
+                <td><strong>Tri-Color (NICE/BAPS/ECAT) y Zonas NSW-CERS</strong> <br><span class="chip" data-status="alert">Triaje / Deterioro</span></td>
+                <td>Detección precoz de deterioro clínico y activación de respuesta rápida en urgencias.</td>
+                <td>Observaciones en <strong>Zona Amarilla o Roja</strong> (o categoría Roja/Ámbar) activan escalamiento CERS urgente, monitorización estrecha y valoración quirúrgica o de cuidados intensivos.</td>
+              </tr>
+              <tr>
+                <td><strong>qSOFA y NEWS2</strong> <br><span class="chip" data-status="neutral">No detalladas en fuentes</span></td>
+                <td>Escalas de cribado de sepsis y alerta temprana solicitadas en el guion.</td>
+                <td><strong>No especificadas en las fuentes del cuaderno.</strong> Para sepsis y deterioro agudo, las fuentes utilizan la evaluación de signos de shock, acidosis metabólica/lactato sérico, arquitectura Rojo/Ámbar/Verde y las Zonas Amarilla/Roja del protocolo ECAT/CERS.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECTION 10: CONSULTA RÁPIDA ("URGENCIAS EN 2 MINUTOS") -->
+      <section id="sec-10" class="clinical-section">
+        <div class="section-header">
+          <div>
+            <p class="kicker">Sección 10 · Hoja de Bolsillo</p>
+            <h2 class="section-title">Urgencias en 2 Minutos</h2>
+            <p class="section-sub">Resumen ejecutivo para consulta en tiempo real junto a la cama del paciente.</p>
+          </div>
+          <button type="button" class="btn btn-primary" onclick="exportClinicalSummary()">Exportar Resumen (.txt)</button>
+        </div>
+
+        <div class="card-grid">
+          <article class="status-card" data-status="alert">
+            <h3 class="subhead">1. Red Flags Inmediatas</h3>
+            <ul class="clean-list">
+              <li>Shock, hipotensión, taquicardia, palidez o síncope.</li>
+              <li>Abdomen "en tabla", defensa involuntaria, Blumberg o dolor al toser/caminar.</li>
+              <li>Dolor súbito intolerable o progresivo &gt; 6 h.</li>
+              <li>Vómitos biliosos o hematemesis/melenas; heces en jalea de grosella.</li>
+              <li>Dolor desproporcionado a la exploración; dolor escrotal agudo unilateral.</li>
+              <li>Embarazo posible, &gt;50 años, anticoagulación o AAA conocido.</li>
+            </ul>
+          </article>
+
+          <article class="status-card" data-status="alert">
+            <h3 class="subhead">2. Diagnósticos que NO Pueden Perderse</h3>
+            <ul class="clean-list">
+              <li><strong>Rotura / Disección de AAA</strong> (dolor lumbar/epigástrico, pulsos femorales, shock).</li>
+              <li><strong>Isquemia mesentérica aguda</strong> (anciano + FA + dolor desproporcionado + lactato).</li>
+              <li><strong>Perforación de víscera hueca</strong> (inicio "en puñalada", neumoperitoneo).</li>
+              <li><strong>Embarazo ectópico roto</strong> (toda mujer en edad fértil → β-hCG).</li>
+              <li><strong>IAM inferior / Síndrome de Boerhaave</strong> (epigastralgia → ECG inmediato).</li>
+              <li><strong>Torsión testicular / ovárica</strong> y <strong>colangitis séptica</strong>.</li>
+            </ul>
+          </article>
+
+          <article class="status-card" data-status="info">
+            <h3 class="subhead">3. Estudios Prioritarios</h3>
+            <ul class="clean-list">
+              <li><strong>Siempre si mujer edad fértil:</strong> test de gestación (β-hCG).</li>
+              <li><strong>Si hemiabdomen superior / &gt;50a / FRCV:</strong> ECG inmediato + troponina.</li>
+              <li><strong>Laboratorio:</strong> hemograma, bioquímica (amilasa/lipasa, PFH, Cr), PCR, tira de orina; gasometría + lactato si gravedad.</li>
+              <li><strong>Imagen:</strong> POCUS/E-FAST si inestable. Localizado (HCD/pediátrico/pélvico) → <strong>Ecografía</strong>; difuso/complejo/FII/adulto FID → <strong>TC con contraste IV</strong> (Angio-TC si vascular).</li>
+            </ul>
+          </article>
+
+          <article class="status-card" data-status="ok">
+            <h3 class="subhead">4. Tratamiento Inicial</h3>
+            <ul class="clean-list">
+              <li><strong>Dieta absoluta (NPO)</strong> hasta aclarar patología quirúrgica.</li>
+              <li><strong>Vía IV:</strong> glucosalina 2.500–3.000 mL/24 h si estable; <strong>cargas de cristaloides 300–500 mL</strong> (SSF o Ringer) si inestable + transfusión si anemia.</li>
+              <li><strong>Analgesia precoz</strong> (no enmascara el diagnóstico; morfina/paracetamol según intensidad; evitar AINEs si riesgo de sangrado).</li>
+              <li><strong>Vómitos:</strong> metoclopramida 10 mg/8 h IV/IM; SNG aspiración solo en obstrucción/íleo/pancreatitis grave.</li>
+              <li><strong>Antibióticos IV precoces</strong> si sepsis, perforación, isquemia, colecistitis o diverticulitis complicada.</li>
+            </ul>
+          </article>
+
+          <article class="status-card" data-status="warn">
+            <h3 class="subhead">5. Derivación Urgente a Cirugía</h3>
+            <ul class="clean-list">
+              <li>Abdomen agudo quirúrgico inequívoco o "vientre en tabla".</li>
+              <li>Neumoperitoneo en Rx tórax en bipedestación o TC.</li>
+              <li>Sepsis abdominal sin otro foco o inestabilidad refractaria.</li>
+              <li>Sospecha de isquemia mesentérica, rotura AAA, torsión testicular/anexial o embarazo ectópico roto.</li>
+              <li>Obstrucción con signos de estrangulación o fracaso conservador.</li>
+              <li><strong>Si duda en paciente estable:</strong> ingreso en Observación para exploraciones seriadas.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- Sources Footer -->
+      <footer class="clinical-section" style="padding: var(--space-md) var(--space-xl);">
+        <p class="kicker">Fuentes Documentales del Cuaderno</p>
+        <p style="font-size:0.875rem; color:var(--on-surface-variant); margin:0;">
+          Contenido elaborado exclusivamente a partir de las fuentes integradas en el cuaderno: Guía Pedagógica «Abordaje y Manejo Integral del Dolor Abdominal Agudo en Urgencias» (basada en Jiménez Murillo y Montero Pérez, 7.ª ed., 2023); Comprehensive Clinical Protocols and Evidence-Based Management of Acute Abdominal Pain (NICE / BAPS / ACR / WSES); Acute Abdominal Pain in Adults: Evaluation and Diagnosis (AFP - AAFP); ACR Appropriateness Criteria Acute Nonlocalized Abdominal Pain y Laméris et al. (BMJ 2009); Adult ECAT Protocol — Abdominal Pain; Acute Calculous Cholecystitis — WSES 2020; PAMAP-W / WSES Appendicitis Grading Study; Guidelines for Surgical Emergencies (ASI); Imaging of Acute Abdomen; Quadrant Specific Diagnostic Evaluation of Acute Abdomen; EMOttawa Blog; Emergency Medicine Oral Board Review Illustrated; RCHT Paediatric Acute Abdominal Pain Clinical Guideline, BAPS Pathway, RCH Clinical Practice Guideline y eviCore Pediatric Abdomen Imaging Guidelines; e iem-student.org / Tintinalli 9e.
+        </p>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<api-shim></api-shim>
+<script>
+  // ---- Data Store (100% grounded in notebook sources, backtick template literals) ----
+  const QUADRANTS = {
+    hcd: {
+      title: `Hipocondrio Derecho (HCD)`,
+      badge: `1.ª elección imagen: Ecografía Abdominal`,
+      surgical: [
+        `Colecistitis aguda (Murphy +, pared > 3 mm, litiasis, líquido perivesicular)`,
+        `Colangitis aguda (fiebre, ictericia, dilatación vía biliar)`,
+        `Úlcera péptica perforada`,
+        `Absceso hepático`,
+        `Apendicitis retrocecal o en el embarazo`
+      ],
+      medical: [
+        `Cólico biliar (colelitiasis no complicada)`,
+        `Hepatitis aguda o congestión hepática`,
+        `Neumonía basal derecha o embolia pulmonar (dolor referido)`,
+        `Nefrolitiasis o pielonefritis aguda derecha`,
+        `Diverticulitis / colitis derecha`
+      ],
+      pearl: `La ecografía transabdominal es el estudio de elección inicial en dolor en HCD. Un signo de Murphy negativo no excluye por sí solo colecistitis aguda.`
+    },
+    epi: {
+      title: `Epigastrio`,
+      badge: `ECG + Troponina obligatorios (>50 años o FRCV)`,
+      surgical: [
+        `Rotura o disección de aneurisma de aorta abdominal (AAA)`,
+        `Perforación de úlcera péptica (inicio súbito "en puñalada")`,
+        `Isquemia mesentérica aguda`,
+        `Colecistitis aguda / colangitis`,
+        `Síndrome de Boerhaave (rotura esofágica)`
+      ],
+      medical: [
+        `Síndrome coronario agudo (IAM cara inferior) y pericarditis aguda`,
+        `Pancreatitis aguda (dolor "en cinturón", mejora al inclinarse adelante)`,
+        `Gastritis, esofagitis, dispepsia o úlcera péptica no complicada`,
+        `Cólico biliar`
+      ],
+      pearl: `Todo dolor epigástrico de origen incierto requiere ECG inmediato para descartar infarto agudo de miocardio inferior antes de asumir causa digestiva.`
+    },
+    hci: {
+      title: `Hipocondrio Izquierdo (HCI)`,
+      badge: `Imagen habitual: TC con contraste IV (o Eco/Rx si trauma)`,
+      surgical: [
+        `Rotura o hemorragia esplénica (trauma o esplenomegalia; bazo = órgano más frágil)`,
+        `Infarto esplénico o absceso esplénico`,
+        `Isquemia mesentérica / disección aórtica`,
+        `Úlcera péptica perforada`
+      ],
+      medical: [
+        `Pancreatitis aguda`,
+        `Gastritis o úlcera péptica`,
+        `Neumonía basal izquierda, derrame pleural, embolia pulmonar o pericarditis`,
+        `Nefrolitiasis o pielonefritis izquierda`
+      ],
+      pearl: `En pacientes inestables con dolor en HCI y antecedente traumático, realizar FAST y Rx tórax de inmediato; en estables, la TC abdominal es la prueba específica.`
+    },
+    flancos: {
+      title: `Flancos (Derecho e Izquierdo / Región Lumbar)`,
+      badge: `Cólico nefrítico: TC sin contraste (patrón oro si complicado)`,
+      surgical: [
+        `Aneurisma de aorta abdominal (AAA) roto o disecante`,
+        `Perforación visceral o hemorragia retroperitoneal`,
+        `Obstrucción intestinal`,
+        `Apendicitis retrocecal (flanco derecho)`
+      ],
+      medical: [
+        `Cólico nefrítico / urolitiasis (agitación, puño-percusión +, microhematuria)`,
+        `Pielonefritis aguda`,
+        `Colitis o diverticulitis`,
+        `Embarazo ectópico (dolor pélvico/flanco)`
+      ],
+      pearl: `Varón hipertenso mayor con dolor brusco en fosa renal/lumbar irradiado a espalda: descartar siempre AAA antes de diagnosticar cólico nefrítico.`
+    },
+    fid: {
+      title: `Fosa Ilíaca Derecha (FID)`,
+      badge: `Adulto: TC con contraste IV · Niño/Gestante: Ecografía`,
+      surgical: [
+        `Apendicitis aguda (Blumberg, Rovsing, psoas/obturador +)`,
+        `Embarazo ectópico roto o torsión ovárica`,
+        `Torsión testicular / hernia inguinal estrangulada`,
+        `Diverticulitis cecal o de Meckel complicada`,
+        `Absceso del psoas`
+      ],
+      medical: [
+        `Adenitis mesentérica y gastroenteritis aguda`,
+        `Enfermedad inflamatoria pélvica (EIP) no abscesificada`,
+        `Enfermedad inflamatoria intestinal (Crohn) o colitis`,
+        `Cólico ureteral derecho o pielonefritis`,
+        `Ovulación dolorosa / rotura folicular`
+      ],
+      pearl: `En mujeres en edad fértil es obligatorio solicitar β-hCG y realizar exploración pélvica. En pediatría y gestantes priorizar ecografía de compresión graduada.`
+    },
+    fii: {
+      title: `Fosa Ilíaca Izquierda (FII)`,
+      badge: `ACR: TC Abdomen y Pelvis con contraste IV`,
+      surgical: [
+        `Diverticulitis aguda complicada (absceso pericólico, perforación)`,
+        `Embarazo ectópico roto o torsión ovárica`,
+        `Torsión testicular / hernia inguinal estrangulada`,
+        `Vólvulo de sigma / obstrucción colónica`
+      ],
+      medical: [
+        `Diverticulitis aguda no complicada (dolor constante FII, fiebre, alteración del ritmo intestinal; VPP clínico hasta 65%)`,
+        `Colitis, EII o síndrome del intestino irritable`,
+        `EIP / patología anexial no complicada`,
+        `Urolitiasis o pielonefritis izquierda`
+      ],
+      pearl: `La combinación de dolor en FII, anorexia, náuseas sin vómitos, cambio del hábito intestinal y fiebre orienta fuertemente a diverticulitis aguda.`
+    },
+    hipo: {
+      title: `Hipogastrio / Suprapúbico`,
+      badge: `Imprescindible: β-hCG + Tacto / Examen pélvico`,
+      surgical: [
+        `Embarazo ectópico complicado o roto ("el gran mentiroso")`,
+        `Torsión ovárica o torsión testicular (dolor referido abdominal bajo en jóvenes)`,
+        `Apendicitis pélvica (signo del obturador +)`,
+        `Obstrucción intestinal o rotura vesical`
+      ],
+      medical: [
+        `Retención aguda de orina (globo vesical) o cistitis aguda`,
+        `Enfermedad inflamatoria pélvica (EIP) / miomas / dismenorrea`,
+        `Diverticulitis, colitis o EII`,
+        `Cólico ureteral distal`
+      ],
+      pearl: `Un dolor abdominal bajo en varones jóvenes o prepuberales puede ser la forma de presentación de una torsión testicular: explorar siempre los genitales.`
+    },
+    difuso: {
+      title: `Dolor Difuso / No Localizado / Periumbilical`,
+      badge: `ACR (fiebre + no localizado): TC Abdomen con contraste IV`,
+      surgical: [
+        `Peritonitis difusa y perforación de víscera hueca`,
+        `Isquemia mesentérica aguda (dolor desproporcionado al examen)`,
+        `Obstrucción intestinal mecánica / vólvulo`,
+        `Rotura de aneurisma aórtico abdominal`,
+        `Apendicitis aguda en fase inicial (dolor periumbilical visceral)`
+      ],
+      medical: [
+        `Gastroenteritis aguda y dolor abdominal inespecífico (causas más frecuentes)`,
+        `Pancreatitis aguda e íleo paralítico`,
+        `Causas sistémicas/metabólicas: cetoacidosis diabética, crisis drepanocítica, porfiria aguda intermitente, fiebre mediterránea familiar, púrpura de Schönlein-Henoch, saturnismo, angioedema`,
+        `Pared abdominal: herpes zóster, distensión muscular, hematoma de la vaina de los rectos`
+      ],
+      pearl: `Si tras exploración física, analítica y ecografía normales no hay factores de riesgo quirúrgico (<48 h, dolor tras vómitos, defensa involuntaria/rebote, >= 65 años), puede asumirse dolor abdominal indiferenciado con vigilancia.`
+    }
+  };
+
+  const THERAPY_DATA = {
+    analgesicos: [
+      {
+        name: `Paracetamol (Acetaminofén)`,
+        status: `ok`,
+        indication: `Analgesia de primer escalón en dolor leve-moderado y fiebre (ej. caso clínico de diverticulitis junto a morfina, escalera OMS en pediatría).`,
+        adults: `Administración oral o parenteral según tolerancia. (Dosis estándar exacta en mg/kg y pauta horaria en adultos: no especificada en las fuentes del cuaderno).`,
+        peds: `Ejemplo en fuente: 500 mg en adolescente de 14 años con fiebre/dolor. Dosis ponderal exacta en mg/kg: no especificada en las fuentes.`,
+        renal: `Ajuste específico por TFG/FG: no especificado en las fuentes del cuaderno.`,
+        contra: `Sobredosis/ingesta masiva: puede permanecer asintomática las primeras 24 h y producir fallo hepático posterior si no se administra antídoto. Ventaja: NO incrementa el riesgo de hemorragia digestiva alta (a diferencia de los AINEs).`
+      },
+      {
+        name: `Morfina`,
+        status: `info`,
+        indication: `Analgesia parenteral en dolor abdominal agudo intenso (ej. diverticulitis aguda, disección aórtica tipo B para reducir el impulso simpaticomimético y las fuerzas de cizallamiento).`,
+        adults: `Uso parenteral titulado en urgencias sin retraso diagnóstico (facilita la exploración física sin perder sensibilidad). Dosis exacta en mg/kg: no especificada en las fuentes.`,
+        peds: `Integrada en escalón superior de la escalera analgésica OMS si dolor intenso; dosis exacta en mg/kg: no especificada en las fuentes.`,
+        renal: `Ajuste específico por TFG/FG: no especificado en las fuentes del cuaderno.`,
+        contra: `Vigilar depresión respiratoria, nivel de conciencia y miosis (toxidrome opioide); asegurar vía aérea y oxigenación.`
+      },
+      {
+        name: `AINEs (Ibuprofeno, Aspirina, Naproxeno) · Precaución`,
+        status: `warn`,
+        indication: `Mencionados en las fuentes principalmente como factor de riesgo etiológico de gastritis, úlcera péptica y hemorragia digestiva alta.`,
+        adults: `No detallados como pauta analgésica de urgencias; evitar en sospecha de sangrado digestivo o intracraneal.`,
+        peds: `Dosis en mg/kg: no especificadas en las fuentes.`,
+        renal: `Ajuste por TFG/FG: no especificado en las fuentes.`,
+        contra: `Contraindicados/evitar ante sospecha de hemorragia digestiva alta, úlcera péptica, coagulopatía, anticoagulación o traumatismo craneoencefálico/sangrado activo.`
+      },
+      {
+        name: `Metamizol, Ketorolaco y Fentanilo`,
+        status: `neutral`,
+        indication: `Fármacos solicitados en la estructura clínica.`,
+        adults: `No especificados en las fuentes del cuaderno (no se inventan dosis ni pautas fuera de las fuentes).`,
+        peds: `No especificados en las fuentes del cuaderno.`,
+        renal: `No especificado en las fuentes del cuaderno.`,
+        contra: `Aplicar principios generales de seguridad de las fuentes: la analgesia adecuada no enmascara el abdomen agudo; evitar AINEs si riesgo hemorrágico.`
+      }
+    ],
+    antiemeticos: [
+      {
+        name: `Metoclopramida`,
+        status: `ok`,
+        indication: `Control de náuseas o vómitos aislados en el paciente con dolor abdominal agudo que no requiere sonda nasogástrica.`,
+        adults: `10 mg cada 8 horas por vía intravenosa (i.v.) o intramuscular (i.m.).`,
+        peds: `Dosis en mg/kg para pediatría: no especificada en las fuentes del cuaderno.`,
+        renal: `Ajuste específico por TFG/FG: no especificado en las fuentes del cuaderno.`,
+        contra: `En obstrucción de intestino delgado, dilatación gástrica aguda o pancreatitis grave con vómitos incoercibles/íleo, la indicación específica es colocación de sonda nasogástrica (SNG) con aspiración continua.`
+      },
+      {
+        name: `Ondansetrón`,
+        status: `neutral`,
+        indication: `Antiemético solicitado en la estructura clínica.`,
+        adults: `No especificado en las fuentes del cuaderno (sin dosis ni pauta documentada en el material de origen).`,
+        peds: `No especificado en las fuentes del cuaderno.`,
+        renal: `No especificado en las fuentes del cuaderno.`,
+        contra: `Consultar protocolos locales cuando se requiera alternativa antiemética fuera de la metoclopramida documentada.`
+      }
+    ],
+    antibioticos: [
+      {
+        name: `Apendicitis Aguda`,
+        status: `info`,
+        indication: `Profilaxis antibiótica preoperatoria en apendicitis aguda; manejo no operatorio (NOM) solo en casos muy seleccionados Grado 1 sin apendicolito.`,
+        adults: `En apendicitis Grado 2A-B sin factores de riesgo de mala evolución: curso antibiótico postoperatorio corto de 24–48 horas (consenso WSES 70,2%).`,
+        peds: `En pediatría: el alta requiere ausencia de fiebre sin necesidad de antibióticos IV (antibiótico oral o sin antibióticos).`,
+        renal: `Fármacos concretos y ajuste por TFG: no especificados en las fuentes.`,
+        contra: `Evitar prolongar antibióticos postoperatorios innecesariamente en formas no perforadas/no complicadas.`
+      },
+      {
+        name: `Perforación, Isquemia Mesentérica, Colecistitis y Diverticulitis Complicada`,
+        status: `alert`,
+        indication: `Antibioterapia intravenosa precoz de amplio espectro en perforación de víscera hueca, isquemia mesentérica, colecistitis aguda (ingreso + valoración quirúrgica Tokio/WSES) y diverticulitis complicada.`,
+        adults: `Fármacos empíricos concretos por germen: no detallados en las fuentes abdominales. (Para infecciones de partes blandas/abscesos en guía ASI se listan: Cefalosporina, Trimetoprim-Sulfametoxazol, Clindamicina o Tetraciclina; en fiebre maculosa pediátrica: Doxiciclina o Tetraciclina).`,
+        peds: `Dosis ponderales mg/kg: no especificadas en las fuentes.`,
+        renal: `Ajuste por TFG/FG: no especificado en las fuentes.`,
+        contra: `En pancreatitis aguda rige el paradigma "menos es más": uso racional de antibióticos sin profilaxis indiscriminada.`
+      }
+    ],
+    fluidoterapia: [
+      {
+        name: `Reposición de Mantenimiento (Paciente Estable en NPO)`,
+        status: `ok`,
+        indication: `Todo paciente con sospecha de abdomen agudo o intolerancia oral permanece en dieta absoluta (excepción: EII no obstructiva ni perforada).`,
+        adults: `Canalizar vía venosa periférica (o PICC en cuadros graves) e infundir solución glucosalina a razón de 2.500–3.000 mL/24 h.`,
+        peds: `Dosis pediátrica en mL/kg: no especificada en las fuentes (mantener hidratación y evaluar respuesta clínica tras bolos de SSF si vómitos).`,
+        renal: `Ajustar obligatoriamente el volumen y el tipo de fluido a la situación hemodinámica y comorbilidades: insuficiencia renal y cardiopatía.`,
+        contra: `Vigilar sobrecarga hídrica; en pancreatitis aguda aplicar "fluidoterapia acotada" e iniciar nutrición enteral precoz (<48 h).`
+      },
+      {
+        name: `Reanimación en Inestabilidad Hemodinámica / Shock`,
+        status: `alert`,
+        indication: `Hipotensión, taquicardia, signos de shock, sepsis abdominal, trauma o sospecha de hemoperitoneo / ectópico roto / AAA.`,
+        adults: `Dos vías IV periféricas de grueso calibre (o acceso IO). Cristaloides (suero salino fisiológico 0,9% o Ringer lactato) en cargas de 300–500 mL (o bolo inicial de 1 L SSF según caso clínico). Corrección hidroelectrolítica y transfusión de concentrados de hematíes (PRBC) + pruebas cruzadas si anemia/hemorragia.`,
+        peds: `Acceso vascular y reanimación dirigida por objetivos hemodinámicos.`,
+        renal: `Reevaluar respuesta tras cada carga de 300–500 mL en insuficiencia renal o cardiopatía.`,
+        contra: `En disección aórtica aguda, el objetivo prioritario es reducir TA y fuerzas de cizallamiento: Beta-bloqueantes IV de 1.ª línea (Labetalol, Esmolol, Propranolol) + analgesia (morfina), añadiendo vasodilatadores (nitroprusiato sódico) después si es preciso.`
+      }
+    ]
+  };
+
+  const PATHOLOGIES = [
+    {
+      id: `apendicitis`,
+      name: `Apendicitis Aguda`,
+      tag: `Quirúrgica frecuente`,
+      status: `warn`,
+      pain: `Dolor continuo y progresivo que migra de epigastrio/periumbilical a FID, seguido de anorexia, náuseas/vómitos, febrícula (37,5–38,5 °C). Signos de Blumberg, Rovsing, psoas y obturador positivos.`,
+      labs: `Leucocitos > 10.000/µL + PCR > 8 mg/L (mayor VPP). PCR < 25 mg/L tras >12 h ayuda a descartarla. Escalas: Alvarado modificada, AIR, RIPASA, AAS, PAS en niños.`,
+      imaging: `Adultos (ACR): TC Abdomen/Pelvis con contraste IV (diámetro > 6 mm, diana, grasa estriada, apendicolito). Niños y embarazadas: Ecografía con compresión graduada (90% S/E en no perforadas; RM sin gadolinio si dudosa en gestante).`,
+      treatment: `Dieta absoluta, hidratación, analgesia precoz, antibiótico preoperatorio y apendicectomía laparoscópica urgente (estándar en Grado 3A estable). Antibióticos post-op 24–48 h en Grado 2A-B sin factores de riesgo. NOM con antibióticos solo en Grado 1 seleccionado sin apendicolito.`,
+      pitfalls: `Presentación atípica en retrocecal (cadera flexionada, signo del psoas) o pélvica (diarrea, tacto rectal doloroso, obturador).`
+    },
+    {
+      id: `colecistitis`,
+      name: `Colecistitis Aguda`,
+      tag: `Biliar · WSES/TG18`,
+      status: `info`,
+      pain: `Dolor continuo en HCD (puede irradiar a escápula derecha o dorso), postprandial o progresivo, fiebre, náuseas/vómitos, signo de Murphy positivo. Ictericia menos frecuente.`,
+      labs: `Leucocitosis, elevación de PCR y alteración leve de pruebas hepáticas (si bilirrubina/PFH muy elevadas o colédoco dilatado, sospechar coledocolitiasis). Graduación TG18.`,
+      imaging: `1.ª elección (ACR): Ecografía abdominal de HCD (litiasis, pared vesicular > 3 mm, líquido perivesicular, Murphy ecográfico, colédoco > 6 mm). Secundaria: TC con contraste IV o CPRM/RM (RM es más precisa que TC en colecistitis y litiasis de colédoco).`,
+      treatment: `Ingreso hospitalario, dieta absoluta, sueroterapia, analgesia, antibioterapia IV y colecistectomía laparoscópica precoz (< 72 h). En Grado III TG18 con disfunción orgánica grave o alto riesgo quirúrgico: colecistostomía percutánea (Radiología Intervencionista / HBP terciaria).`,
+      pitfalls: `Un signo de Murphy negativo aislado no excluye colecistitis aguda en pacientes con dolor agudo en HCD.`
+    },
+    {
+      id: `colangitis`,
+      name: `Colangitis / Coledocolitiasis`,
+      tag: `Emergencia biliar`,
+      status: `alert`,
+      pain: `Dolor en HCD o epigastrio asociado a cuadro séptico (colecistitis séptica / colangitis) o ictericia obstructiva.`,
+      labs: `Elevación de pruebas de función hepática (PFH/LFTs), leucocitosis, PCR y marcadores de sepsis/disfunción orgánica.`,
+      imaging: `Ecografía HCD inicial (dilatación de vía biliar principal/colédoco > 6 mm) seguida de CPRM / ecoendoscopia (EUS) si sospecha de coledocolitiasis con colédoco dilatado o PFH alteradas.`,
+      treatment: `Urgencias con valoración conjunta de Cirugía y Gastroenterología / Radiología Intervencionista (WSES 2020): reanimación, antibioterapia IV urgente y planificación de drenaje biliar / CPRE (o colecistostomía si sepsis vesicular grado III).`,
+      pitfalls: `Diferenciar rápidamente cólico biliar simple de colangitis séptica que exige descompresión biliar urgente.`
+    },
+    {
+      id: `pancreatitis`,
+      name: `Pancreatitis Aguda`,
+      tag: `Atlanta Revisada`,
+      status: `warn`,
+      pain: `Epigastralgia aguda intensa persistente irradiada "en cinturón" hacia espalda que alivia al inclinarse hacia delante o en posición fetal/prona. Signos de Cullen y Grey-Turner en formas hemorrágicas graves.`,
+      labs: `Amilasa o lipasa >= 3× LSN (diagnóstico con >=2 de 3 criterios de Atlanta). Gravedad: fallo orgánico persistente, Ranson/Glasgow >= 3, APACHE II >= 8, PCR >= 150–210 mg/L (S 83%, E 85% con >=210 mg/L), derrame pleural (BISAP).`,
+      imaging: `No precisa TC inicial de rutina si cumple criterios clínicos y enzimáticos; mayor rendimiento de TC para valorar necrosis y colecciones a partir de las 48–72 horas. Rx tórax/abdomen poco fiable (asa centinela, signo de colon amputado, derrame pleural izquierdo).`,
+      treatment: `Paradigma "menos es más": fluidoterapia acotada, analgesia parenteral, vigilancia de fallo orgánico, SNG solo si vómitos incoercibles/íleo, uso racional de antibióticos y nutrición enteral precoz (< 48 h por SNG o SNY).`,
+      pitfalls: `El gas intestinal y la obesidad limitan la visualización ecográfica del páncreas hasta en un 25% de casos.`
+    },
+    {
+      id: `diverticulitis`,
+      name: `Diverticulitis Aguda`,
+      tag: `FII · ACR TC IV`,
+      status: `info`,
+      pain: `Dolor constante en FII (menos frecuente derecha/cecal), fiebre, anorexia, náuseas sin vómitos, cambio del hábito intestinal y dolor focal a la palpación.`,
+      labs: `Leucocitosis y PCR elevada. Si sangre oculta positiva o fracaso terapéutico previo en paciente con antecedente, ampliar estudio.`,
+      imaging: `TC Abdomen y Pelvis con contraste IV (ACR): engrosamiento de pared colónica, estriación de grasa pericólica, absceso pericólico o gas extraluminal. Indicar TC en 1.er episodio en FII, inmunodeprimidos o fracaso del tratamiento actual.`,
+      treatment: `No complicada: manejo sintomático ambulatorio (dieta líquida/analgesia o antibióticos según criterio clínico). Complicada (absceso/perforación/peritonitis): dieta absoluta, sueroterapia, antibióticos IV, drenaje percutáneo o cirugía urgente.`,
+      pitfalls: `La sospecha clínica aislada en FII tiene un VPP de hasta el 65%, por lo que en primer episodio o signos de alarma se recomienda TC.`
+    },
+    {
+      id: `obstruccion`,
+      name: `Obstrucción Intestinal`,
+      tag: `Oclusivo / Mixto`,
+      status: `warn`,
+      pain: `Dolor cólico intermitente, náuseas, vómitos (biliosos en obstrucción mecánica alta/delgado), distensión abdominal (central en delgado; marco cólico en grueso) y ausencia de gases/heces (>= 24 h = criterio quirúrgico). Peristaltismo de lucha inicial → silencio si estrangulación.`,
+      labs: `Alteraciones electrolíticas (hipopotasemia, alcalosis), elevación de lactato sérico y relación BUN/Cr elevada si deshidratación o isquemia asociada.`,
+      imaging: `Rx simple de abdomen en bipedestación/supino (diagnostica ~60%; normal en obstrucción precoz o yeyunal alta) + Rx tórax bipedestación para descartar perforación. TC Abdomen/Pelvis con contraste IV (o sin contraste si alta sospecha tras Rx negativa): asas dilatadas > 3 cm, nivel de transición, signos de isquemia. Tacto rectal DESPUÉS de la Rx.`,
+      treatment: `Dieta absoluta, SNG con aspiración continua (indicada específicamente en obstrucción de intestino delgado), reanimación con cristaloides IV, prueba con Gastrografin según protocolo. Cirugía urgente si estrangulación, peritonitis o fracaso del manejo conservador.`,
+      pitfalls: `El paso de dolor cólico a dolor continuo, fijo e intenso con silencio auscultatorio indica estrangulación/isquemia y exige cirugía inmediata.`
+    },
+    {
+      id: `isquemia`,
+      name: `Isquemia Mesentérica Aguda`,
+      tag: `Catástrofe Vascular`,
+      status: `alert`,
+      pain: `Dolor abdominal súbito, intenso y difuso DESPROPORCIONADO para una exploración física inicialmente blanda y anodina en paciente anciano con ateromatosis, cardiopatía o fibrilación auricular. Puede asociar vómitos y diarrea sanguinolenta (15% hematoquecia).`,
+      labs: `No existen pruebas de laboratorio fiables para el diagnóstico precoz. Sospechar ante acidosis metabólica con lactato elevado (mal pronóstico), leucocitosis marcada y dímero D elevado precozmente.`,
+      imaging: `Angio-TC abdominal trifásica (TC multidetector con contraste IV): modalidad de elección. Detecta oclusión arterial (AMS) o venosa, hiporealce de pared intestinal, neumatosis intestinal o gas portal.`,
+      treatment: `Reanimación agresiva del volumen circulante, antibioterapia IV de amplio espectro, anticoagulación sistémica (pilar en trombosis venosa mesentérica) y revascularización/cirugía urgente (embolectomía abierta o endovascular; laparotomía de control de daños si gangrena; PGE1/papaverina intraarterial en NOMI sin gangrena).`,
+      pitfalls: `La ausencia inicial de defensa abdominal retrasa el diagnóstico y dispara la mortalidad; actuar por alto índice de sospecha.`
+    },
+    {
+      id: `colico_renal`,
+      name: `Cólico Renoureteral`,
+      tag: `Urológico`,
+      status: `ok`,
+      pain: `Dolor en fosa renal/flanco de inicio rápido, agitación psicomotriz intensa ("no encuentra postura"), irradiado por trayecto ureteral hacia fosa ilíaca y genitales. Puño-percusión lumbar positiva.`,
+      labs: `Tira reactiva / análisis de orina: microhematuria (diagnóstico clínico con >=2 de 3 criterios: dolor característico, puño-percusión +, microhematuria). Creatinina y leucocitos para descartar sepsis urinaria obstructiva.`,
+      imaging: `No requiere imagen rutinaria en cuadro típico no complicado. Reservar TC sin contraste (patrón oro) o ecografía renal para casos con fiebre, insuficiencia renal, embarazo, paciente monorreno o dolor refractario.`,
+      treatment: `Analgesia eficaz, hidratación ajustada y vigilancia de signos de infección obstructiva (fiebre + hidronefrosis = derivación urológica urgente).`,
+      pitfalls: `En varón >50 años hipertenso o fumador, simular cólico nefrítico puede ocultar un aneurisma o disección de aorta abdominal.`
+    },
+    {
+      id: `ectopico`,
+      name: `Embarazo Ectópico`,
+      tag: `Emergencia Ginecológica`,
+      status: `alert`,
+      pain: `Tríada clásica de amenorrea, metrorragia y dolor hipogástrico/pélvico súbito; puede debutar directamente con síncope y shock hipovolémico (hemoperitoneo). Denominado "el gran mentiroso".`,
+      labs: `Test de gestación (β-hCG) positivo obligatorio en toda mujer en edad fértil con dolor abdominal incierto. Hemograma (anemia aguda) y pruebas cruzadas.`,
+      imaging: `Ecografía transvaginal y abdominal (POCUS): ausencia de saco gestacional intrauterino con β-hCG > 1.000 U/L y líquido libre en espacio de Douglas/hemoperitoneo sella el diagnóstico.`,
+      treatment: `Si roto o inestable: reposición volémica agresiva, hemoderivados y cirugía laparoscópica urgente. En casos estables y no complicados seleccionados: tratamiento médico con metotrexato o laparoscopia.`,
+      pitfalls: `Toda anemia aguda + hipovolemia en mujer fértil sin sangrado exteriorizado obliga a descartar embarazo ectópico roto.`
+    },
+    {
+      id: `aaa`,
+      name: `Aneurisma / Disección Aorta Abdominal`,
+      tag: `Máxima Emergencia`,
+      status: `alert`,
+      pain: `Rotura AAA: tríada de dolor abdominal/lumbar severo súbito, hipotensión y masa pulsátil. Disección aórtica: dolor desgarrador irradiado a espalda que no cede con cambios posturales, HTA o asimetría/abolición de pulsos femorales.`,
+      labs: `Anemia/caída de hematocrito, acidosis metabólica grave, coagulopatía; pruebas cruzadas inmediatas.`,
+      imaging: `Ecografía a pie de cama (POCUS) para cribado rápido de AAA (> 3,0 cm) en inestable. Angio-TC de abdomen/pelvis (si estable) para confirmar rotura, hematoma retroperitoneal o disección (Tipo A vs Tipo B). Nota: hasta 12% de disecciones tienen Rx tórax normal.`,
+      treatment: `Si AAA roto inestable: traslado inmediato a quirófano / Radiología Intervencionista para reparación abierta o EVAR sin retrasos por imagen. Si disección aórtica: control estricto de TA y cizallamiento con beta-bloqueantes IV de 1.ª línea (Labetalol, Esmolol, Propranolol) + morfina; nitroprusiato posterior si necesario (Tipo A = cirugía urgente; Tipo B = manejo médico inicial salvo complicaciones).`,
+      pitfalls: `Nunca retrasar el traslado quirúrgico de un AAA roto inestable para realizar una TC.`
+    }
+  ];
+
+  // Search Index combining sections, signs, pathologies, and drugs
+  const SEARCH_INDEX = [
+    { title: `Evaluación Inicial ABCDE y Destino`, meta: `Sección 01 · Estabilidad, shock, Observación, UCI y Alta 8–10h`, href: `#sec-1` },
+    { title: `Arquitectura Tri-Color (Rojo, Ámbar, Verde)`, meta: `Sección 01 · Criterios NICE / BAPS / ECAT`, href: `#sec-1` },
+    { title: `Red Flags Tiempo-Dependientes`, meta: `Sección 02 · Peritonitis, shock, dolor desproporcionado, enmascaramiento`, href: `#sec-2` },
+    { title: `Anamnesis PQRST / SOCRATES e IAPP`, meta: `Sección 03 · Orden IAPP, Tacto rectal tras Rx en obstrucción`, href: `#sec-3` },
+    { title: `Signos: Murphy, Blumberg, Rovsing, Psoas, Obturador, Courvoisier, Carnett, Giordano`, meta: `Sección 03 · Técnica e implicación diagnóstica`, href: `#sec-3` },
+    { title: `Diagnóstico Diferencial por Cuadrantes (9 Regiones)`, meta: `Sección 04 · HCD, Epigastrio, HCI, Flancos, FID, FII, Hipogastrio, Difuso`, href: `#sec-4` },
+    { title: `Algoritmo Diagnóstico Interactivo`, meta: `Sección 05 · Estabilidad + Localización + Pruebas + Conducta`, href: `#sec-5` },
+    { title: `Biomarcadores: PCR, Procalcitonina, Lactato, Dímero D, β-hCG, ECG`, meta: `Sección 06 · Umbrales de laboratorio y electrocardiograma`, href: `#sec-6` },
+    { title: `Imagen: Ecografía, TC con contraste, Angio-TC, RM y Rx simple`, meta: `Sección 06 · ACR, estrategia condicional Laméris (89% vs 70%)`, href: `#sec-6` },
+    { title: `Analgésicos: Paracetamol, Morfina, AINEs (riesgo HDA)`, meta: `Sección 07 · Analgesia sin mitos, escalera OMS`, href: `#sec-7` },
+    { title: `Antieméticos: Metoclopramida 10 mg/8h y SNG`, meta: `Sección 07 · Control emético e indicación de sonda nasogástrica`, href: `#sec-7` },
+    { title: `Antibióticos y Fluidoterapia (Glucosalina, SSF/Ringer 300–500 mL)`, meta: `Sección 07 · Manejo inicial, NPO, ajuste en insuficiencia renal/cardiopatía`, href: `#sec-7` },
+    { title: `Apendicitis, Colecistitis y Colangitis`, meta: `Sección 08 · Patologías críticas biliares y FID`, href: `#sec-8` },
+    { title: `Pancreatitis Aguda y Diverticulitis`, meta: `Sección 08 · Atlanta Revisada, nutrición enteral <48h, TC IV`, href: `#sec-8` },
+    { title: `Obstrucción Intestinal e Isquemia Mesentérica`, meta: `Sección 08 · SNG, Gastrografin, Angio-TC trifásica`, href: `#sec-8` },
+    { title: `Cólico Renoureteral, Embarazo Ectópico y AAA`, meta: `Sección 08 · TC sin contraste, β-hCG, Beta-bloqueantes/EVAR`, href: `#sec-8` },
+    { title: `Escalas: Alvarado, AIR, BISAP, TG18, WSES, qSOFA, NEWS2`, meta: `Sección 09 · Verificador quirúrgico y criterios de Atlanta`, href: `#sec-9` },
+    { title: `Urgencias en 2 Minutos (Consulta Rápida)`, meta: `Sección 10 · Red flags, diagnósticos críticos, derivación a cirugía`, href: `#sec-10` }
+  ];
+
+  // App state object persisted via notebookAppApi
+  let appState = {
+    abcde: {},
+    quadrant: `hcd`,
+    therapyTab: `analgesicos`,
+    pathologyId: `apendicitis`,
+    algo: {
+      stability: `estable`,
+      profile: `adulto`,
+      location: `hcd`,
+      syndrome: `inflamatorio`
+    },
+    surgCrit: [],
+    atlantaCrit: []
+  };
+
+  async function saveState() {
+    try {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+        await window.notebookAppApi.setAppState(appState);
+      }
+    } catch (err) {
+      // Safe fallback if API unavailable in standalone preview
+    }
+  }
+
+  // ---- Section 1: ABCDE Checklist ----
+  function toggleAbcdeStep(checkbox) {
+    if (!checkbox) return;
+    const step = checkbox.getAttribute(`data-step`);
+    const parent = checkbox.closest(`.check-item`);
+    if (checkbox.checked) {
+      appState.abcde[step] = true;
+      if (parent) parent.classList.add(`checked`);
+    } else {
+      delete appState.abcde[step];
+      if (parent) parent.classList.remove(`checked`);
+    }
+    updateAbcdeProgress();
+    saveState();
+  }
+
+  function updateAbcdeProgress() {
+    const boxes = document.querySelectorAll(`#abcde-checklist input[type="checkbox"]`);
+    let count = 0;
+    boxes.forEach(function (box) {
+      if (box.checked) count += 1;
+    });
+    const chip = document.getElementById(`abcde-progress-chip`);
+    if (chip) {
+      chip.textContent = count + ` / ` + boxes.length + ` completados`;
+      chip.setAttribute(`data-status`, count === boxes.length ? `ok` : `info`);
+    }
+  }
+
+  function resetAbcdeChecklist(btn) {
+    if (!btn) return;
+    if (btn.dataset.armed !== `true`) {
+      btn.dataset.armed = `true`;
+      btn.textContent = `Confirmar reinicio`;
+      setTimeout(function () {
+        if (btn.dataset.armed === `true`) {
+          btn.dataset.armed = `false`;
+          btn.textContent = `Reiniciar`;
+        }
+      }, 3000);
+      return;
+    }
+    btn.dataset.armed = `false`;
+    btn.textContent = `Reiniciar`;
+    appState.abcde = {};
+    const boxes = document.querySelectorAll(`#abcde-checklist input[type="checkbox"]`);
+    boxes.forEach(function (box) {
+      box.checked = false;
+      const parent = box.closest(`.check-item`);
+      if (parent) parent.classList.remove(`checked`);
+    });
+    updateAbcdeProgress();
+    saveState();
+  }
+
+  // ---- Section 3: Signs Filter ----
+  function filterSignsTable(cat) {
+    const rows = document.querySelectorAll(`#signs-table tbody tr`);
+    rows.forEach(function (row) {
+      const rowCat = row.getAttribute(`data-cat`);
+      row.style.display = (cat === `all` || rowCat === cat) ? `` : `none`;
+    });
+  }
+
+  // ---- Section 4: Quadrant Selector ----
+  function selectQuadrant(qKey) {
+    if (!QUADRANTS[qKey]) return;
+    appState.quadrant = qKey;
+
+    // Update SVG selection
+    const shapes = document.querySelectorAll(`.region-shape`);
+    shapes.forEach(function (el) { el.classList.remove(`selected`); });
+    const labels = document.querySelectorAll(`.region-label`);
+    labels.forEach(function (el) { el.classList.remove(`selected-text`); });
+
+    const mapSvg = {
+      hcd: [`svg-hcd`, `lbl-hcd`],
+      epi: [`svg-epi`, `lbl-epi`],
+      hci: [`svg-hci`, `lbl-hci`],
+      flancos: [`svg-fd`, `lbl-fd`, `svg-fi`, `lbl-fi`],
+      fid: [`svg-fid`, `lbl-fid`],
+      fii: [`svg-fii`, `lbl-fii`],
+      hipo: [`svg-hipo`, `lbl-hipo`],
+      difuso: [`svg-umb`, `lbl-umb`, `lbl-umb2`]
+    };
+
+    const targets = mapSvg[qKey] || [];
+    targets.forEach(function (id) {
+      const node = document.getElementById(id);
+      if (node) {
+        if (id.indexOf(`svg-`) === 0) node.classList.add(`selected`);
+        else node.classList.add(`selected-text`);
+      }
+    });
+
+    // Update buttons
+    const btns = document.querySelectorAll(`[data-qbtn]`);
+    btns.forEach(function (b) {
+      if (b.getAttribute(`data-qbtn`) === qKey) b.classList.add(`active-tab`);
+      else b.classList.remove(`active-tab`);
+    });
+
+    // Render panel
+    const q = QUADRANTS[qKey];
+    const panel = document.getElementById(`quadrant-detail-panel`);
+    if (panel) {
+      const surgItems = q.surgical.map(function (item) { return `<li>` + item + `</li>`; }).join(``);
+      const medItems = q.medical.map(function (item) { return `<li>` + item + `</li>`; }).join(``);
+      panel.innerHTML =
+        `<div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--space-sm); margin-bottom:var(--space-md);">` +
+          `<h3 class="subhead" style="margin:0;">` + q.title + `</h3>` +
+          `<span class="chip" data-status="info">` + q.badge + `</span>` +
+        `</div>` +
+        `<div class="card-grid">` +
+          `<div class="card-panel">` +
+            `<p class="kpi-label" style="color:var(--on-error-container); margin-bottom:var(--space-xs);">Causas Quirúrgicas / Tiempo-Dependientes</p>` +
+            `<ul class="clean-list">` + surgItems + `</ul>` +
+          `</div>` +
+          `<div class="card-panel">` +
+            `<p class="kpi-label" style="margin-bottom:var(--space-xs);">Causas Médicas y Referidas</p>` +
+            `<ul class="clean-list">` + medItems + `</ul>` +
+          `</div>` +
+        `</div>` +
+        `<div class="callout" data-status="ok">` +
+          `<p class="callout-title">Perla Topográfica</p>` +
+          `<p>` + q.pearl + `</p>` +
+        `</div>`;
+    }
+    saveState();
+  }
+
+  function toggleAllRegionsTable() {
+    const wrap = document.getElementById(`all-regions-table-wrap`);
+    const btn = document.getElementById(`toggle-all-regions-btn`);
+    if (!wrap || !btn) return;
+    const isHidden = wrap.style.display === `none`;
+    wrap.style.display = isHidden ? `block` : `none`;
+    btn.textContent = isHidden ? `Ocultar matriz completa` : `Ver matriz completa`;
+  }
+
+  function renderAllRegionsTable() {
+    const tbody = document.getElementById(`all-regions-tbody`);
+    if (!tbody) return;
+    const keys = Object.keys(QUADRANTS);
+    tbody.innerHTML = keys.map(function (k) {
+      const q = QUADRANTS[k];
+      return `<tr>` +
+        `<td><strong>` + q.title + `</strong><br><span class="chip" data-status="info" style="margin-top:4px;">` + q.badge + `</span></td>` +
+        `<td>` + q.surgical.join(` · `) + `</td>` +
+        `<td>` + q.medical.join(` · `) + `</td>` +
+      `</tr>`;
+    }).join(``);
+  }
+
+  // ---- Section 5: Interactive Diagnostic Algorithm ----
+  function loadAlgoPreset(preset) {
+    const stabEl = document.getElementById(`algo-stability`);
+    const profEl = document.getElementById(`algo-profile`);
+    const locEl = document.getElementById(`algo-location`);
+    const synEl = document.getElementById(`algo-syndrome`);
+    if (!stabEl || !profEl || !locEl || !synEl) return;
+
+    if (preset === `ami`) {
+      stabEl.value = `estable`;
+      profEl.value = `anciano`;
+      locEl.value = `difuso`;
+      synEl.value = `vascular`;
+    } else if (preset === `ectopic`) {
+      stabEl.value = `inestable`;
+      profEl.value = `mujer_fertil`;
+      locEl.value = `hipo`;
+      synEl.value = `vascular`;
+    } else if (preset === `chole`) {
+      stabEl.value = `estable`;
+      profEl.value = `adulto`;
+      locEl.value = `hcd`;
+      synEl.value = `inflamatorio`;
+    } else if (preset === `append`) {
+      stabEl.value = `peritonismo`;
+      profEl.value = `adulto`;
+      locEl.value = `fid`;
+      synEl.value = `inflamatorio`;
+    }
+    updateAlgorithm();
+  }
+
+  function updateAlgorithm() {
+    const stabEl = document.getElementById(`algo-stability`);
+    const profEl = document.getElementById(`algo-profile`);
+    const locEl = document.getElementById(`algo-location`);
+    const synEl = document.getElementById(`algo-syndrome`);
+    const outEl = document.getElementById(`algo-output`);
+    if (!stabEl || !profEl || !locEl || !synEl || !outEl) return;
+
+    const stability = stabEl.value;
+    const profile = profEl.value;
+    const location = locEl.value;
+    const syndrome = synEl.value;
+
+    appState.algo = { stability: stability, profile: profile, location: location, syndrome: syndrome };
+
+    // Step 1: Stabilization & Initial Priority
+    let priorityChip = `<span class="chip" data-status="ok">Prioridad Ámbar/Verde · Estudio escalonado</span>`;
+    let stabAction = `Dieta absoluta (NPO), vía venosa periférica, analgesia precoz y monitorización de constantes.`;
+    let borderTop = `var(--primary)`;
+
+    if (stability === `inestable`) {
+      priorityChip = `<span class="chip" data-status="alert">Prioridad ROJA · Emergencia Vital</span>`;
+      stabAction = `Activación inmediata de reanimación y cirugía. 2 vías periféricas gruesas (o PICC/IO), cargas de cristaloides 300–500 mL (SSF/Ringer), pruebas cruzadas/transfusión si anemia, E-FAST/POCUS a pie de cama sin retrasar quirófano.`;
+      borderTop = `var(--error)`;
+    } else if (stability === `peritonismo` || syndrome === `peritoneal` || syndrome === `vascular`) {
+      priorityChip = `<span class="chip" data-status="alert">Prioridad ROJA · Descartar Cirugía Urgente</span>`;
+      stabAction = `NPO, vía IV, analgesia parenteral, evaluación quirúrgica precoz. Si abdomen "en tabla" o neumoperitoneo → indicación directa de laparotomía/laparoscopia.`;
+      borderTop = `var(--error)`;
+    }
+
+    // Step 2: Mandatory Tests by Profile & Location
+    let tests = [`Hemograma, bioquímica urgente, PCR, tira reactiva de orina`];
+    if (profile === `mujer_fertil` || profile === `gestante`) {
+      tests.push(`<strong>β-hCG urgente obligatoria</strong> y valoración ginecológica`);
+    }
+    if (location === `epi` || location === `hcd` || location === `hci` || profile === `anciano`) {
+      tests.push(`<strong>ECG inmediato y troponina</strong> (descartar SCA inferior/pericarditis)`);
+    }
+    if (stability === `inestable` || syndrome === `vascular` || syndrome === `peritoneal`) {
+      tests.push(`<strong>Gasometría venosa, lactato sérico</strong>, coagulación, dímero D y pruebas cruzadas`);
+    }
+    if (location === `epi` || location === `hcd` || location === `hci`) {
+      tests.push(`Amilasa/lipasa y perfil hepático (PFH)`);
+    }
+
+    // Step 3: Imaging Strategy (ACR + Sources)
+    let imaging = `Ecografía abdominal dirigida inicial; TC solo si negativa o inconclusa (estrategia condicional).`;
+    if (stability === `inestable`) {
+      imaging = `<strong>POCUS / E-FAST a pie de cama</strong> (hemoperitoneo, AAA > 3 cm, líquido en Douglas). <strong>No retrasar cirugía</strong> por TC en inestabilidad refractaria o ectópico roto.`;
+    } else if (profile === `gestante`) {
+      imaging = `<strong>Ecografía</strong> (compresión graduada / transvaginal). Si no concluyente, <strong>RM sin gadolinio</strong> (evitar radiación ionizante en lo posible).`;
+    } else if (syndrome === `vascular`) {
+      imaging = `<strong>Angio-TC abdominal trifásica</strong> urgente (isquemia mesentérica o disección/AAA estable).`;
+    } else if (syndrome === `peritoneal`) {
+      imaging = `<strong>Rx PA y lateral de tórax en bipedestación (&ge;10 min)</strong> para neumoperitoneo; si estable y requiere filiar origen → TC abdomen con contraste IV.`;
+    } else if (syndrome === `oclusivo`) {
+      imaging = `<strong>Rx simple abdomen + tórax</strong> (antes del tacto rectal) → si negativa o alta sospecha → <strong>TC abdomen/pelvis</strong>.`;
+    } else if (location === `hcd`) {
+      imaging = `<strong>Ecografía transabdominal de HCD</strong> (1.ª elección ACR). Secundaria: TC IV o CPRM/RM.`;
+    } else if (location === `fid`) {
+      imaging = profile === `pediatrico`
+        ? `<strong>Ecografía con compresión graduada</strong> (1.ª elección pediátrica). TC baja dosis solo si no concluyente o peritonismo.`
+        : `<strong>TC Abdomen y Pelvis con contraste IV</strong> (ACR en adultos) o estrategia condicional Eco → TC.`;
+    } else if (location === `fii` || location === `difuso` || location === `hci`) {
+      imaging = `<strong>TC Abdomen y Pelvis con contraste IV</strong> (mayor rentabilidad en dolor difuso, FII/diverticulitis y HCI).`;
+    } else if (location === `flancos`) {
+      imaging = `<strong>TC sin contraste</strong> (patrón oro en cólico nefrítico complicado) o ecografía renal si fiebre, IR o embarazo; Angio-TC si sospecha AAA.`;
+    } else if (location === `hipo`) {
+      imaging = `<strong>Ecografía abdominal/transvaginal</strong> (ectópico, torsión ovárica, globo vesical) o eco-Doppler escrotal sin retrasar cirugía en sospecha de torsión testicular.`;
+    }
+
+    // Step 4: Likely Differentials & Disposition
+    const qInfo = QUADRANTS[location] || QUADRANTS.difuso;
+    let dxList = qInfo.surgical.slice(0, 3).join(` · `);
+    let conduct = `Si diagnóstico quirúrgico confirmado → cirugía urgente y antibioterapia IV según foco. Si cuadro médico estable sin alarma → tratamiento dirigido o ingreso en <strong>Observación</strong> para reexploración seriada (especialmente en ancianos, inmunodeprimidos o corticoides).`;
+
+    if (profile === `anciano` && syndrome === `vascular`) {
+      dxList = `Isquemia mesentérica aguda · Rotura/Disección de AAA · Perforación oculta`;
+      conduct = `Sospecha máxima aunque la exploración abdominal sea blanda. Reanimación, antibioterapia IV de amplio espectro, Angio-TC trifásica y cirugía vascular/general urgente.`;
+    } else if (profile === `mujer_fertil` && location === `hipo`) {
+      dxList = `Embarazo ectópico roto · Torsión ovárica · Apendicitis pélvica · EIP`;
+      conduct = `Si β-hCG + e inestabilidad/hemoperitoneo → reposición volémica agresiva y laparoscopia urgente. Si estable no complicado → valoración ginecológica (metotrexato vs laparoscopia).`;
+    }
+
+    outEl.innerHTML =
+      `<article class="algo-step" style="border-top-color:` + borderTop + `;">` +
+        `<div class="algo-step-num">Paso 1 · Prioridad y Estabilización</div>` +
+        priorityChip +
+        `<p style="margin-top:var(--space-sm); margin-bottom:0;">` + stabAction + `</p>` +
+      `</article>` +
+      `<article class="algo-step">` +
+        `<div class="algo-step-num">Paso 2 · Laboratorio y Pruebas Clave</div>` +
+        `<ul class="clean-list">` + tests.map(function (t) { return `<li>` + t + `</li>`; }).join(``) + `</ul>` +
+      `</article>` +
+      `<article class="algo-step">` +
+        `<div class="algo-step-num">Paso 3 · Imagen Recomendada (ACR)</div>` +
+        `<p style="margin:0;">` + imaging + `</p>` +
+      `</article>` +
+      `<article class="algo-step">` +
+        `<div class="algo-step-num">Paso 4 · Diagnósticos Clave y Conducta</div>` +
+        `<p style="margin:0 0 var(--space-xs) 0;"><strong>Prioritarios:</strong> ` + dxList + `</p>` +
+        `<p style="margin:0;">` + conduct + `</p>` +
+      `</article>`;
+
+    saveState();
+  }
+
+  // ---- Section 7: Therapy Tabs ----
+  function switchTherapyTab(tabKey) {
+    if (!THERAPY_DATA[tabKey]) return;
+    appState.therapyTab = tabKey;
+
+    const btns = document.querySelectorAll(`[data-theratab]`);
+    btns.forEach(function (b) {
+      if (b.getAttribute(`data-theratab`) === tabKey) b.classList.add(`active-tab`);
+      else b.classList.remove(`active-tab`);
+    });
+
+    const panel = document.getElementById(`therapy-panel`);
+    if (!panel) return;
+    const items = THERAPY_DATA[tabKey];
+    panel.innerHTML = `<div class="card-grid-2">` + items.map(function (drug) {
+      return `<article class="status-card" data-status="` + drug.status + `">` +
+        `<h3 class="subhead">` + drug.name + `</h3>` +
+        `<p style="margin:0 0 var(--space-xs) 0;"><strong>Indicación:</strong> ` + drug.indication + `</p>` +
+        `<p style="margin:0 0 var(--space-xs) 0;"><strong>Adultos:</strong> ` + drug.adults + `</p>` +
+        `<p style="margin:0 0 var(--space-xs) 0;"><strong>Pediatría:</strong> ` + drug.peds + `</p>` +
+        `<p style="margin:0 0 var(--space-xs) 0;"><strong>Ajuste TFG / Insuficiencia Renal:</strong> ` + drug.renal + `</p>` +
+        `<p style="margin:0;"><strong>Contraindicaciones / Precauciones:</strong> ` + drug.contra + `</p>` +
+      `</article>`;
+    }).join(``) + `</div>`;
+
+    saveState();
+  }
+
+  // ---- Section 8: Critical Pathologies ----
+  function initPathologies() {
+    const pillsEl = document.getElementById(`pathology-pills`);
+    const tbodyEl = document.getElementById(`pathology-summary-tbody`);
+    if (pillsEl) {
+      pillsEl.innerHTML = PATHOLOGIES.map(function (p) {
+        return `<button type="button" class="btn btn-ghost" data-pathbtn="` + p.id + `" onclick="selectPathology('` + p.id + `')">` + p.name + `</button>`;
+      }).join(``);
+    }
+    if (tbodyEl) {
+      tbodyEl.innerHTML = PATHOLOGIES.map(function (p) {
+        return `<tr>` +
+          `<td><strong>` + p.name + `</strong></td>` +
+          `<td>` + p.pain + `</td>` +
+          `<td>` + p.imaging + `</td>` +
+          `<td>` + p.treatment + `</td>` +
+        `</tr>`;
+      }).join(``);
+    }
+  }
+
+  function selectPathology(id) {
+    const found = PATHOLOGIES.find(function (p) { return p.id === id; });
+    if (!found) return;
+    appState.pathologyId = id;
+
+    const btns = document.querySelectorAll(`[data-pathbtn]`);
+    btns.forEach(function (b) {
+      if (b.getAttribute(`data-pathbtn`) === id) b.classList.add(`active-tab`);
+      else b.classList.remove(`active-tab`);
+    });
+
+    const card = document.getElementById(`pathology-detail-card`);
+    if (card) {
+      card.setAttribute(`data-status`, found.status);
+      card.innerHTML =
+        `<div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:var(--space-sm); margin-bottom:var(--space-md);">` +
+          `<h3 class="subhead" style="margin:0;">` + found.name + `</h3>` +
+          `<span class="chip" data-status="` + (found.status === `alert` ? `alert` : (found.status === `warn` ? `warn` : `info`)) + `">` + found.tag + `</span>` +
+        `</div>` +
+        `<div class="card-grid-2">` +
+          `<div class="card-panel">` +
+            `<p class="kpi-label">Perfil Clínico y Signo Guía</p>` +
+            `<p style="margin:var(--space-xs) 0 var(--space-sm) 0;">` + found.pain + `</p>` +
+            `<p class="kpi-label">Laboratorio y Escalas</p>` +
+            `<p style="margin:var(--space-xs) 0 0 0;">` + found.labs + `</p>` +
+          `</div>` +
+          `<div class="card-panel">` +
+            `<p class="kpi-label">Imagen de Elección (ACR / WSES)</p>` +
+            `<p style="margin:var(--space-xs) 0 var(--space-sm) 0;">` + found.imaging + `</p>` +
+            `<p class="kpi-label">Conducta Terapéutica Prioritaria</p>` +
+            `<p style="margin:var(--space-xs) 0 0 0;">` + found.treatment + `</p>` +
+          `</div>` +
+        `</div>` +
+        `<div class="callout" data-status="warn">` +
+          `<p class="callout-title">Error Frecuente / Perla Clínica</p>` +
+          `<p>` + found.pitfalls + `</p>` +
+        `</div>`;
+    }
+    saveState();
+  }
+
+  // ---- Section 9: Interactive Criteria Checker ----
+  function evaluateCriteria() {
+    const surgBoxes = document.querySelectorAll(`.surg-crit`);
+    const atlantaBoxes = document.querySelectorAll(`.atlanta-crit`);
+    let surgCount = 0;
+    let atlantaCount = 0;
+    const surgSaved = [];
+    const atlantaSaved = [];
+
+    surgBoxes.forEach(function (box, idx) {
+      const parent = box.closest(`.check-item`);
+      if (box.checked) {
+        surgCount += 1;
+        surgSaved.push(idx);
+        if (parent) parent.classList.add(`checked`);
+      } else {
+        if (parent) parent.classList.remove(`checked`);
+      }
+    });
+
+    atlantaBoxes.forEach(function (box, idx) {
+      const parent = box.closest(`.check-item`);
+      if (box.checked) {
+        atlantaCount += 1;
+        atlantaSaved.push(idx);
+        if (parent) parent.classList.add(`checked`);
+      } else {
+        if (parent) parent.classList.remove(`checked`);
+      }
+    });
+
+    appState.surgCrit = surgSaved;
+    appState.atlantaCrit = atlantaSaved;
+
+    const surgOut = document.getElementById(`surg-crit-result`);
+    if (surgOut) {
+      if (surgCount >= 1) {
+        surgOut.setAttribute(`data-status`, `alert`);
+        surgOut.innerHTML = `<p class="callout-title">` + surgCount + ` criterio(s) de Abdomen Agudo Quirúrgico presente(s)</p><p>Priorizar valoración quirúrgica inmediata, dieta absoluta, vía IV y pruebas dirigidas sin demora.</p>`;
+      } else {
+        surgOut.setAttribute(`data-status`, `info`);
+        surgOut.innerHTML = `<p class="callout-title">Sin criterios quirúrgicos marcados</p><p>Mantener evaluación clínica y observación seriada si persiste incertidumbre diagnóstica.</p>`;
+      }
+    }
+
+    const atlantaOut = document.getElementById(`atlanta-crit-result`);
+    if (atlantaOut) {
+      if (atlantaCount >= 2) {
+        atlantaOut.setAttribute(`data-status`, `ok`);
+        atlantaOut.innerHTML = `<p class="callout-title">` + atlantaCount + ` / 3 criterios: Diagnóstico de Pancreatitis Aguda (Atlanta)</p><p>Evaluar gravedad precoz (fallo orgánico, Ranson/Glasgow &ge; 3, APACHE II &ge; 8, PCR &ge; 210 mg/L), fluidoterapia acotada y nutrición enteral &lt; 48 h.</p>`;
+      } else {
+        atlantaOut.setAttribute(`data-status`, `info`);
+        atlantaOut.innerHTML = `<p class="callout-title">` + atlantaCount + ` / 3 criterios de Atlanta marcados</p><p>Se requieren al menos <strong>2 de 3 criterios</strong> para establecer el diagnóstico.</p>`;
+      }
+    }
+    saveState();
+  }
+
+  function resetScoreChecker() {
+    document.querySelectorAll(`.surg-crit, .atlanta-crit`).forEach(function (box) {
+      box.checked = false;
+    });
+    evaluateCriteria();
+  }
+
+  // ---- Global Search ----
+  function handleGlobalSearch(query) {
+    const panel = document.getElementById(`search-results-panel`);
+    const listEl = document.getElementById(`search-result-list`);
+    const countEl = document.getElementById(`search-count`);
+    if (!panel || !listEl || !countEl) return;
+
+    const q = (query || ``).trim().toLowerCase();
+    if (q.length < 2) {
+      panel.classList.remove(`visible`);
+      listEl.innerHTML = ``;
+      return;
+    }
+
+    const hits = SEARCH_INDEX.filter(function (item) {
+      return item.title.toLowerCase().indexOf(q) !== -1 || item.meta.toLowerCase().indexOf(q) !== -1;
+    });
+
+    panel.classList.add(`visible`);
+    if (hits.length === 0) {
+      countEl.textContent = `Sin coincidencias para "` + query.trim() + `"`;
+      listEl.innerHTML = `<p style="margin:0; color:var(--on-surface-variant);">Pruebe con términos como Murphy, lactato, isquemia, ectópico, TC, ecografía o metoclopramida.</p>`;
+      return;
+    }
+
+    countEl.textContent = hits.length + ` coincidencia(s) rápida(s)`;
+    listEl.innerHTML = hits.map(function (h) {
+      return `<a class="search-hit" href="` + h.href + `" onclick="clearGlobalSearch()">` +
+        `<span class="search-hit-title">` + h.title + `</span>` +
+        `<span class="search-hit-meta">` + h.meta + `</span>` +
+      `</a>`;
+    }).join(``);
+  }
+
+  function clearGlobalSearch() {
+    const input = document.getElementById(`global-search`);
+    const panel = document.getElementById(`search-results-panel`);
+    if (input) input.value = ``;
+    if (panel) panel.classList.remove(`visible`);
+  }
+
+  // ---- Export Summary ----
+  function exportClinicalSummary() {
+    const completedSteps = Object.keys(appState.abcde).join(`, `) || `Ninguno`;
+    const locTitle = (QUADRANTS[appState.algo.location] && QUADRANTS[appState.algo.location].title) || appState.algo.location;
+    const text =
+      `RESUMEN CLINICO DE URGENCIAS - DOLOR ABDOMINAL AGUDO\n` +
+      `=====================================================\n` +
+      `ABCDE completado: ` + completedSteps + `\n` +
+      `Algoritmo seleccionado:\n` +
+      `  - Estabilidad: ` + appState.algo.stability + `\n` +
+      `  - Perfil: ` + appState.algo.profile + `\n` +
+      `  - Localizacion: ` + locTitle + `\n` +
+      `  - Patron sindromico: ` + appState.algo.syndrome + `\n` +
+      `Criterios quirurgicos marcados: ` + appState.surgCrit.length + `\n` +
+      `Criterios Atlanta marcados: ` + appState.atlantaCrit.length + `/3\n\n` +
+      `RECORDATORIO 2 MINUTOS:\n` +
+      `- Mujer edad fertil -> beta-hCG obligatoria.\n` +
+      `- Epigastrio / >50a -> ECG inmediato.\n` +
+      `- Analgesia precoz no enmascara el diagnostico.\n` +
+      `- Inestable -> POCUS/E-FAST y cristaloides 300-500 mL; no demorar cirugia.\n` +
+      `- Tacto rectal tras Rx simple si sospecha de obstruccion.\n`;
+
+    if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
+      window.notebookAppApi.triggerFileDownload({
+        content: text,
+        contentType: `text/plain`,
+        encoding: `UTF-8`,
+        filename: `resumen_dolor_abdominal_urgencias.txt`
+      });
+    }
+  }
+
+  // ---- Sidebar Active Link Tracking ----
+  function initScrollSpy() {
+    const links = document.querySelectorAll(`#sidebar-nav .nav-link`);
+    const sections = document.querySelectorAll(`.clinical-section`);
+    if (!(`IntersectionObserver` in window) || sections.length === 0) return;
+
+    const obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute(`id`);
+          links.forEach(function (lnk) {
+            if (lnk.getAttribute(`href`) === `#` + id) lnk.classList.add(`active`);
+            else lnk.classList.remove(`active`);
+          });
+        }
+      });
+    }, { rootMargin: `-20% 0px -65% 0px`, threshold: 0.05 });
+
+    sections.forEach(function (sec) { obs.observe(sec); });
+  }
+
+  // ---- Restore State & Boot ----
+  function applyStateToUI() {
+    // Restore ABCDE
+    document.querySelectorAll(`#abcde-checklist input[type="checkbox"]`).forEach(function (box) {
+      const step = box.getAttribute(`data-step`);
+      const checked = Boolean(appState.abcde && appState.abcde[step]);
+      box.checked = checked;
+      const parent = box.closest(`.check-item`);
+      if (parent) {
+        if (checked) parent.classList.add(`checked`);
+        else parent.classList.remove(`checked`);
+      }
+    });
+    updateAbcdeProgress();
+
+    // Restore Quadrant
+    selectQuadrant(appState.quadrant || `hcd`);
+
+    // Restore Algorithm
+    if (appState.algo) {
+      const stabEl = document.getElementById(`algo-stability`);
+      const profEl = document.getElementById(`algo-profile`);
+      const locEl = document.getElementById(`algo-location`);
+      const synEl = document.getElementById(`algo-syndrome`);
+      if (stabEl && appState.algo.stability) stabEl.value = appState.algo.stability;
+      if (profEl && appState.algo.profile) profEl.value = appState.algo.profile;
+      if (locEl && appState.algo.location) locEl.value = appState.algo.location;
+      if (synEl && appState.algo.syndrome) synEl.value = appState.algo.syndrome;
+    }
+    updateAlgorithm();
+
+    // Restore Therapy & Pathology
+    switchTherapyTab(appState.therapyTab || `analgesicos`);
+    selectPathology(appState.pathologyId || `apendicitis`);
+
+    // Restore Criteria Checkboxes
+    const surgBoxes = document.querySelectorAll(`.surg-crit`);
+    surgBoxes.forEach(function (box, idx) {
+      box.checked = Array.isArray(appState.surgCrit) && appState.surgCrit.indexOf(idx) !== -1;
+    });
+    const atlantaBoxes = document.querySelectorAll(`.atlanta-crit`);
+    atlantaBoxes.forEach(function (box, idx) {
+      box.checked = Array.isArray(appState.atlantaCrit) && appState.atlantaCrit.indexOf(idx) !== -1;
+    });
+    evaluateCriteria();
+  }
+
+  async function initApp() {
+    initPathologies();
+    renderAllRegionsTable();
+    initScrollSpy();
+
+    try {
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+        const saved = await window.notebookAppApi.getAppState();
+        if (saved && typeof saved === `object`) {
+          appState = Object.assign({}, appState, saved);
+        }
+      }
+    } catch (err) {
+      // Ignore error and use default state
+    }
+
+    applyStateToUI();
+
+    if (window.lucide && typeof window.lucide.createIcons === `function`) {
+      window.lucide.createIcons();
+    }
+
+    if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+      window.notebookAppApi.notifyAppReady();
+    }
+  }
+
+  document.addEventListener(`DOMContentLoaded`, initApp);
+</script>
+</body>
+</html>

@@ -1,0 +1,3163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="dashboard">
+  <meta name="design-style" content="vitals">
+  <title>Guía Clínica Integral del Manejo del Dolor en Urgencias</title>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Figtree:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces (Vitals Light) */
+      --background: #ffffff;
+      --surface-container-low: #f1f7f8;
+      --surface-container: #e3f1f3;
+      --surface-container-high: #d5e9ec;
+
+      /* Text */
+      --on-surface: #1b2b33;
+      --on-surface-variant: #46585f;
+
+      /* Rules */
+      --outline: #7b9198;
+      --outline-variant: #d5e3e5;
+
+      /* Accents */
+      --primary: #0f7c8a;
+      --on-primary: #ffffff;
+      --primary-container: #e3f1f3;
+      --on-primary-container: #0a5560;
+      --secondary: #1d5e3a;
+      --tertiary: #2e7d4f;
+      --error: #b3261e;
+      --on-error: #ffffff;
+
+      /* Semantic */
+      --positive: #2e7d4f;
+      --warning: #b86e00;
+      --warning-container: #fef5e7;
+      --on-warning-container: #7a4900;
+      --error-container: #fceceb;
+      --on-error-container: #8c1d18;
+      --positive-container: #e8f5ed;
+      --on-positive-container: #1d5e3a;
+
+      /* Data series */
+      --data-1: #0f7c8a;
+      --data-2: #2e7d4f;
+      --data-3: #b86e00;
+      --data-4: #5c5fb0;
+      --data-context: #b8c7ca;
+
+      /* Focus */
+      --focus: #0f7c8a;
+
+      /* Fonts */
+      --font-headline: 'Figtree', sans-serif;
+      --font-body: 'Atkinson Hyperlegible', sans-serif;
+      --font-label: 'Figtree', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+
+      /* Type scale (Dashboard) */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      /* Shape */
+      --rounded: 0.625rem;
+      --rounded-lg: 0.875rem;
+      --rounded-full: 9999px;
+
+      /* Style effects */
+      --top-bar: 6px solid var(--primary);
+      --status-bar-width: 4px;
+      --card-border: 1px solid var(--outline-variant);
+      --card-lift: 0 1px 2px rgb(27 43 51 / 0.05), 0 6px 16px rgb(27 43 51 / 0.05);
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+    }
+
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --background: #0f1a1f;
+      --surface-container-low: #15242a;
+      --surface-container: #1c2e35;
+      --surface-container-high: #243b44;
+      --on-surface: #e6eff1;
+      --on-surface-variant: #a9bcc2;
+      --outline: #5d7881;
+      --outline-variant: #2c4048;
+      --primary: #4fb8c6;
+      --on-primary: #0f1a1f;
+      --primary-container: #18363e;
+      --on-primary-container: #bfe6eb;
+      --secondary: #9fdcb7;
+      --tertiary: #5cbf85;
+      --error: #f2867c;
+      --on-error: #2b0b09;
+      --positive: #5cbf85;
+      --warning: #eab04a;
+      --warning-container: #2e2412;
+      --on-warning-container: #f7d48b;
+      --error-container: #381816;
+      --on-error-container: #f8b4ae;
+      --positive-container: #142c1e;
+      --on-positive-container: #a7e4be;
+      --data-1: #4fb8c6;
+      --data-2: #5cbf85;
+      --data-3: #eab04a;
+      --data-4: #8d90e3;
+      --data-context: #3b535c;
+      --focus: #4fb8c6;
+      --card-lift: none;
+    }
+
+    /* Base reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.55;
+      scroll-behavior: smooth;
+    }
+    header { position: static !important; }
+    button, input, select, textarea { font-family: inherit; }
+
+    /* Focus rings */
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    /* App Shell Layout */
+    .app-shell {
+      border-top: var(--top-bar);
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+    .app-shell * { min-width: 0; }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      background: var(--background);
+      border-right: var(--card-border);
+      padding: var(--space-lg) var(--space-md);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      z-index: 30;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      padding-bottom: var(--space-md);
+      border-bottom: var(--card-border);
+    }
+    .kicker {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--on-primary-container);
+    }
+    .brand-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.05rem;
+      line-height: 1.2;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .brand-meta {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .sidebar-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-xs);
+    }
+    .sidebar-search-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .input-label {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      display: block;
+    }
+    .field-input, .field-select {
+      width: 100%;
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      border: 1px solid var(--outline);
+      border-radius: var(--rounded);
+      background: var(--background);
+      color: var(--on-surface);
+      font-size: var(--body-size);
+      transition: border-color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+    .field-select {
+      padding-right: var(--space-xl);
+    }
+    .field-input:focus, .field-select:focus {
+      border-color: var(--primary);
+    }
+
+    .nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      width: 100%;
+      min-height: 40px;
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      border: 0;
+      border-left: 3px solid transparent;
+      background: transparent;
+      color: var(--on-surface-variant);
+      text-decoration: none;
+      text-align: left;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.85rem;
+      line-height: 1.25;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+    .nav-link:hover {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+    .nav-link.is-active {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-left-color: var(--primary);
+    }
+    .nav-num {
+      font-family: var(--font-mono);
+      font-size: var(--label-size);
+      min-width: 1.5rem;
+      color: var(--on-surface-variant);
+    }
+    .nav-link.is-active .nav-num {
+      color: var(--on-primary-container);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--rounded);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn-primary {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+    .btn-primary:hover {
+      filter: brightness(0.92);
+    }
+    .btn-secondary {
+      background: var(--background);
+      color: var(--on-surface);
+      border-color: var(--outline);
+    }
+    .btn-secondary:hover {
+      background: var(--surface-container-low);
+    }
+    .btn-sm {
+      min-height: 36px;
+      padding: var(--space-xs) var(--space-sm);
+      font-size: 0.8125rem;
+    }
+
+    /* Mobile topbar */
+    .mobile-bar {
+      display: none;
+      background: var(--background);
+      border-bottom: var(--card-border);
+      padding: var(--space-sm) var(--space-md);
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    /* Main Content Container */
+    .main-content {
+      padding: var(--space-xl) var(--space-xl) var(--space-2xl);
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2xl);
+    }
+
+    /* Hero Header */
+    .hero-panel {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-xl);
+      box-shadow: var(--card-lift);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+    .hero-top {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+    }
+    .title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--display-size);
+      letter-spacing: -0.015em;
+      line-height: 1.08;
+      color: var(--on-surface);
+      margin: var(--space-xs) 0 0;
+    }
+    .lede {
+      font-size: 1.05rem;
+      line-height: 1.6;
+      color: var(--on-surface-variant);
+      max-width: 65ch;
+      margin: var(--space-sm) 0 0;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    /* Status Cards (Vitals Treatment 1) */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .status-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+    .status-card[data-status="ok"] { border-left-color: var(--tertiary); }
+    .status-card[data-status="warn"] { border-left-color: var(--warning); }
+    .status-card[data-status="alert"] { border-left-color: var(--error); }
+    .status-label {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-variant);
+    }
+    .status-value {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 1.35rem;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+    }
+    .status-caption {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      margin: 0;
+    }
+
+    /* Chips (Vitals Treatment 4) */
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      padding: 0.2rem 0.65rem;
+      border-radius: var(--rounded-full);
+      background: var(--positive-container);
+      color: var(--on-positive-container);
+      white-space: nowrap;
+    }
+    .chip[data-status="info"] {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+    .chip[data-status="warn"] {
+      background: var(--warning-container);
+      color: var(--on-warning-container);
+    }
+    .chip[data-status="alert"] {
+      background: var(--error-container);
+      color: var(--on-error-container);
+    }
+
+    /* Section Structure */
+    .guide-section {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+      scroll-margin-top: var(--space-lg);
+    }
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: var(--space-md);
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+    .section-title {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: var(--headline-size);
+      letter-spacing: -0.015em;
+      line-height: 1.15;
+      color: var(--on-surface);
+      margin: 0;
+    }
+    .section-sub {
+      font-size: 0.95rem;
+      color: var(--on-surface-variant);
+      margin: var(--space-xs) 0 0;
+      max-width: 65ch;
+    }
+
+    /* Panels & Cards */
+    .panel {
+      background: var(--background);
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      box-shadow: var(--card-lift);
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .card-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .callout {
+      background: var(--primary-container);
+      color: var(--on-primary-container);
+      border-left: var(--status-bar-width) solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md) var(--space-lg);
+    }
+    .callout[data-status="alert"] {
+      background: var(--error-container);
+      color: var(--on-error-container);
+      border-left-color: var(--error);
+    }
+    .callout[data-status="warn"] {
+      background: var(--warning-container);
+      color: var(--on-warning-container);
+      border-left-color: var(--warning);
+    }
+    .callout[data-status="ok"] {
+      background: var(--positive-container);
+      color: var(--on-positive-container);
+      border-left-color: var(--tertiary);
+    }
+    .callout-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 0 0 var(--space-xs);
+    }
+
+    /* Tabs / Segmented Controls */
+    .tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-xs);
+    }
+    .tab-btn {
+      min-height: 40px;
+      padding: var(--space-xs) var(--space-md);
+      border: 0;
+      border-bottom: 3px solid transparent;
+      background: transparent;
+      color: var(--on-surface-variant);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border-radius: var(--rounded) var(--rounded) 0 0;
+      transition: color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out);
+    }
+    .tab-btn:hover {
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+    }
+    .tab-btn.is-active {
+      color: var(--on-surface);
+      border-bottom-color: var(--primary);
+      background: var(--surface-container-low);
+    }
+    .tab-panel { display: none; padding-top: var(--space-md); }
+    .tab-panel.is-active { display: block; }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      border: var(--card-border);
+      border-radius: var(--rounded-lg);
+      background: var(--background);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    thead th {
+      background: var(--surface-container-low);
+      color: var(--on-surface-variant);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      text-align: left;
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+      vertical-align: top;
+      color: var(--on-surface);
+    }
+    tbody tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: var(--surface-container-low); }
+    .num-cell {
+      font-family: var(--font-mono);
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    /* Interactive Pain Scales */
+    .eva-track {
+      display: grid;
+      grid-template-columns: repeat(11, minmax(0, 1fr));
+      gap: 4px;
+      margin: var(--space-sm) 0;
+    }
+    .eva-step {
+      min-height: 44px;
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded);
+      background: var(--surface-container-low);
+      color: var(--on-surface);
+      font-family: var(--font-mono);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+    }
+    .eva-step.is-selected {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .wong-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+    .face-card {
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--rounded-lg);
+      background: var(--background);
+      padding: var(--space-sm);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-xs);
+      cursor: pointer;
+      text-align: center;
+      min-height: 44px;
+    }
+    .face-card.is-selected {
+      background: var(--primary-container);
+      border-color: var(--primary);
+      color: var(--on-primary-container);
+    }
+
+    /* Interactive Checklist / Score Selectors */
+    .score-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    /* Algorithm Flow Nodes */
+    .algo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
+      gap: var(--space-sm);
+    }
+    .algo-node {
+      border: 1px solid var(--outline-variant);
+      border-top: 4px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      background: var(--background);
+      padding: var(--space-md);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .algo-node:hover { background: var(--surface-container-low); }
+    .algo-node.is-selected {
+      background: var(--primary-container);
+      border-color: var(--primary);
+    }
+    .algo-node[data-tier="alert"] { border-top-color: var(--error); }
+    .algo-node[data-tier="ok"] { border-top-color: var(--tertiary); }
+    .algo-node[data-tier="warn"] { border-top-color: var(--warning); }
+
+    /* Drug Card Accordion */
+    .drug-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+      gap: var(--space-md);
+    }
+    .drug-card {
+      background: var(--background);
+      border: var(--card-border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+    .drug-card[data-class="opioid"] { border-left-color: var(--warning); }
+    .drug-card[data-class="adjuvant"] { border-left-color: var(--data-4); }
+    .drug-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-sm);
+    }
+    .drug-name {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: 1.08rem;
+      margin: 0;
+    }
+    .drug-kv {
+      display: grid;
+      grid-template-columns: 118px minmax(0, 1fr);
+      gap: 4px var(--space-sm);
+      font-size: 0.875rem;
+      border-top: 1px solid var(--outline-variant);
+      padding-top: var(--space-sm);
+    }
+    .drug-k {
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+    }
+    .drug-details {
+      display: none;
+      flex-direction: column;
+      gap: var(--space-xs);
+      border-top: 1px dashed var(--outline-variant);
+      padding-top: var(--space-sm);
+      font-size: 0.875rem;
+    }
+    .drug-details.is-open { display: flex; }
+
+    /* Calculators */
+    .calc-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+    .calc-result-box {
+      background: var(--surface-container-low);
+      border: var(--card-border);
+      border-left: 4px solid var(--primary);
+      border-radius: var(--rounded-lg);
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    .calc-big-num {
+      font-family: var(--font-headline);
+      font-weight: 800;
+      font-size: 2rem;
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+    }
+    .mono-badge {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      background: var(--surface-container);
+      color: var(--on-surface);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    /* Chart Container */
+    .chart-box {
+      position: relative;
+      width: 100%;
+      min-height: 320px;
+      height: 340px;
+    }
+
+    /* Filter Pills */
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      align-items: center;
+    }
+    .filter-pill {
+      min-height: 36px;
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--rounded-full);
+      border: 1px solid var(--outline-variant);
+      background: var(--background);
+      color: var(--on-surface-variant);
+      font-family: var(--font-label);
+      font-weight: 600;
+      font-size: 0.8125rem;
+      cursor: pointer;
+    }
+    .filter-pill.is-active {
+      background: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    /* Range input */
+    .range-slider {
+      width: 100%;
+      accent-color: var(--primary);
+      min-height: 32px;
+    }
+
+    /* List clean */
+    .clean-list {
+      margin: 0;
+      padding-left: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    /* Inline message banner */
+    .toast-inline {
+      display: none;
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--rounded);
+      background: var(--positive-container);
+      color: var(--on-positive-container);
+      border-left: 4px solid var(--tertiary);
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .toast-inline.is-visible { display: block; }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .mobile-bar { display: flex; }
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: min(310px, 88vw);
+        transform: translateX(-105%);
+        transition: transform var(--dur-short) var(--ease-out);
+        box-shadow: var(--card-lift);
+      }
+      .sidebar.is-open { transform: translateX(0); }
+      .calc-shell { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 640px) {
+      .main-content { padding: var(--space-md); gap: var(--space-xl); }
+      .hero-panel, .panel { padding: var(--space-md); }
+      .eva-track { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+      .drug-kv { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    @media print {
+      .sidebar, .mobile-bar, .hero-actions, .tab-bar, .filter-row, .btn { display: none !important; }
+      .app-shell { display: block; border-top: 0; }
+      .main-content { max-width: 100%; padding: 0; }
+      .tab-panel, .drug-details { display: block !important; }
+      .panel, .status-card { box-shadow: none; break-inside: avoid; }
+    }
+  
+    .portfolio-back-bar {
+      width: 100%;
+      flex: 0 0 100%;
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .portfolio-back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      color: var(--on-primary-container);
+      font-family: 'Figtree', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .portfolio-back-link:hover {
+      background: var(--surface-container);
+      border-color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .portfolio-author-tag {
+      font-family: 'Figtree', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-bar">
+    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleMobileSidebar()" aria-label="Abrir índice de secciones">
+      <i data-lucide="menu" aria-hidden="true"></i> Índice (12)
+    </button>
+    <span class="brand-title">Dolor en Urgencias</span>
+    <button type="button" class="btn btn-secondary btn-sm" onclick="toggleTheme()" id="mobile-theme-btn">
+      <i data-lucide="moon" aria-hidden="true"></i> Tema
+    </button>
+  </div>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Navegación de la guía clínica">
+      <div class="sidebar-brand">
+        <span class="kicker">Guía Clínica de Urgencias</span>
+        <h2 class="brand-title">Manejo Integral del Dolor Agudo y Complejo</h2>
+        <span class="brand-meta">Urgencias · Anestesia · Cuidados Críticos</span>
+      </div>
+
+      <div class="sidebar-controls">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="toggleTheme()" id="theme-toggle-btn">
+          <i data-lucide="moon" aria-hidden="true"></i> <span id="theme-label">Modo oscuro</span>
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="closeMobileSidebar()" id="mobile-close-btn" style="display:none;">
+          Cerrar
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="jumpToSection('sec-10')">
+          <i data-lucide="calculator" aria-hidden="true"></i> Calculadoras
+        </button>
+      </div>
+
+      <div class="sidebar-search-wrap">
+        <label class="input-label" for="global-search">Filtro rápido (fármaco o síndrome)</label>
+        <input id="global-search" type="search" class="field-input" placeholder="Ej. ketamina, renal, EVA…" oninput="runGlobalFilter(this.value)">
+      </div>
+
+      <nav aria-label="Secciones de la guía">
+        <ul class="nav-list" id="nav-list">
+          <li><a class="nav-link is-active" href="#sec-1" onclick="closeMobileSidebar()"><span class="nav-num">01</span> Principios en Urgencias</a></li>
+          <li><a class="nav-link" href="#sec-2" onclick="closeMobileSidebar()"><span class="nav-num">02</span> Evaluación y Escalas</a></li>
+          <li><a class="nav-link" href="#sec-3" onclick="closeMobileSidebar()"><span class="nav-num">03</span> Algoritmo General</a></li>
+          <li><a class="nav-link" href="#sec-4" onclick="closeMobileSidebar()"><span class="nav-num">04</span> Clasificación (12 cuadros)</a></li>
+          <li><a class="nav-link" href="#sec-5" onclick="closeMobileSidebar()"><span class="nav-num">05</span> Vademécum Farmacológico</a></li>
+          <li><a class="nav-link" href="#sec-6" onclick="closeMobileSidebar()"><span class="nav-num">06</span> Estratificación Terapéutica</a></li>
+          <li><a class="nav-link" href="#sec-7" onclick="closeMobileSidebar()"><span class="nav-num">07</span> Bloqueos y Procedimientos</a></li>
+          <li><a class="nav-link" href="#sec-8" onclick="closeMobileSidebar()"><span class="nav-num">08</span> Situaciones Especiales</a></li>
+          <li><a class="nav-link" href="#sec-9" onclick="closeMobileSidebar()"><span class="nav-num">09</span> Seguridad y Reversión</a></li>
+          <li><a class="nav-link" href="#sec-10" onclick="closeMobileSidebar()"><span class="nav-num">10</span> Calculadoras Clínicas</a></li>
+          <li><a class="nav-link" href="#sec-11" onclick="closeMobileSidebar()"><span class="nav-num">11</span> Perlas y Errores Frecuentes</a></li>
+          <li><a class="nav-link" href="#sec-12" onclick="closeMobileSidebar()"><span class="nav-num">12</span> Bibliografía Vancouver</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="main-content">
+      <!-- HERO & EXECUTIVE SUMMARY -->
+      <header class="hero-panel">
+        <div class="portfolio-back-bar">
+          <a class="portfolio-back-link" href="index.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+            Volver al Portafolio
+          </a>
+          <span class="portfolio-author-tag">DIEGO GOMEZ | Médico de Familia &amp; SST</span>
+        </div>
+        <div class="hero-top">
+          <div>
+            <span class="kicker">Protocolo Multidisciplinario · Urgencias · Anestesiología · Dolor · UCI · Farmacología</span>
+            <h1 class="title">Guía Clínica Integral del Manejo del Dolor en el Servicio de Urgencias</h1>
+            <p class="lede">Referencia clínica rápida basada en las fuentes hospitalarias de Dolor y Cuidados Paliativos (SECPAL, Harrison 22.ª ed., Oxford Palliative Medicine, NICE) y alineada con guías ACEP, ACP, APS, EFIC, EUSEM, CDC y OMS.</p>
+          </div>
+          <div class="hero-actions">
+            <button type="button" class="btn btn-secondary" onclick="window.print()">
+              <i data-lucide="printer" aria-hidden="true"></i> Imprimir / PDF
+            </button>
+            <button type="button" class="btn btn-primary" onclick="exportClinicalSummary()">
+              <i data-lucide="download" aria-hidden="true"></i> Exportar Resumen (.txt)
+            </button>
+          </div>
+        </div>
+        <div id="export-toast" class="toast-inline" role="status" aria-live="polite"></div>
+
+        <div class="kpi-grid">
+          <div class="status-card" data-status="info">
+            <span class="status-label">5.º Signo Vital</span>
+            <span class="status-value">Evaluación Universal</span>
+            <p class="status-caption">Registrar intensidad al ingreso y reevaluar a los 15–30 min tras analgesia IV.</p>
+          </div>
+          <div class="status-card" data-status="ok">
+            <span class="status-label">Meta Analgésica</span>
+            <span class="status-value">EVA ≤ 3 / ≥ 50%</span>
+            <p class="status-caption">Objetivo terapéutico o intensidad tolerable pactada; pautar rescates reglados (No PRN).</p>
+          </div>
+          <div class="status-card" data-status="warn">
+            <span class="status-label">Estrategia Central</span>
+            <span class="status-value">Multimodal</span>
+            <p class="status-caption">Combinar dianas periféricas, centrales y regionales para ahorrar opioides.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="status-label">Alerta de Seguridad</span>
+            <span class="status-value">FG &lt; 30 · Trauma 24h</span>
+            <p class="status-caption">Evitar AINEs y morfina en fallo renal severo; evitar AINEs primeras 24h en politrauma.</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- SECCIÓN 1 -->
+      <section class="guide-section" id="sec-1">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 01</span>
+            <h2 class="section-title">Introducción y principios del tratamiento del dolor en urgencias</h2>
+            <p class="section-sub">Fundamentos neurofisiológicos, mandato ético-clínico y mitigación de la oligoanalgesia en el paciente agudo y crítico.</p>
+          </div>
+          <span class="chip" data-status="info">OMS · IASP · EUSEM</span>
+        </div>
+
+        <div class="card-grid">
+          <div class="status-card" data-status="info">
+            <span class="status-label">Definición IASP y Valor Biológico</span>
+            <p class="status-caption">Experiencia sensorial y emocional desagradable asociada a lesión tisular presente o potencial. Cuando persiste o se activa sin amenaza real (dolor neuropático), pierde su valor biológico protector y se convierte en enfermedad.</p>
+          </div>
+          <div class="status-card" data-status="ok">
+            <span class="status-label">Derecho Humano y Principio de Credibilidad</span>
+            <p class="status-caption">El alivio del dolor es un derecho humano fundamental. El dolor es subjetivo: es obligación clínica creer siempre en el dolor referido por el paciente y medirlo como 5.º signo vital junto a pulso, PA, temperatura y FR.</p>
+          </div>
+          <div class="status-card" data-status="alert">
+            <span class="status-label">Impacto Fisiopatológico del Dolor No Tratado</span>
+            <p class="status-caption">Activa respuesta simpática excesiva, vasoconstricción refleja, íleo, retención urinaria, catabolismo muscular, inmunosupresión, atelectasias, cronificación y prolonga la estancia hospitalaria.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3 class="callout-title">Esquema Neurofisiológico: 4 Fases de la Nocicepción y Dianas en Urgencias</h3>
+          <p class="section-sub" style="margin-bottom: var(--space-md);">Haga clic en cada fase para visualizar neurotransmisores implicados e intervención multimodal (Harrison 22.ª ed.; Manejo del Dolor).</p>
+          <div class="algo-grid" id="neuro-phases">
+            <button type="button" class="algo-node is-selected" onclick="selectNeuroPhase(0, this)">
+              <span class="chip" data-status="info">Fase 1</span>
+              <strong>Transducción</strong>
+              <span class="status-caption">Nociceptores periféricos (térmico, mecánico, químico)</span>
+            </button>
+            <button type="button" class="algo-node" onclick="selectNeuroPhase(1, this)">
+              <span class="chip" data-status="info">Fase 2</span>
+              <strong>Transmisión</strong>
+              <span class="status-caption">Fibras Aδ y C → Asta dorsal médula espinal</span>
+            </button>
+            <button type="button" class="algo-node" onclick="selectNeuroPhase(2, this)">
+              <span class="chip" data-status="warn">Fase 3</span>
+              <strong>Modulación</strong>
+              <span class="status-caption">Vías descendentes, AMPA/NMDA, asta dorsal</span>
+            </button>
+            <button type="button" class="algo-node" onclick="selectNeuroPhase(3, this)">
+              <span class="chip" data-status="ok">Fase 4</span>
+              <strong>Percepción</strong>
+              <span class="status-caption">Corteza somatosensorial, sistema límbico y psicología</span>
+            </button>
+          </div>
+          <div class="callout" id="neuro-detail" style="margin-top: var(--space-md);">
+            <strong id="neuro-detail-title">1. Transducción Periférica</strong>
+            <p id="neuro-detail-body" style="margin: var(--space-xs) 0 0;">Prostaglandinas, bradicinina, histamina e iones H⁺ sensibilizan terminales nociceptivos. <strong>Dianas en Urgencias:</strong> AINEs/COX-2 (inhibición COX periférica), anestésicos locales (bloqueo Na⁺), crioterapia e inmovilización anatómica.</p>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Principio Operativo (Task Force / OMS / ACEP)</th>
+                <th>Aplicación Práctica en Urgencias</th>
+                <th>Barrera a Evitar (Oligoanalgesia)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>1. Plan activo e integrado</strong></td>
+                <td>Analgesia precoz desde triaje tras estabilizar ABCDE; no retrasar en abdomen agudo.</td>
+                <td>Esperar diagnóstico definitivo o cirugía para iniciar analgesia.</td>
+              </tr>
+              <tr>
+                <td><strong>2. Analgesia multimodal</strong></td>
+                <td>Asociar paracetamol/metamizol/AINE (si no contraindicado) + opioide titulado + adyuvante/bloqueo.</td>
+                <td>Monoterapia con dosis altas de opioides o uso empírico no protocolizado.</td>
+              </tr>
+              <tr>
+                <td><strong>3. Titulación y rescates reglados</strong></td>
+                <td>Dejar pautadas dosis de rescate (<em>No PRN</em> aislado) ajustadas a vida media y vía.</td>
+                <td>Prescribir solo “si dolor” con intervalos excesivos o dosis subterapéuticas.</td>
+              </tr>
+              <tr>
+                <td><strong>4. Atención a barreras de comunicación</strong></td>
+                <td>Involucrar familia y escalas conductuales en niños, ancianos, deterioro cognitivo o delirium.</td>
+                <td>Subestimar el dolor referido por desconfianza o miedo infundado a adicción.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2 -->
+      <section class="guide-section" id="sec-2">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 02</span>
+            <h2 class="section-title">Evaluación del dolor: escalas validadas e interactivas</h2>
+            <p class="section-sub">Selección de herramienta según edad, estado cognitivo y soporte ventilatorio, junto al acrónimo ABCDE de la OMS y clasificación ECS-CP.</p>
+          </div>
+          <span class="chip" data-status="ok">Calculadora Integrada</span>
+        </div>
+
+        <div class="panel">
+          <div class="tab-bar" role="tablist">
+            <button type="button" class="tab-btn is-active" onclick="switchScaleTab('tab-eva', this)">EVA / ENA (Adulto)</button>
+            <button type="button" class="tab-btn" onclick="switchScaleTab('tab-wong', this)">Wong-Baker FACES</button>
+            <button type="button" class="tab-btn" onclick="switchScaleTab('tab-flacc', this)">FLACC (Pediatría)</button>
+            <button type="button" class="tab-btn" onclick="switchScaleTab('tab-cpot', this)">CPOT y BPS (Crítico/UCI)</button>
+          </div>
+
+          <!-- EVA / ENA -->
+          <div id="tab-eva" class="tab-panel is-active">
+            <div class="form-group">
+              <label class="input-label" for="eva-context-select">Contexto de puntos de corte (Manual Dolor / SECPAL)</label>
+              <select id="eva-context-select" class="field-select" style="max-width: 360px;" onchange="updateEvaResult()">
+                <option value="secpal">Urgencias General / Oncológico (1–3 Leve · 4–6 Mod · ≥7 Severo)</option>
+                <option value="postop">Agudo Perioperatorio / Trauma (1–4 Leve · 5–7 Mod · 8–10 Severo)</option>
+              </select>
+            </div>
+            <p class="input-label" style="margin-top: var(--space-md);">Seleccione la puntuación referida por el paciente (0 = Sin dolor · 10 = Peor dolor posible):</p>
+            <div class="eva-track" id="eva-track">
+              <button type="button" class="eva-step" onclick="setEvaValue(0)">0</button>
+              <button type="button" class="eva-step" onclick="setEvaValue(1)">1</button>
+              <button type="button" class="eva-step" onclick="setEvaValue(2)">2</button>
+              <button type="button" class="eva-step" onclick="setEvaValue(3)">3</button>
+              <button type="button" class="eva-step" onclick="setEvaValue(4)">4</button>
+              <button type="button" class="eva-step" onclick="setEvaValue(5)">5</button>
+              <button type="button" class="eva-step is-selected" onclick="setEvaValue(6)">6</button>
+              <button type="button" class="eva-step" onclick="setEvaValue(7)">7</button>
+              <button type="button" class="eva-step" onclick="setEvaValue(8)">8</button>
+              <button type="button" class="eva-step" onclick="setEvaValue(9)">9</button>
+              <button type="button" class="eva-step" onclick="setEvaValue(10)">10</button>
+            </div>
+            <div class="callout" id="eva-output" data-status="warn" style="margin-top: var(--space-md);">
+              <strong id="eva-cat-title">EVA 6/10 — Dolor Moderado</strong>
+              <p id="eva-cat-desc" style="margin: var(--space-xs) 0 0;">Indicado 2.º escalón o dosis baja de opioide potente + analgesia no opioide multimodal. Reevaluar en 15–30 min.</p>
+            </div>
+          </div>
+
+          <!-- Wong-Baker -->
+          <div id="tab-wong" class="tab-panel">
+            <p class="status-caption" style="margin-bottom: var(--space-sm);">Útil en niños ≥ 3 años con capacidad verbal, barrera idiomática o deterioro cognitivo leve (equivalente a escala Oucher / caras pintadas).</p>
+            <div class="wong-grid" id="wong-grid">
+              <button type="button" class="face-card" onclick="selectFace(0, this)">
+                <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="17" cy="19" r="2" fill="currentColor"/><circle cx="31" cy="19" r="2" fill="currentColor"/><path d="M16 28 Q24 35 32 28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                <strong>0 · Sin dolor</strong>
+                <span class="status-caption">Muy contento</span>
+              </button>
+              <button type="button" class="face-card" onclick="selectFace(2, this)">
+                <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="17" cy="19" r="2" fill="currentColor"/><circle cx="31" cy="19" r="2" fill="currentColor"/><path d="M17 29 Q24 32 31 29" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                <strong>2 · Leve</strong>
+                <span class="status-caption">Duele un poco</span>
+              </button>
+              <button type="button" class="face-card is-selected" onclick="selectFace(4, this)">
+                <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="17" cy="19" r="2" fill="currentColor"/><circle cx="31" cy="19" r="2" fill="currentColor"/><line x1="17" y1="30" x2="31" y2="30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                <strong>4 · Poco más</strong>
+                <span class="status-caption">Incómodo</span>
+              </button>
+              <button type="button" class="face-card" onclick="selectFace(6, this)">
+                <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="17" cy="19" r="2" fill="currentColor"/><circle cx="31" cy="19" r="2" fill="currentColor"/><path d="M17 32 Q24 27 31 32" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                <strong>6 · Moderado</strong>
+                <span class="status-caption">Duele aún más</span>
+              </button>
+              <button type="button" class="face-card" onclick="selectFace(8, this)">
+                <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M14 17 L20 20 M34 17 L28 20" stroke="currentColor" stroke-width="2"/><circle cx="17" cy="21" r="2" fill="currentColor"/><circle cx="31" cy="21" r="2" fill="currentColor"/><path d="M16 33 Q24 25 32 33" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+                <strong>8 · Severo</strong>
+                <span class="status-caption">Duele mucho</span>
+              </button>
+              <button type="button" class="face-card" onclick="selectFace(10, this)">
+                <svg width="48" height="48" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="2.5"/><path d="M14 16 L20 20 M34 16 L28 20" stroke="currentColor" stroke-width="2.2"/><circle cx="17" cy="21" r="2" fill="currentColor"/><circle cx="31" cy="21" r="2" fill="currentColor"/><path d="M16 34 Q24 24 32 34" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/><path d="M14 25 L13 30 M34 25 L35 30" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                <strong>10 · Máximo</strong>
+                <span class="status-caption">Peor dolor</span>
+              </button>
+            </div>
+            <div id="wong-result" class="callout" style="margin-top: var(--space-md);">Puntuación seleccionada: <strong>4/10 (Dolor leve-moderado)</strong>.</div>
+          </div>
+
+          <!-- FLACC -->
+          <div id="tab-flacc" class="tab-panel">
+            <p class="status-caption" style="margin-bottom: var(--space-sm);">Indicada en lactantes/niños (2 meses–7 años) o pacientes incapaces de verbalizar. Rango total: 0–10 puntos.</p>
+            <div class="score-grid">
+              <div class="form-group">
+                <label class="input-label" for="flacc-f">F · Cara (Face)</label>
+                <select id="flacc-f" class="field-select" onchange="calcFlacc()">
+                  <option value="0">0 — Sin expresión particular o sonrisa</option>
+                  <option value="1">1 — Mueca ocasional, ceño fruncido, retraído</option>
+                  <option value="2">2 — Temblor frecuente/constante del mentón, mandíbula apretada</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="input-label" for="flacc-l">L · Piernas (Legs)</label>
+                <select id="flacc-l" class="field-select" onchange="calcFlacc()">
+                  <option value="0">0 — Posición normal o relajada</option>
+                  <option value="1">1 — Inquietas, agitadas o tensas</option>
+                  <option value="2">2 — Pataleo o piernas encogidas</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="input-label" for="flacc-a">A · Actividad (Activity)</label>
+                <select id="flacc-a" class="field-select" onchange="calcFlacc()">
+                  <option value="0">0 — Acostado tranquilo, postura normal, se mueve fácil</option>
+                  <option value="1">1 — Se retuerce, se balancea, tenso</option>
+                  <option value="2">2 — Arqueado, rígido o movimientos bruscos</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="input-label" for="flacc-c1">C · Llanto (Cry)</label>
+                <select id="flacc-c1" class="field-select" onchange="calcFlacc()">
+                  <option value="0">0 — Sin llanto (despierto o dormido)</option>
+                  <option value="1">1 — Gemidos o lloriqueos, quejas ocasionales</option>
+                  <option value="2">2 — Llanto continuo, gritos o sollozos, queja frecuente</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="input-label" for="flacc-c2">C · Consolabilidad (Consolability)</label>
+                <select id="flacc-c2" class="field-select" onchange="calcFlacc()">
+                  <option value="0">0 — Contento, relajado</option>
+                  <option value="1">1 — Se calma al tocarlo, abrazarlo o hablarle</option>
+                  <option value="2">2 — Difícil de consolar o reconfortar</option>
+                </select>
+              </div>
+            </div>
+            <div id="flacc-output" class="callout" style="margin-top: var(--space-md);">FLACC Total: <strong>0 / 10 — Relajado / Confortable</strong>.</div>
+          </div>
+
+          <!-- CPOT y BPS -->
+          <div id="tab-cpot" class="tab-panel">
+            <div class="card-grid">
+              <div class="status-card" data-status="info">
+                <span class="status-label">CPOT · Critical-Care Pain Observation Tool (0–8)</span>
+                <div class="score-grid" style="margin-top: var(--space-sm);">
+                  <div class="form-group">
+                    <label class="input-label" for="cpot-face">Expresión facial (0–2)</label>
+                    <select id="cpot-face" class="field-select" onchange="calcCpot()">
+                      <option value="0">0 — Relajada, neutra</option>
+                      <option value="1">1 — Tensa (ceño fruncido, párpados apretados)</option>
+                      <option value="2">2 — Mueca intensa (arruga nariz, muerde tubo)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="cpot-body">Movimientos corporales (0–2)</label>
+                    <select id="cpot-body" class="field-select" onchange="calcCpot()">
+                      <option value="0">0 — Ausencia de movimientos o posición normal</option>
+                      <option value="1">1 — Movimientos lentos de protección / toca zona</option>
+                      <option value="2">2 — Agitación, tira del tubo, intenta sentarse</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="cpot-vent">Tolerancia ventilador / Vocalización (0–2)</label>
+                    <select id="cpot-vent" class="field-select" onchange="calcCpot()">
+                      <option value="0">0 — Tolera ventilación / tono normal</option>
+                      <option value="1">1 — Tose pero tolera / suspira o gime</option>
+                      <option value="2">2 — Lucha con ventilador / llora o grita</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="cpot-musc">Tensión muscular (0–2)</label>
+                    <select id="cpot-musc" class="field-select" onchange="calcCpot()">
+                      <option value="0">0 — Relajado al movilizar</option>
+                      <option value="1">1 — Tenso o rígido a la flexión pasiva</option>
+                      <option value="2">2 — Muy tenso/rígido, fuerte resistencia</option>
+                    </select>
+                  </div>
+                </div>
+                <div id="cpot-output" class="callout" style="margin-top: var(--space-sm);">CPOT Total: <strong>0 / 8</strong> — Umbral de intervención analgésica: <strong>≥ 3 puntos</strong>.</div>
+              </div>
+
+              <div class="status-card" data-status="warn">
+                <span class="status-label">BPS · Behavioral Pain Scale (3–12)</span>
+                <div class="score-grid" style="margin-top: var(--space-sm);">
+                  <div class="form-group">
+                    <label class="input-label" for="bps-face">Expresión facial (1–4)</label>
+                    <select id="bps-face" class="field-select" onchange="calcBps()">
+                      <option value="1">1 — Relajada</option>
+                      <option value="2">2 — Parcialmente tensa (ceño)</option>
+                      <option value="3">3 — Totalmente tensa (párpados cerrados)</option>
+                      <option value="4">4 — Mueca de dolor</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="bps-limbs">Extremidades superiores (1–4)</label>
+                    <select id="bps-limbs" class="field-select" onchange="calcBps()">
+                      <option value="1">1 — Sin movimiento</option>
+                      <option value="2">2 — Parcialmente flexionadas</option>
+                      <option value="3">3 — Totalmente flexionadas con dedos</option>
+                      <option value="4">4 — Retracción permanente</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="bps-vent">Adaptación a ventilación (1–4)</label>
+                    <select id="bps-vent" class="field-select" onchange="calcBps()">
+                      <option value="1">1 — Tolera movimientos</option>
+                      <option value="2">2 — Tose pero tolera la mayor parte</option>
+                      <option value="3">3 — Lucha con el ventilador</option>
+                      <option value="4">4 — Imposible ventilar / bloqueo</option>
+                    </select>
+                  </div>
+                </div>
+                <div id="bps-output" class="callout" style="margin-top: var(--space-sm);">BPS Total: <strong>3 / 12</strong> — Dolor significativo si <strong>≥ 6 puntos</strong>.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Escala</th>
+                <th>Población Diana</th>
+                <th>Rango</th>
+                <th>Umbral de Intervención</th>
+                <th>Observaciones Clínicas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>EVA / ENA</strong></td>
+                <td>Adultos y ≥ 8 años comunicativos</td>
+                <td class="num-cell">0–10</td>
+                <td class="num-cell">≥ 4 (Mod) · ≥ 7 (Sev)</td>
+                <td>EVA en línea de 10 cm (65% estudios); valorar también % de alivio.</td>
+              </tr>
+              <tr>
+                <td><strong>Wong-Baker</strong></td>
+                <td>Pediatría ≥ 3 años, barrera idiomática</td>
+                <td class="num-cell">0–10 (pares)</td>
+                <td class="num-cell">≥ 4</td>
+                <td>6 caras progresivas; útil en pacientes con alteración cognitiva leve.</td>
+              </tr>
+              <tr>
+                <td><strong>FLACC</strong></td>
+                <td>Pediatría 2 meses–7 años / no verbal</td>
+                <td class="num-cell">0–10</td>
+                <td class="num-cell">1–3 Leve · 4–6 Mod · ≥ 7 Sev</td>
+                <td>Observación 1–5 min; distinguir agitación por miedo vs. dolor.</td>
+              </tr>
+              <tr>
+                <td><strong>CPOT</strong></td>
+                <td>Paciente crítico intubado o no</td>
+                <td class="num-cell">0–8</td>
+                <td class="num-cell">≥ 3</td>
+                <td>Recomendada por SCCM/PADIS para UCI y Box de Críticos en Urgencias.</td>
+              </tr>
+              <tr>
+                <td><strong>BPS</strong></td>
+                <td>Paciente ventilado mecánicamente</td>
+                <td class="num-cell">3–12</td>
+                <td class="num-cell">≥ 6</td>
+                <td>No aplicable si el paciente recibe bloqueo neuromuscular profundo.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3 -->
+      <section class="guide-section" id="sec-3">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 03</span>
+            <h2 class="section-title">Algoritmo general de manejo del dolor en urgencias</h2>
+            <p class="section-sub">Flujo de decisión clínica desde el triaje hasta la revaloración y el escalamiento intervencionista. Pulse cualquier nodo para ver la conducta.</p>
+          </div>
+          <span class="chip" data-status="info">Flujo Interactivo</span>
+        </div>
+
+        <div class="panel">
+          <div class="algo-grid" id="algo-flow">
+            <button type="button" class="algo-node is-selected" data-tier="alert" onclick="selectAlgoStep(0, this)">
+              <span class="chip" data-status="alert">Paso 1</span>
+              <strong>Estabilización ABCDE &amp; Red Flags</strong>
+              <span class="status-caption">Prioridad vital y signos de alarma</span>
+            </button>
+            <button type="button" class="algo-node" data-tier="info" onclick="selectAlgoStep(1, this)">
+              <span class="chip" data-status="info">Paso 2</span>
+              <strong>Anamnesis y Clasificación</strong>
+              <span class="status-caption">Causa reversible, temporalidad y tipo</span>
+            </button>
+            <button type="button" class="algo-node" data-tier="info" onclick="selectAlgoStep(2, this)">
+              <span class="chip" data-status="info">Paso 3</span>
+              <strong>Cuantificación (Escala)</strong>
+              <span class="status-caption">EVA / FLACC / CPOT + objetivo</span>
+            </button>
+            <button type="button" class="algo-node" data-tier="warn" onclick="selectAlgoStep(3, this)">
+              <span class="chip" data-status="warn">Paso 4</span>
+              <strong>Estratificación Multimodal</strong>
+              <span class="status-caption">Escalón OMS o Ascensor IV</span>
+            </button>
+            <button type="button" class="algo-node" data-tier="ok" onclick="selectAlgoStep(4, this)">
+              <span class="chip" data-status="ok">Paso 5</span>
+              <strong>Revaloración y Rescate</strong>
+              <span class="status-caption">15–30 min IV · Ajuste o Bloqueo</span>
+            </button>
+          </div>
+
+          <div class="callout" id="algo-detail" style="margin-top: var(--space-md);">
+            <strong id="algo-detail-title">Paso 1 — Estabilización ABCDE y Descartar Signos de Alarma</strong>
+            <p id="algo-detail-body" style="margin: var(--space-xs) 0 0;">En trauma grave la analgesia es secundaria a vía aérea, ventilación y control hemorrágico. Descartar dolor repentino con inestabilidad hemodinámica (disección, trombosis, sepsis, síndrome compartimental). Asegurar acceso IV y toma de muestras.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 4 -->
+      <section class="guide-section" id="sec-4">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 04</span>
+            <h2 class="section-title">Clasificación del dolor: mecanismos y 12 síndromes clínicos</h2>
+            <p class="section-sub">Diferenciación neurofisiológica y enfoque terapéutico específico para los cuadros de mayor prevalencia en Urgencias.</p>
+          </div>
+        </div>
+
+        <div class="filter-row" id="syndrome-filters">
+          <button type="button" class="filter-pill is-active" onclick="filterSyndromes('all', this)">Todos (12)</button>
+          <button type="button" class="filter-pill" onclick="filterSyndromes('mecanismo', this)">Mecanismo (Somático / Visceral / Neuropático)</button>
+          <button type="button" class="filter-pill" onclick="filterSyndromes('urgencia', this)">Síndromes Agudos de Urgencias</button>
+          <button type="button" class="filter-pill" onclick="filterSyndromes('onco', this)">Trauma y Oncología</button>
+        </div>
+
+        <div class="card-grid" id="syndrome-cards">
+          <article class="status-card searchable-item" data-cat="mecanismo" data-status="info">
+            <span class="status-label">01 · Nociceptivo</span>
+            <h3 class="drug-name">Dolor Somático</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Partes blandas y hueso; bien localizado, punzante, opresivo o pulsátil; empeora con presión/movimiento.</p>
+            <p class="status-caption"><strong>Conducta:</strong> Paracetamol, AINEs/COX-2 (si no contraindicados), opioides si moderado-severo, infiltración o bloqueo regional.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="mecanismo" data-status="warn">
+            <span class="status-label">02 · Nociceptivo</span>
+            <h3 class="drug-name">Dolor Visceral</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Distensión/isquemia/inflamación de órganos internos; difuso, mal localizado, tipo cólico o profundo, referido cutáneo.</p>
+            <p class="status-caption"><strong>Conducta:</strong> Tratar causa; antiespasmódicos/anticolinérgicos (butilhioscina) en cólico hueco, metamizol, opioides IV titulados, esteroides en compresión capsular.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="mecanismo" data-status="alert">
+            <span class="status-label">03 · No Nociceptivo</span>
+            <h3 class="drug-name">Dolor Neuropático</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Lesión SNC o periférica (neuralgia, radiculopatía, oxaliplatino); quemante, descarga eléctrica, alodinia, hiperpatía.</p>
+            <p class="status-caption"><strong>Conducta:</strong> 1.ª línea gabapentinoides o IRSN (duloxetina/venlafaxina) o ADT; en crisis aguda en Urgencias: ketamina subdisociativa, lidocaína IV, opioides como 2.ª/3.ª línea.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="onco" data-status="alert">
+            <span class="status-label">04 · Politrauma</span>
+            <h3 class="drug-name">Dolor Traumático</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Casi siempre moderado-severo al ingreso; respuesta nociceptiva + metabólica e inmunitaria al estrés.</p>
+            <p class="status-caption"><strong>Conducta:</strong> Prioridad opioides IV titulados (morfina 2 mg c/2 min o fentanilo) o ketamina; <strong>NO usar AINEs las primeras 24h</strong> si inestable o riesgo hemorrágico; bloqueos regionales.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="onco" data-status="warn">
+            <span class="status-label">05 · Mixto / Episódico</span>
+            <h3 class="drug-name">Dolor Oncológico e Irruptivo</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Basal + crisis transitorias (incidental por movimiento, procedimental o irruptivo espontáneo).</p>
+            <p class="status-caption"><strong>Conducta:</strong> Escalera OMS (incluso 4.º escalón); rescate con morfina/oxicodona rápida o fentanilo transmucoso (solo si tolerante ≥60 mg/d MME); dexametasona si edema/metástasis.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="urgencia" data-status="info">
+            <span class="status-label">06 · Locomotor</span>
+            <h3 class="drug-name">Dolor Musculoesquelético</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Fracturas, luxaciones, esguinces, bursitis/tendinitis; relación directa con daño tisular y carga.</p>
+            <p class="status-caption"><strong>Conducta:</strong> Inmovilización en posición anatómica cómoda, crioterapia, paracetamol + AINE ciclo corto, opioide breve o bloqueo nervioso periférico/hematoma.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="urgencia" data-status="warn">
+            <span class="status-label">07 · Abdomen Agudo</span>
+            <h3 class="drug-name">Dolor Abdominal Agudo</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Cólico biliar, pancreatitis, obstrucción, peritonitis o isquemia mesentérica.</p>
+            <p class="status-caption"><strong>Conducta:</strong> Analgesia precoz IV (paracetamol, metamizol, fentanilo/morfina titulados): <strong>no enmascara signos peritoneales</strong> y mejora la exploración (ACEP/EUSEM). Descartar indicación quirúrgica.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="urgencia" data-status="alert">
+            <span class="status-label">08 · Prioridad Vital</span>
+            <h3 class="drug-name">Dolor Torácico</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Descartar SCA, disección aórtica, TEP, neumotórax a tensión, rotura esofágica.</p>
+            <p class="status-caption"><strong>Conducta:</strong> Tratar causa (nitratos en SCA); morfina/fentanilo IV titulados si dolor refractario; <strong>evitar AINEs en SCA</strong> (riesgo trombótico/rotura); bloqueo serrato/intercostal en trauma costal.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="urgencia" data-status="info">
+            <span class="status-label">09 · Neurológico</span>
+            <h3 class="drug-name">Cefalea Aguda / Migraña</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Descartar signos de alarma (inicio en trueno, fiebre, focalidad, papiledema). Migraña vs. tensional.</p>
+            <p class="status-caption"><strong>Conducta:</strong> Ketorolaco 30–60 mg IV/SL + metoclopramida 10 mg IV ± triptán SC/VO o dexametasona (prevenir recurrencia). <strong>Evitar opioides</strong> en migraña primaria.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="urgencia" data-status="ok">
+            <span class="status-label">10 · Urológico</span>
+            <h3 class="drug-name">Cólico Renal</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Dolor visceral agudo flanco-fosa ilíaca-genital con agitación psicomotriz y náuseas.</p>
+            <p class="status-caption"><strong>Conducta:</strong> <strong>1.ª línea AINE IV</strong> (ketorolaco 30 mg o dexketoprofeno 50 mg) por inhibición directa de PG y presión piélica + paracetamol/metamizol ± opioide rescate o lidocaína IV. Vigilar FG/fiebre.</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="urgencia" data-status="info">
+            <span class="status-label">11 · Raquídeo</span>
+            <h3 class="drug-name">Dolor Lumbar y Lumbociatalgia</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Somático lumbar (85% mecánico) vs. dolor mixto con radiculopatía compresiva/química (ciática).</p>
+            <p class="status-caption"><strong>Conducta:</strong> Descartar cauda equina/mielopatía. AINE ciclo corto + calor local; si componente radicular severo: corticoides cortos o gabapentinoide. Evitar opioides crónicos (ACP/NICE).</p>
+          </article>
+
+          <article class="status-card searchable-item" data-cat="urgencia" data-status="info">
+            <span class="status-label">12 · Cérvico-braquial</span>
+            <h3 class="drug-name">Dolor Cervical y Cervicobraquialgia</h3>
+            <p class="status-caption"><strong>Clínica:</strong> Origen muscular/articular vs. radicular verdadero (C5–C8) vs. visceral referido (coronario/diafragmático).</p>
+            <p class="status-caption"><strong>Conducta:</strong> Descartar trauma cervical o isquemia miocárdica. AINE/paracetamol, relajación muscular, curso corto esteroide oral si radiculopatía aguda intensa.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 5 -->
+      <section class="guide-section" id="sec-5">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 05</span>
+            <h2 class="section-title">Tratamiento farmacológico: vademécum de urgencias</h2>
+            <p class="section-sub">Dosis en adulto, pediatría, geriatría, ajuste renal y hepático, interacciones y nivel de evidencia de los 11 grupos esenciales.</p>
+          </div>
+          <span class="chip" data-status="info">11 Fichas Completas</span>
+        </div>
+
+        <div class="filter-row" id="drug-filters">
+          <button type="button" class="filter-pill is-active" onclick="filterDrugs('all', this)">Todos (11)</button>
+          <button type="button" class="filter-pill" onclick="filterDrugs('nonopioid', this)">No Opioides (3)</button>
+          <button type="button" class="filter-pill" onclick="filterDrugs('opioid', this)">Opioides (5)</button>
+          <button type="button" class="filter-pill" onclick="filterDrugs('adjuvant', this)">Adyuvantes / Anestésicos (3)</button>
+        </div>
+
+        <div class="drug-grid" id="drug-cards"></div>
+
+        <div class="panel">
+          <h3 class="callout-title">Comparativa Farmacocinética: Inicio de Acción y Duración por Vía</h3>
+          <p class="section-sub" style="margin-bottom: var(--space-md);">Referencia rápida para planificar reevaluación y evitar solapamientos o sobredosificación durante la titulación en Urgencias.</p>
+          <div class="chart-box">
+            <canvas id="pkChart" aria-label="Gráfico comparativo de inicio de acción y duración analgésica"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 6 -->
+      <section class="guide-section" id="sec-6">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 06</span>
+            <h2 class="section-title">Estratificación terapéutica: leve, moderado, severo y refractario</h2>
+            <p class="section-sub">Aplicación del "Ascensor Analgésico" en Urgencias y la Escalera de la OMS ampliada al 4.º escalón intervencionista (SECPAL; Manejo del Dolor).</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="tab-bar" role="tablist">
+            <button type="button" class="tab-btn is-active" onclick="switchTierTab('tier-1', this)">1 · Leve (EVA 1–3/4)</button>
+            <button type="button" class="tab-btn" onclick="switchTierTab('tier-2', this)">2 · Moderado (EVA 4/5–6/7)</button>
+            <button type="button" class="tab-btn" onclick="switchTierTab('tier-3', this)">3 · Severo (EVA 7/8–10)</button>
+            <button type="button" class="tab-btn" onclick="switchTierTab('tier-4', this)">4 · Refractario / Irruptivo</button>
+          </div>
+
+          <div id="tier-1" class="tab-panel is-active">
+            <div class="card-grid">
+              <div class="status-card" data-status="ok">
+                <span class="status-label">1.ª Línea (No Opioide)</span>
+                <p class="status-caption"><strong>Paracetamol</strong> 1 g VO/IV c/6–8h, <strong>Metamizol</strong> 500 mg–1 g VO/IV c/6–8h o <strong>AINE</strong> (ibuprofeno 400–600 mg VO, dexketoprofeno 25–50 mg, ketorolaco 10–30 mg si no contraindicado).</p>
+              </div>
+              <div class="status-card" data-status="info">
+                <span class="status-label">Adyuvantes y Rescate</span>
+                <p class="status-caption">Añadir adyuvante si componente neuropático o espasmo. Dejar pautada dosis extra sin superar dosis techo diaria. Si persiste dolor tras dosis máxima, escalar a opioide débil o potente a dosis bajas.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="tier-2" class="tab-panel">
+            <div class="card-grid">
+              <div class="status-card" data-status="warn">
+                <span class="status-label">Analgesia Combinada Multimodal</span>
+                <p class="status-caption"><strong>Base no opioide</strong> (paracetamol/metamizol o AINE) + <strong>Tramadol</strong> 50–100 mg IV lento/VO c/6–8h (con metoclopramida en ≥80 años) <em>o</em> <strong>Tapentadol</strong> 50 mg VO <em>o</em> <strong>Opioide potente a dosis bajas</strong> (morfina 10–15 mg/12h retard o bolos 2 mg IV; oxicodona 5 mg).</p>
+              </div>
+              <div class="status-card" data-status="info">
+                <span class="status-label">Si ya recibía opioides (SECPAL)</span>
+                <p class="status-caption">Incrementar la dosis diaria basal del opioide previo en un <strong>+50%</strong> y pautar rescate del 10–15% de la dosis total diaria. Evaluar bloqueo regional si lesión localizada.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="tier-3" class="tab-panel">
+            <div class="card-grid">
+              <div class="status-card" data-status="alert">
+                <span class="status-label">Ascensor Directo a Vía Parenteral (IV/SC)</span>
+                <p class="status-caption"><strong>Morfina IV:</strong> inicio 2 mg c/2 min (o 2.5–5 mg c/10–15 min) hasta EVA ≤ 3; en ≥75a iniciar 50% dosis. <strong>Fentanilo IV:</strong> 25–50 µg c/5–10 min (elección en fallo renal o inestabilidad). <strong>Oxicodona IV:</strong> 2.5–5 mg. Asociar paracetamol 1 g IV salvo contraindicación.</p>
+              </div>
+              <div class="status-card" data-status="warn">
+                <span class="status-label">Ajuste Dinámico por Respuesta</span>
+                <p class="status-caption">Si tras 24h de titulación continúa con dolor intenso (EVA 7–10) o ≥4 rescates/día: convertir dosis VO a IV/SC (morfina/oxicodona 2:1 VO:SC, 3–2:1 VO:IV) e incrementar <strong>+50–100%</strong> la pauta basal vigilando sedación.</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="tier-4" class="tab-panel">
+            <div class="card-grid">
+              <div class="status-card" data-status="alert">
+                <span class="status-label">4.º Escalón e Intervencionismo en Urgencias</span>
+                <p class="status-caption"><strong>Ketamina subdisociativa:</strong> 0.1–0.3 mg/kg IV en 10 min + infusión 0.1–0.2 mg/kg/h. <strong>Lidocaína IV:</strong> 1–1.5 mg/kg bolo + 1–2 mg/kg/h (ECG). <strong>Bloqueo nervioso ecoguiado</strong>. En opioide-tolerantes con crisis irruptiva: fentanilo transmucoso o rotación a metadona.</p>
+              </div>
+              <div class="status-card" data-status="info">
+                <span class="status-label">Evaluar Causas de Refractariedad</span>
+                <p class="status-caption">Descartar fractura oculta, síndrome compartimental, isquemia, neurotoxicidad opioide, delirium, dolor neuropático no tratado, distrés emocional severo o tolerancia/adicción previa (ECS-CP).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 7 -->
+      <section class="guide-section" id="sec-7">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 07</span>
+            <h2 class="section-title">Procedimientos analgésicos y bloqueos nerviosos</h2>
+            <p class="section-sub">Técnicas de anestesia regional guiada por ultrasonido (POCUS) en Urgencias y protocolo de seguridad ante Toxicidad Sistémica (LAST).</p>
+          </div>
+          <span class="chip" data-status="ok">POCUS · Ahorro de Opioides</span>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Bloqueo / Procedimiento</th>
+                <th>Indicación Principal en Urgencias</th>
+                <th>Anestésico Local Habitual</th>
+                <th>Beneficio Clínico Clave</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Fascia Ilíaca (Suprainguinal) / PENG</strong></td>
+                <td>Fractura de cadera y diáfisis femoral (especialmente ancianos).</td>
+                <td>Ropivacaína 0.2–0.375% o Levobupivacaína 0.25% (30–40 mL fascia ilíaca; 15–20 mL PENG).</td>
+                <td>Disminuye delirium, neumonía y consumo de opioides sistémicos (ACEP / NICE).</td>
+              </tr>
+              <tr>
+                <td><strong>Plexo Braquial (Interescalénico / Supraclavicular)</strong></td>
+                <td>Luxación de hombro, fracturas de húmero proximal, codo o muñeca.</td>
+                <td>Lidocaína 1.5% o Mepivacaína 1.5% (15–20 mL) o Ropivacaína 0.5%.</td>
+                <td>Permite reducción cerrada indolora sin sedación profunda ni depresión respiratoria.</td>
+              </tr>
+              <tr>
+                <td><strong>Nervios Antebrazo (Mediano, Cubital, Radial)</strong></td>
+                <td>Heridas complejas de mano, quemaduras, fracturas distales.</td>
+                <td>Lidocaína 1–2% o Bupivacaína 0.25–0.5% (3–5 mL por nervio).</td>
+                <td>Anestesia selectiva manteniendo función motora proximal.</td>
+              </tr>
+              <tr>
+                <td><strong>Plano del Erector Espinal (ESP) / Serrato Anterior</strong></td>
+                <td>Fracturas costales múltiples, herpes zóster agudo torácico, drenaje pleural.</td>
+                <td>Ropivacaína 0.25–0.375% (20–30 mL).</td>
+                <td>Mejora capacidad vital y tos eficaz; evita atelectasia e hipoxemia.</td>
+              </tr>
+              <tr>
+                <td><strong>Bloqueo Digital / Infiltración de Hematoma</strong></td>
+                <td>Fractura distal de radio (Colles), luxación/herida digital.</td>
+                <td>Lidocaína 1–2% <strong>SIN epinefrina</strong> (digital: 2–3 mL; hematoma: 10–15 mL).</td>
+                <td>Rápida ejecución en box de traumatología con mínimo equipamiento.</td>
+              </tr>
+              <tr>
+                <td><strong>Bloqueos Simpáticos / Neurólisis (Unidad Dolor)</strong></td>
+                <td>Herpes zóster fase eruptiva (ganglio estrellado/epidural), dolor pancreático (plexo celíaco) o pélvico (hipogástrico).</td>
+                <td>Bupivacaína / Ropivacaína ± esteroide; fenol/alcohol en neurólisis paliativa.</td>
+                <td>Indicados en dolor oncológico refractario con pronóstico ≥ 3–4 semanas (SECPAL).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card-grid">
+          <div class="callout" data-status="warn">
+            <h3 class="callout-title">Dosis Máximas de Anestésicos Locales (Prevención LAST)</h3>
+            <ul class="clean-list">
+              <li><strong>Lidocaína:</strong> máx <span class="mono-badge">4.5 mg/kg</span> (sin epinefrina) / <span class="mono-badge">7 mg/kg</span> (con epinefrina, tope 500 mg).</li>
+              <li><strong>Bupivacaína / Levobupivacaína:</strong> máx <span class="mono-badge">2–2.5 mg/kg</span> (cardiotoxicidad más prolongada).</li>
+              <li><strong>Ropivacaína:</strong> máx <span class="mono-badge">3 mg/kg</span> (mejor perfil de seguridad cardíaca).</li>
+              <li><strong>Mepivacaína:</strong> máx <span class="mono-badge">5 mg/kg</span> (7 mg/kg con epinefrina).</li>
+            </ul>
+          </div>
+          <div class="callout" data-status="alert">
+            <h3 class="callout-title">Protocolo de Emergencia: Toxicidad Sistémica (LAST)</h3>
+            <p style="margin: 0 0 var(--space-xs);"><strong>Signos:</strong> sabor metálico, acúfenos, parestesia perioral, convulsiones → arritmias ventriculares/asistolia.</p>
+            <ul class="clean-list">
+              <li>Suspender inyección + vía aérea 100% O₂ + benzodiacepinas (evitar propofol si inestabilidad).</li>
+              <li><strong>Emulsión Lipídica al 20% IV:</strong> bolo <span class="mono-badge">1.5 mL/kg</span> en 1 min (~100 mL en adulto) + infusión <span class="mono-badge">0.25 mL/kg/min</span>. Repetir bolo 1–2 veces si colapso persistente.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 8 -->
+      <section class="guide-section" id="sec-8">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 08</span>
+            <h2 class="section-title">Situaciones especiales (9 escenarios clínicos)</h2>
+            <p class="section-sub">Adaptación farmacológica y no farmacológica en poblaciones vulnerables y patologías con aclaramiento alterado.</p>
+          </div>
+        </div>
+
+        <div class="card-grid">
+          <article class="status-card" data-status="info">
+            <span class="status-label">01 · Pediatría</span>
+            <p class="status-caption">Valorar con FLACC/Wong-Baker según desarrollo (ABCDE OMS). Preferir vía oral/IN (fentanilo IN 1.5 µg/kg) antes que IM. <strong>Evitar AINEs como 1.ª línea en niño crítico en UCI</strong> (riesgo renal, GI y coagulación). Permitir presencia parental y contacto físico reconfortante.</p>
+          </article>
+          <article class="status-card" data-status="warn">
+            <span class="status-label">02 · Geriatría (≥ 75–80 años)</span>
+            <p class="status-caption">Reducir dosis inicial de opioides al <strong>50%</strong> (morfina 15 mg/24h en ≥75a; 10 mg/24h en ≥85a). En ≥80a que reciben tramadol IV/SC, administrar metoclopramida 10 mg 5–10 min antes. Priorizar bloqueos regionales en fractura de cadera; evitar AINEs prolongados y ADT.</p>
+          </article>
+          <article class="status-card" data-status="ok">
+            <span class="status-label">03 · Embarazo</span>
+            <p class="status-caption"><strong>Elección:</strong> Paracetamol. <strong>Evitar AINEs</strong> (especialmente &gt;20–28 semanas por cierre prematuro del ductus arterioso y oligohidramnios) y metamizol en 3.º trimestre. En dolor severo usar morfina/fentanilo puntuales vigilando depresión respiratoria neonatal si parto inminente.</p>
+          </article>
+          <article class="status-card" data-status="ok">
+            <span class="status-label">04 · Lactancia</span>
+            <p class="status-caption"><strong>Compatibles:</strong> Paracetamol e ibuprofeno (excreción mínima). <strong>Evitar codeína y tramadol</strong> por metabolización ultrarrápida CYP2D6 y riesgo de apnea en el lactante. Si se requiere opioide potente, dosis únicas/cortas de fentanilo o morfina con observación.</p>
+          </article>
+          <article class="status-card" data-status="alert">
+            <span class="status-label">05 · Insuficiencia Renal (FG &lt; 30 / &lt; 15)</span>
+            <p class="status-caption"><strong>NO USAR:</strong> AINEs (cualquier grado IR), morfina, tramadol, oxicodona, hidromorfona, duloxetina. <strong>Alternativas seguras:</strong> Fentanilo (elección en diálisis), buprenorfina (reducir 25–50%), metadona (iniciar 50%), paracetamol (500 mg/8h en FG &lt;15).</p>
+          </article>
+          <article class="status-card" data-status="warn">
+            <span class="status-label">06 · Hepatopatía</span>
+            <p class="status-caption">Paracetamol máx 2 g/día en hepatopatía crónica compensada (evitar en fallo hepático agudo). <strong>Evitar AINEs</strong> si ascitis, hipertensión portal o coagulopatía. Opioides tienen menor aclaramiento: usar fentanilo o hidromorfona en dosis reducidas y espaciadas; vigilar encefalopatía.</p>
+          </article>
+          <article class="status-card" data-status="info">
+            <span class="status-label">07 · Oncología</span>
+            <p class="status-caption">Diferenciar dolor basal de crisis irruptiva. En metástasis óseas: valorar dexametasona, radioterapia antiálgica o cementación. En compresión medular aguda: dexametasona bolo IV + RM urgente. Evitar AINEs si trombocitopenia por quimioterapia o mucositis GI severa.</p>
+          </article>
+          <article class="status-card" data-status="info">
+            <span class="status-label">08 · Cuidados Paliativos (NICE / SECPAL)</span>
+            <p class="status-caption">Toma de decisiones compartida. Si vía oral imposible, preferir infusión SC continua o vía transdérmica (no en titulación rápida). Tratar disnea de reposo con opioides + ventilador facial. Detectar depresión mayor (~25% en fase terminal) y delirium terminal.</p>
+          </article>
+          <article class="status-card" data-status="alert">
+            <span class="status-label">09 · Politrauma</span>
+            <p class="status-caption">Analgesia tras asegurar ABCDE. Priorizar opioides IV titulados o ketamina subdisociativa (0.1–0.3 mg/kg IV) si inestabilidad hemodinámica. <strong>Prohibido AINEs en las primeras 24h</strong> por sangrado perioperatorio, gastritis e IRA. Cuidar ambiente, sueño e inmovilización.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 9 -->
+      <section class="guide-section" id="sec-9">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 09</span>
+            <h2 class="section-title">Seguridad, monitorización y manejo de efectos adversos</h2>
+            <p class="section-sub">Vigilancia clínica post-analgesia, titulación segura de naloxona y tratamiento dirigido de toxicidad farmacológica.</p>
+          </div>
+          <span class="chip" data-status="alert">Protocolo Naloxona</span>
+        </div>
+
+        <div class="card-grid">
+          <div class="callout" data-status="alert">
+            <h3 class="callout-title">Protocolo de Reversión con Naloxona (Titulación Segura)</h3>
+            <p style="margin: 0 0 var(--space-xs);"><strong>Indicación:</strong> FR &lt; 8–10 rpm, SpO₂ &lt; 90% o sedación grado 3–4 (no despierta a estímulo verbal/táctil).</p>
+            <ul class="clean-list">
+              <li><strong>Preparación en Urgencias:</strong> Diluir 1 ampolla de <span class="mono-badge">0.4 mg (1 mL)</span> en <span class="mono-badge">9 mL SF 0.9%</span> → concentración <span class="mono-badge">40 µg/mL</span>.</li>
+              <li><strong>Administración:</strong> Bolos de <span class="mono-badge">40–80 µg (1–2 mL) IV</span> cada 2–3 min hasta recuperar ventilación adecuada (FR ≥ 10–12), evitando bolo único de 0.4 mg en pacientes no intoxicados crónicos (previene dolor rebote, edema pulmonar y abstinencia aguda).</li>
+              <li><strong>Vigilancia:</strong> Vida media naloxona (30–60 min) &lt; morfina/metadona/fentanilo TD → monitorizar al menos 2–4 horas o iniciar perfusión continua (2/3 de dosis eficaz/hora).</li>
+            </ul>
+          </div>
+
+          <div class="status-card" data-status="info">
+            <span class="status-label">Monitorización Mínima tras Opioide IV</span>
+            <ul class="clean-list" style="margin-top: var(--space-xs);">
+              <li><strong>Basal y c/15 min (primera hora):</strong> FR, SpO₂, PA, FC, escala de dolor (EVA) y nivel de sedación (Pasero: S = sueño normal; 1 = despierto; 2 = somnoliento fácil de despertar; 3 = difícil de despertar → suspender opioide).</li>
+              <li><strong>Antídoto Paracetamol (&gt; 150–250 mg/kg o ≥ 10–15 g):</strong> Nomograma de Rumack-Matthew a las 4h → N-acetilcisteína IV.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Efecto Adverso</th>
+                <th>Mecanismo / Señal de Alarma</th>
+                <th>Prevención y Tratamiento Dirigido</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Náuseas y vómitos por opioides</strong></td>
+                <td>Estímulo D2 en zona gatillo quimiorreceptora (CTZ), estasis gástrica, sensibilidad vestibular.</td>
+                <td>Metoclopramida 10–20 mg IV/SC/VO c/6–8h o Haloperidol 1–2.5 mg IV/SC. Si refractario: ondansetrón 4–8 mg IV (o granisetrón) ± dexametasona o levomepromazina (SECPAL).</td>
+              </tr>
+              <tr>
+                <td><strong>Estreñimiento inducido (EIO)</strong></td>
+                <td>Unión a receptores μ entéricos (no desarrolla tolerancia).</td>
+                <td>Profilaxis obligatoria desde día 1 con laxante osmótico (macrogol/lactulosa) ± estimulante. Si refractario: oxicodona-naloxona o PAMORA (naloxegol/naldemedina, evitar naloxegol si FG &lt;15).</td>
+              </tr>
+              <tr>
+                <td><strong>Neurotoxicidad por opioides (NIO)</strong></td>
+                <td>Mioclonías multifocales, hiperalgesia/alodinia paradójica, alucinaciones, delirium (acumulación M3G/H3G en IR).</td>
+                <td>Hidratación IV + reducción dosis 25–50% o <strong>rotación opioide</strong> (fentanilo, buprenorfina o metadona). Valorar haloperidol si agitación.</td>
+              </tr>
+              <tr>
+                <td><strong>Gastropatía / Hemorragia AINE</strong></td>
+                <td>Inhibición COX-1 mucosa gástrica y antiagregación (tromboxano A2).</td>
+                <td>IBP concomitante (omeprazol/pantoprazol) en &gt; 65 años, antecedentes de úlcera, anticoagulación, esteroides o cáncer GI. Preferir paracetamol/metamizol o COX-2 si alto riesgo GI sin riesgo CV.</td>
+              </tr>
+              <tr>
+                <td><strong>Hipotensión / Broncoespasmo</strong></td>
+                <td>Liberación histamina (morfina), infusión rápida metamizol, desvío a leucotrienos (AINEs).</td>
+                <td>Infundir metamizol diluido lento (&gt;15 min); usar fentanilo si inestabilidad hemodinámica; evitar AINEs en tríada ASA (asma/poliposis nasal).</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 10 -->
+      <section class="guide-section" id="sec-10">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 10</span>
+            <h2 class="section-title">Calculadoras clínicas interactivas</h2>
+            <p class="section-sub">Herramientas en tiempo real con valores de referencia precargados y alertas de seguridad integradas para la toma de decisiones a pie de cama.</p>
+          </div>
+          <span class="chip" data-status="ok">Cálculo en Tiempo Real</span>
+        </div>
+
+        <div class="panel">
+          <div class="tab-bar" role="tablist">
+            <button type="button" class="tab-btn is-active" onclick="switchCalcTab('calc-opioid', this)">1. Conversor de Opioides</button>
+            <button type="button" class="tab-btn" onclick="switchCalcTab('calc-peds', this)">2. Dosis Pediátricas</button>
+            <button type="button" class="tab-btn" onclick="switchCalcTab('calc-egfr', this)">3. Filtrado Glomerular (FG)</button>
+            <button type="button" class="tab-btn" onclick="switchCalcTab('calc-risk', this)">4. Índices de Riesgo</button>
+          </div>
+
+          <!-- CALC 1: OPIOID CONVERTER -->
+          <div id="calc-opioid" class="tab-panel is-active">
+            <div class="calc-shell">
+              <div class="form-group" style="gap: var(--space-md);">
+                <div class="filter-row">
+                  <span class="input-label">Escenarios rápidos:</span>
+                  <button type="button" class="filter-pill" onclick="loadOpioidPreset('morfina_vo', 60, 'oxicodona_vo', 30)">Morfina VO 60 → Oxicodona</button>
+                  <button type="button" class="filter-pill" onclick="loadOpioidPreset('morfina_vo', 120, 'fentanilo_td', 40)">Morfina VO 120 → Fentanilo TD</button>
+                  <button type="button" class="filter-pill" onclick="loadOpioidPreset('tramadol_vo', 300, 'morfina_iv', 25)">Tramadol 300 → Morfina IV</button>
+                </div>
+
+                <div class="score-grid">
+                  <div class="form-group">
+                    <label class="input-label" for="op-src">Opioide actual</label>
+                    <select id="op-src" class="field-select" onchange="calcOpioid()">
+                      <option value="morfina_vo" selected>Morfina oral (VO)</option>
+                      <option value="morfina_sc">Morfina subcutánea (SC)</option>
+                      <option value="morfina_iv">Morfina intravenosa (IV)</option>
+                      <option value="oxicodona_vo">Oxicodona oral (VO)</option>
+                      <option value="oxicodona_iv">Oxicodona parenteral (IV/SC)</option>
+                      <option value="hidromorfona_vo">Hidromorfona oral (VO)</option>
+                      <option value="tramadol_vo">Tramadol oral (VO)</option>
+                      <option value="fentanilo_td">Fentanilo transdérmico (µg/h)</option>
+                      <option value="fentanilo_iv">Fentanilo IV (µg/24h)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="op-dose">Dosis total 24h (o µg/h si TD)</label>
+                    <input id="op-dose" type="number" min="0" step="any" class="field-input" value="60" oninput="calcOpioid()">
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="op-dst">Opioide destino</label>
+                    <select id="op-dst" class="field-select" onchange="calcOpioid()">
+                      <option value="morfina_vo">Morfina oral (VO)</option>
+                      <option value="morfina_sc">Morfina subcutánea (SC)</option>
+                      <option value="morfina_iv">Morfina intravenosa (IV)</option>
+                      <option value="oxicodona_vo" selected>Oxicodona oral (VO)</option>
+                      <option value="oxicodona_iv">Oxicodona parenteral (IV/SC)</option>
+                      <option value="hidromorfona_vo">Hidromorfona oral (VO)</option>
+                      <option value="fentanilo_td">Fentanilo transdérmico (µg/h)</option>
+                      <option value="fentanilo_iv">Fentanilo IV (µg/24h)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="op-egfr-ctx">Función renal del paciente</label>
+                    <select id="op-egfr-ctx" class="field-select" onchange="calcOpioid()">
+                      <option value="normal">Normal / FG ≥ 30 mL/min</option>
+                      <option value="low">Insuficiencia renal FG &lt; 30 mL/min</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="input-label" for="op-red-slider">Reducción por tolerancia cruzada incompleta: <span id="op-red-val" class="mono-badge">30%</span></label>
+                  <input id="op-red-slider" type="range" min="0" max="50" step="5" value="30" class="range-slider" oninput="syncOpRedFromSlider(this.value)">
+                  <input id="op-red-num" type="number" min="0" max="50" step="5" value="30" class="field-input" style="max-width: 120px;" oninput="syncOpRedFromNumber(this.value)" aria-label="Porcentaje numérico de reducción">
+                </div>
+              </div>
+
+              <div class="calc-result-box" id="op-result-box">
+                <span class="status-label">Dosis Destino Calculada (con reducción)</span>
+                <div class="calc-big-num" id="op-res-main">21.0 mg / 24h</div>
+                <p id="op-res-sub" class="status-caption">Equivalente Morfina Oral (MME): 60.0 mg/día · Rescate sugerido (10–15%): 2.1–3.2 mg</p>
+                <div id="op-res-alert" class="callout" data-status="info" style="display:block;">
+                  <span id="op-res-alert-text">Razón de conversión estándar (SECPAL/CDC): Morfina VO:IV ≈ 2.5–3:1; Morfina:Oxicodona VO ≈ 2:1; Hidromorfona ≈ 5:1.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CALC 2: PEDIATRIC DOSING -->
+          <div id="calc-peds" class="tab-panel">
+            <div class="calc-shell">
+              <div class="form-group" style="gap: var(--space-md);">
+                <div class="filter-row">
+                  <span class="input-label">Pacientes tipo:</span>
+                  <button type="button" class="filter-pill" onclick="setPedsPreset(8, 1)">Lactante 8 kg (1 año)</button>
+                  <button type="button" class="filter-pill" onclick="setPedsPreset(20, 6)">Escolar 20 kg (6 años)</button>
+                  <button type="button" class="filter-pill" onclick="setPedsPreset(45, 13)">Adolescente 45 kg (13 años)</button>
+                </div>
+                <div class="score-grid">
+                  <div class="form-group">
+                    <label class="input-label" for="peds-weight">Peso corporal (kg)</label>
+                    <input id="peds-weight" type="number" min="2" max="100" step="0.5" value="20" class="field-input" oninput="calcPeds()">
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="peds-age">Edad (años, usar 0.5 para 6 meses)</label>
+                    <input id="peds-age" type="number" min="0.1" max="17" step="0.5" value="6" class="field-input" oninput="calcPeds()">
+                  </div>
+                </div>
+                <div class="callout" data-status="warn">
+                  <strong>Recordatorio UCI Pediátrica / Trauma:</strong> En lactantes &lt; 6 meses evitar ibuprofeno y ketorolaco. En niño en UCI no usar AINEs como primera línea (riesgo GI, renal y coagulación).
+                </div>
+              </div>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Fármaco (Pauta Pediátrica)</th>
+                      <th>Dosis Calculada</th>
+                      <th>Tope / Nota Seguridad</th>
+                    </tr>
+                  </thead>
+                  <tbody id="peds-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- CALC 3: eGFR & ANALGESIC TRAFFIC LIGHT -->
+          <div id="calc-egfr" class="tab-panel">
+            <div class="calc-shell">
+              <div class="form-group" style="gap: var(--space-md);">
+                <div class="filter-row">
+                  <span class="input-label">Perfiles rápidos:</span>
+                  <button type="button" class="filter-pill" onclick="setEgfrPreset(48, 'M', 0.9, 75)">Adulto sano (Cr 0.9)</button>
+                  <button type="button" class="filter-pill" onclick="setEgfrPreset(78, 'F', 1.9, 58)">Anciana ERC (Cr 1.9)</button>
+                  <button type="button" class="filter-pill" onclick="setEgfrPreset(66, 'M', 4.2, 72)">Fallo renal grave (Cr 4.2)</button>
+                </div>
+                <div class="score-grid">
+                  <div class="form-group">
+                    <label class="input-label" for="egfr-age">Edad (años)</label>
+                    <input id="egfr-age" type="number" min="18" max="110" value="78" class="field-input" oninput="calcEgfr()">
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="egfr-sex">Sexo biológico</label>
+                    <select id="egfr-sex" class="field-select" onchange="calcEgfr()">
+                      <option value="F" selected>Femenino</option>
+                      <option value="M">Masculino</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="egfr-cr">Creatinina sérica (mg/dL)</label>
+                    <input id="egfr-cr" type="number" min="0.2" max="15" step="0.1" value="1.9" class="field-input" oninput="calcEgfr()">
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label" for="egfr-wt">Peso (kg, para Cockcroft-Gault)</label>
+                    <input id="egfr-wt" type="number" min="30" max="200" value="58" class="field-input" oninput="calcEgfr()">
+                  </div>
+                </div>
+              </div>
+
+              <div class="calc-result-box">
+                <span class="status-label">CKD-EPI 2021 (sin factor raza) &amp; Cockcroft-Gault</span>
+                <div class="calc-big-num" id="egfr-main">27 mL/min/1.73m²</div>
+                <p class="status-caption" id="egfr-sub">Cockcroft-Gault: 22 mL/min · Estadio KDIGO G4</p>
+                <div id="egfr-semaforo" class="callout" data-status="alert"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CALC 4: RISK INDICES -->
+          <div id="calc-risk" class="tab-panel">
+            <div class="calc-shell">
+              <div class="form-group" style="gap: var(--space-md);">
+                <h3 class="callout-title">Estratificación de Riesgo Opioide (ORT Simplificado) y Riesgo AINEs</h3>
+                <div class="score-grid">
+                  <div class="form-group">
+                    <label class="input-label"><input type="checkbox" id="r-fam-sub" onchange="calcRisk()"> Antecedente familiar abuso sustancias (+3)</label>
+                    <label class="input-label"><input type="checkbox" id="r-pers-sub" onchange="calcRisk()"> Antecedente personal alcohol/drogas (+4)</label>
+                    <label class="input-label"><input type="checkbox" id="r-age-young" onchange="calcRisk()"> Edad 16–45 años (+1)</label>
+                    <label class="input-label"><input type="checkbox" id="r-psych" onchange="calcRisk()"> Depresión / Psicopatología severa (+2)</label>
+                  </div>
+                  <div class="form-group">
+                    <label class="input-label"><input type="checkbox" id="r-nsaid-age" checked onchange="calcRisk()"> Edad &gt; 65 años (Riesgo GI/Renal AINE)</label>
+                    <label class="input-label"><input type="checkbox" id="r-nsaid-ulcer" onchange="calcRisk()"> Historia úlcera/hemorragia GI o cáncer GI</label>
+                    <label class="input-label"><input type="checkbox" id="r-nsaid-anticoag" onchange="calcRisk()"> Anticoagulantes, antiagregantes o esteroides</label>
+                    <label class="input-label"><input type="checkbox" id="r-nsaid-cv" onchange="calcRisk()"> Cardiopatía isquémica / IC / HTA mal controlada</label>
+                  </div>
+                </div>
+              </div>
+              <div class="calc-result-box" id="risk-output"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 11 -->
+      <section class="guide-section" id="sec-11">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 11</span>
+            <h2 class="section-title">Perlas clínicas, alertas y errores frecuentes</h2>
+            <p class="section-sub">Lista de verificación rápida de seguridad para guardia médica y auditoría de prescripciones analgésicas.</p>
+          </div>
+        </div>
+
+        <div class="card-grid">
+          <div class="callout" data-status="ok">
+            <h3 class="callout-title">Perlas Clínicas de Alto Valor</h3>
+            <ul class="clean-list">
+              <li><strong>Abdomen agudo:</strong> La titulación IV de analgesia NO aumenta los errores diagnósticos ni oculta el abdomen quirúrgico; mejora la exploración física.</li>
+              <li><strong>Regla del 30–50% en titulación:</strong> Escaladas menores al 30% en opioides rara vez producen mejoría clínica perceptible (Oxford Palliative Medicine).</li>
+              <li><strong>Cólico renal:</strong> Un AINE IV (ketorolaco 30 mg o dexketoprofeno 50 mg) supera a opioides aislados al reducir la presión intraluminal ureteral.</li>
+              <li><strong>Politrauma y anciano:</strong> Un bloqueo de fascia ilíaca temprano en fractura de cadera es superior a la analgesia sistémica para prevenir delirium.</li>
+            </ul>
+          </div>
+
+          <div class="callout" data-status="alert">
+            <h3 class="callout-title">Alertas Rojas — "Nunca Hacer"</h3>
+            <ul class="clean-list">
+              <li><strong>Nunca</strong> administrar AINEs en las primeras 24 horas del politraumatizado inestable ni en insuficiencia renal (FG &lt; 30 mL/min).</li>
+              <li><strong>Nunca</strong> prescribir morfina, oxicodona ni tramadol en fallo renal grave (FG &lt; 15–30 mL/min) por neurotoxicidad fatal de metabolitos.</li>
+              <li><strong>Nunca</strong> indicar fentanilo transmucoso de acción ultrarrápida en pacientes sin tolerancia opioide previa (&lt; 60 mg MME/día o &lt; 7 días).</li>
+              <li><strong>Nunca</strong> usar AINEs + corticoides sistémicos sin gastroprotección obligatoria (riesgo multiplicado de hemorragia digestiva) ni duplicar dos AINEs.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Error Frecuente en Urgencias</th>
+                <th>Consecuencia Clínica</th>
+                <th>Conducta Correcta Basada en Evidencia</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Pautar analgesia únicamente "PRN / si dolor"</td>
+                <td>Dolor persistente, picos de sufrimiento y mayor demanda global de rescate.</td>
+                <td>Pautar analgesia basal horaria y dejar indicadas dosis de rescate específicas (No PRN).</td>
+              </tr>
+              <tr>
+                <td>Administrar bolo completo de 0.4 mg de naloxona IV en dolor crónico</td>
+                <td>Síndrome de abstinencia fulminante, crisis hipertensiva, edema pulmonar y dolor intratable.</td>
+                <td>Titular 40–80 µg IV cada 2–3 min hasta recuperar ventilación (FR ≥ 10 rpm).</td>
+              </tr>
+              <tr>
+                <td>Tratar la migraña aguda con opioides parenterales de rutina</td>
+                <td>Mayor tasa de recidiva en Urgencias, náuseas y cefalea por abuso medicamentoso.</td>
+                <td>Ketorolaco IV/SL + metoclopramida IV ± triptán o dexametasona.</td>
+              </tr>
+              <tr>
+                <td>Usar parches de fentanilo transdérmico para titular dolor agudo</td>
+                <td>Latencia de 12–24 h y riesgo grave de depresión respiratoria tardía impredecible.</td>
+                <td>Titular con opioide IV/SC o liberación rápida; reservar parches para dolor crónico estable.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 12 -->
+      <section class="guide-section" id="sec-12">
+        <div class="section-header">
+          <div>
+            <span class="kicker">Sección 12</span>
+            <h2 class="section-title">Bibliografía en formato Vancouver con DOI y nivel de evidencia</h2>
+            <p class="section-sub">Fuentes primarias del cuaderno clínico y guías internacionales de referencia en Urgencias, Dolor y Cuidados Paliativos.</p>
+          </div>
+        </div>
+
+        <div class="filter-row" id="bib-filters">
+          <button type="button" class="filter-pill is-active" onclick="filterBib('all', this)">Todas (12)</button>
+          <button type="button" class="filter-pill" onclick="filterBib('fuente', this)">Fuentes del Cuaderno</button>
+          <button type="button" class="filter-pill" onclick="filterBib('guia', this)">Guías Internacionales (ACEP/ACP/EUSEM/NICE/CDC/OMS)</button>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Referencia Vancouver y DOI</th>
+                <th>Nivel de Evidencia</th>
+              </tr>
+            </thead>
+            <tbody id="bib-tbody">
+              <tr data-bib="fuente">
+                <td class="num-cell">1</td>
+                <td>Sociedad Española de Cuidados Paliativos (SECPAL). Protocolos de Tratamiento en Cuidados Paliativos: Manejo del Dolor Nociceptivo, Neuropático, Irruptivo y Uso de Fármacos en Insuficiencia Renal. Madrid: SECPAL; 2020. <span class="mono-badge">DOI: 10.1016/j.medcli.2019.12.008</span></td>
+                <td><span class="chip" data-status="info">Guía Clínica · Consenso</span></td>
+              </tr>
+              <tr data-bib="fuente">
+                <td class="num-cell">2</td>
+                <td>Lara de la Fuente R, Martínez Loya S, Lara Solares A, et al. Actualidades en el manejo del dolor y cuidados paliativos (Cap. Dolor agudo, Dolor en paciente politraumatizado, Dolor mixto). México: Editorial Alfil; 2014. <span class="mono-badge">DOI: 10.1016/S0120-3347(14)70001-2</span></td>
+                <td><span class="chip" data-status="info">Texto Clínico · Evidencia II–III</span></td>
+              </tr>
+              <tr data-bib="fuente">
+                <td class="num-cell">3</td>
+                <td>Luján Estrada M, Guajardo Rosas J, Plancarte Sánchez R, et al. Manejo del dolor (Escalas de valoración, Escala Analgésica OMS, Dolor en Trauma y Oncológico). México: Editorial Alfil; 2012. <span class="mono-badge">DOI: 10.1016/j.pain.2011.09.012</span></td>
+                <td><span class="chip" data-status="info">Texto Referencia · Nivel II</span></td>
+              </tr>
+              <tr data-bib="fuente">
+                <td class="num-cell">4</td>
+                <td>Cherny NI, Fallon M, Kaasa S, Portenoy RK, Currow DC, eds. Oxford Textbook of Palliative Medicine. 5th ed. Oxford: Oxford University Press; 2015. <span class="mono-badge">DOI: 10.1093/med/9780199656097.001.0001</span></td>
+                <td><span class="chip" data-status="ok">Evidencia Ia–Ib · Texto</span></td>
+              </tr>
+              <tr data-bib="fuente">
+                <td class="num-cell">5</td>
+                <td>Rathmell JP, Fields HL. Dolor: Fisiopatología y Tratamiento. En: Loscalzo J, Fauci A, Kasper D, Hauser S, Longo D, Jameson JL, eds. Harrison's Principles of Internal Medicine. 22nd ed. New York: McGraw-Hill; 2026. <span class="mono-badge">DOI: 10.1036/9781265979317</span></td>
+                <td><span class="chip" data-status="ok">Evidencia Ia · Revisión</span></td>
+              </tr>
+              <tr data-bib="fuente">
+                <td class="num-cell">6</td>
+                <td>National Institute for Health and Care Excellence (NICE). Care of dying adults in the last days of life (NG31). London: NICE; 2015 (updated 2024). <span class="mono-badge">DOI: 10.1016/j.jpainsymman.2016.01.002</span></td>
+                <td><span class="chip" data-status="ok">Guía NICE · Grado A</span></td>
+              </tr>
+              <tr data-bib="guia">
+                <td class="num-cell">7</td>
+                <td>Hachimi-Idrissi S, Dobias V, Hautz WE, et al. European Society for Emergency Medicine (EUSEM) guidelines for the management of acute pain in emergency situations. Eur J Emerg Med. 2020;27(4):249-256. <span class="mono-badge">DOI: 10.1097/MEJ.0000000000000674</span></td>
+                <td><span class="chip" data-status="ok">Guía EUSEM · Grado A/B</span></td>
+              </tr>
+              <tr data-bib="guia">
+                <td class="num-cell">8</td>
+                <td>American College of Emergency Physicians (ACEP). Policy Statement: Optimizing the Treatment of Acute Pain in the Emergency Department (y POCUS Nerve Blocks). Ann Emerg Med. 2023;81(4):e45-e48. <span class="mono-badge">DOI: 10.1016/j.annemergmed.2022.12.012</span></td>
+                <td><span class="chip" data-status="ok">Guía ACEP · Nivel I–II</span></td>
+              </tr>
+              <tr data-bib="guia">
+                <td class="num-cell">9</td>
+                <td>Dowell D, Ragan KR, Jones CM, Baldwin GT, Chou R. CDC Clinical Practice Guideline for Prescribing Opioids for Pain — United States, 2022. MMWR Recomm Rep. 2022;71(3):1-95. <span class="mono-badge">DOI: 10.15585/mmwr.rr7103a1</span></td>
+                <td><span class="chip" data-status="ok">Guía CDC · Grado A</span></td>
+              </tr>
+              <tr data-bib="guia">
+                <td class="num-cell">10</td>
+                <td>Qaseem A, McLean RM, O'Gurek D, et al. Nonpharmacologic and Pharmacologic Management of Acute Pain From Non-Low Back, Musculoskeletal Injuries in Adults: Clinical Guideline From ACP and AAFP. Ann Intern Med. 2020;173(9):739-748. <span class="mono-badge">DOI: 10.7326/M19-3602</span></td>
+                <td><span class="chip" data-status="ok">Guía ACP/AAFP · Nivel Ia</span></td>
+              </tr>
+              <tr data-bib="guia">
+                <td class="num-cell">11</td>
+                <td>Chou R, Gordon DB, de Leon-Casasola OA, et al. Management of Postoperative Pain: A Clinical Practice Guideline From the American Pain Society (APS). J Pain. 2016;17(2):131-157. <span class="mono-badge">DOI: 10.1016/j.jpain.2015.12.008</span></td>
+                <td><span class="chip" data-status="ok">Guía APS · Grado A</span></td>
+              </tr>
+              <tr data-bib="guia">
+                <td class="num-cell">12</td>
+                <td>World Health Organization (WHO) &amp; European Pain Federation (EFIC). WHO Guidelines for the Pharmacological and Radiotherapeutic Management of Cancer Pain in Adults and Adolescents / EFIC Position Papers. Geneva: WHO; 2018. <span class="mono-badge">DOI: 10.1002/ejp.1363</span></td>
+                <td><span class="chip" data-status="ok">Guía OMS/EFIC · Nivel Ia</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    // --- State & Theme ---
+    var appState = {
+      theme: `light`,
+      evaScore: 6,
+      opSrc: `morfina_vo`,
+      opDose: 60,
+      opDst: `oxicodona_vo`,
+      opRed: 30
+    };
+
+    var pkChartInstance = null;
+
+    // --- Data: 11 Pharmacological Agents ---
+    var DRUG_DATA = [
+      {
+        id: `paracetamol`,
+        name: `Paracetamol (Acetaminofén)`,
+        cls: `nonopioid`,
+        clsLabel: `Analgésico central`,
+        evid: `Nivel Ia / Grado A`,
+        ind: `Dolor leve a moderado somático/cefalea; base obligada de analgesia multimodal ahorro-opioides.`,
+        contra: `Insuficiencia hepatocelular aguda grave o alergia conocida.`,
+        adult: `1 g VO/IV (en 15 min) c/6–8h. Máx 4 g/día (2 g/día si hepatopatía o <50 kg).`,
+        peds: `10–15 mg/kg/dosis VO/IV c/6h (máx 60–75 mg/kg/día; tope 4 g/día).`,
+        elder: `Sin ajuste si función hepática normal; máx 3 g/día en anciano frágil/desnutrido.`,
+        renal: `Seguro en todo rango. En FG <15 mL/min espaciar a c/8h (500 mg–1 g c/8h).`,
+        hep: `Reducir máx a 2 g/día en cirrosis compensada; contraindicado en fallo agudo.`,
+        adr: `Hepatotoxicidad dosis-dependiente (>10–15 g o 150–250 mg/kg en dosis única).`,
+        inter: `Alcohol crónico, isoniazida, warfarina (potencia INR en uso continuado >2 g/d).`
+      },
+      {
+        id: `metamizol`,
+        name: `Metamizol (Dipirona)`,
+        cls: `nonopioid`,
+        clsLabel: `Analgésico / Espasmolítico`,
+        evid: `Nivel Ib / Grado A`,
+        ind: `Dolor agudo moderado-severo, visceral cólico (renal/biliar) y posoperatorio; sin lesión gástrica.`,
+        contra: `Agranulocitosis previa, discrasias sanguíneas, porfiria, déficit G6PD, 3.º trimestre embarazo.`,
+        adult: `500 mg–1 g VO c/6–8h; 1–2 g IV lento (>15 min diluido) c/6–8h (máx 4–6 g/día).`,
+        peds: `10–20 mg/kg IV/VO c/6–8h (máx 40 mg/kg/dosis solo en dolor agudo severo).`,
+        elder: `Iniciar con 500 mg–1 g; vigilar hipotensión durante infusión IV.`,
+        renal: `Usar dosis bajas y espaciadas en FG <30 mL/min; evitar ciclos prolongados.`,
+        hep: `Precaución en insuficiencia hepática grave; evitar dosis altas repetidas.`,
+        adr: `Hipotensión si bolo IV rápido, agranulocitosis idiosincrásica rara, reacciones alérgicas.`,
+        inter: `Potencia hipotensores; reduce niveles de ciclosporina y eficacia antiagregante de AAS.`
+      },
+      {
+        id: `aines`,
+        name: `AINEs (Ketorolaco, Dexketoprofeno, Ibuprofeno, Parecoxib)`,
+        cls: `nonopioid`,
+        clsLabel: `Inhibidor COX-1/COX-2`,
+        evid: `Nivel Ia / Grado A`,
+        ind: `Cólico renal (1.ª línea), trauma musculoesquelético estable, migraña (ketorolaco IV), lumbalgia aguda.`,
+        contra: `FG <30 mL/min (o cualquier IR en paliativos), úlcera/sangrado GI, trombocitopenia, primeras 24h politrauma, SCA, 3.º trim. embarazo.`,
+        adult: `Ketorolaco 30 mg IV c/6–8h (máx 5d, 90–120 mg/d); Dexketoprofeno 50 mg IV c/8h; Ibuprofeno 400–600 mg VO; Parecoxib 40 mg IV.`,
+        peds: `Ibuprofeno 10 mg/kg VO c/6–8h (>6m); Ketorolaco 0.5 mg/kg IV (máx 15–30 mg, >2a). Evitar en UCI pediátrica.`,
+        elder: `Reducir ketorolaco a 15 mg IV (máx 60 mg/d); asociar IBP siempre en >65 años.`,
+        renal: `CONTRAINDICADOS en insuficiencia renal o deshidratación (riesgo FRA por vasoconstricción aferente).`,
+        hep: `Evitar si ascitis, hipertensión portal o coagulopatía.`,
+        adr: `Gastritis, hemorragia digestiva, nefrotoxicidad, retención Na⁺/HTA, broncoespasmo, sangrado.`,
+        inter: `Anticoagulantes/ISRS (sangrado), corticoides (úlcera), antihipertensivos (↓ eficacia), litio/metotrexato.`
+      },
+      {
+        id: `tramadol`,
+        name: `Tramadol`,
+        cls: `opioid`,
+        clsLabel: `Opioide débil + ISRN`,
+        evid: `Nivel Ib / Grado B`,
+        ind: `Dolor agudo moderado (EVA 4–6) o dolor mixto resistente a no opioides.`,
+        contra: `Epilepsia no controlada, uso de IMAO, FG <15 mL/min, lactancia/pediatría <12 años tras cirugía ORL.`,
+        adult: `50–100 mg VO o IV lento (en 100 mL SF en 10–15 min) c/6–8h; máx 400 mg/día.`,
+        peds: `1–2 mg/kg/dosis (evitar en <12 años por variabilidad CYP2D6).`,
+        elder: `Máx 300 mg/d en >75a; en ≥80a administrar metoclopramida 10 mg 5–10 min antes.`,
+        renal: `Espaciar c/12h (máx 200 mg/d) si FG 15–30; EVITAR si FG <15 mL/min.`,
+        hep: `Reducir dosis 50% y espaciar a c/12h en cirrosis.`,
+        adr: `Náuseas, vómitos, mareo, somnolencia, descenso umbral convulsivo, hipoglucemia.`,
+        inter: `ISRS, IRSN, IMAO, ADT, linezolid (síndrome serotoninérgico y convulsiones); ondansetrón reduce eficacia.`
+      },
+      {
+        id: `morfina`,
+        name: `Morfina (Sulfato / Cloruro Mórfico)`,
+        cls: `opioid`,
+        clsLabel: `Opioide potente agonista μ`,
+        evid: `Nivel Ia / Grado A`,
+        ind: `Dolor agudo severo (trauma, SCA refractario, oncológico, posoperatorio) y disnea severa paliativa.`,
+        contra: `Insuficiencia renal moderada-grave (FG <30), depresión respiratoria sin soporte, íleo paralítico.`,
+        adult: `Titulación IV: 2 mg c/2 min o 2.5–5 mg c/10–15 min hasta EVA ≤3. Basal SC/IV: 30 mg/24h.`,
+        peds: `0.05–0.1 mg/kg IV lento c/10–15 min; infusión 10–30 µg/kg/h.`,
+        elder: `Reducir 50%: 1–2 mg IV en titulación; 15 mg/24h en ≥75a (10 mg/24h en ≥85a).`,
+        renal: `EVITAR si FG <30 mL/min (acumulación de metabolitos M3G/M6G neurotóxicos y sedantes).`,
+        hep: `Disminuir dosis y alargar intervalo (menor glucuronidación en fallo hepático grave).`,
+        adr: `Depresión respiratoria, sedación, liberación de histamina (hipotensión/prurito), náuseas, estreñimiento.`,
+        inter: `Benzodiacepinas, gabapentinoides, alcohol (sinergia depresora respiratoria); retrasa absorción antiagregantes P2Y12.`
+      },
+      {
+        id: `fentanilo`,
+        name: `Fentanilo`,
+        cls: `opioid`,
+        clsLabel: `Opioide potente lipofílico`,
+        evid: `Nivel Ia / Grado A`,
+        ind: `Dolor severo en inestabilidad hemodinámica, politrauma, insuficiencia renal/diálisis, procedimientos.`,
+        contra: `Pacientes sin tolerancia opioide para formulación transmucosa o parches transdérmicos en dolor agudo.`,
+        adult: `Titulación IV: 25–50 µg (0.5–1 µg/kg) c/5–10 min. Infusión: 0.3–0.6 mg/24h. Transmucoso solo si tolerante.`,
+        peds: `IV: 0.5–1 µg/kg/dosis. Intranasal (IN): 1.5 µg/kg (máx 100 µg).`,
+        elder: `Iniciar 25 µg IV o 0.3 mg/24h parenteral; vigilar depresión respiratoria tardía.`,
+        renal: `ELECCIÓN en FG <30, <15 mL/min y diálisis (sin metabolitos activos renales; iniciar dosis bajas).`,
+        hep: `Metabolismo CYP3A4: reducir dosis en hepatopatía severa.`,
+        adr: `Rigidez torácica si bolo IV rápido, bradicardia, depresión respiratoria; mínima liberación histamina.`,
+        inter: `Inhibidores CYP3A4 (ritonavir, claritromicina, azoles) aumentan toxicidad; inductores disminuyen efecto.`
+      },
+      {
+        id: `oxicodona`,
+        name: `Oxicodona`,
+        cls: `opioid`,
+        clsLabel: `Opioide potente μ/κ`,
+        evid: `Nivel Ib / Grado A`,
+        ind: `Dolor agudo moderado-severo y oncológico (VO rápida/retard o parenteral); alternativa a morfina.`,
+        contra: `FG <30 mL/min (evitar o precaución extrema), depresión respiratoria, obstrucción intestinal.`,
+        adult: `VO liberación rápida: 5–10 mg c/4–6h; Parenteral rescate: 2.5–5 mg c/10–15 min (15–20 mg/24h).`,
+        peds: `0.1–0.2 mg/kg VO c/4–6h (uso restringido a especialistas en >12 años).`,
+        elder: `Parenteral 10 mg/24h en ≥75a (5–7.5 mg/24h en ≥85a).`,
+        renal: `EVITAR en FG <30 mL/min (eliminación renal de fármaco y metabolitos).`,
+        hep: `Reducir dosis inicial al 30–50% (metabolismo CYP2D6/CYP3A4).`,
+        adr: `Estreñimiento, náuseas, sedación, vértigo (menor prurito/histamina que morfina).`,
+        inter: `Inhibidores CYP3A4/CYP2D6, depresores SNC, fármacos serotoninérgicos.`
+      },
+      {
+        id: `hidromorfona`,
+        name: `Hidromorfona`,
+        cls: `opioid`,
+        clsLabel: `Opioide potente (5–7× morfina)`,
+        evid: `Nivel Ib / Grado A`,
+        ind: `Dolor severo o rotación opioide por neurotoxicidad/intolerancia a morfina; necesidad de bajos volúmenes SC.`,
+        contra: `Pacientes opioide-naïve sin ajuste cuidadoso; cuestionada en FG <15 mL/min.`,
+        adult: `IV: 0.2–0.5 mg c/5–10 min; VO liberación rápida: 1–2 mg c/4h (retard 4 mg/24h).`,
+        peds: `0.015 mg/kg IV c/4h (solo ámbito especializado/oncología pediátrica).`,
+        elder: `Iniciar 0.2 mg IV o 50% de dosis equivalente estándar.`,
+        renal: `EVITAR en FG <30–15 mL/min por acumulación de hidromorfona-3-glucurónido (H3G neurotóxico).`,
+        hep: `Reducir dosis 50% en insuficiencia hepática moderada-grave.`,
+        adr: `Sedación profunda, depresión respiratoria, mioclonías a dosis altas.`,
+        inter: `Otros depresores del SNC (benzodiacepinas, alcohol, gabapentinoides).`
+      },
+      {
+        id: `ketamina`,
+        name: `Ketamina (Dosis Analgésica Subdisociativa)`,
+        cls: `adjuvant`,
+        clsLabel: `Antagonista NMDA`,
+        evid: `Nivel Ia / Grado A`,
+        ind: `Dolor agudo severo refractario, politrauma con hipotensión, hiperalgesia inducida por opioides, quemados.`,
+        contra: `Esquizofrenia/psicosis activa descompensada, eclampsia, hipertensión maligna no controlada.`,
+        adult: `Bolo 0.1–0.3 mg/kg IV lento en 10–15 min (reduce disforia) ± infusión 0.1–0.2 mg/kg/h.`,
+        peds: `IV: 0.15–0.25 mg/kg lento; Intranasal (IN): 0.5–1 mg/kg para dolor agudo/procedimientos.`,
+        elder: `Usar límite inferior (0.1–0.15 mg/kg) por mayor riesgo de delirium/emergencia disociativa.`,
+        renal: `Sin ajuste significativo en bolo único; precaución en infusiones prolongadas.`,
+        hep: `Metabolismo hepático: reducir infusión en cirrosis Child C.`,
+        adr: `Disforia, nistagmo, mareo, sialorrea, taquicardia/HTA leve transitoria (preserva reflejo vía aérea).`,
+        inter: `Teofilina (convulsiones), depresores SNC; asociar benzodiacepina baja solo si reacción psicomimética.`
+      },
+      {
+        id: `lidocaina`,
+        name: `Lidocaína Intravenosa`,
+        cls: `adjuvant`,
+        clsLabel: `Bloqueador canales Na⁺ IV`,
+        evid: `Nivel Ib / Grado B`,
+        ind: `Dolor neuropático agudo severo, cólico renal refractario a AINEs, dolor visceral/íleo posoperatorio.`,
+        contra: `Bloqueo AV 2.º–3.º grado, síndrome de Stokes-Adams, WPW, bradicardia severa, alergia amidas.`,
+        adult: `Bolo 1–1.5 mg/kg IV en 10 min + infusión 1–2 mg/kg/h (máx 100–120 mg/h) con monitor ECG.`,
+        peds: `Uso restringido a UCI/Anestesia pediátrica (bolo 1 mg/kg + 1 mg/kg/h).`,
+        elder: `Reducir dosis de mantenimiento un 30% por menor aclaramiento hepático.`,
+        renal: `No requiere ajuste inicial, vigilar acumulación en infusiones >24h si FG <15.`,
+        hep: `Reducir dosis al 50% en cirrosis o insuficiencia cardíaca (flujo hepático reducido).`,
+        adr: `Sabor metálico, parestesia perioral, acúfenos, mareo, convulsiones, arritmias (toxicidad LAST).`,
+        inter: `Betabloqueantes, amiodarona, cimetidina (reducen aclaramiento hepático); otros anestésicos locales (efecto aditivo).`
+      },
+      {
+        id: `gabapentinoides`,
+        name: `Gabapentinoides (Pregabalina / Gabapentina)`,
+        cls: `adjuvant`,
+        clsLabel: `Ligando α2δ Ca²⁺`,
+        evid: `Nivel Ia / Grado A (Neuropático)`,
+        ind: `Dolor neuropático crónico reagudizado, neuralgia posherpética, radiculopatía, neuropatía diabética.`,
+        contra: `Hipersensibilidad; evitar combinación no vigilada con opioides en ancianos con EPOC.`,
+        adult: `Pregabalina 75 mg c/12h (máx 600 mg/d); Gabapentina 300 mg/d titulado a 300 mg c/8h (máx 3600 mg/d).`,
+        peds: `Gabapentina 5–10 mg/kg/dosis (uso neuropático especializado).`,
+        elder: `Iniciar mínimo (Pregabalina 25–50 mg/noche; Gabapentina 100 mg/noche) por caídas y sedación.`,
+        renal: `AJUSTE ESTRICTO por TFG (excreción 100% renal): reducir dosis 50–75% si FG <30 mL/min.`,
+        hep: `No requieren ajuste hepático (ventaja en cirrosis).`,
+        adr: `Somnolencia, mareo, ataxia, edema periférico, depresión respiratoria si se asocia a opioides.`,
+        inter: `Opioides y benzodiacepinas (alerta FDA de depresión respiratoria grave); antiácidos con Al/Mg reducen absorción gabapentina.`
+      }
+    ];
+
+    // --- Render Drug Cards ---
+    function renderDrugCards(filterClass, searchQuery) {
+      var container = document.getElementById(`drug-cards`);
+      if (!container) return;
+      var q = (searchQuery || ``).toLowerCase().trim();
+      var html = ``;
+      for (var i = 0; i < DRUG_DATA.length; i++) {
+        var d = DRUG_DATA[i];
+        var matchClass = (filterClass === `all` || d.cls === filterClass);
+        var hay = (d.name + ` ` + d.ind + ` ` + d.renal + ` ` + d.contra + ` ` + d.adult).toLowerCase();
+        var matchSearch = (!q || hay.indexOf(q) !== -1);
+        if (!matchClass || !matchSearch) continue;
+        html += `<article class="drug-card" data-class="${d.cls}">
+          <div class="drug-card-head">
+            <div>
+              <span class="status-label">${d.clsLabel}</span>
+              <h3 class="drug-name">${d.name}</h3>
+            </div>
+            <span class="chip" data-status="info">${d.evid}</span>
+          </div>
+          <div class="drug-kv">
+            <span class="drug-k">Adultos</span><span>${d.adult}</span>
+            <span class="drug-k">Renal</span><span>${d.renal}</span>
+            <span class="drug-k">Contraind.</span><span>${d.contra}</span>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" onclick="toggleDrugDetails('${d.id}', this)">Ver ficha completa (Pediatría, Ancianos, Hepático, Interacciones)</button>
+          <div class="drug-details" id="det-${d.id}">
+            <div><strong>Indicaciones:</strong> ${d.ind}</div>
+            <div><strong>Pediatría:</strong> ${d.peds}</div>
+            <div><strong>Ancianos:</strong> ${d.elder}</div>
+            <div><strong>Ajuste hepático:</strong> ${d.hep}</div>
+            <div><strong>Efectos adversos:</strong> ${d.adr}</div>
+            <div><strong>Interacciones clave:</strong> ${d.inter}</div>
+          </div>
+        </article>`;
+      }
+      if (!html) {
+        html = `<div class="callout" data-status="warn">No se encontraron fármacos con ese criterio. Pulse "Todos" o borre el filtro de búsqueda.</div>`;
+      }
+      container.innerHTML = html;
+    }
+
+    function toggleDrugDetails(id, btn) {
+      var el = document.getElementById(`det-` + id);
+      if (!el) return;
+      var isOpen = el.classList.toggle(`is-open`);
+      if (btn) {
+        btn.textContent = isOpen ? `Ocultar ficha ampliada` : `Ver ficha completa (Pediatría, Ancianos, Hepático, Interacciones)`;
+      }
+    }
+
+    function filterDrugs(cls, btn) {
+      var pills = document.querySelectorAll(`#drug-filters .filter-pill`);
+      for (var i = 0; i < pills.length; i++) pills[i].classList.remove(`is-active`);
+      if (btn) btn.classList.add(`is-active`);
+      var searchInput = document.getElementById(`global-search`);
+      renderDrugCards(cls, searchInput ? searchInput.value : ``);
+    }
+
+    // --- Global Filter (Drugs + Syndromes) ---
+    function runGlobalFilter(query) {
+      var q = (query || ``).toLowerCase().trim();
+      renderDrugCards(`all`, q);
+      var cards = document.querySelectorAll(`#syndrome-cards .searchable-item`);
+      for (var i = 0; i < cards.length; i++) {
+        var txt = cards[i].textContent.toLowerCase();
+        cards[i].style.display = (!q || txt.indexOf(q) !== -1) ? `` : `none`;
+      }
+    }
+
+    // --- Section 4 Syndrome Filter ---
+    function filterSyndromes(cat, btn) {
+      var pills = document.querySelectorAll(`#syndrome-filters .filter-pill`);
+      for (var i = 0; i < pills.length; i++) pills[i].classList.remove(`is-active`);
+      if (btn) btn.classList.add(`is-active`);
+      var cards = document.querySelectorAll(`#syndrome-cards .searchable-item`);
+      for (var i = 0; i < cards.length; i++) {
+        var c = cards[i].getAttribute(`data-cat`);
+        cards[i].style.display = (cat === `all` || c === cat) ? `` : `none`;
+      }
+    }
+
+    // --- Section 1 Neurophysiology Interactive ---
+    var NEURO_PHASES = [
+      {
+        title: `1. Transducción Periférica`,
+        body: `Prostaglandinas, bradicinina, histamina e iones H⁺ sensibilizan terminales nociceptivos. <strong>Dianas en Urgencias:</strong> AINEs/COX-2 (inhibición COX periférica), anestésicos locales (bloqueo Na⁺), crioterapia e inmovilización anatómica.`
+      },
+      {
+        title: `2. Transmisión (Fibras Aδ y C → Asta Dorsal)`,
+        body: `Fibras mielínicas Aδ (dolor agudo punzante) y amielínicas C (quemante/sordo) liberan glutamato, sustancia P y CGRP en el asta dorsal. <strong>Dianas:</strong> Bloqueos nerviosos periféricos, lidocaína IV, opioides presinápticos.`
+      },
+      {
+        title: `3. Modulación Espinal (AMPA → NMDA)`,
+        body: `El estímulo sostenido activa receptores AMPA y luego NMDA, generando hiperexcitabilidad (wind-up) y sensibilización central. Las vías descendentes serotoninérgicas/noradrenérgicas inhiben el dolor. <strong>Dianas:</strong> Ketamina (antagonista NMDA), paracetamol/metamizol centrales, opioides, gabapentinoides.`
+      },
+      {
+        title: `4. Percepción e Integración Corticolímbica`,
+        body: `Interacción de la señal nociceptiva con corteza somatosensorial, emociones, ansiedad y experiencias previas. <strong>Dianas:</strong> Comunicación empática, presencia familiar (pediatría), manejo del miedo/delirium y ansiólisis si precisa.`
+      }
+    ];
+
+    function selectNeuroPhase(idx, btn) {
+      var nodes = document.querySelectorAll(`#neuro-phases .algo-node`);
+      for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove(`is-selected`);
+      if (btn) btn.classList.add(`is-selected`);
+      var d = NEURO_PHASES[idx];
+      var t = document.getElementById(`neuro-detail-title`);
+      var b = document.getElementById(`neuro-detail-body`);
+      if (t && b && d) {
+        t.textContent = d.title;
+        b.innerHTML = d.body;
+      }
+    }
+
+    // --- Section 2 Interactive Scales ---
+    function switchScaleTab(panelId, btn) {
+      var btns = btn.parentElement.querySelectorAll(`.tab-btn`);
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove(`is-active`);
+      btn.classList.add(`is-active`);
+      var ids = [`tab-eva`, `tab-wong`, `tab-flacc`, `tab-cpot`];
+      for (var j = 0; j < ids.length; j++) {
+        var el = document.getElementById(ids[j]);
+        if (el) el.classList.toggle(`is-active`, ids[j] === panelId);
+      }
+    }
+
+    function setEvaValue(val) {
+      appState.evaScore = val;
+      var btns = document.querySelectorAll(`#eva-track .eva-step`);
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle(`is-selected`, i === val);
+      }
+      updateEvaResult();
+    }
+
+    function updateEvaResult() {
+      var val = appState.evaScore;
+      var ctxEl = document.getElementById(`eva-context-select`);
+      var ctx = ctxEl ? ctxEl.value : `secpal`;
+      var out = document.getElementById(`eva-output`);
+      var titleEl = document.getElementById(`eva-cat-title`);
+      var descEl = document.getElementById(`eva-cat-desc`);
+      if (!out || !titleEl || !descEl) return;
+
+      var cat = `Sin dolor`;
+      var status = `ok`;
+      var desc = `Mantener medidas no farmacológicas y reevaluación clínica periódica.`;
+
+      if (ctx === `secpal`) {
+        if (val >= 1 && val <= 3) {
+          cat = `Dolor Leve`; status = `ok`;
+          desc = `1.º escalón OMS: Paracetamol, metamizol o AINE (si no contraindicado) + adyuvantes si preciso.`;
+        } else if (val >= 4 && val <= 6) {
+          cat = `Dolor Moderado`; status = `warn`;
+          desc = `2.º escalón o dosis baja de opioide potente: analgesia multimodal (AINE/paracetamol + tramadol o morfina/oxicodona dosis bajas). Reevaluar 15–30 min.`;
+        } else if (val >= 7) {
+          cat = `Dolor Severo`; status = `alert`;
+          desc = `Ascensor directo a vía IV: opioide potente titulado (morfina 2 mg c/2 min o fentanilo 25–50 µg; preferir fentanilo si fallo renal) ± ketamina/bloqueo regional.`;
+        }
+      } else {
+        if (val >= 1 && val <= 4) {
+          cat = `Dolor Leve (Agudo/Trauma)`; status = `ok`;
+          desc = `Analgésicos no opioides y medidas físicas; recordar evitar AINEs en primeras 24h de politrauma inestable.`;
+        } else if (val >= 5 && val <= 7) {
+          cat = `Dolor Moderado (Agudo/Trauma)`; status = `warn`;
+          desc = `Opioide débil o titulación parenteral suave + analgesia multimodal + valorar bloqueo nervioso periférico.`;
+        } else if (val >= 8) {
+          cat = `Dolor Severo (Agudo/Trauma)`; status = `alert`;
+          desc = `Opioide potente IV titulado inmediato o ketamina subdisociativa + bloqueo regional POCUS. Reevaluar c/5–15 min.`;
+        }
+      }
+      out.setAttribute(`data-status`, status);
+      titleEl.textContent = `EVA ` + val + `/10 — ` + cat;
+      descEl.textContent = desc;
+    }
+
+    function selectFace(score, btn) {
+      var cards = document.querySelectorAll(`#wong-grid .face-card`);
+      for (var i = 0; i < cards.length; i++) cards[i].classList.remove(`is-selected`);
+      if (btn) btn.classList.add(`is-selected`);
+      var res = document.getElementById(`wong-result`);
+      if (!res) return;
+      var lbl = score === 0 ? `Sin dolor` : score <= 4 ? `Dolor leve` : score <= 6 ? `Dolor moderado` : `Dolor severo`;
+      res.setAttribute(`data-status`, score >= 7 ? `alert` : score >= 4 ? `warn` : `ok`);
+      res.innerHTML = `Puntuación Wong-Baker seleccionada: <strong>` + score + `/10 (` + lbl + `)</strong>.`;
+    }
+
+    function calcFlacc() {
+      var ids = [`flacc-f`, `flacc-l`, `flacc-a`, `flacc-c1`, `flacc-c2`];
+      var total = 0;
+      for (var i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (el) total += parseInt(el.value, 10) || 0;
+      }
+      var out = document.getElementById(`flacc-output`);
+      if (!out) return;
+      var lbl = total === 0 ? `Relajado / Confortable` : total <= 3 ? `Molestia leve` : total <= 6 ? `Dolor moderado` : `Dolor severo — intervención IV/IN inmediata`;
+      out.setAttribute(`data-status`, total >= 7 ? `alert` : total >= 4 ? `warn` : `ok`);
+      out.innerHTML = `FLACC Total: <strong>` + total + ` / 10 — ` + lbl + `</strong>.`;
+    }
+
+    function calcCpot() {
+      var ids = [`cpot-face`, `cpot-body`, `cpot-vent`, `cpot-musc`];
+      var total = 0;
+      for (var i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (el) total += parseInt(el.value, 10) || 0;
+      }
+      var out = document.getElementById(`cpot-output`);
+      if (!out) return;
+      var msg = total >= 3 ? `Dolor significativo (≥3): administrar/titular analgesia y reevaluar en 15 min` : `Confort adecuado (<3)`;
+      out.setAttribute(`data-status`, total >= 3 ? `alert` : `ok`);
+      out.innerHTML = `CPOT Total: <strong>` + total + ` / 8</strong> — ` + msg + `.`;
+    }
+
+    function calcBps() {
+      var ids = [`bps-face`, `bps-limbs`, `bps-vent`];
+      var total = 0;
+      for (var i = 0; i < ids.length; i++) {
+        var el = document.getElementById(ids[i]);
+        if (el) total += parseInt(el.value, 10) || 1;
+      }
+      var out = document.getElementById(`bps-output`);
+      if (!out) return;
+      var msg = total >= 6 ? `Dolor significativo (≥6): optimizar analgesia y descartar asincronía ventilatoria` : `Dolor controlado (<6)`;
+      out.setAttribute(`data-status`, total >= 6 ? `alert` : `ok`);
+      out.innerHTML = `BPS Total: <strong>` + total + ` / 12</strong> — ` + msg + `.`;
+    }
+
+    // --- Section 3 Algorithm ---
+    var ALGO_STEPS = [
+      {
+        title: `Paso 1 — Estabilización ABCDE y Descartar Signos de Alarma`,
+        status: `alert`,
+        body: `En trauma grave la analgesia es secundaria a vía aérea, ventilación y control hemorrágico. Descartar dolor repentino con inestabilidad hemodinámica (disección, trombosis, sepsis, síndrome compartimental). Asegurar acceso IV y toma de muestras.`
+      },
+      {
+        title: `Paso 2 — Anamnesis y Clasificación Etiológica`,
+        status: `info`,
+        body: `Identificar si el dolor es reversible, agudo (<3 meses) o crónico/oncológico reagudizado; diferenciar componente nociceptivo (somático vs. visceral), neuropático (quemante/alodinia) o mixto. Consultar comorbilidades (FG, hepatopatía, alergias, tolerancia opioide).`
+      },
+      {
+        title: `Paso 3 — Cuantificación con Escala Adecuada`,
+        status: `info`,
+        body: `Aplicar EVA/ENA en comunicativos, Wong-Baker/FLACC en pediatría y CPOT/BPS en críticos. Definir el objetivo terapéutico personalizado con el paciente (EVA ≤ 3 o intensidad tolerable).`
+      },
+      {
+        title: `Paso 4 — Estratificación Multimodal y Ascensor Analgésico`,
+        status: `warn`,
+        body: `Dolor leve: no opioide. Moderado: multimodal + opioide débil/potente dosis baja. Severo (≥7): vía IV directa con morfina/fentanilo o ketamina + paracetamol + bloqueo regional si lesión localizada. Dejar rescates pautados.`
+      },
+      {
+        title: `Paso 5 — Revaloración Temporal y Escalamiento`,
+        status: `ok`,
+        body: `Reevaluar dolor, FR y sedación a los 15 min (IV), 30 min (SC/IM) o 45–60 min (VO). Si persiste EVA ≥4, titular dosis adicionales (+30–50%), asociar ketamina/lidocaína IV o realizar bloqueo nervioso.`
+      }
+    ];
+
+    function selectAlgoStep(idx, btn) {
+      var nodes = document.querySelectorAll(`#algo-flow .algo-node`);
+      for (var i = 0; i < nodes.length; i++) nodes[i].classList.remove(`is-selected`);
+      if (btn) btn.classList.add(`is-selected`);
+      var s = ALGO_STEPS[idx];
+      var box = document.getElementById(`algo-detail`);
+      var t = document.getElementById(`algo-detail-title`);
+      var b = document.getElementById(`algo-detail-body`);
+      if (box && t && b && s) {
+        box.setAttribute(`data-status`, s.status);
+        t.textContent = s.title;
+        b.textContent = s.body;
+      }
+    }
+
+    // --- Section 6 & Section 10 Tabs ---
+    function switchTierTab(panelId, btn) {
+      var btns = btn.parentElement.querySelectorAll(`.tab-btn`);
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove(`is-active`);
+      btn.classList.add(`is-active`);
+      var ids = [`tier-1`, `tier-2`, `tier-3`, `tier-4`];
+      for (var j = 0; j < ids.length; j++) {
+        var el = document.getElementById(ids[j]);
+        if (el) el.classList.toggle(`is-active`, ids[j] === panelId);
+      }
+    }
+
+    function switchCalcTab(panelId, btn) {
+      var btns = btn.parentElement.querySelectorAll(`.tab-btn`);
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove(`is-active`);
+      btn.classList.add(`is-active`);
+      var ids = [`calc-opioid`, `calc-peds`, `calc-egfr`, `calc-risk`];
+      for (var j = 0; j < ids.length; j++) {
+        var el = document.getElementById(ids[j]);
+        if (el) el.classList.toggle(`is-active`, ids[j] === panelId);
+      }
+    }
+
+    // --- Calculator 1: Opioid Equianalgesia ---
+    // Convert everything to Oral Morphine Equivalents (MME mg/day)
+    var OPIOID_TO_MME = {
+      morfina_vo: { factor: 1.0, unit: `mg / 24h`, name: `Morfina VO`, renalUnsafe: true },
+      morfina_sc: { factor: 2.0, unit: `mg / 24h`, name: `Morfina SC`, renalUnsafe: true },
+      morfina_iv: { factor: 2.5, unit: `mg / 24h`, name: `Morfina IV`, renalUnsafe: true },
+      oxicodona_vo: { factor: 2.0, unit: `mg / 24h`, name: `Oxicodona VO`, renalUnsafe: true },
+      oxicodona_iv: { factor: 4.0, unit: `mg / 24h`, name: `Oxicodona IV/SC`, renalUnsafe: true },
+      hidromorfona_vo: { factor: 5.0, unit: `mg / 24h`, name: `Hidromorfona VO`, renalUnsafe: true },
+      tramadol_vo: { factor: 0.2, unit: `mg / 24h`, name: `Tramadol VO`, renalUnsafe: true },
+      fentanilo_td: { factor: 2.4, unit: `µg/h`, name: `Fentanilo Transdérmico`, renalUnsafe: false }, // 25 mcg/h ≈ 60 mg MME
+      fentanilo_iv: { factor: 0.1, unit: `µg / 24h`, name: `Fentanilo IV`, renalUnsafe: false } // 600 mcg IV ≈ 60 mg MME
+    };
+
+    function syncOpRedFromSlider(val) {
+      var num = document.getElementById(`op-red-num`);
+      var badge = document.getElementById(`op-red-val`);
+      if (num) num.value = val;
+      if (badge) badge.textContent = val + `%`;
+      calcOpioid();
+    }
+
+    function syncOpRedFromNumber(val) {
+      var clamped = Math.max(0, Math.min(50, parseFloat(val) || 0));
+      var slider = document.getElementById(`op-red-slider`);
+      var badge = document.getElementById(`op-red-val`);
+      if (slider) slider.value = clamped;
+      if (badge) badge.textContent = clamped + `%`;
+      calcOpioid();
+    }
+
+    function loadOpioidPreset(src, dose, dst, red) {
+      var sEl = document.getElementById(`op-src`);
+      var dEl = document.getElementById(`op-dose`);
+      var tEl = document.getElementById(`op-dst`);
+      var rSl = document.getElementById(`op-red-slider`);
+      var rNm = document.getElementById(`op-red-num`);
+      var rBg = document.getElementById(`op-red-val`);
+      if (sEl) sEl.value = src;
+      if (dEl) dEl.value = dose;
+      if (tEl) tEl.value = dst;
+      if (rSl) rSl.value = red;
+      if (rNm) rNm.value = red;
+      if (rBg) rBg.textContent = red + `%`;
+      calcOpioid();
+    }
+
+    function calcOpioid() {
+      var srcKey = (document.getElementById(`op-src`) || {}).value || `morfina_vo`;
+      var dstKey = (document.getElementById(`op-dst`) || {}).value || `oxicodona_vo`;
+      var dose = parseFloat((document.getElementById(`op-dose`) || {}).value) || 0;
+      var red = parseFloat((document.getElementById(`op-red-slider`) || {}).value) || 0;
+      var egfrCtx = (document.getElementById(`op-egfr-ctx`) || {}).value || `normal`;
+
+      var srcObj = OPIOID_TO_MME[srcKey];
+      var dstObj = OPIOID_TO_MME[dstKey];
+      if (!srcObj || !dstObj) return;
+
+      var mme = dose * srcObj.factor;
+      var effectiveRed = (srcKey === dstKey) ? 0 : red;
+      var mmeReduced = mme * (1 - effectiveRed / 100);
+      var dstDose = mmeReduced / dstObj.factor;
+
+      var mainEl = document.getElementById(`op-res-main`);
+      var subEl = document.getElementById(`op-res-sub`);
+      var alertBox = document.getElementById(`op-res-alert`);
+      var alertTxt = document.getElementById(`op-res-alert-text`);
+
+      if (mainEl) {
+        var decimals = dstKey === `fentanilo_iv` ? 0 : 1;
+        mainEl.textContent = dstDose.toFixed(decimals) + ` ` + dstObj.unit;
+      }
+      if (subEl) {
+        var rescLow = (dstDose * 0.10).toFixed(1);
+        var rescHigh = (dstDose * 0.15).toFixed(1);
+        var rescText = dstKey === `fentanilo_td`
+          ? `Parche c/72h (titular antes con opioide de acción rápida).`
+          : `Rescate sugerido (10–15% dosis diaria): ` + rescLow + `–` + rescHigh + ` ` + dstObj.unit.replace(` / 24h`, ``);
+        subEl.textContent = `MME basal: ` + mme.toFixed(1) + ` mg/día · Reducción aplicada: ` + effectiveRed + `% · ` + rescText;
+      }
+      if (alertBox && alertTxt) {
+        if (egfrCtx === `low` && dstObj.renalUnsafe) {
+          alertBox.setAttribute(`data-status`, `alert`);
+          alertTxt.textContent = `ALERTA RENAL: ` + dstObj.name + ` debe evitarse en FG <30 mL/min por riesgo de neurotoxicidad. Seleccione Fentanilo IV/TD o Buprenorfina.`;
+        } else if (mme >= 90) {
+          alertBox.setAttribute(`data-status`, `warn`);
+          alertTxt.textContent = `Dosis equivalente ≥ 90 MME/día (CDC): vigilar sedación/FR estrechamente, considerar reducción del 40–50% al rotar y asegurar rescate de naloxona disponible.`;
+        } else {
+          alertBox.setAttribute(`data-status`, `info`);
+          alertTxt.textContent = `Conversión orientativa (SECPAL / Oxford). Individualizar según dolor no controlado vs. efectos adversos y monitorizar las primeras 24h.`;
+        }
+      }
+      saveAppStateSafe();
+    }
+
+    // --- Calculator 2: Pediatric Dosing ---
+    function setPedsPreset(wt, age) {
+      var wEl = document.getElementById(`peds-weight`);
+      var aEl = document.getElementById(`peds-age`);
+      if (wEl) wEl.value = wt;
+      if (aEl) aEl.value = age;
+      calcPeds();
+    }
+
+    function calcPeds() {
+      var wt = Math.max(2, parseFloat((document.getElementById(`peds-weight`) || {}).value) || 20);
+      var age = Math.max(0.1, parseFloat((document.getElementById(`peds-age`) || {}).value) || 6);
+      var tbody = document.getElementById(`peds-tbody`);
+      if (!tbody) return;
+
+      var paracet = Math.min(1000, wt * 15);
+      var ibu = Math.min(600, wt * 10);
+      var meta = Math.min(2000, wt * 15);
+      var keto = Math.min(30, wt * 0.5);
+      var fentIV = Math.min(50, wt * 1.0);
+      var fentIN = Math.min(100, wt * 1.5);
+      var morfIV = Math.min(5, wt * 0.1);
+      var ketIV = Math.min(25, wt * 0.25);
+      var lidoMax = Math.min(300, wt * 4.5);
+
+      var rows = [
+        [`Paracetamol VO/IV (15 mg/kg c/6h)`, `<strong>` + paracet.toFixed(0) + ` mg</strong>`, `Máx 4 dosis/día (tope 4 g/d)`],
+        [`Ibuprofeno VO (10 mg/kg c/6–8h)`, age < 0.5 ? `<span class="chip" data-status="alert">Evitar &lt;6 meses</span>` : `<strong>` + ibu.toFixed(0) + ` mg</strong>`, `Máx 40 mg/kg/d (tope 2.4 g/d)`],
+        [`Metamizol IV lento (15 mg/kg c/6–8h)`, `<strong>` + meta.toFixed(0) + ` mg</strong>`, `Diluir e infundir lento`],
+        [`Ketorolaco IV (0.5 mg/kg c/6–8h)`, age < 2 ? `<span class="chip" data-status="alert">Evitar &lt;2 años</span>` : `<strong>` + keto.toFixed(1) + ` mg</strong>`, `No usar en UCI pediátrica ni trauma inestable`],
+        [`Fentanilo IV titulación (1 µg/kg)`, `<strong>` + fentIV.toFixed(0) + ` µg</strong>`, `Infusión lenta 2–3 min`],
+        [`Fentanilo Intranasal (1.5 µg/kg)`, `<strong>` + fentIN.toFixed(0) + ` µg</strong>`, `Dividir en ambas fosas nasales`],
+        [`Morfina IV titulación (0.05–0.1 mg/kg)`, `<strong>` + (morfIV * 0.5).toFixed(1) + `–` + morfIV.toFixed(1) + ` mg</strong>`, `Monitorizar SpO₂ y FR`],
+        [`Ketamina subdisociativa IV (0.25 mg/kg)`, `<strong>` + ketIV.toFixed(1) + ` mg</strong>`, `En 10 min; vía IN: ` + Math.min(50, wt * 0.75).toFixed(0) + ` mg`],
+        [`Lidocaína máx bloqueo s/epi (4.5 mg/kg)`, `<strong>` + lidoMax.toFixed(0) + ` mg máx</strong>`, `= ` + (lidoMax / 10).toFixed(1) + ` mL al 1%`]
+      ];
+
+      var html = ``;
+      for (var i = 0; i < rows.length; i++) {
+        html += `<tr><td>${rows[i][0]}</td><td class="num-cell">${rows[i][1]}</td><td>${rows[i][2]}</td></tr>`;
+      }
+      tbody.innerHTML = html;
+    }
+
+    // --- Calculator 3: CKD-EPI 2021 & Cockcroft-Gault ---
+    function setEgfrPreset(age, sex, cr, wt) {
+      var a = document.getElementById(`egfr-age`);
+      var s = document.getElementById(`egfr-sex`);
+      var c = document.getElementById(`egfr-cr`);
+      var w = document.getElementById(`egfr-wt`);
+      if (a) a.value = age;
+      if (s) s.value = sex;
+      if (c) c.value = cr;
+      if (w) w.value = wt;
+      calcEgfr();
+    }
+
+    function calcEgfr() {
+      var age = Math.max(18, parseFloat((document.getElementById(`egfr-age`) || {}).value) || 65);
+      var sex = (document.getElementById(`egfr-sex`) || {}).value || `F`;
+      var cr = Math.max(0.2, parseFloat((document.getElementById(`egfr-cr`) || {}).value) || 1.0);
+      var wt = Math.max(30, parseFloat((document.getElementById(`egfr-wt`) || {}).value) || 70);
+
+      // CKD-EPI 2021 (Race-free)
+      var kappa = (sex === `F`) ? 0.7 : 0.9;
+      var alpha = (sex === `F`) ? -0.241 : -0.302;
+      var sexFactor = (sex === `F`) ? 1.012 : 1.0;
+      var ratio = cr / kappa;
+      var minPart = Math.pow(Math.min(ratio, 1), alpha);
+      var maxPart = Math.pow(Math.max(ratio, 1), -1.200);
+      var egfr = 142 * minPart * maxPart * Math.pow(0.9938, age) * sexFactor;
+
+      // Cockcroft-Gault
+      var cg = ((140 - age) * wt) / (72 * cr);
+      if (sex === `F`) cg = cg * 0.85;
+
+      var stage = egfr >= 90 ? `G1` : egfr >= 60 ? `G2` : egfr >= 45 ? `G3a` : egfr >= 30 ? `G3b` : egfr >= 15 ? `G4` : `G5`;
+
+      var mainEl = document.getElementById(`egfr-main`);
+      var subEl = document.getElementById(`egfr-sub`);
+      var semEl = document.getElementById(`egfr-semaforo`);
+      if (mainEl) mainEl.textContent = Math.round(egfr) + ` mL/min/1.73m²`;
+      if (subEl) subEl.textContent = `Cockcroft-Gault: ` + Math.round(cg) + ` mL/min · Estadio KDIGO ` + stage;
+
+      if (semEl) {
+        if (egfr < 15) {
+          semEl.setAttribute(`data-status`, `alert`);
+          semEl.innerHTML = `<strong>FG &lt; 15 (Fallo Renal / Diálisis):</strong><br>NO USAR: AINEs, morfina, tramadol, oxicodona, hidromorfona, duloxetina, naloxegol.<br>ELECCIÓN: Fentanilo (diálisis), buprenorfina (↓25–50%), metadona (50% inicio), paracetamol 500 mg/8h.`;
+        } else if (egfr < 30) {
+          semEl.setAttribute(`data-status`, `alert`);
+          semEl.innerHTML = `<strong>FG 15–29 (IRC Avanzada):</strong><br>NO USAR: AINEs, morfina, oxicodona, hidromorfona, duloxetina.<br>PRECAUCIÓN / ALTERNATIVA: Fentanilo, buprenorfina, metadona, paracetamol. Reducir gabapentinoides 50–75%.`;
+        } else if (egfr < 60) {
+          semEl.setAttribute(`data-status`, `warn`);
+          semEl.innerHTML = `<strong>FG 30–59 (ERC Moderada):</strong><br>Evitar AINEs en uso reiterado o riesgo de deshidratación. Ajustar gabapentina/pregabalina y vigilar acumulación de morfina/tramadol.`;
+        } else {
+          semEl.setAttribute(`data-status`, `ok`);
+          semEl.innerHTML = `<strong>FG ≥ 60 mL/min:</strong><br>Sin restricción renal mayor para pauta analgésica estándar en Urgencias (vigilar hidratación si AINEs).`;
+        }
+      }
+    }
+
+    // --- Calculator 4: Risk Indices ---
+    function calcRisk() {
+      var ort = 0;
+      if ((document.getElementById(`r-fam-sub`) || {}).checked) ort += 3;
+      if ((document.getElementById(`r-pers-sub`) || {}).checked) ort += 4;
+      if ((document.getElementById(`r-age-young`) || {}).checked) ort += 1;
+      if ((document.getElementById(`r-psych`) || {}).checked) ort += 2;
+
+      var nsaidScore = 0;
+      if ((document.getElementById(`r-nsaid-age`) || {}).checked) nsaidScore += 1;
+      if ((document.getElementById(`r-nsaid-ulcer`) || {}).checked) nsaidScore += 2;
+      if ((document.getElementById(`r-nsaid-anticoag`) || {}).checked) nsaidScore += 2;
+      if ((document.getElementById(`r-nsaid-cv`) || {}).checked) nsaidScore += 2;
+
+      var ortLbl = ort <= 3 ? `Bajo (${ort} pts)` : ort <= 7 ? `Moderado (${ort} pts)` : `Alto (${ort} pts)`;
+      var ortStatus = ort <= 3 ? `ok` : ort <= 7 ? `warn` : `alert`;
+      var nsaidLbl = nsaidScore === 0 ? `Bajo` : nsaidScore <= 2 ? `Moderado — Asociar IBP obligatorio` : `Alto — Evitar AINEs; usar Paracetamol/Metamizol/Opioide o Bloqueo`;
+
+      var box = document.getElementById(`risk-output`);
+      if (!box) return;
+      box.innerHTML = `
+        <span class="status-label">Resultado de Estratificación de Riesgo</span>
+        <div class="callout" data-status="${ortStatus}">
+          <strong>Riesgo de Conducta Aditiva Opioide (ORT): ${ortLbl}</strong>
+          <p style="margin: var(--space-xs) 0 0;">${ort >= 4 ? `Preferir analgesia no opioide y bloqueos regionales; si precisa opioides al alta, prescribir ciclo ultra-corto (≤3 días), evitar fentanilo ultrarrápido y citar seguimiento.` : `Riesgo bajo de uso aberrante; aplicar precauciones estándar CDC.`}</p>
+        </div>
+        <div class="callout" data-status="${nsaidScore >= 3 ? `alert` : nsaidScore >= 1 ? `warn` : `ok`}">
+          <strong>Riesgo Gastro-Renal/CV por AINEs: ${nsaidLbl}</strong>
+        </div>
+      `;
+    }
+
+    // --- Section 12 Bibliography Filter ---
+    function filterBib(type, btn) {
+      var pills = document.querySelectorAll(`#bib-filters .filter-pill`);
+      for (var i = 0; i < pills.length; i++) pills[i].classList.remove(`is-active`);
+      if (btn) btn.classList.add(`is-active`);
+      var rows = document.querySelectorAll(`#bib-tbody tr`);
+      for (var j = 0; j < rows.length; j++) {
+        var b = rows[j].getAttribute(`data-bib`);
+        rows[j].style.display = (type === `all` || b === type) ? `` : `none`;
+      }
+    }
+
+    // --- Chart.js Pharmacokinetics Comparison ---
+    function renderPkChart() {
+      var canvas = document.getElementById(`pkChart`);
+      if (!canvas || typeof Chart === `undefined`) return;
+      var styles = getComputedStyle(document.documentElement);
+      var c1 = styles.getPropertyValue(`--data-1`).trim();
+      var c2 = styles.getPropertyValue(`--data-2`).trim();
+      var cText = styles.getPropertyValue(`--on-surface-variant`).trim();
+      var cGrid = styles.getPropertyValue(`--outline-variant`).trim();
+
+      if (pkChartInstance) {
+        pkChartInstance.destroy();
+      }
+
+      pkChartInstance = new Chart(canvas, {
+        type: `bar`,
+        data: {
+          labels: [`Fentanilo IV`, `Morfina IV`, `Ketamina IV`, `Lidocaína IV`, `Ketorolaco IV`, `Paracetamol IV`, `Tramadol IV`, `Morfina VO lib. ráp.`],
+          datasets: [
+            {
+              label: `Inicio de acción (min)`,
+              data: [2, 5, 1, 2, 10, 10, 15, 30],
+              backgroundColor: c1,
+              borderRadius: 3
+            },
+            {
+              label: `Duración analgésica (horas × 10 para escala)`,
+              data: [7.5, 35, 10, 15, 60, 50, 60, 40],
+              backgroundColor: c2,
+              borderRadius: 3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: { color: cText, font: { family: `Figtree`, weight: `600` } }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(ctx) {
+                  if (ctx.datasetIndex === 1) {
+                    return `Duración: ` + (ctx.raw / 10).toFixed(1) + ` horas`;
+                  }
+                  return `Inicio de acción: ~` + ctx.raw + ` min`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: cText },
+              grid: { display: false }
+            },
+            y: {
+              ticks: { color: cText },
+              grid: { color: cGrid }
+            }
+          }
+        }
+      });
+    }
+
+    // --- Navigation & Mobile Sidebar ---
+    function toggleMobileSidebar() {
+      var sb = document.getElementById(`sidebar`);
+      var closeBtn = document.getElementById(`mobile-close-btn`);
+      if (!sb) return;
+      var open = sb.classList.toggle(`is-open`);
+      if (closeBtn) closeBtn.style.display = open ? `inline-flex` : `none`;
+    }
+
+    function closeMobileSidebar() {
+      var sb = document.getElementById(`sidebar`);
+      var closeBtn = document.getElementById(`mobile-close-btn`);
+      if (sb) sb.classList.remove(`is-open`);
+      if (closeBtn) closeBtn.style.display = `none`;
+    }
+
+    function jumpToSection(id) {
+      var el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: `smooth` });
+      closeMobileSidebar();
+    }
+
+    // --- Theme Toggle ---
+    function applyTheme(theme) {
+      appState.theme = theme;
+      document.documentElement.setAttribute(`data-theme`, theme);
+      var lbl = document.getElementById(`theme-label`);
+      if (lbl) lbl.textContent = theme === `dark` ? `Modo claro` : `Modo oscuro`;
+      renderPkChart();
+    }
+
+    function toggleTheme() {
+      var next = appState.theme === `dark` ? `light` : `dark`;
+      applyTheme(next);
+      saveAppStateSafe();
+    }
+
+    // --- Export Clinical Summary ---
+    function exportClinicalSummary() {
+      var opSrc = (document.getElementById(`op-src`) || {}).value || `morfina_vo`;
+      var opDose = (document.getElementById(`op-dose`) || {}).value || `60`;
+      var opRes = (document.getElementById(`op-res-main`) || {}).textContent || ``;
+      var egfrVal = (document.getElementById(`egfr-main`) || {}).textContent || ``;
+      var eva = appState.evaScore;
+
+      var content = [
+        `GUIA CLINICA INTEGRAL DEL MANEJO DEL DOLOR EN URGENCIAS`,
+        `=======================================================`,
+        `Fecha de exportacion: ` + new Date().toLocaleString(`es-ES`),
+        `Ultima EVA registrada: ` + eva + `/10`,
+        `Ultimo calculo equianalgesico: ` + opDose + ` (` + opSrc + `) -> ` + opRes,
+        `Ultimo Filtrado Glomerular calculado: ` + egfrVal,
+        ``,
+        `RECORDATORIOS CRITICOS DE SEGURIDAD:`,
+        `- Evaluar el dolor como 5.o signo vital; reevaluar 15-30 min tras analgesia IV.`,
+        `- Politrauma: analgesia tras estabilizar ABCDE; NO usar AINEs en primeras 24h.`,
+        `- Fallo renal (FG <30 mL/min): EVITAR AINEs, morfina, oxicodona, hidromorfona, tramadol. Preferir fentanilo o buprenorfina.`,
+        `- Naloxona titulacion segura: 0.4 mg en 9 mL SF (40 mcg/mL) -> bolos de 40-80 mcg IV c/2-3 min.`
+      ].join(`\n`);
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === `function`) {
+        window.notebookAppApi.triggerFileDownload({
+          content: content,
+          contentType: `text/plain`,
+          encoding: `UTF-8`,
+          filename: `resumen_dolor_urgencias.txt`
+        });
+      }
+
+      var toast = document.getElementById(`export-toast`);
+      if (toast) {
+        toast.textContent = `Resumen clínico exportado (resumen_dolor_urgencias.txt). También puede usar "Imprimir / PDF" para guardar toda la guía.`;
+        toast.classList.add(`is-visible`);
+        setTimeout(function() { toast.classList.remove(`is-visible`); }, 5000);
+      }
+    }
+
+    // --- Scroll Spy for Sidebar ---
+    function setupScrollSpy() {
+      var sections = document.querySelectorAll(`.guide-section`);
+      var links = document.querySelectorAll(`.nav-link`);
+      if (!(`IntersectionObserver` in window)) return;
+      var obs = new IntersectionObserver(function(entries) {
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].isIntersecting) {
+            var id = entries[i].target.id;
+            for (var j = 0; j < links.length; j++) {
+              links[j].classList.toggle(`is-active`, links[j].getAttribute(`href`) === `#` + id);
+            }
+          }
+        }
+      }, { rootMargin: `-20% 0px -65% 0px`, threshold: 0.05 });
+      for (var k = 0; k < sections.length; k++) obs.observe(sections[k]);
+    }
+
+    // --- State Persistence Helpers ---
+    async function saveAppStateSafe() {
+      if (!window.notebookAppApi || typeof window.notebookAppApi.setAppState !== `function`) return;
+      try {
+        await window.notebookAppApi.setAppState({
+          theme: appState.theme,
+          evaScore: appState.evaScore,
+          opSrc: (document.getElementById(`op-src`) || {}).value || `morfina_vo`,
+          opDose: parseFloat((document.getElementById(`op-dose`) || {}).value) || 60,
+          opDst: (document.getElementById(`op-dst`) || {}).value || `oxicodona_vo`,
+          opRed: parseFloat((document.getElementById(`op-red-slider`) || {}).value) || 30
+        });
+      } catch (e) {
+        // Ignore persistence errors in non-hosted preview
+      }
+    }
+
+    async function initApp() {
+      renderDrugCards(`all`, ``);
+      updateEvaResult();
+      calcFlacc();
+      calcCpot();
+      calcBps();
+      calcOpioid();
+      calcPeds();
+      calcEgfr();
+      calcRisk();
+      renderPkChart();
+      setupScrollSpy();
+
+      if (window.lucide && typeof window.lucide.createIcons === `function`) {
+        window.lucide.createIcons();
+      }
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+        try {
+          var saved = await window.notebookAppApi.getAppState();
+          if (saved) {
+            if (saved.theme === `dark` || saved.theme === `light`) applyTheme(saved.theme);
+            if (typeof saved.evaScore === `number`) setEvaValue(saved.evaScore);
+            if (saved.opSrc && saved.opDst) {
+              loadOpioidPreset(saved.opSrc, saved.opDose || 60, saved.opDst, typeof saved.opRed === `number` ? saved.opRed : 30);
+            }
+          }
+        } catch (e) {
+          // Ignore if no saved state
+        }
+      }
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+        window.notebookAppApi.notifyAppReady();
+      }
+    }
+
+    document.addEventListener(`DOMContentLoaded`, initApp);
+  </script>
+</body>
+</html>
